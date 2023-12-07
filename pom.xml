@@ -94,7 +94,7 @@
 		      <!-- <appendAssemblyId>false</appendAssemblyId> -->
             <archive>
               <manifest>
-                <mainClass>com.BudgiePanic.rendering.PushingP.App</mainClass>
+                <mainClass>com.BudgiePanic.rendering.App</mainClass>
               </manifest>
             </archive>
             <descriptorRefs>
