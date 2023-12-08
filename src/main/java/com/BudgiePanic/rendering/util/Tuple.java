@@ -145,7 +145,7 @@ public class Tuple {
         throw new UnsupportedOperationException("Method not implemented yet.");
     }
 
-    public Tuple negate(Tuple other) {
+    public Tuple negate() {
         throw new UnsupportedOperationException("Method not implemented yet.");
     }
 
