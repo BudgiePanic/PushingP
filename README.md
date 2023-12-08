@@ -3,7 +3,7 @@ A Whitted ray tracing implementation written in Java
 
 # Project Name
 
-Pushing P is short for PushingP(ixels), a refence to the application's job of filling the pixels of the screen with color.
+PushingP is short for PushingP(ixels), a refence to the application's job of filling the pixels of the screen with color.
 
 # Background
 
