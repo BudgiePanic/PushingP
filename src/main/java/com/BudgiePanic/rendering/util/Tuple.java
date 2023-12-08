@@ -131,6 +131,25 @@ public class Tuple {
         return "[" + this.x + "," + this.y + "," + this.z + "," + this.w + "]";
     }
 
+    /**
+     * checks if two floating point numbers are similar enough to each other.
+     * Used instead of == to cope with floating point imprecision.
+     * @param a 
+     *   The first float to compare.
+     * @param b
+     *   The second float.
+     * @return
+     *    0 if the two numbers are within 0.0000001 of each other.
+     *    1 if a is larger than b.
+     *   -1 if b is larger than a.
+     */
+    private static int compareFloat(float a, float b){
+        final float epsilon = 0.0000001f;
+        if (Math.abs(a - b) < epsilon) return 0;
+        if (a < b) return -1;
+        return 1;
+    }
+
     @Override
     public boolean equals(Object other){
         if (this == other){
@@ -140,9 +159,9 @@ public class Tuple {
             return false;
         }
         Tuple otherTuple = (Tuple) other;
-        return Float.compare(this.x, otherTuple.x) == 0 &&
-               Float.compare(this.y, otherTuple.y) == 0 &&
-               Float.compare(this.z, otherTuple.z) == 0 &&
-               Float.compare(this.w, otherTuple.w) == 0;
+        return compareFloat(this.x, otherTuple.x) == 0 &&
+               compareFloat(this.y, otherTuple.y) == 0 &&
+               compareFloat(this.z, otherTuple.z) == 0 &&
+               compareFloat(this.w, otherTuple.w) == 0;
     }
 }
