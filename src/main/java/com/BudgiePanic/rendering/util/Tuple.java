@@ -126,6 +126,51 @@ public class Tuple {
         return this.w == 1f;
     }
 
+    /**
+     * Creates a new tuple that is the addition of tuple 'this' and tuple 'other'.
+     * Because these math operations make new Tuples, the garbage collector is going to be working overtime.
+     * Oh well, that's what we pay him for.
+     * @param other
+     *   The tuple to add
+     * @return
+     *   A new tuple that is the result of adding the two tupples together.
+     */
+    public Tuple add(Tuple other) {
+        throw new UnsupportedOperationException("Method not implemented yet.");
+    }
+
+    public Tuple subtract(Tuple other) {
+        throw new UnsupportedOperationException("Method not implemented yet.");
+    }
+
+    public Tuple negate(Tuple other) {
+        throw new UnsupportedOperationException("Method not implemented yet.");
+    }
+
+    public Tuple multiply(float value) {
+        throw new UnsupportedOperationException("Method not implemented yet.");
+    }
+
+    public Tuple divide(float value) {
+        throw new UnsupportedOperationException("Method not implemented yet.");
+    }
+
+    public float magnitude() {
+        throw new UnsupportedOperationException("Method not implemented yet.");
+    }
+
+    public Tuple normalize() {
+        throw new UnsupportedOperationException("Method not implemented yet.");
+    }
+
+    public float dot(Tuple other) {
+        throw new UnsupportedOperationException("Method not implemented yet.");
+    }
+
+    public Tuple cross(Tuple other) {
+        throw new UnsupportedOperationException("Method not implemented yet.");
+    }
+
     @Override
     public String toString(){
         return "[" + this.x + "," + this.y + "," + this.z + "," + this.w + "]";
