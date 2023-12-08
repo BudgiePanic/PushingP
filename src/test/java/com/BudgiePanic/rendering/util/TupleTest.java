@@ -4,6 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Unit tests for the functionality of the Tuple primative.
+ * 
+ * @author BudgiePanic
+ */
 public class TupleTest {
     /**
      * Dummy test to check if this test suite will actually run.
@@ -55,6 +60,14 @@ public class TupleTest {
         Tuple tupleB = Tuple.makeVector(0.0f, 0.0f, 0.0f);
         assertTrue(tupleA.equals(tupleB));
         assertTrue(tupleB.equals(tupleA));
+        assertFalse(tupleA.equals(null));
+    }
+
+    @Test
+    void testCloseEquals(){
+        Tuple tupleA = Tuple.makeVector(0, 0, 0);
+        Tuple tupleB = Tuple.makeVector(0.00000001f, 0.0f, 0.0f);
+        assertTrue(tupleA.equals(tupleB));
     }
 
 }
