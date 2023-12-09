@@ -132,6 +132,7 @@ public class Tuple {
      * Creates a new tuple that is the addition of tuple 'this' and tuple 'other'.
      * Because these math operations make new Tuples, the garbage collector is going to be working overtime.
      * Oh well, that's what we pay him for.
+     * 
      * @param other
      *   The tuple to add
      * @return
@@ -146,6 +147,17 @@ public class Tuple {
         );
     }
 
+    /**
+     * Creates a new tuple that is 'other' subtracted from 'this'.
+     * Subtracting two points gives a vector.
+     * Subtracting a vector from a point gives a point.
+     * Subtracting a point from a vector is illogical.
+     * 
+     * @param other
+     *   The other tuple.
+     * @return
+     *   A new tuple representing 'this' - 'other'.
+     */
     public Tuple subtract(Tuple other) {
         return new Tuple(
             this.x - other.x,
@@ -155,6 +167,12 @@ public class Tuple {
         );
     }
 
+    /**
+     * Creates a new tuple pointing in the opposite direction as 'this'.
+     * 
+     * @return
+     *     A tuple pointing in the opposite direction.
+     */
     public Tuple negate() {
         return new Tuple(
             -this.x,
@@ -164,6 +182,14 @@ public class Tuple {
         );
     }
 
+    /**
+     * Create's a scaled tuple.
+     * 
+     * @param value
+     *     The amount to scale the tuple up by.
+     * @return
+     *     A new tuple scaled by the value.
+     */
     public Tuple multiply(float value) {
         return new Tuple(
             value * this.x,
@@ -173,6 +199,14 @@ public class Tuple {
         );
     }
 
+    /**
+     * Create's a scaled tuple.
+     * 
+     * @param value
+     *     The amount to scale the tuple down by.
+     * @return
+     *     A new tuple scaled by the value.
+     */
     public Tuple divide(float value) {
         return new Tuple(
             this.x / value,
@@ -182,6 +216,12 @@ public class Tuple {
         );
     }
 
+    /**
+     * Calculates the size of 'this' using pythagoras theorem.
+     * 
+     * @return
+     *     The size of this tuple.
+     */
     public float magnitude() {
         return (float)Math.sqrt(
             (this.x * this.x) +
@@ -191,6 +231,12 @@ public class Tuple {
         );
     }
 
+    /**
+     * Create a new vector with a magnitude of one, pointing in the same direction as 'this'.
+     * 
+     * @return
+     *     Create a unit vector pointing in the same direction as 'this' vector.
+     */
     public Tuple normalize() {
         // if performance becomes an issue, you would use the fast inverse square root algorithm here
         float mag = magnitude();
@@ -202,6 +248,14 @@ public class Tuple {
         );
     }
 
+    /**
+     * A vector tuple operation. Calculates the cosine of the angle between 'this' vector and 'other'.
+     * 
+     * @param other
+     *     The other vector.
+     * @return
+     *     The dot product of 'this' and 'other'.
+     */
     public float dot(Tuple other) {
         return (this.x * other.x) +
                (this.y * other.y) +
@@ -209,6 +263,14 @@ public class Tuple {
                (this.w * other.w);
     }
 
+    /**
+     * Operation for vector tuples. creates a new vector that is orthoginal to 'this' and 'other'.
+     * 
+     * @param other
+     *     Another vector
+     * @return
+     *     A vector tuple orthogical to 'this' and 'other'.
+     */
     public Tuple cross(Tuple other) {
         return Tuple.makeVector(
             (this.y * other.z) - (this.z * other.y), 
