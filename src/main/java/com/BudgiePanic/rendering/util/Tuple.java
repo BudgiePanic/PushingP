@@ -34,6 +34,11 @@ public class Tuple {
     }
 
     /**
+     * Ready made exception for math methods.
+     */
+    private static IllegalArgumentException nullArgument = new IllegalArgumentException("Tuple math operation cannot accept null.");
+
+    /**
      * Factory method for making new points.
      * @param x
      *   horizontal axis
@@ -108,6 +113,7 @@ public class Tuple {
      * Copy constructor.
      */
     public Tuple(Tuple other){
+        if (other == null) throw new IllegalArgumentException("Cannot invoke copy constructor because 'other' is null");
         this.x = other.x;
         this.y = other.y;
         this.z = other.z;
@@ -139,6 +145,7 @@ public class Tuple {
      *   A new tuple that is the result of adding the two tupples together.
      */
     public Tuple add(Tuple other) {
+        if (other == null) throw nullArgument;
         return new Tuple(
             this.x + other.x,
             this.y + other.y,
@@ -159,6 +166,7 @@ public class Tuple {
      *   A new tuple representing 'this' - 'other'.
      */
     public Tuple subtract(Tuple other) {
+        if (other == null) throw nullArgument;
         return new Tuple(
             this.x - other.x,
             this.y - other.y,
@@ -257,6 +265,7 @@ public class Tuple {
      *     The dot product of 'this' and 'other'.
      */
     public float dot(Tuple other) {
+        if (other == null) throw nullArgument;
         return (this.x * other.x) +
                (this.y * other.y) +
                (this.z * other.z) +
@@ -272,6 +281,7 @@ public class Tuple {
      *     A vector tuple orthogical to 'this' and 'other'.
      */
     public Tuple cross(Tuple other) {
+        if (other == null) throw nullArgument;
         return Tuple.makeVector(
             (this.y * other.z) - (this.z * other.y), 
             (this.z * other.x) - (this.x * other.z), 
