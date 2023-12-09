@@ -80,12 +80,16 @@ public class TupleMathTest {
 
     @Test
     void testMultiply() {
-        throw new RuntimeException("test not implemented yet");
+        var result = new Tuple(1f, -2f, 3f, -4f).multiply(3.5f);
+        var expected = new Tuple(3.5f, -7f, 10.5f, -14f);
+        assertEquals(expected, result);
     }
 
     @Test
     void testDivide() {
-        throw new RuntimeException("test not implemented yet");
+        var result = new Tuple(1f, -2f, 3f, -4f).divide(2f);
+        var expected = new Tuple(0.5f, -1f, 1.5f, -2f);
+        assertEquals(expected, result);
     }
 
     @Test
@@ -130,18 +134,41 @@ public class TupleMathTest {
 
     @Test
     void testDotProduct() {
-        throw new RuntimeException("test not implemented yet");
+        var a = Tuple.makeVector(1f, 2f, 3f);
+        var b = Tuple.makeVector(2f, 3f, 4f);
+        var result = a.dot(b);
+        assertEquals(20f, result);
     }
 
     @Test
     void testCrossProduct() {
-        throw new RuntimeException("test not implemented yet");
+        var a = Tuple.makeVector(1f, 2f, 3f);
+        var b = Tuple.makeVector(2f, 3f, 4f);
+        var resultOne = a.cross(b);
+        var resultTwo = b.cross(a);
+        assertEquals(Tuple.makeVector(-1f, 2f, -1f), resultOne);
+        assertEquals(Tuple.makeVector(1f, -2f, 1f), resultTwo);
     }
 
     @Test
     void operationNullChecks() {
         // this test should check each applicable operation for precondition checking.
         // Invalid argument exceptions should be thrown instead of null ptr exceptions, to help with BLAME.
-        throw new RuntimeException("test not implemented yet");
+        assertThrows(IllegalArgumentException.class, ()->{
+            var dummy = new Tuple();
+            dummy.add(null);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            var dummy = new Tuple();
+            dummy.subtract(null);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            var dummy = new Tuple();
+            dummy.cross(null);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            var dummy = new Tuple();
+            dummy.dot(null);
+        });
     }
 }
