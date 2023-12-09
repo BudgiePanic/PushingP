@@ -138,39 +138,82 @@ public class Tuple {
      *   A new tuple that is the result of adding the two tupples together.
      */
     public Tuple add(Tuple other) {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        return new Tuple(
+            this.x + other.x,
+            this.y + other.y,
+            this.z + other.z,
+            this.w + other.w
+        );
     }
 
     public Tuple subtract(Tuple other) {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        return new Tuple(
+            this.x - other.x,
+            this.y - other.y,
+            this.z - other.z,
+            this.w - other.w
+        );
     }
 
     public Tuple negate() {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        return new Tuple(
+            -this.x,
+            -this.y,
+            -this.z,
+            -this.w
+        );
     }
 
     public Tuple multiply(float value) {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        return new Tuple(
+            value * this.x,
+            value * this.y,
+            value * this.z,
+            value * this.w
+        );
     }
 
     public Tuple divide(float value) {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        return new Tuple(
+            this.x / value,
+            this.y / value,
+            this.z / value,
+            this.w / value
+        );
     }
 
     public float magnitude() {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        return (float)Math.sqrt(
+            (this.x * this.x) +
+            (this.y * this.y) +
+            (this.z * this.z) +
+            (this.w * this.w) 
+        );
     }
 
     public Tuple normalize() {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        // if performance becomes an issue, you would use the fast inverse square root algorithm here
+        float mag = magnitude();
+        return new Tuple(
+            this.x / mag,
+            this.y / mag,
+            this.z / mag,
+            this.w / mag
+        );
     }
 
     public float dot(Tuple other) {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        return (this.x * other.x) +
+               (this.y * other.y) +
+               (this.z * other.z) +
+               (this.w * other.w);
     }
 
     public Tuple cross(Tuple other) {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        return Tuple.makeVector(
+            (this.y * other.z) - (this.z * other.y), 
+            (this.z * other.x) - (this.x * other.z), 
+            (this.x * other.y) - (this.y * other.x));
     }
 
     @Override
