@@ -20,9 +20,11 @@ public final class FloatHelp {
      *   -1 if b is larger than a.
      */
     public static int compareFloat(float a, float b){
-        // Uses 6 decimal places of precision for the check.
-        final float epsilon = 0.0000001f;
-        if (Math.abs(a - b) < epsilon) return 0;
+        // Uses 6 decimal places of precision for the check. 
+        // The debuggers says any more decimal places will get rounded off.
+        final float epsilon = 0.000001f;
+        float delta = (float) Math.abs(a - b);
+        if (delta < epsilon) return 0;
         if (a < b) return -1;
         return 1;
     }
