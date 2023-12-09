@@ -47,6 +47,16 @@ public class Color extends Tuple {
     }
 
     /**
+     * Copy constructor. Makes a color from a Tuple.
+     * 
+     * @param other
+     *     The tuple being copied.
+     */
+    public Color(Tuple other) {
+        super(other);
+    }
+
+    /**
      * Gets the amount of red in this color.
      * @return
      *     The amount of red.
@@ -80,6 +90,37 @@ public class Color extends Tuple {
      */
     public float getAlpha() {
         return this.w;
+    }
+
+    /**
+     * Add method override to maintain color type. 
+     * I have a feeling this set up is going to run the garbage collector hard.
+     */
+    public Color add(Tuple other) {
+        return new Color(super.add(other));
+    }
+
+    public Color subtract(Tuple other) {
+        return new Color(super.subtract(other));
+    }
+
+    public Color multiply(float value) {
+        return new Color(super.multiply(value));
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other){
+            return true;
+        }
+        if (other == null || this.getClass() != other.getClass()){
+            return false;
+        }
+        Color otherColor = (Color) other;
+        return compareFloat(this.getRed(), otherColor.getRed()) == 0 &&
+               compareFloat(this.getGreen(), otherColor.getGreen()) == 0 &&
+               compareFloat(this.getBlue(), otherColor.getBlue()) == 0; // &&
+               // compareFloat(this.getAlpha(), otherColor.getAlpha()); // Currently ignoring alpha at this stage.
     }
 
 }
