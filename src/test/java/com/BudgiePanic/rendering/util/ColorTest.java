@@ -40,4 +40,13 @@ public class ColorTest {
         var expected = new Color(0.4f, 0.6f, 0.8f);
         assertEquals(expected, result);
     }
+
+    @Test
+    void testColorColorMultiply() {
+        var c1 = new Color(1.0f, 0.2f, 0.4f);
+        var c2 = new Color(0.9f, 1.0f, 0.1f);
+        var result = c1.colorMul(c2);
+        var expected = new Color(0.9f, 0.2f, 0.04f);
+        assertEquals(expected, result);
+    }
 }
