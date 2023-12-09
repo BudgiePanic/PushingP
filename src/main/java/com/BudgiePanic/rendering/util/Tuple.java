@@ -124,14 +124,14 @@ public class Tuple {
      *  Checks if this tuple represents a vector (direction).
      */
     public boolean isVector(){
-        return this.w == 0f;
+        return compareFloat(this.w, 0f) == 0;
     }
 
     /**
      * Checks if this tuple represents a point in space (position).
      */
     public boolean isPoint(){
-        return this.w == 1f;
+        return compareFloat(this.w, 1f) == 0;
     }
 
     /**
