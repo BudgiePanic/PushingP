@@ -108,6 +108,22 @@ public class Color extends Tuple {
         return new Color(super.multiply(value));
     }
 
+    /**
+     * Component wise multiplication of color components.
+     * 
+     * @param other
+     *     The other color.
+     * @return
+     *     The Hadamard product of 'this' and 'other'.
+     */
+    public Color colorMul(Color other) {
+        return new Color(
+            this.getRed() * other.getRed(),
+            this.getGreen() * other.getGreen(),
+            this.getBlue() * other.getBlue()
+        );
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other){
