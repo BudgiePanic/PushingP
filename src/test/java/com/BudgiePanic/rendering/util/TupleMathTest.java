@@ -171,4 +171,16 @@ public class TupleMathTest {
             dummy.dot(null);
         });
     }
+
+    @Test
+    void testNearPoint() {
+        var a = new Tuple(0f, 0f, 0f, 1.0000001f);
+        assertTrue(a.isPoint());
+    }
+
+    @Test 
+    void testNearVector() {
+        var a = new Tuple(0f, 0f, 0f, 0.00000001f);
+        assertTrue(a.isVector());
+    }
 }
