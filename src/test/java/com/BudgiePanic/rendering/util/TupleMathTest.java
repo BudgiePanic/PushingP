@@ -174,7 +174,7 @@ public class TupleMathTest {
 
     @Test
     void testNearPoint() {
-        var a = new Tuple(0f, 0f, 0f, 1.0000001f);
+        var a = new Tuple(0f, 0f, 0f, 1.00000001f);
         assertTrue(a.isPoint());
     }
 
