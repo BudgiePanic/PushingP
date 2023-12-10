@@ -61,4 +61,34 @@ public class CanvasTest {
         });
     }
 
+    @Test
+    void testOutOfBoundsGet() {
+        // Test that illegal arg exception is thrown when going out of array bounds to help with BLAME.
+        Canvas canvas = new ArrayCanvas(10, 20);
+        // edge condition: column:width
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.getPixel(10, 19);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.getPixel(-1, 0);
+        });
+        // edge condition: row:height
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.getPixel(1, 20);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.getPixel(0, -1);
+        });
+        // edge condition, getters
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.getPixel(canvas.getWidth(), canvas.getHeight());
+        });
+        // pass conditions
+        assertDoesNotThrow(()->{
+            canvas.getPixel(0, 0);
+            canvas.getPixel(9, 19);
+            canvas.getPixel(canvas.getWidth() - 1, canvas.getHeight() - 1);
+        });
+    }
+
 }
