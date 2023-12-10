@@ -91,6 +91,53 @@ public class CanvasTest {
         });
     }
 
+    @Test
+    void testSize() {
+        Canvas canvas = new ArrayCanvas(10, 20);
+        assertEquals(10, canvas.getWidth());
+        assertEquals(20, canvas.getHeight());
+
+        assertEquals(9, canvas.getWidth() - 1);
+        assertEquals(19, canvas.getHeight() - 1);
+    }
+
+    @Test 
+    void testOutOfBoundsWrite() {
+        Canvas canvas = new ArrayCanvas(10, 20);
+        // invalid writes
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.writePixel(-1, 0, Colors.blue);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.writePixel(0, -1, Colors.blue);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.writePixel(0, 20, Colors.blue);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.writePixel(10, 0, Colors.blue);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.writePixel(canvas.getWidth(), 0, Colors.blue);
+        });
+        assertThrows(IllegalArgumentException.class, ()->{
+            canvas.writePixel(0, canvas.getWidth(), Colors.blue);
+        });     
+        // valid writes on boundary conditions
+        assertDoesNotThrow(() -> {
+            canvas.writePixel(0, 0, Colors.blue);
+        });
+        assertDoesNotThrow(()->{
+            canvas.writePixel(canvas.getWidth() - 1, canvas.getHeight() - 1, Colors.blue);
+        });
+        assertDoesNotThrow(()->{
+            canvas.writePixel(0, canvas.getHeight() - 1, Colors.blue);
+        });
+        assertDoesNotThrow(()->{
+            canvas.writePixel(canvas.getWidth() - 1, 0, Colors.blue);
+        });
+    }
+
     // TODO posssible future tests:
     //      check that the iterator works on 1 by 1 canvases
     //      test the copy constructor, make sure modifications aren't reflected in the other canvas.
