@@ -34,4 +34,31 @@ public class CanvasWriterTest {
         assertEquals("0 0 0 0 0 0 0 128 0 0 0 0 0 0 0", outputString.get(4));
         assertEquals("0 0 0 0 0 0 0 0 0 0 0 0 0 0 255", outputString.get(5));
     }
+
+    @Test
+    void testPPMPixelWriteTwo() {
+        var canvas = new ArrayCanvas(10, 2);
+        final Color c = new Color(1f, 0.8f, 0.6f);
+        canvas.writeAll((oldColor) -> {
+            return c;
+        });
+        var lines = CanvasWriter.canvasToPPMString(canvas);
+        assertEquals("255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204​", lines.get(3));
+        assertTrue(lines.get(3).length() <= 70);
+        assertEquals("153 255 204 153 255 204 153 255 204 153 255 204 153​", lines.get(4));
+        assertTrue(lines.get(4).length() <= 70);
+        assertEquals("255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204​", lines.get(5));
+        assertTrue(lines.get(5).length() <= 70);
+        assertEquals("153 255 204 153 255 204 153 255 204 153 255 204 153​", lines.get(6));
+        assertTrue(lines.get(6).length() <= 70);
+    }
+
+    @Test
+    void testPPMnewLineTerminate() {
+        // depending on how File IO works, this unit test might not be needed.
+        var canvas = new ArrayCanvas(5, 3);
+        var lines = CanvasWriter.canvasToPPMString(canvas);
+        assertTrue(lines.get(lines.size() - 1).length() == 1);
+        assertEquals('\n', lines.get(lines.size() - 1).charAt(0));
+    }
 }
