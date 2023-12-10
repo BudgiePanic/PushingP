@@ -89,11 +89,23 @@ public final class ArrayCanvas implements Canvas {
         return new ArrayCanvasIterator();
     }
 
+    /**
+     * Check for array boundary conditions. Throws a runtime exception if the provided position is invalid.
+     *
+     * @param column
+     *     The column to check
+     * @param row
+     *     The row to check
+     */
+    private void boundsCheck(int column, int row) {
+        if (column >= getWidth() || column < 0) throw new IllegalArgumentException("Invalid column for canvas of width " + getWidth() + " ->" + column);
+        if (row >= getHeight() || row < 0) throw new IllegalArgumentException("Invalid row for canvas of height " + getHeight() + " ->" + row);
+    } 
+
     @Override
     public Color getPixel(int column, int row) {
         // precondition checks: bounds
-        if (column >= getWidth() || column < 0) throw new IllegalArgumentException("Invalid column for canvas of width " + getWidth() + " ->" + column);
-        if (row >= getHeight() || row < 0) throw new IllegalArgumentException("Invalid row for canvas of height " + getHeight() + " ->" + row);
+        boundsCheck(column, row);
 
         var pixel = colors[column][row];
         
@@ -105,7 +117,9 @@ public final class ArrayCanvas implements Canvas {
 
     @Override
     public void writePixel(int column, int row, Color pixel) {
+        // precondition checks
         if (pixel == null) throw new IllegalArgumentException("cannot write null pixel to canvas");
+        boundsCheck(column, row);
 
         colors[column][row] = pixel;
     }
