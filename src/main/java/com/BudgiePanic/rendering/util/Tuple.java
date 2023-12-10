@@ -65,7 +65,7 @@ public class Tuple {
     /**
      * The horizontal component.
      */
-    float x, 
+    final float x, 
     /**
      * The vertical component
      */
@@ -155,6 +155,43 @@ public class Tuple {
     }
 
     /**
+     * Add overload. Creates a new Tuple that is 'nudged' [x,y,z] away from 'this'.
+     * @param x
+     *     The x displacement.
+     * @param y
+     *     The y displacement.
+     * @param z
+     *     The z displacement.
+     * @return
+     *     A new tuple displaced by [x,y,z] from 'this'.
+     */
+    public Tuple add(float x, float y, float z) {
+        return new Tuple(
+            this.x + x,
+            this.y + y,
+            this.z + z,
+            this.w
+        );
+    }
+
+    /**
+     * Add overload
+     * @param x
+     * @param y
+     * @param z
+     * @param w
+     * @return
+     */
+    public Tuple add(float x, float y, float z, float w) {
+        return new Tuple(
+            this.x + x,
+            this.y + y,
+            this.z + z,
+            this.w + w
+        );
+    }
+
+    /**
      * Creates a new tuple that is 'other' subtracted from 'this'.
      * Subtracting two points gives a vector.
      * Subtracting a vector from a point gives a point.
@@ -172,6 +209,39 @@ public class Tuple {
             this.y - other.y,
             this.z - other.z,
             this.w - other.w
+        );
+    }
+
+    /**
+     * subtract overload
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
+    public Tuple subtract(float x, float y, float z) {
+        return new Tuple(
+            this.x - x,
+            this.y - y,
+            this.z - z,
+            this.w
+        );
+    }
+
+    /**
+     * subtract overload
+     * @param x
+     * @param y
+     * @param z
+     * @param w
+     * @return
+     */
+    public Tuple subtract(float x, float y, float z, float w) {
+        return new Tuple(
+            this.x - x,
+            this.y - y,
+            this.z - z,
+            this.w - w
         );
     }
 
