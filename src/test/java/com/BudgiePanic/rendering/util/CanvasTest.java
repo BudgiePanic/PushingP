@@ -121,7 +121,7 @@ public class CanvasTest {
             canvas.writePixel(canvas.getWidth(), 0, Colors.blue);
         });
         assertThrows(IllegalArgumentException.class, ()->{
-            canvas.writePixel(0, canvas.getWidth(), Colors.blue);
+            canvas.writePixel(0, canvas.getHeight(), Colors.blue);
         });     
         // valid writes on boundary conditions
         assertDoesNotThrow(() -> {
