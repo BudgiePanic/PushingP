@@ -106,6 +106,8 @@ public final class ArrayCanvas implements Canvas {
     @Override
     public void writePixel(int column, int row, Color pixel) {
         if (pixel == null) throw new IllegalArgumentException("cannot write null pixel to canvas");
+
+        colors[column][row] = pixel;
     }
 
     @Override
