@@ -108,6 +108,22 @@ public class Color extends Tuple {
         return new Color(super.multiply(value));
     }
 
+    public Color add(float red, float green, float blue) {
+        return new Color(super.add(red, green, blue));
+    }
+
+    public Color add(float red, float green, float blue, float alpha) {
+        return new Color(super.add(red, green, blue, alpha));
+    }
+
+    public Color subtract(float red, float green, float blue) {
+        return new Color(super.subtract(red, green, blue));
+    }
+
+    public Color subtract(float red, float green, float blue, float alpha) {
+        return new Color(super.subtract(red, green, blue, alpha));
+    }
+
     /**
      * Component wise multiplication of color components.
      * 
