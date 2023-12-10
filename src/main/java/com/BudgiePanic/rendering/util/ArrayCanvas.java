@@ -147,7 +147,7 @@ public final class ArrayCanvas implements Canvas {
     public void writeAll(Function<? super Color, ? super Color> mappingFunction) {
         // NOTE: not sure if there is a way to use the iterator here to simplify the code
         //       since we are mutating the arrays.
-        for (int row = 0; row < getWidth(); row++) {
+        for (int row = 0; row < getHeight(); row++) {
             for (int column = 0; column < getWidth();  column++) {
                 var currentColor = colors[column][row];
                 var newColor = (Color) mappingFunction.apply(currentColor);
