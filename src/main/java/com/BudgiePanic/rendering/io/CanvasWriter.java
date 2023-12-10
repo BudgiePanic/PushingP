@@ -60,7 +60,7 @@ public final class CanvasWriter {
         final float max = 1f;
         final float scale = 255f;
         final int maxLineLength = 70;
-        int colorDiscrete = (int) (scale * Math.clamp(color, min, max));
+        int colorDiscrete = (int) Math.ceil((scale * Math.clamp(color, min, max)));
         var strColor = String.format(" %d", colorDiscrete);
         var size = strColor.length();
         if ((builder.length() - 1) + size > maxLineLength) { // (length - 1) because we will always remove the space at position 0
