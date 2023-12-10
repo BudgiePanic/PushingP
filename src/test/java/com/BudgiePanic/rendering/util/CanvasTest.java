@@ -91,4 +91,8 @@ public class CanvasTest {
         });
     }
 
+    // TODO posssible future tests:
+    //      check that the iterator works on 1 by 1 canvases
+    //      test the copy constructor, make sure modifications aren't reflected in the other canvas.
+
 }
