@@ -43,13 +43,14 @@ public class CanvasWriterTest {
             return c;
         });
         var lines = CanvasWriter.canvasToPPMString(canvas);
-        assertEquals("255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204​", lines.get(3));
+        assertEquals("255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204", lines.get(3));
         assertTrue(lines.get(3).length() <= 70);
-        assertEquals("153 255 204 153 255 204 153 255 204 153 255 204 153​", lines.get(4));
+        assertTrue(lines.get(3).length() == 67);
+        assertEquals("153 255 204 153 255 204 153 255 204 153 255 204 153", lines.get(4));
         assertTrue(lines.get(4).length() <= 70);
-        assertEquals("255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204​", lines.get(5));
+        assertEquals("255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204", lines.get(5));
         assertTrue(lines.get(5).length() <= 70);
-        assertEquals("153 255 204 153 255 204 153 255 204 153 255 204 153​", lines.get(6));
+        assertEquals("153 255 204 153 255 204 153 255 204 153 255 204 153", lines.get(6));
         assertTrue(lines.get(6).length() <= 70);
     }
 
