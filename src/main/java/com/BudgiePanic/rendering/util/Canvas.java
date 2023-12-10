@@ -33,6 +33,30 @@ public interface Canvas extends Iterable<Color> {
     Color getPixel(int column, int row);
 
     /**
+     * Replace the pixel at (x,y) with pixel.
+     *
+     * @param column
+     *     The column of the pixel being replaced.
+     * @param row
+     *     The row of the pixel being replaced.
+     * @param pixel
+     *     The new pixel to replace the current pixel
+     */
+    void writePixel(int column, int row, Color pixel);
+
+    /**
+     * Replace the pixel at (column:x, row:y) with a new pixel created by the mapping function.
+     *
+     * @param column
+     *     The column of the pixel being replaced.
+     * @param row
+     *     The row of the pixel being replaced.
+     * @param mappingFunction
+     *     A function that will convert the pixel to a new pixel.
+     */
+    void writePixel(int column, int row, Function<? super Color, ? super Color> mappingFunction);
+
+    /**
      * Get the number of columns in the canvas.
      * 
      * @return
@@ -55,5 +79,5 @@ public interface Canvas extends Iterable<Color> {
      * @param mappingFunction
      *     A function that will convert each pixel to a new pixel.
      */
-    void recolor(Function<? super Color, ? super Color> mappingFunction);
+    void writeAll(Function<? super Color, ? super Color> mappingFunction);
 }
