@@ -32,6 +32,7 @@ public final class CanvasWriter {
         List<String> result = new LinkedList<>();
         result.addAll(header);
         result.addAll(pixels);
+        result.add("\n");
         return result;
     }
 
@@ -63,10 +64,12 @@ public final class CanvasWriter {
         int colorDiscrete = (int) Math.ceil((scale * Math.clamp(color, min, max)));
         var strColor = String.format(" %d", colorDiscrete);
         var size = strColor.length();
-        if ((builder.length() - 1) + size > maxLineLength) { // (length - 1) because we will always remove the space at position 0
+        if ((builder.length()) + size > maxLineLength) {
             builder.deleteCharAt(0); // remove space at position 0
             lines.add(builder.toString());
-            return new StringBuilder();
+            var newSB = new StringBuilder();
+            newSB.append(strColor);
+            return newSB;
         } else {
             builder.append(strColor);
             return builder;
