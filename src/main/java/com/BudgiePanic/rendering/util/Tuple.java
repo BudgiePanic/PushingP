@@ -65,7 +65,7 @@ public class Tuple {
     /**
      * The horizontal component.
      */
-    final float x, 
+    public final float x, 
     /**
      * The vertical component
      */
