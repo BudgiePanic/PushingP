@@ -32,8 +32,7 @@ public class CanvasTest {
     void testRemapSingle(){
         Canvas canvas = new ArrayCanvas(10, 20);
         canvas.writePixel(2, 3, (currentColor) -> {
-            currentColor.x = 1.0f;
-            return currentColor;
+            return currentColor.add(1f, 0f, 0f);
         });
         var result = canvas.getPixel(2,3);
         var expected = Colors.red;
