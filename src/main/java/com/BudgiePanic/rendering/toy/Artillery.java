@@ -55,6 +55,7 @@ public final class Artillery implements Runnable{
         final int canvasHeight = canvas.getHeight();
         final int canvasWidth = canvas.getWidth();
         int iterations = 0;
+        int pixelsWritten = 0;
         while (proj.y > 0f && iterations < maxIterations) {
             // Write the position of the projectile to the canvas
             int projX = (int) proj.x;
@@ -66,6 +67,7 @@ public final class Artillery implements Runnable{
                 projY < canvasHeight
             ) {
                 canvas.writePixel(projX, projY, projColor);
+                pixelsWritten++;
             }
             // run the simulation by one tick
             tick(0.1f);
@@ -79,5 +81,6 @@ public final class Artillery implements Runnable{
         } catch (IOException e) {
             System.err.println(e);
         }
+        System.out.println(String.format("Done, wrote %d pixels to canvas.", pixelsWritten));
     }  
 }
