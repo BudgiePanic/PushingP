@@ -26,7 +26,7 @@ public final class CanvasWriter {
      * @return
      *     Lines of text representing the canvas in PPM format.
      */
-    static List<String> canvasToPPMString(Canvas canvas) {
+    public static List<String> canvasToPPMString(Canvas canvas) {
         var header = buildPPMHeader(canvas);
         var pixels = writePixelsToPPM(canvas);
         List<String> result = new LinkedList<>();
