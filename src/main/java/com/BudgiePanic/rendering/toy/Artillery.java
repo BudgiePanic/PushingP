@@ -46,7 +46,7 @@ public final class Artillery implements Runnable{
      */
     private void tick(float delta) {
         proj = proj.add(vel.multiply(delta));
-        vel = vel.add(gravity).add(wind);
+        vel = vel.add(gravity.multiply(delta)).add(wind.multiply(delta));
     }
 
     @Override
