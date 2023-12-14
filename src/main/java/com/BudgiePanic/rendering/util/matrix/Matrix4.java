@@ -137,4 +137,6 @@ public final class Matrix4 extends Matrix {
         Arrays.toString(matrix[2]),
         Arrays.toString(matrix[3]));
     }
+
+    // TODO override the equals method
 }
