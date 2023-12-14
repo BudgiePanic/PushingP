@@ -8,15 +8,12 @@ import java.util.Arrays;
  * 
  * @author BudgiePanic
  */
-public final class Matrix4 {
-    
+public final class Matrix4 extends Matrix {
+
     /**
-     * Checked exception for malformed 4 by 4 matrices.
+     * The dimension of the array
      */
-    public final static class MatrixShapeException extends Exception {
-        public MatrixShapeException() { super(); }
-        public MatrixShapeException(String message) { super(message); }
-    }
+    private static final int dimension = 4;
 
     /**
      * Build a matrix by manually specifying values.
@@ -41,7 +38,7 @@ public final class Matrix4 {
         float _32,
         float _33
     ){
-        final float[][] matrix = new float[4][4];
+        final float[][] matrix = new float[dimension][dimension];
 
         matrix[0][0] = _00; matrix[1][0] = _10; matrix[2][0] = _20; matrix[3][0] = _30;
         matrix[0][1] = _01; matrix[1][1] = _11; matrix[2][1] = _21; matrix[3][1] = _31;
@@ -51,8 +48,13 @@ public final class Matrix4 {
         return new Matrix4(matrix);
     }
 
+    /**
+     * Help method. Check internal float arrays are the correct dimension and non null.
+     * @param item
+     *   The internal array to check.
+     */
     private static void checkSize(float[] item){
-        if (item == null || item.length != 4) throw new IllegalArgumentException("matrix elements must be length 4 and not be null.");
+        if (item == null || item.length != dimension) throw new IllegalArgumentException("matrix elements must be length 4 and not be null.");
     }
 
     /**
@@ -65,7 +67,7 @@ public final class Matrix4 {
      */
     public static Matrix4 buildMatrixRow(final float[] row0, final float[] row1, final float[] row2, final float[] row3) {
         checkSize(row0); checkSize(row1); checkSize(row2); checkSize(row3);
-        float[][] matrix = new float[4][];
+        float[][] matrix = new float[dimension][];
         matrix[0] = row0;
         matrix[1] = row1;
         matrix[2] = row2;
@@ -83,9 +85,9 @@ public final class Matrix4 {
      */
     public static Matrix4 buildMatrixColumn(final float[] column0, final float[] column1, final float[] column2, final float[] column3){
         checkSize(column0); checkSize(column1); checkSize(column2); checkSize(column3);
-        float[][] matrix = new float[4][4];
+        float[][] matrix = new float[dimension][dimension];
 
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < dimension; i++){
             matrix[i][0] = column0[i];
             matrix[i][1] = column1[i];
             matrix[i][2] = column2[i];
@@ -95,29 +97,30 @@ public final class Matrix4 {
         return new Matrix4(matrix);
     }
 
-    /**
-     * Matrix values.
-     * Even though this array is final, the internal elements can still be assigned because java has no mechianism to make arrays immutable without 
-     * wrapper methods or defensive cloning.
-     * For now (and for performance reasons) we will just have to trust that none of the other code will be tamporing with our matrices :)
-     */
-    public final float[][] matrix;
 
+    /**
+     * Private constructor.
+     * 
+     * Private to try and help reduce aliasing of internal Arrays between matrices, because they are mutable.
+     * 
+     * @param matrix
+     *     The internal matrix structure.
+     */
     private Matrix4(final float[][] matrix){
-        this.matrix = matrix;
+        super(matrix);
     }
 
-    /**
-     * Check that this matrix is in 4 by 4 shape.
-     * 
-     * @throws MatrixShapeException
-     *     thrown if the matrix has a non 4 by 4 shape, including if a row is null.
-     */
+    @Override
     public void validate() throws MatrixShapeException {
-        if (this.matrix[0] == null || this.matrix[0].length != 4) throw new MatrixShapeException("matrix row 0 was malformed."); 
-        if (this.matrix[1] == null || this.matrix[1].length != 4) throw new MatrixShapeException("matrix row 1 was malformed."); 
-        if (this.matrix[2] == null || this.matrix[2].length != 4) throw new MatrixShapeException("matrix row 2 was malformed."); 
-        if (this.matrix[3] == null || this.matrix[3].length != 4) throw new MatrixShapeException("matrix row 3 was malformed."); 
+        if (this.matrix[0] == null || this.matrix[0].length != dimension) throw new MatrixShapeException("matrix row 0 was malformed."); 
+        if (this.matrix[1] == null || this.matrix[1].length != dimension) throw new MatrixShapeException("matrix row 1 was malformed."); 
+        if (this.matrix[2] == null || this.matrix[2].length != dimension) throw new MatrixShapeException("matrix row 2 was malformed."); 
+        if (this.matrix[3] == null || this.matrix[3].length != dimension) throw new MatrixShapeException("matrix row 3 was malformed."); 
+    }
+
+    @Override
+    public int getDimension() {
+        return dimension;
     }
 
     @Override
