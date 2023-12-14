@@ -1,4 +1,4 @@
-package com.BudgiePanic.rendering.util;
+package com.BudgiePanic.rendering.util.matrix;
 
 import java.util.Arrays;
 

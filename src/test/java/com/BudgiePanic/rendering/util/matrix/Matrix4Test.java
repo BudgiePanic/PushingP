@@ -1,4 +1,4 @@
-package com.BudgiePanic.rendering.util;
+package com.BudgiePanic.rendering.util.matrix;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
