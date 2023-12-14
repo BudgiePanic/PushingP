@@ -1,0 +1,45 @@
+package com.BudgiePanic.rendering.util;
+
+/**
+ * Top level type for matrices to capture common operations.
+ * 
+ * @author BudgiePanic
+ */
+public abstract class Matrix {
+
+    /**
+     * Checked exception for malformed 4 by 4 matrices.
+     */
+    public final static class MatrixShapeException extends Exception {
+        public MatrixShapeException() { super(); }
+        public MatrixShapeException(String message) { super(message); }
+    }
+
+    /**
+     * Matrix values.
+     * Even though this array is final, the internal elements can still be assigned because java has no mechianism to make arrays immutable without 
+     * wrapper methods or defensive cloning.
+     * For now (and for performance reasons) we will just have to trust that none of the other code will be tamporing with our matrices :)
+     */
+    public final float[][] matrix;
+
+    protected Matrix(final float[][] matrix){
+        this.matrix = matrix;
+    }
+
+    /**
+     * Check that this matrix is in getDimension() by getDimension().
+     * 
+     * @throws MatrixShapeException
+     *     thrown if the matrix has a non getDimension() by getDimension() shape, including if a row is null.
+     */
+    public abstract void validate() throws MatrixShapeException;
+
+    /**
+     * Get the dimension of this array
+     *
+     * @return
+     *     The dimension of the array.
+     */
+    public abstract int getDimension();
+}
