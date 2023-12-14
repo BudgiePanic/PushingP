@@ -112,6 +112,7 @@ public final class Matrix4 extends Matrix {
 
     @Override
     public void validate() throws MatrixShapeException {
+        if (this.matrix == null || this.matrix.length != dimension) throw new MatrixShapeException("matrix does not have 4 rows");
         if (this.matrix[0] == null || this.matrix[0].length != dimension) throw new MatrixShapeException("matrix row 0 was malformed."); 
         if (this.matrix[1] == null || this.matrix[1].length != dimension) throw new MatrixShapeException("matrix row 1 was malformed."); 
         if (this.matrix[2] == null || this.matrix[2].length != dimension) throw new MatrixShapeException("matrix row 2 was malformed."); 
