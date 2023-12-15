@@ -91,6 +91,21 @@ public class Matrix4Test {
         assertNotEquals(mat1, mat2);
     }
 
+    @Test 
+    void testMat4EqualsNearMiss() {
+        var mat1 = Matrix4.buildMatrix(
+            1.000001f, 2f, 3f, 4f,
+            5f, 6f, 7f, 8f,
+            9f, 10f, 11f, 12f,
+            13f, 14f, 15f, 16f);
+        var mat2 = Matrix4.buildMatrix(
+            1f, 2f, 3f, 4f,
+            5f, 6f, 7f, 8f,
+            9f, 10f, 11f, 12f,
+            13f, 14f, 15f, 16f);
+        assertEquals(mat1, mat2);
+    }
+
     @Test
     void testMat4Multiply() {
         var mat1 = Matrix4.buildMatrix(
