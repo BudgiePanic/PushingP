@@ -110,6 +110,31 @@ public final class Matrix4 extends Matrix {
         super(matrix);
     }
 
+    /**
+     * Mulitply this matrix4 with another matrix4.
+     * Creates a new matrix for the operation, leaving 'this' unmodified.
+     * 
+     * @param other
+     *   The matrix to multiply with 'this'.
+     * @return
+     *   A new matrix 'this' * other.
+     */
+    public Matrix4 multiply(Matrix4 other) {
+        final float[][] matrix = new float[dimension][dimension];
+
+        for (int row = 0; row < dimension; row++) {
+            for (int column = 0; column < dimension; column++) {
+                matrix[row][column] = 
+                    this.matrix[row][0] * other.matrix[0][column] +
+                    this.matrix[row][1] * other.matrix[1][column] +
+                    this.matrix[row][2] * other.matrix[2][column] +
+                    this.matrix[row][3] * other.matrix[3][column];
+            }
+        }
+
+        return new Matrix4(matrix);
+    }
+
     @Override
     public void validate() throws MatrixShapeException {
         if (this.matrix == null || this.matrix.length != dimension) throw new MatrixShapeException("matrix does not have 4 rows");
