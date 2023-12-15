@@ -90,4 +90,32 @@ public class Matrix4Test {
             130f, 140f, 150f, 160f);
         assertNotEquals(mat1, mat2);
     }
+
+    @Test
+    void testMat4Multiply() {
+        var mat1 = Matrix4.buildMatrix(
+            1f, 2f, 3f, 4f,
+            5f, 6f, 7f, 8f,
+            9f, 10f, 11f, 12f,
+            13f, 14f, 15f, 16f
+        );
+
+        var mat2 = Matrix4.buildMatrix(
+            -2f, 1f, 2f, 3f,
+            3f, 2f, 1f, -1f,
+            4f, 3f, 6f, 5f,
+            1f, 2f, 7f, 8f
+        );
+
+        var result = mat1.multiply(mat2);
+
+        var expected = Matrix4.buildMatrix(
+            20f, 22f, 50f, 48f,
+            44f, 54f, 114f, 108f,
+            40f, 58f, 110f, 102f,
+            16f, 26f, 46f, 42f
+        );
+
+        assertEquals(expected, result);
+    }
 }

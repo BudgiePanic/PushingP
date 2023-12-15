@@ -138,7 +138,6 @@ public final class Matrix4 extends Matrix {
         Arrays.toString(matrix[3]));
     }
 
-    // TODO override the equals method
     @Override
     public boolean equals(Object other) {
         if (this == other ) return true;
