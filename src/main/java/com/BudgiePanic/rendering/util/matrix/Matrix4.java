@@ -139,4 +139,16 @@ public final class Matrix4 extends Matrix {
     }
 
     // TODO override the equals method
+    @Override
+    public boolean equals(Object other) {
+        if (this == other ) return true;
+        if (other == null || other.getClass() != this.getClass()) return false;
+        var mat4 = (Matrix4) other;
+        for (int row = 0; row < dimension; row++) {
+            if (!Arrays.equals(this.matrix[row], mat4.matrix[row])) return false;
+        }
+        return true;
+    }
+
 }
+

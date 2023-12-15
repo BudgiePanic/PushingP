@@ -104,6 +104,15 @@ public final class Matrix2 extends Matrix {
         Arrays.toString(matrix[1]));
     }
     
-    // TODO override the equals method
+    @Override
+    public boolean equals(Object other) {
+        if (this == other ) return true;
+        if (other == null || other.getClass() != this.getClass()) return false;
+        var mat2 = (Matrix2) other;
+        for (int row = 0; row < dimension; row++) {
+            if (!Arrays.equals(this.matrix[row], mat2.matrix[row])) return false;
+        }
+        return true;
+    }
 
 }
