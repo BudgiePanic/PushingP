@@ -68,4 +68,26 @@ public class Matrix4Test {
         var expected = "[[1.0, 2.0, 3.0, 4.0], [5.5, 6.5, 7.5, 8.5], [9.0, 10.0, 11.0, 12.0], [13.5, 14.5, 15.5, 16.5]]";
         assertEquals(expected, matString);
     }
+
+    @Test
+    void testMat4Equals() {
+        var mat1 = Matrix4.buildMatrix(
+            1f, 2f, 3f, 4f,
+            5f, 6f, 7f, 8f,
+            9f, 10f, 11f, 12f,
+            13f, 14f, 15f, 16f);
+        var mat2 = Matrix4.buildMatrix(
+            1f, 2f, 3f, 4f,
+            5f, 6f, 7f, 8f,
+            9f, 10f, 11f, 12f,
+            13f, 14f, 15f, 16f);
+        assertEquals(mat1, mat2);
+
+        mat2 = Matrix4.buildMatrix(
+            10f, 20f, 30f, 40f,
+            50f, 60f, 70f, 80f,
+            90f, 100f, 110f, 120f,
+            130f, 140f, 150f, 160f);
+        assertNotEquals(mat1, mat2);
+    }
 }

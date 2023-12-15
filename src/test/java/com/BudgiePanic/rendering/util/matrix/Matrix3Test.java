@@ -19,4 +19,23 @@ public class Matrix3Test {
     }
 
     // TODO write additional tests for the row and column constructors
+
+    @Test
+    void testMat3Equals() {
+        var mat1 = Matrix3.buildMatrix(
+            1f, 2f, 3f, 
+            4f, 5f, 6f,
+            7f, 8f, 9f);
+        var mat2 = Matrix3.buildMatrix(
+            1f, 2f, 3f,
+            4f, 5f, 6f,
+            7f, 8f, 9f);
+        assertEquals(mat1, mat2);
+
+        mat2 = Matrix3.buildMatrix(
+            10f, 20f, 30f,
+            40f, 50f, 60f,
+            70f, 80f, 90f);
+        assertNotEquals(mat1, mat2);
+    }
 }

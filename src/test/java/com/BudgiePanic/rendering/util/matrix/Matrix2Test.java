@@ -19,4 +19,20 @@ public class Matrix2Test {
     }
 
     // TODO write additional tests for the row and column constructors
+
+    @Test
+    void testMat2Equals() {
+        var mat1 = Matrix2.buildMatrix(
+            1f, 2f,
+            3f, 4f);
+        var mat2 = Matrix2.buildMatrix(
+            1f, 2f,
+            3f, 4f);
+        assertEquals(mat1, mat2);
+
+        mat2 = Matrix2.buildMatrix(
+            10f, 20f,
+            30f, 40f);
+        assertNotEquals(mat1, mat2);
+    }
 }
