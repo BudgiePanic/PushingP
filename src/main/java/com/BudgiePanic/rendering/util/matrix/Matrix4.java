@@ -4,6 +4,8 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 import java.util.Arrays;
 
+import com.BudgiePanic.rendering.util.Tuple;
+
 /**
  * A four by four matrix with associated mathematical operations.
  * row, column
@@ -135,6 +137,22 @@ public final class Matrix4 extends Matrix {
         }
 
         return new Matrix4(matrix);
+    }
+
+    /**
+     * Multiply a tuple by 'this' matrix.
+     * 
+     * @param tuple
+     *   The tuple to multiply.
+     * @return
+     *   A new tuple: tuple * 'this'.
+     */
+    public Tuple multiply(Tuple tuple) {
+        float a = (tuple.x * this.matrix[0][0]) + (tuple.y * this.matrix[0][1]) + (tuple.z * this.matrix[0][2]) + (tuple.w * this.matrix[0][3]);
+        float b = (tuple.x * this.matrix[1][0]) + (tuple.y * this.matrix[1][1]) + (tuple.z * this.matrix[1][2]) + (tuple.w * this.matrix[1][3]);
+        float c = (tuple.x * this.matrix[2][0]) + (tuple.y * this.matrix[2][1]) + (tuple.z * this.matrix[2][2]) + (tuple.w * this.matrix[2][3]);
+        float d = (tuple.x * this.matrix[3][0]) + (tuple.y * this.matrix[3][1]) + (tuple.z * this.matrix[3][2]) + (tuple.w * this.matrix[3][3]);
+        return new Tuple(a, b, c, d);
     }
 
     @Override
