@@ -101,6 +101,12 @@ public final class Matrix4 extends Matrix {
         return new Matrix4(matrix);
     }
 
+    /**
+     * Returns a new Identity Matrix.
+     *
+     * @return
+     *     The identity matrix.
+     */
     public static Matrix4 identity() {
         return buildMatrixRow(
             new float[] {1f, 0f, 0f, 0f},
@@ -161,6 +167,20 @@ public final class Matrix4 extends Matrix {
         float c = (tuple.x * this.matrix[2][0]) + (tuple.y * this.matrix[2][1]) + (tuple.z * this.matrix[2][2]) + (tuple.w * this.matrix[2][3]);
         float d = (tuple.x * this.matrix[3][0]) + (tuple.y * this.matrix[3][1]) + (tuple.z * this.matrix[3][2]) + (tuple.w * this.matrix[3][3]);
         return new Tuple(a, b, c, d);
+    }
+
+    /**
+     * Creates a new matrix and writes 'this' matrice's transpose to it.
+     *
+     * @return
+     *   The transposition of this matrix.
+     */
+    public Matrix4 transpose() {
+        return buildMatrixColumn(
+            Arrays.copyOf(matrix[0], dimension),
+            Arrays.copyOf(matrix[1], dimension),
+            Arrays.copyOf(matrix[2], dimension),
+            Arrays.copyOf(matrix[3], dimension));
     }
 
     @Override
