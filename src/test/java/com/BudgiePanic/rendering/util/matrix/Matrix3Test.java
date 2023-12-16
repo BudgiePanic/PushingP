@@ -50,4 +50,16 @@ public class Matrix3Test {
         var expected = Matrix2.buildMatrix(-3, 2, 0, 6);
         assertEquals(expected, result);
     }
+
+    @Test
+    void testM3Minors() {
+        var mat = Matrix3.buildMatrix(
+            3, 5, 0, 
+            2, -1, -7, 
+            6, -1, 5
+        );
+        var result = mat.getMinor(1, 0);
+        var expected = 25f;
+        assertEquals(0, compareFloat(expected, result));
+    }
 }
