@@ -50,4 +50,12 @@ public abstract class Matrix {
      *   The determinant of the matrix.
      */
     public abstract float getDeterminant();
+
+    /**
+     * 
+     * @param row
+     * @param column
+     * @return
+     */
+    public abstract Matrix getSubMatrix(int row, int column);
 }
