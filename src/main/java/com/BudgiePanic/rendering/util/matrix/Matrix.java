@@ -42,4 +42,12 @@ public abstract class Matrix {
      *     The dimension of the array.
      */
     public abstract int getDimension();
+
+    /**
+     * Computes the determinant for this matrix.
+     *
+     * @return
+     *   The determinant of the matrix.
+     */
+    public abstract float getDeterminant();
 }
