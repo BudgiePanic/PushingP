@@ -174,4 +174,15 @@ public class Matrix4Test {
 
         assertEquals(expected, result);
     }
+
+    @Test
+    void testMat4TupleIdentity(){
+        var mat = Matrix4.identity();
+        var tuple = new Tuple(1f, 2f, 3f, 4f);
+        
+        var result = mat.multiply(tuple);
+        var expected = new Tuple(1f, 2f, 3f, 4f);
+
+        assertEquals(expected, result);
+    }
 }
