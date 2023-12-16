@@ -185,4 +185,32 @@ public class Matrix4Test {
 
         assertEquals(expected, result);
     }
+
+    @Test
+    void testMat4Transpose() {
+        var mat = Matrix4.buildMatrix(
+            0f, 9f, 3f, 0f, 
+            9f, 8f, 0f, 8f, 
+            1f, 8f, 5f, 3f,
+            0f, 0f, 5f, 8f);
+        var result = mat.transpose();
+        var expected = Matrix4.buildMatrix(
+            0f, 9f, 1f, 0f, 
+            9f, 8f, 8f, 0f, 
+            3f, 0f, 5f, 5f,
+            0f, 8f, 3f, 8f);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testMat4IdentityTranspose() {
+        var mat = Matrix4.identity();
+        var result = mat.transpose();
+        var expected = Matrix4.buildMatrix(
+            1, 0, 0, 0, 
+            0, 1, 0, 0, 
+            0, 0, 1, 0,
+            0, 0, 0, 1);
+        assertEquals(expected, result);
+    }
 }
