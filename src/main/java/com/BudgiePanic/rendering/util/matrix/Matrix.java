@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.matrix;
 
+import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
+
 /**
  * Top level type for matrices to capture common operations.
  * 
@@ -91,5 +93,15 @@ public abstract class Matrix {
             minor *= -1f;
         }
         return minor;
+    }
+
+    /**
+     * Computer whether this matrix can be inverted.
+     *
+     * @return
+     *   true if the matrix is invertible.
+     */
+    public boolean isInvertible() {
+        return compareFloat(0, getDeterminant()) != 0;
     }
 }
