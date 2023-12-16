@@ -75,4 +75,17 @@ public class Matrix3Test {
         assertEquals(0, compareFloat(25f, mat.getMinor(1, 0)));
         assertEquals(0, compareFloat(-25f, mat.getCofactor(1, 0)));
     }
+
+    @Test
+    void testM3Deteminant() {
+        var mat = Matrix3.buildMatrix(
+            1, 2, 6, 
+            -5, 8, -4, 
+            2, 6, 4
+        );
+        assertEquals(0, compareFloat(56f, mat.getCofactor(0, 0)));
+        assertEquals(0, compareFloat(12f, mat.getCofactor(0, 1)));
+        assertEquals(0, compareFloat(-46f, mat.getMinor(0, 2)));
+        assertEquals(0, compareFloat(-196f, mat.getDeterminant()));
+    }
 }

@@ -229,4 +229,19 @@ public class Matrix4Test {
             -7, -1, 1);
         assertEquals(expected, result);
     }
+
+    @Test
+    void testMat4Determinant() {
+        var mat = Matrix4.buildMatrix(
+            -2, -8, 3, 5,  
+            -3, 1, 7, 3, 
+            1, 2, -9, 6,
+            -6, 7, 7, -9
+        );
+        assertEquals(0, compareFloat(690f, mat.getCofactor(0, 0)));
+        assertEquals(0, compareFloat(447f, mat.getCofactor(0, 1)));
+        assertEquals(0, compareFloat(210f, mat.getCofactor(0, 2)));
+        assertEquals(0, compareFloat(51f, mat.getCofactor(0, 3)));
+        assertEquals(0, compareFloat(-4071, mat.getDeterminant()));
+    }
 }
