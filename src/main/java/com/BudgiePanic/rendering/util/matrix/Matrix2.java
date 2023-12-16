@@ -124,4 +124,9 @@ public final class Matrix2 extends Matrix {
         return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0]);
     }
 
+    @Override
+    public Matrix getSubMatrix(int row, int column) {
+        throw new UnsupportedOperationException("Cannot make sub matrix from 2 by 2 matrix.");
+    }
+
 }
