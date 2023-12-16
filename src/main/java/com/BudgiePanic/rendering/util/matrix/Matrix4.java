@@ -101,6 +101,14 @@ public final class Matrix4 extends Matrix {
         return new Matrix4(matrix);
     }
 
+    public static Matrix4 identity() {
+        return buildMatrixRow(
+            new float[] {1f, 0f, 0f, 0f},
+            new float[] {0f, 1f, 0f, 0f},
+            new float[] {0f, 0f, 1f, 0f},
+            new float[] {0f, 0f, 0f, 1f}
+        );
+    }
 
     /**
      * Private constructor.
