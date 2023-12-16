@@ -142,16 +142,20 @@ public final class Matrix3 extends Matrix {
         int _row = 0, _col = 0;
         for (int r = 0; r < dimension; r++) {
             if (r == row) continue;
-            for (int col = 0; col < dimension; col++) {
-                if (col == column) continue;
-                rows[_row][_col++] = this.matrix[r][col];
+            for (int c = 0; c < dimension; c++) {
+                if (c == column) continue;
+                rows[_row][_col++] = this.matrix[r][c];
                 if (_col == dimension - 1) {
                     _col = 0;
                     _row++;
                 }
             }
         }
-        return Matrix2.buildMatrixRow(rows[0], rows[1]);
+        return Matrix2.buildMatrixRow(
+            Arrays.copyOf(rows[0], dimension - 1),
+            Arrays.copyOf(rows[1], dimension - 1));
+    }
+
     }
 
 }
