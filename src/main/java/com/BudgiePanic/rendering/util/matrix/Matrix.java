@@ -74,4 +74,16 @@ public abstract class Matrix {
     public float getMinor(int row, int column) {
         return getSubMatrix(row, column).getDeterminant();
     };
+
+    /**
+     * Determine the cofactor of this matrix.
+     *
+     * @param row
+     *   The row to exclude
+     * @param column
+     *   The columt to exclude
+     * @return
+     *   The cofactor of the matrix.
+     */
+    public abstract float getCofactor(int row, int column);
 }
