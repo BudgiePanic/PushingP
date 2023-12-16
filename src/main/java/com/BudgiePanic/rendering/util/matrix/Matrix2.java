@@ -134,4 +134,9 @@ public final class Matrix2 extends Matrix {
         throw new UnsupportedOperationException("Cannot calculate minor with 2 by 2 matrix.");
     }
 
+    @Override
+    public float getCofactor(int row, int column) {
+        throw new UnsupportedOperationException("Matrix2 does not support cofactor operation");
+    }
+
 }
