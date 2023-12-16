@@ -111,8 +111,8 @@ public class Matrix4Test {
         var mat1 = Matrix4.buildMatrix(
             1f, 2f, 3f, 4f,
             5f, 6f, 7f, 8f,
-            9f, 10f, 11f, 12f,
-            13f, 14f, 15f, 16f
+            9f, 8f, 7f, 6f,
+            5f, 4f, 3f, 2f
         );
 
         var mat2 = Matrix4.buildMatrix(
