@@ -85,5 +85,11 @@ public abstract class Matrix {
      * @return
      *   The cofactor of the matrix.
      */
-    public abstract float getCofactor(int row, int column);
+    public float getCofactor(int row, int column) {
+        var minor = getMinor(row, column);
+        if ((row + column) % 2 != 0) {
+            minor *= -1f;
+        }
+        return minor;
+    }
 }
