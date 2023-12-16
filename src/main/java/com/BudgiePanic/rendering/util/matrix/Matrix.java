@@ -61,4 +61,17 @@ public abstract class Matrix {
      *   A smaller matrix with row and column removed.
      */
     public abstract Matrix getSubMatrix(int row, int column);
+
+    /**
+     * Computes the determinant of the submatrix at [row, column].
+     * @param row
+     *   The row to exclude
+     * @param column
+     *   The columt to exclude
+     * @return
+     *   The determinant of the submatrix
+     */
+    public float getMinor(int row, int column) {
+        return getSubMatrix(row, column).getDeterminant();
+    };
 }
