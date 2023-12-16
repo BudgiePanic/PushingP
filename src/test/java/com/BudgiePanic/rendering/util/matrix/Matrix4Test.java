@@ -138,7 +138,12 @@ public class Matrix4Test {
 
     @Test
     void testMat4TupleMultiply(){
-        var mat = Matrix4.buildMatrix(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        var mat = Matrix4.buildMatrix(
+            1f, 2f, 3f, 4f, 
+            2f, 4f, 4f, 2f, 
+            8f, 6f, 4f, 1f,
+            0f, 0f, 0f, 1f
+        );
         var tuple = new Tuple(1f, 2f, 3f, 1f);
         
         var result = mat.multiply(tuple);
