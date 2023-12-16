@@ -262,4 +262,39 @@ public class Matrix4Test {
         );
         assertFalse(mat.isInvertible());
     }
+
+    @Test
+    void testMat4Inverse() {
+        var mat = Matrix4.buildMatrix(
+            -5, 2, 6, 8,  
+            1, -5, 1, 8, 
+            7, 7, -6, -7,
+            1, -3, 7, 4
+        );
+        var result = mat.inverse();
+
+        var det = mat.getDeterminant();
+        assertEquals(0, compareFloat(532f, det));
+
+        var cofactor = mat.getCofactor(2, 3);
+        assertEquals(0, compareFloat(-160, cofactor));
+
+        var inverse32 = result.matrix[3][2];
+        assertEquals(0, compareFloat((-160f / 532f), inverse32));
+
+        var cofactor2 = mat.getCofactor(3, 2);
+        assertEquals(0, compareFloat(105f, cofactor2));
+
+        var inverse23 = result.matrix[2][3];
+        assertEquals(0, compareFloat((105f / 532f), inverse23));
+
+        var expected = Matrix4.buildMatrix(
+            0.21805f, 0.45113f, 0.24060f, -0.04511f,  
+            -0.80827f, -1.45677f, -0.44631f, 0.52068f, 
+            -0.07895f, -0.22368f, -0.05263f, 0.19737f,
+            -0.52256f, -0.81391f, -0.30075f, 0.30639f
+        );
+        assertEquals(expected, result);
+
+    }
 }
