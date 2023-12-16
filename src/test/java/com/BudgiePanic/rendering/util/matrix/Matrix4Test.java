@@ -5,6 +5,8 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 import org.junit.jupiter.api.Test;
 
+import com.BudgiePanic.rendering.util.Tuple;
+
 /**
  * Tests for the Matrix4 type.
  */
@@ -133,4 +135,16 @@ public class Matrix4Test {
 
         assertEquals(expected, result);
     }
+
+    @Test
+    void testMat4TupleMultiply(){
+        var mat = Matrix4.buildMatrix(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        var tuple = new Tuple(1f, 2f, 3f, 1f);
+        
+        var result = mat.multiply(tuple);
+        var expected = new Tuple(18f, 24f, 33f, 1f);
+
+        assertEquals(expected, result);
+    }
+
 }
