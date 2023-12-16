@@ -183,6 +183,27 @@ public final class Matrix4 extends Matrix {
             Arrays.copyOf(matrix[3], dimension));
     }
 
+    /**
+     * Calculate the inverse of this 4 by 4 matrix.
+     * An exception is thrown if the matrix is not invertible.
+     *
+     * @return
+     *   The inverse of this matrix.
+     */
+    public Matrix4 inverse() {
+        if (!isInvertible()) throw new RuntimeException("cannot invert matrix: " + this.toString());
+        var result = new float[dimension][dimension];
+        var det = getDeterminant();
+        // Use optimized technique in Jamis Buck's book The Ray Tracer Challenge
+        for (int row = 0; row < dimension; row++) {
+            for (int col = 0; col < dimension; col++) {
+                var c = getCofactor(row, col);
+                result[col][row] = c / det;
+            }
+        }
+        return new Matrix4(result);
+    }
+
     @Override
     public void validate() throws MatrixShapeException {
         if (this.matrix == null || this.matrix.length != dimension) throw new MatrixShapeException("matrix does not have 4 rows");
