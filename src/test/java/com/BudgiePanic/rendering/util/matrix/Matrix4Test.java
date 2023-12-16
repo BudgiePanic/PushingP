@@ -152,4 +152,26 @@ public class Matrix4Test {
         assertEquals(expected, result);
     }
 
+    @Test
+    void testMat4Identity() {
+        var mat1 = Matrix4.buildMatrix(
+            1f, 2f, 3f, 4f,
+            5f, 6f, 7f, 8f,
+            9f, 8f, 7f, 6f,
+            5f, 4f, 3f, 2f
+        );
+
+        var mat2 = Matrix4.identity();
+
+        var result = mat1.multiply(mat2);
+
+        var expected = Matrix4.buildMatrix(
+            1f, 2f, 3f, 4f,
+            5f, 6f, 7f, 8f,
+            9f, 8f, 7f, 6f,
+            5f, 4f, 3f, 2f
+        );
+
+        assertEquals(expected, result);
+    }
 }
