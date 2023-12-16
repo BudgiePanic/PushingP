@@ -35,4 +35,11 @@ public class Matrix2Test {
             30f, 40f);
         assertNotEquals(mat1, mat2);
     }
+
+    @Test
+    void testMat2Determinant() {
+        var mat = Matrix2.buildMatrix(1f, 5f, -3f, 2f);
+        var det = mat.getDeterminant();
+        assertEquals(17f, det);
+    }
 }
