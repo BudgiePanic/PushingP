@@ -224,5 +224,26 @@ public final class Matrix4 extends Matrix {
         return true;
     }
 
+    @Override
+    public Matrix getSubMatrix(int row, int column) {
+        // TODO the logic in the method is the exact same as in Matrix2, and it a prime candidate for refactorization, pulling up into the parent class.
+        if (row < 0 || column < 0 || row > dimension - 1 || column > dimension - 1)
+            throw new IllegalArgumentException(String.format("row %d column %d is out of bounds for %d by %d matrix", row, column, dimension, dimension));
+        float[][] rows = new float[dimension - 1][dimension - 1];
+        int _row = 0, _col = 0;
+        for (int r = 0; r < dimension; r++) {
+            if (r == row) continue;
+            for (int col = 0; col < dimension; col++) {
+                if (col == column) continue;
+                rows[_row][_col++] = this.matrix[r][col];
+                if (_col == dimension - 1) {
+                    _col = 0;
+                    _row++;
+                }
+            }
+        }
+        return Matrix3.buildMatrixRow(rows[0], rows[1], rows[2]);
+    }
+
 }
 
