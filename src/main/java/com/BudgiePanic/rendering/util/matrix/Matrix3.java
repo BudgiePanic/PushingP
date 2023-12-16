@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.matrix;
 
+import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
+
 import java.util.Arrays;
 
 public final class Matrix3 extends Matrix {
@@ -125,7 +127,9 @@ public final class Matrix3 extends Matrix {
         if (other == null || other.getClass() != this.getClass()) return false;
         var mat3 = (Matrix3) other;
         for (int row = 0; row < dimension; row++) {
-            if (!Arrays.equals(this.matrix[row], mat3.matrix[row])) return false;
+            for (int col = 0; col < dimension; col++) {
+                if (compareFloat(this.matrix[row][col], mat3.matrix[row][col]) != 0) return false;
+            }
         }
         return true;
     }
