@@ -244,4 +244,22 @@ public class Matrix4Test {
         assertEquals(0, compareFloat(51f, mat.getCofactor(0, 3)));
         assertEquals(0, compareFloat(-4071, mat.getDeterminant()));
     }
+
+    @Test
+    void testMat4isInvertible() {
+        var mat = Matrix4.buildMatrix(
+            6, 4, 4, 4,  
+            5, 5, 7, 6, 
+            4, -9, 3, -7,
+            9, 1, 7, -6
+        );
+        assertTrue(mat.isInvertible());
+        mat = Matrix4.buildMatrix(
+            -4, 2, -2, -3,  
+            9, 6, 2, 6, 
+            0, -5, 1, -5,
+            0, 0, 0, 0
+        );
+        assertFalse(mat.isInvertible());
+    }
 }
