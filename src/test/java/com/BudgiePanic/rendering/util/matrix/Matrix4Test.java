@@ -254,12 +254,14 @@ public class Matrix4Test {
             9, 1, 7, -6
         );
         assertTrue(mat.isInvertible());
+        assertEquals(0, compareFloat(-2120f, mat.getDeterminant()), "determinant of matrix did not match -2120, it was: " + mat.getDeterminant());
         mat = Matrix4.buildMatrix(
             -4, 2, -2, -3,  
             9, 6, 2, 6, 
             0, -5, 1, -5,
             0, 0, 0, 0
         );
+        assertEquals(0, compareFloat(0f, mat.getDeterminant()), "determinant of matrix did not match 0, it was: " + mat.getDeterminant());
         assertFalse(mat.isInvertible());
     }
 
@@ -274,19 +276,19 @@ public class Matrix4Test {
         var result = mat.inverse();
 
         var det = mat.getDeterminant();
-        assertEquals(0, compareFloat(532f, det));
+        assertEquals(0, compareFloat(532f, det), String.format("determinant was %f but should have been %f", det, 532f));
 
         var cofactor = mat.getCofactor(2, 3);
-        assertEquals(0, compareFloat(-160, cofactor));
+        assertEquals(0, compareFloat(-160f, cofactor), String.format("cofactor 2 3 was %f but should have been %f", cofactor, -160f));
 
         var inverse32 = result.matrix[3][2];
-        assertEquals(0, compareFloat((-160f / 532f), inverse32));
+        assertEquals(0, compareFloat((-160f / 532f), inverse32), String.format("inverse 3 2 was %f but should have been %f", inverse32, (-160f/532f)));
 
         var cofactor2 = mat.getCofactor(3, 2);
-        assertEquals(0, compareFloat(105f, cofactor2));
+        assertEquals(0, compareFloat(105f, cofactor2), String.format("cofactor 3 2 was %f but should have been %f", cofactor2, 105f));
 
         var inverse23 = result.matrix[2][3];
-        assertEquals(0, compareFloat((105f / 532f), inverse23));
+        assertEquals(0, compareFloat((105f / 532f), inverse23), String.format("inverse 2 3 was %f but should have been %f", inverse23, (105f/532f)));
 
         var expected = Matrix4.buildMatrix(
             0.21805f, 0.45113f, 0.24060f, -0.04511f,  
@@ -296,5 +298,64 @@ public class Matrix4Test {
         );
         assertEquals(expected, result);
 
+    }
+
+    @Test
+    void testMat4InverseA() {
+        var mat = Matrix4.buildMatrix(
+            8, -5, 9, 2,  
+            7, 5, 6, 1, 
+            -6, 0, 9, 6,
+            -3, 0, -9, -4
+        );
+        var expected = Matrix4.buildMatrix(
+            -0.15385f, -0.15385f, -0.28205f, -0.53846f, 
+            -0.07692f, 0.12308f, 0.02564f, 0.03077f, 
+            0.35897f, 0.35897f, 0.43590f, 0.92308f, 
+            -0.69231f, -0.69231f, -0.76923f, -1.92308f
+        );
+        assertEquals(expected, mat);
+    }
+
+    @Test
+    void testMat4InverseB() {
+        var mat = Matrix4.buildMatrix(
+            9, 3, 0, 9,  
+            -5, -2, -6, -3, 
+            -4, 9, 6, 4,
+            -7, 6, 6, 2
+        );
+        var expected = Matrix4.buildMatrix(
+            -0.04074f, -0.07778f, 0.14444f, -0.22222f, 
+            -0.07778f, 0.03333f, 0.36667f, -0.33333f, 
+            -0.02901f, -0.14630f, -0.10926f, 0.12963f, 
+            0.17778f, 0.06667f, -0.26667f, 0.33333f
+        );
+        assertEquals(expected, mat);
+    }
+
+    @Test
+    void testMat4InverseC() {
+        var a = Matrix4.buildMatrix(
+            3, -9, 7, 3,  
+            3, -8, 2, -9, 
+            -4, 4, 4, 1,
+            -6, 5, -1, 1
+        );
+        var b = Matrix4.buildMatrix(
+            8, 2, 2, 2,  
+            3, -1, 7, 0, 
+            7, 0, 5, 4,
+            6, -2, 0, 5
+        );
+        var c = a.multiply(b);
+        var result = c.multiply(b.inverse());
+        var expected = Matrix4.buildMatrix(
+            3, -9, 7, 3,  
+            3, -8, 2, -9, 
+            -4, 4, 4, 1,
+            -6, 5, -1, 1
+        );
+        assertEquals(expected, result);
     }
 }
