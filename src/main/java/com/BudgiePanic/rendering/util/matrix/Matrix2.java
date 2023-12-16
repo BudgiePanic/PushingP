@@ -129,4 +129,9 @@ public final class Matrix2 extends Matrix {
         throw new UnsupportedOperationException("Cannot make sub matrix from 2 by 2 matrix.");
     }
 
+    @Override
+    public float getMinor(int row, int column) {
+        throw new UnsupportedOperationException("Cannot calculate minor with 2 by 2 matrix.");
+    }
+
 }
