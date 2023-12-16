@@ -15,14 +15,14 @@ public final class FloatHelp {
      * @param b
      *   The second float.
      * @return
-     *    0 if the two numbers are within 0.0000001 of each other.
+     *    0 if the two numbers are within 0.00001 of each other.
      *    1 if a is larger than b.
      *   -1 if b is larger than a.
      */
     public static int compareFloat(float a, float b){
-        // Uses 6 decimal places of precision for the check. 
+        // Uses 5 decimal places of precision for the check. 
         // The debuggers says any more decimal places will get rounded off.
-        final float epsilon = 0.000001f;
+        final float epsilon = 0.00001f;
         float delta = (float) Math.abs(a - b);
         if (delta < epsilon) return 0;
         if (a < b) return -1;
