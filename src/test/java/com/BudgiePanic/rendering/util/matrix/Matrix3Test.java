@@ -62,4 +62,17 @@ public class Matrix3Test {
         var expected = 25f;
         assertEquals(0, compareFloat(expected, result));
     }
+
+    @Test
+    void testM3Cofactor() {
+        var mat = Matrix3.buildMatrix(
+            3, 5, 0, 
+            2, -1, -7, 
+            6, -1, 5
+        );
+        assertEquals(0, compareFloat(-12f, mat.getMinor(0, 0)));
+        assertEquals(0, compareFloat(-12f, mat.getCofactor(0, 0)));
+        assertEquals(0, compareFloat(25f, mat.getMinor(1, 0)));
+        assertEquals(0, compareFloat(-25f, mat.getCofactor(1, 0)));
+    }
 }
