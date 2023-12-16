@@ -52,10 +52,13 @@ public abstract class Matrix {
     public abstract float getDeterminant();
 
     /**
-     * 
+     * A copy of this matrix with 'row' and 'column' removed.
      * @param row
+     *   The row to remove.
      * @param column
+     *   The column to remove.
      * @return
+     *   A smaller matrix with row and column removed.
      */
     public abstract Matrix getSubMatrix(int row, int column);
 }
