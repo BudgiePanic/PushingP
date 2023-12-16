@@ -213,4 +213,20 @@ public class Matrix4Test {
             0, 0, 0, 1);
         assertEquals(expected, result);
     }
+
+    @Test
+    void testMat4SubMatrix() {
+        var mat = Matrix4.buildMatrix(
+            -6, 1, 1, 6,  
+            -8, 5, 8, 6, 
+            -1, 0, 8, 2,
+            -7, 1, -1, 1
+        );
+        var result = mat.getSubMatrix(2, 1);
+        var expected = Matrix3.buildMatrix(
+            -6, 1, 6,
+            -8, 8, 6,
+            -7, -1, 1);
+        assertEquals(expected, result);
+    }
 }

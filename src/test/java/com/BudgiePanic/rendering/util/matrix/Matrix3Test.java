@@ -38,4 +38,16 @@ public class Matrix3Test {
             70f, 80f, 90f);
         assertNotEquals(mat1, mat2);
     }
+
+    @Test
+    void testMat3SubMat() {
+        var mat3 = Matrix3.buildMatrix(
+            1, 5, 0, 
+            -3, 2, 7, 
+            0, 6, 3
+        );
+        var result = mat3.getSubMatrix(0, 2);
+        var expected = Matrix2.buildMatrix(-3, 2, 0, 6);
+        assertEquals(expected, result);
+    }
 }
