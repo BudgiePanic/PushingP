@@ -308,13 +308,14 @@ public class Matrix4Test {
             -6, 0, 9, 6,
             -3, 0, -9, -4
         );
+        var result = mat.inverse();
         var expected = Matrix4.buildMatrix(
             -0.15385f, -0.15385f, -0.28205f, -0.53846f, 
             -0.07692f, 0.12308f, 0.02564f, 0.03077f, 
             0.35897f, 0.35897f, 0.43590f, 0.92308f, 
             -0.69231f, -0.69231f, -0.76923f, -1.92308f
         );
-        assertEquals(expected, mat);
+        assertEquals(expected, result);
     }
 
     @Test
@@ -325,13 +326,14 @@ public class Matrix4Test {
             -4, 9, 6, 4,
             -7, 6, 6, 2
         );
+        var result = mat.inverse();
         var expected = Matrix4.buildMatrix(
             -0.04074f, -0.07778f, 0.14444f, -0.22222f, 
             -0.07778f, 0.03333f, 0.36667f, -0.33333f, 
             -0.02901f, -0.14630f, -0.10926f, 0.12963f, 
             0.17778f, 0.06667f, -0.26667f, 0.33333f
         );
-        assertEquals(expected, mat);
+        assertEquals(expected, result);
     }
 
     @Test
