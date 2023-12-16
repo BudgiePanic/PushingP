@@ -248,6 +248,15 @@ public final class Matrix4 extends Matrix {
             Arrays.copyOf(rows[2], dimension - 1));
     }
 
+    @Override
+    public float getDeterminant() {
+        // cofactor expansion technique
+        float det = 0.0f;
+        det += matrix[0][0] * getCofactor(0, 0);
+        det += matrix[0][1] * getCofactor(0, 1);
+        det += matrix[0][2] * getCofactor(0, 2);
+        det += matrix[0][3] * getCofactor(0, 3);
+        return det;
     }
 
 }
