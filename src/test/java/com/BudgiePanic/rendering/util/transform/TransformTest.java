@@ -8,7 +8,6 @@ import com.BudgiePanic.rendering.util.Tuple;
 
 /**
  * Unit tests for concatination of tranform matrices together.
- * TODO create fluent API via transform factory class.
  * 
  * @author BudgiePanic
  */
@@ -42,6 +41,20 @@ public class TransformTest {
         var translate = Translation.makeTranslationMatrix(10, 5, 7);
         // Note the chaining is 'back to front' because matrix multiplication is 
         var transform = translate.multiply(scale).multiply(rotate);
+        var result = transform.multiply(point);
+        var expected = Tuple.makePoint(15, 0, 7);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testFluentAPI() {
+        var point = Tuple.makePoint(1, 0, 1);
+        var transform = Transforms.
+            identity().
+            rotateX((float)(Math.PI / 2.0)).
+            scale(5, 5, 5).
+            translate(10, 5, 7).
+            assemble();
         var result = transform.multiply(point);
         var expected = Tuple.makePoint(15, 0, 7);
         assertEquals(expected, result);
