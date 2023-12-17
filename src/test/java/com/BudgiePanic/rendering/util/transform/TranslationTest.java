@@ -1,6 +1,5 @@
 package com.BudgiePanic.rendering.util.transform;
 
-import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
