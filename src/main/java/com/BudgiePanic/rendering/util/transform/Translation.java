@@ -9,6 +9,8 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  */
 public final class Translation {
 
+    private Translation() {}
+
     /**
      * Build a new translation matrix.
      *
