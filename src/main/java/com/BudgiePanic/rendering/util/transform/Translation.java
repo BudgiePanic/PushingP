@@ -7,7 +7,7 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  * 
  * @author BudgiePanic
  */
-public class Translation {
+public final class Translation {
 
     /**
      * Build a new translation matrix.
@@ -21,7 +21,7 @@ public class Translation {
      * @return
      *   a new translation matrix
      */
-    public static Matrix4 makeTranslationMatrix(float x, float y, float z) {
+    public final static Matrix4 makeTranslationMatrix(float x, float y, float z) {
         var identity = Matrix4.identity();
         identity.matrix[0][3] = x;
         identity.matrix[1][3] = y;
