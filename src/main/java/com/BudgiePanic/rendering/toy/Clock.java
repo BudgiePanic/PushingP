@@ -31,7 +31,7 @@ public class Clock implements Runnable {
 
     @Override
     public void run() {
-        var origin = Tuple.makePoint();
+        final var origin = Tuple.makePoint();
         // The clock is facing towards the +ve y axis
         var twelveOclock = origin.add(0, 0, 1);
         List<Tuple> pointsToDraw = new ArrayList<>();
@@ -42,13 +42,14 @@ public class Clock implements Runnable {
         final float rotateAmountRadians = radiansInCircle / (float) numbPoints;
         final var rotate = Rotation.buildYRotationMatrix(rotateAmountRadians);
 
+        // 12 points rotated about the origin
         var point = twelveOclock;
-
         for (int i = 0; i < numbPoints; i++) {
             point = rotate.multiply(point);
             pointsToDraw.add(point);
         }
 
+        // Move and scale the points to fit inside the canvas
         final var scaleAndMove = Transforms.identity().
             scale(((3f / 8f) * imgWidth), 1f, ((3f / 8f) * imgHeight)).
                 translate((imgWidth / 2f), 0, (imgHeight / 2f)).
@@ -57,10 +58,12 @@ public class Clock implements Runnable {
             return scaleAndMove.multiply(p);
         }).collect(Collectors.toList());
 
+        // Write the points to the canvas
         scaledPoints.forEach((Tuple p) ->  {
             this.canvas.writePixel((int) p.x, (int) p.z, Colors.white);
         });
 
+        // Write the canvas to file.
         var lines = CanvasWriter.canvasToPPMString(canvas);
         File file = new File(System.getProperty("user.dir"), fileName);
         try {
