@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.transform;
 
+import static com.BudgiePanic.rendering.util.AngleHelp.toRadians;
+
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
 /**
@@ -10,19 +12,6 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
 public final class Rotation {
     
     private Rotation () {}
-
-    /**
-     * Helper method to convert degrees to radians.
-     *
-     * @param degrees
-     *   The angle.
-     * @return
-     *   The angle in radians.
-     */
-    private static float toRadians(float degrees) {
-        // return (float) Math.toRadians(degrees);
-        return (degrees / 180.0f) * (float) Math.PI;
-    }
 
     /**
      * Create new a rotation matrix with a pitch, yaw, and roll combined.
