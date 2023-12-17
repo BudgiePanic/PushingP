@@ -19,9 +19,8 @@ public class RayTest {
 
         var expectedOrigin = Tuple.makePoint(1,2,3);
         var expectedDirection = Tuple.makeVector(4, 5, 6);
-
-        assertEquals(expectedDirection, ray.direction);
-        assertEquals(expectedOrigin, ray.origin);
+        assertEquals(expectedDirection, ray.direction());
+        assertEquals(expectedOrigin, ray.origin());
     }
 
     @Test
