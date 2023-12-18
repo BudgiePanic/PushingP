@@ -2,6 +2,7 @@ package com.BudgiePanic.rendering;
 
 import com.BudgiePanic.rendering.toy.Artillery;
 import com.BudgiePanic.rendering.toy.Clock;
+import com.BudgiePanic.rendering.toy.Shadow;
 import com.BudgiePanic.rendering.util.Tuple;
 
 /**
@@ -12,6 +13,7 @@ public class App
 {
     final static String flagArtillery = "-arty";
     final static String flagClock = "-clock";
+    final static String flagShadow = "-shadow";
 
     public static void main( String[] args )
     {
@@ -29,6 +31,10 @@ public class App
             if (args[0].equals(flagClock)) {
                 System.out.println("Running clock toy.");
                 new Clock().run();
+            }
+            if (args[0].equals(flagShadow)) {
+                System.out.println("Running shadow toy.");
+                new Shadow().run();
             }
         }
     }
