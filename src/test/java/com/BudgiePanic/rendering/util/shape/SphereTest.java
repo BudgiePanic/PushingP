@@ -112,7 +112,7 @@ public class SphereTest {
 
     @Test
     void testSphereRayTransformA() {
-        var ray = new Ray(Tuple.makePoint(0,0,5), Tuple.makeVector(0, 0, 1));
+        var ray = new Ray(Tuple.makePoint(0,0,-5), Tuple.makeVector(0, 0, 1));
         var sphere = new Sphere(Transforms.identity().translate(5, 0, 0).assemble());
         var intersections = sphere.intersect(ray);
         assertTrue(intersections.isEmpty());
