@@ -27,7 +27,14 @@ public record Intersection(Float a, Sphere sphere) {
      *   The first visible intersection point, as viewed from the Ray's origin, if any.
      */
     public static Optional<Intersection> Hit(Collection<Intersection> intersections) {
-        return Optional.empty();
+        final var zero = Float.valueOf(0f);
+        var result = intersections.stream().
+        filter((intersect)->{
+            return !(intersect.a() <= zero);
+        }).sorted((i1, i2)->{
+            return i1.a().compareTo(i2.a());
+        }).findFirst();
+        return result;
     }
 
 }
