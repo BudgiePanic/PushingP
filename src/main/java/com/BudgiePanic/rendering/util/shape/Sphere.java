@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.util.shape;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.BudgiePanic.rendering.util.Tuple;
@@ -21,14 +22,13 @@ public record Sphere(Tuple origin, float radius) {
 
     /**
      * Determines the distance to intersection points between a ray and this sphere, if any.
-     * TODO in the future, if needed, this could be refactored to return a record, that holds two Optional<Float> for intersect A and intersect B
      * 
      * @param ray
      *   The ray to test against.
      * @return
      *   A list of distances to intersection points along the ray, from the ray origin. May be empty.
      */
-    public Optional<Intersection> intersect(Ray ray) {
+    public Optional<List<Intersection>> intersect(Ray ray) {
         // Compute discriminant, if 0, then there is no intersection
           // A vector going from the sphere origin to the ray origin
         var sphereToRay = ray.origin().subtract(origin); 
@@ -45,7 +45,12 @@ public record Sphere(Tuple origin, float radius) {
         var intersectA = (-dotB - sqrtDiscriminant) / (2f * dotA);
         var intersectB = (-dotB + sqrtDiscriminant) / (2f * dotA);
 
-        return Optional.of(new Intersection(Float.valueOf(intersectA), Optional.of(Float.valueOf(intersectB)), this)); 
+        return Optional.of(
+                  List.of(
+                    new Intersection(Float.valueOf(intersectA), this),
+                    new Intersection(Float.valueOf(intersectB), this)
+                  )
+                ); 
     }
 
 }

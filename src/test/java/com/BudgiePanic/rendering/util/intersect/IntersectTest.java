@@ -3,7 +3,7 @@ package com.BudgiePanic.rendering.util.intersect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class IntersectTest {
     @Test
     void testIntersect() {
         var sphere = new Sphere(Tuple.makePoint(), 1f);
-        var intersection = new Intersection(3.5f, Optional.empty(), sphere);
+        var intersection = new Intersection(3.5f, sphere);
         assertEquals(3.5f, intersection.a());
         assertTrue(sphere == intersection.sphere());
     }
