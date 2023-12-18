@@ -24,4 +24,14 @@ public class IntersectTest {
     //       this test is unnecesary due to how we have coded it, currently
     //       In the future, if we wanted our intersection test to return an arbitrary number of intersection points, then this test would be needed.
 
+    @Test
+    void testIntersectHitA() {
+        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var intersectA = new Intersection(1f, sphere);
+        var intersectB = new Intersection(2f, sphere);
+        var result = Intersection.Hit(List.of(intersectA, intersectB));
+        assertTrue(result.isPresent(), "no hit intersection was returned");
+        assertEquals(intersectA, result.get(), "first intersect did not equal the returned hit intersect");
+        assertEquals(1f, result.get().a());
+    }
 }
