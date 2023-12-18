@@ -1,4 +1,6 @@
-package com.BudgiePanic.rendering.util;
+package com.BudgiePanic.rendering.util.intersect;
+
+import com.BudgiePanic.rendering.util.Tuple;
 
 /**
  * Ray type.

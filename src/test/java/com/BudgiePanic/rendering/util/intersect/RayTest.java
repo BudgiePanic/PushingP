@@ -1,8 +1,10 @@
-package com.BudgiePanic.rendering.util;
+package com.BudgiePanic.rendering.util.intersect;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+
+import com.BudgiePanic.rendering.util.Tuple;
 
 /**
  * Unit tests for the ray class.
