@@ -18,9 +18,9 @@ public class SphereTest {
 
         var intersects = sphere.intersect(ray);
 
-        assertEquals(2, intersects.size());
-        assertTrue(compareFloat(4f, intersects.get(0)) == 0, "the distance to the first intersection point was not 4");
-        assertTrue(compareFloat(6f, intersects.get(1)) == 0, "the distance to the second intersection point was not 6");
+        assertTrue(intersects.isPresent());
+        assertTrue(compareFloat(4f, intersects.get().a()) == 0, "the distance to the first intersection point was not 4");
+        assertTrue(compareFloat(6f, intersects.get().b().get()) == 0, "the distance to the second intersection point was not 6");
     }
 
     @Test
@@ -30,9 +30,10 @@ public class SphereTest {
 
         var intersects = sphere.intersect(ray);
 
-        assertEquals(2, intersects.size()); // This test may break later?
-        assertTrue(compareFloat(5f, intersects.get(0)) == 0, "1. the distance to the intersection point was not 5");
-        assertTrue(compareFloat(5f, intersects.get(1)) == 0, "2. the distance to the intersection point was not 5");
+        assertTrue(intersects.isPresent());
+        assertTrue(compareFloat(5f, intersects.get().a()) == 0, "1. the distance to the intersection point was not 5");
+        assertTrue(intersects.get().b().isPresent());
+        assertTrue(compareFloat(5f, intersects.get().b().get()) == 0, "2. the distance to the intersection point was not 5");
     }
 
     @Test
@@ -42,7 +43,7 @@ public class SphereTest {
 
         var intersects = sphere.intersect(ray);
 
-        assertEquals(0, intersects.size()); 
+        assertTrue(intersects.isEmpty()); 
     }
 
     @Test
@@ -52,9 +53,9 @@ public class SphereTest {
 
         var intersects = sphere.intersect(ray);
 
-        assertEquals(2, intersects.size());
-        assertTrue(compareFloat(-1f, intersects.get(0)) == 0, "the distance to the first intersection point was not -1");
-        assertTrue(compareFloat(1f, intersects.get(1)) == 0, "the distance to the second intersection point was not 1");
+        assertTrue(intersects.isPresent());
+        assertTrue(compareFloat(-1f, intersects.get().a()) == 0, "the distance to the first intersection point was not -1");
+        assertTrue(compareFloat(1f, intersects.get().b().get()) == 0, "the distance to the second intersection point was not 1");
     }
 
     @Test
@@ -64,9 +65,9 @@ public class SphereTest {
 
         var intersects = sphere.intersect(ray);
 
-        assertEquals(2, intersects.size());
-        assertTrue(compareFloat(-6f, intersects.get(0)) == 0, "the distance to the first intersection point was not -6");
-        assertTrue(compareFloat(-4f, intersects.get(1)) == 0, "the distance to the second intersection point was not -4");
+        assertTrue(intersects.isPresent());
+        assertTrue(compareFloat(-6f, intersects.get().a()) == 0, "the distance to the first intersection point was not -6");
+        assertTrue(compareFloat(-4f, intersects.get().b().get()) == 0, "the distance to the second intersection point was not -4");
     }
 
 }

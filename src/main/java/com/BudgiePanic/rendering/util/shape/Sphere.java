@@ -1,8 +1,10 @@
 package com.BudgiePanic.rendering.util.shape;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.BudgiePanic.rendering.util.Tuple;
+import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 
 /**
@@ -27,7 +29,7 @@ public record Sphere(Tuple origin, float radius) {
      * @return
      *   A list of distances to intersection points along the ray, from the ray origin. May be empty.
      */
-    public List<Float> intersect(Ray ray) {
+    public Optional<Intersection> intersect(Ray ray) {
         // Compute discriminant, if 0, then there is no intersection
           // A vector going from the sphere origin to the ray origin
         var sphereToRay = ray.origin().subtract(origin); 
@@ -38,13 +40,13 @@ public record Sphere(Tuple origin, float radius) {
           // This looks like the discriminant from the quadratic equation solution forumla
         var discriminant = (dotB * dotB) - 4.0f * dotA * dotC; 
         if (discriminant < 0f) {
-            return List.of();
+            return Optional.empty();
         }
         var sqrtDiscriminant = (float) Math.sqrt(discriminant);
         var intersectA = (-dotB - sqrtDiscriminant) / (2f * dotA);
         var intersectB = (-dotB + sqrtDiscriminant) / (2f * dotA);
 
-        return List.of(Float.valueOf(intersectA), Float.valueOf(intersectB));
+        return Optional.of(new Intersection(Float.valueOf(intersectA), Optional.of(Float.valueOf(intersectB)), this)); 
     }
 
 }
