@@ -96,6 +96,25 @@ public class SphereTest {
         var result = sphere.transform();
         var expected = Translation.makeTranslationMatrix(2, 3, 4);
         assertEquals(expected, result);
-        
+    }
+
+    @Test
+    void testSphereRayTransform() {
+        var ray = new Ray(Tuple.makePoint(0,0,-5), Tuple.makeVector(0, 0, 1));
+        var sphere = new Sphere(Transforms.identity().scale(2, 2, 2).assemble());
+        var intersections = sphere.intersect(ray);
+        assertTrue(intersections.isPresent());
+        var list = intersections.get();
+        assertEquals(2, list.size());
+        assertTrue(compareFloat(3, list.get(0).a())== 0, "first ray intersection distance was not 3");
+        assertTrue(compareFloat(7, list.get(1).a())== 0, "second ray intersection distance was not 7");
+    }
+
+    @Test
+    void testSphereRayTransformA() {
+        var ray = new Ray(Tuple.makePoint(0,0,5), Tuple.makeVector(0, 0, 1));
+        var sphere = new Sphere(Transforms.identity().translate(5, 0, 0).assemble());
+        var intersections = sphere.intersect(ray);
+        assertTrue(intersections.isEmpty());
     }
 }
