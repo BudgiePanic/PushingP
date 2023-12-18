@@ -7,13 +7,16 @@ import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
+import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.transform.Transforms;
+import com.BudgiePanic.rendering.util.transform.Translation;
 
 public class SphereTest {
     
     @Test
     void testSimpleSphereIntersect() {
         var ray = new Ray(Tuple.makePoint(0, 0, -5), Tuple.makeVector(0, 0, 1));
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
 
         var intersects = sphere.intersect(ray);
 
@@ -29,7 +32,7 @@ public class SphereTest {
     @Test
     void testSimpleSphereIntersectA() {
         var ray = new Ray(Tuple.makePoint(0, 1, -5), Tuple.makeVector(0, 0, 1));
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
 
         var intersects = sphere.intersect(ray);
 
@@ -43,7 +46,7 @@ public class SphereTest {
     @Test
     void testSimpleSphereIntersectB() {
         var ray = new Ray(Tuple.makePoint(0, 2, -5), Tuple.makeVector(0, 0, 1));
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
 
         var intersects = sphere.intersect(ray);
 
@@ -53,7 +56,7 @@ public class SphereTest {
     @Test
     void testSimpleSphereIntersectC() {
         var ray = new Ray(Tuple.makePoint(), Tuple.makeVector(0, 0, 1));
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
 
         var intersects = sphere.intersect(ray);
 
@@ -67,7 +70,7 @@ public class SphereTest {
     @Test
     void testSimpleSphereIntersectD() {
         var ray = new Ray(Tuple.makePoint(0,0,5), Tuple.makeVector(0, 0, 1));
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
 
         var intersects = sphere.intersect(ray);
 
@@ -78,4 +81,21 @@ public class SphereTest {
         assertTrue(compareFloat(-4f, list.get(1).a()) == 0, "the distance to the second intersection point was not -4");
     }
 
+    @Test
+    void testSphereDefaultConstructor() {
+        var sphere = Sphere.defaultSphere();
+        assertEquals(Matrix4.identity(), sphere.transform());
+    }
+
+    @Test
+    void testSphereTransformUpdate() {
+        // The book wants a test here to check if the transform of a sphere can be mutated
+        // but our spheres are immutable so such a test doesn't make much sense.
+        // In our case, the solution is to just make a new sphere.
+        var sphere = new Sphere(Transforms.identity().translate(2, 3, 4).assemble());
+        var result = sphere.transform();
+        var expected = Translation.makeTranslationMatrix(2, 3, 4);
+        assertEquals(expected, result);
+        
+    }
 }

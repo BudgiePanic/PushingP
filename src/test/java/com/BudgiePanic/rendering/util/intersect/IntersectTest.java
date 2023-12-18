@@ -7,14 +7,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 
 public class IntersectTest {
     
     @Test
     void testIntersect() {
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
         var intersection = new Intersection(3.5f, sphere);
         assertEquals(3.5f, intersection.a());
         assertTrue(sphere == intersection.sphere());
@@ -26,7 +25,7 @@ public class IntersectTest {
 
     @Test
     void testIntersectHitA() {
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
         var intersectA = new Intersection(1f, sphere);
         var intersectB = new Intersection(2f, sphere);
         var result = Intersection.Hit(List.of(intersectA, intersectB));
@@ -37,7 +36,7 @@ public class IntersectTest {
 
     @Test
     void testIntersectHitB() {
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
         var intersectA = new Intersection(-1f, sphere);
         var intersectB = new Intersection(1f, sphere);
         var result = Intersection.Hit(List.of(intersectA, intersectB));
@@ -47,7 +46,7 @@ public class IntersectTest {
 
     @Test
     void testIntesectHitC() {
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
         var intersectA = new Intersection(-2f, sphere);
         var intersectB = new Intersection(-1f, sphere);
         var result = Intersection.Hit(List.of(intersectA, intersectB));
@@ -56,7 +55,7 @@ public class IntersectTest {
 
     @Test
     void testIntersectHitD() {
-        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var sphere = Sphere.defaultSphere();
         var intersectA = new Intersection(5f, sphere);
         var intersectB = new Intersection(7f, sphere);
         var intersectC = new Intersection(-3f, sphere);

@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
+import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
 /**
  * Information container for sphere objects.
@@ -13,12 +14,23 @@ import com.BudgiePanic.rendering.util.intersect.Ray;
  * 
  * @author BudgiePanic
  */
-public record Sphere(Tuple origin, float radius) {
+public record Sphere(Matrix4 transform) {
     
-    public Sphere {
-        if (origin == null) throw new IllegalArgumentException("origin cannot be null");
-        if (origin.isVector()) throw new IllegalArgumentException("origin should be point");
+    public static Sphere defaultSphere() {
+      return new Sphere(Matrix4.identity());
     }
+
+    public Sphere {
+        if (transform == null) throw new IllegalArgumentException("sphere transform cannot be null");
+    }
+
+    /**
+     * All spheres have the same origin in OBJECT space.
+     * Rays will be converted from world space to object space before intersection tests 
+     * are performed. Making a singleton here to avoid allocating a new object everytime an intersection test
+     * is performed.
+     */
+    private static final Tuple origin = Tuple.makePoint();
 
     /**
      * Determines the distance to intersection points between a ray and this sphere, if any.
@@ -53,4 +65,8 @@ public record Sphere(Tuple origin, float radius) {
                 ); 
     }
 
+    public Sphere setTransform(Matrix4 transform) {
+
+    }
+  
 }
