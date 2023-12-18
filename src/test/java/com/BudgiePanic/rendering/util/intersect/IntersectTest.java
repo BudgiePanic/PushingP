@@ -21,8 +21,8 @@ public class IntersectTest {
     }
 
     // NOTE: the book wanted to add a test here for checking if an intersection test returned 2 intersections
-    //       this test is unnecesary due to how we have coded it, currently
-    //       In the future, if we wanted our intersection test to return an arbitrary number of intersection points, then this test would be needed.
+    //       this test is unnecesary due to how we have coded it, currently because our function returns a list
+    //       manually constructing a list, just to check if it has 2 elements in it is pointless.
 
     @Test
     void testIntersectHitA() {
@@ -34,4 +34,36 @@ public class IntersectTest {
         assertEquals(intersectA, result.get(), "first intersect did not equal the returned hit intersect");
         assertEquals(1f, result.get().a());
     }
+
+    @Test
+    void testIntersectHitB() {
+        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var intersectA = new Intersection(-1f, sphere);
+        var intersectB = new Intersection(1f, sphere);
+        var result = Intersection.Hit(List.of(intersectA, intersectB));
+        assertTrue(result.isPresent(), "no hit intersection was returned");
+        assertEquals(intersectB, result.get());
+    }
+
+    @Test
+    void testIntesectHitC() {
+        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var intersectA = new Intersection(-2f, sphere);
+        var intersectB = new Intersection(-1f, sphere);
+        var result = Intersection.Hit(List.of(intersectA, intersectB));
+        assertTrue(result.isEmpty(), "A hit intersection was returned when all distances were negative");
+    }
+
+    @Test
+    void testIntersectHitD() {
+        var sphere = new Sphere(Tuple.makePoint(), 1f);
+        var intersectA = new Intersection(5f, sphere);
+        var intersectB = new Intersection(7f, sphere);
+        var intersectC = new Intersection(-3f, sphere);
+        var intersectD = new Intersection(2f, sphere);
+        var result = Intersection.Hit(List.of(intersectA, intersectB, intersectC, intersectD));
+        assertTrue(result.isPresent(), "no hit intersection was returned");
+        assertEquals(intersectD, result.get());
+    }
+
 }
