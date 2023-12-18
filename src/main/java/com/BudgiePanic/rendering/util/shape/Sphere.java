@@ -2,8 +2,8 @@ package com.BudgiePanic.rendering.util.shape;
 
 import java.util.List;
 
-import com.BudgiePanic.rendering.util.Ray;
 import com.BudgiePanic.rendering.util.Tuple;
+import com.BudgiePanic.rendering.util.intersect.Ray;
 
 /**
  * Information container for sphere objects.

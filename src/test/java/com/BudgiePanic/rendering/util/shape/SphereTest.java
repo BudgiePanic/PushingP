@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import com.BudgiePanic.rendering.util.Ray;
 import com.BudgiePanic.rendering.util.Tuple;
+import com.BudgiePanic.rendering.util.intersect.Ray;
 
 public class SphereTest {
     
