@@ -70,5 +70,17 @@ public record Sphere(Matrix4 transform) {
                   )
                 ); 
     }
+
+    /**
+     * Determine the normal of at 'point' on this sphere.
+     * 
+     * @param point
+     *   A point on the sphere
+     * @return
+     *   A new vector representing the normal of the sphere at the given point.
+     */
+    public Tuple normal(Tuple point) {
+      return null;
+    }
   
 }

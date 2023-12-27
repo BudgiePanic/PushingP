@@ -117,4 +117,46 @@ public class SphereTest {
         var intersections = sphere.intersect(ray);
         assertTrue(intersections.isEmpty());
     }
+
+    @Test
+    void testSphereNormalX() {
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(1,0,0));
+        var expected = Tuple.makeVector(1, 0, 0);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testSphereNormalZ() {
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(0,0,1));
+        var expected = Tuple.makeVector(0, 0, 1);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testSphereNormalY() {
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(0, 1,0));
+        var expected = Tuple.makeVector(0, 1, 0);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testSphereNormal() {
+        var sqrtThreeOverThree = (float) (Math.sqrt(3.0) / 3.0);
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(sqrtThreeOverThree,sqrtThreeOverThree,sqrtThreeOverThree));
+        var expected = Tuple.makeVector(sqrtThreeOverThree,sqrtThreeOverThree,sqrtThreeOverThree);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testNormalMagnitude() {
+        var sqrtThreeOverThree = (float) (Math.sqrt(3.0) / 3.0);
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(sqrtThreeOverThree,sqrtThreeOverThree,sqrtThreeOverThree));
+        var expected = normal.normalize();
+        assertEquals(expected, normal);
+    }
 }
