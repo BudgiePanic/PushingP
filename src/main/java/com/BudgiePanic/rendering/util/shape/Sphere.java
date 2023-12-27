@@ -3,6 +3,7 @@ package com.BudgiePanic.rendering.util.shape;
 import java.util.List;
 import java.util.Optional;
 
+import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -16,16 +17,25 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  *       if the transform is updated (dirty flag), because right now, it recalculates the inverse with every 
  *       call to ray. (Or maybe the matrix itself can cache the inverse?)
  * 
+ * NOTE: in the future, if we want to have scene objects that are composed of components
+ *       then the material property can be stripped from the sphere. but currently we are 
+ *       going to enforce that all spheres (shapes) have to have a material.
+ * 
  * @author BudgiePanic
  */
-public record Sphere(Matrix4 transform) {
+public record Sphere(Matrix4 transform, Material material) {
     
     public static Sphere defaultSphere() {
-      return new Sphere(Matrix4.identity());
+      return new Sphere(Matrix4.identity(), Material.defaultMaterial());
     }
 
     public Sphere {
         if (transform == null) throw new IllegalArgumentException("sphere transform cannot be null");
+        if (material == null) throw new IllegalArgumentException("sphere material cannot be null");
+    }
+
+    public Sphere(Matrix4 transform) {
+      this(transform, Material.defaultMaterial());
     }
 
     /**
