@@ -75,12 +75,18 @@ public record Sphere(Matrix4 transform) {
      * Determine the normal of at 'point' on this sphere.
      * 
      * @param point
-     *   A point on the sphere
+     *   A point on the sphere, in world space.
      * @return
      *   A new vector representing the normal of the sphere at the given point.
      */
     public Tuple normal(Tuple point) {
-      return null;
+      // optimized technique described in in Jamis Buck's book The Ray Tracer Challenge
+      var inverse = this.transform.inverse();
+      var pointObject = inverse.multiply(point); // the point in object space
+      var normalObject = pointObject.subtract(Tuple.makePoint()).normalize(); // the normal in object space
+      var normalWorld = inverse.transpose().multiply(normalObject); // the normal in world space (optimization here)
+      normalWorld = Tuple.makeVector(normalWorld.x, normalWorld.y, normalWorld.z); // hacky step here due to the optimization
+      return normalWorld.normalize();
     }
   
 }
