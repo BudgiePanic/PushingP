@@ -63,7 +63,7 @@ public class MaterialTest {
         normal = Tuple.makeVector(0,0,-1);
         light = new PointLight(Tuple.makePoint(0, 10, -10), Colors.white);
         var result = material.compute(light, position, eye, normal);
-        var expected = new Color(1.6364f, 1.6364f, 1.6364f);
+        var expected = new Color(1.63638f, 1.63638f, 1.63638f);
         assertEquals(expected, result);
     }
 
