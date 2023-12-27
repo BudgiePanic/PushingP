@@ -183,4 +183,23 @@ public class TupleMathTest {
         var a = new Tuple(0f, 0f, 0f, 0.00000001f);
         assertTrue(a.isVector());
     }
+
+    @Test
+    void testVectorReflectionA() {
+        var vector = Tuple.makeVector(1, -1, 0);
+        var normal = Tuple.makeVector(0,1,0);
+        var result = vector.reflect(normal);
+        var expected = Tuple.makeVector(1, 1, 0);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testVectorReflectionB() {
+        var sqrtTwoOverTwo = (float) (Math.sqrt(2.0) / 2.0);
+        var vector = Tuple.makeVector(0, -1, 0);
+        var normal = Tuple.makeVector(sqrtTwoOverTwo,sqrtTwoOverTwo,0);
+        var result = vector.reflect(normal);
+        var expected = Tuple.makeVector(1, 0, 0);
+        assertEquals(expected, result);
+    }
 }
