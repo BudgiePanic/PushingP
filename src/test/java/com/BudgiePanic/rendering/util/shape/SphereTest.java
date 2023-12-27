@@ -172,7 +172,7 @@ public class SphereTest {
     void testNormalTransformedOrigin() {
         var piOverFive = (float)(Math.PI / 5.0);
         var sqrtTwoOverTwo = (float)(Math.sqrt(2.0) / 2.0);
-        var sphere = new Sphere(Transforms.identity().scale(1f, 0.5f, 1f).rotateZ(piOverFive).assemble());
+        var sphere = new Sphere(Transforms.identity().rotateZ(piOverFive).scale(1f, 0.5f, 1f).assemble());
         var normal = sphere.normal(Tuple.makePoint(0f, sqrtTwoOverTwo, -sqrtTwoOverTwo));
         var expected = Tuple.makeVector(0f, 0.97014f, -0.24254f);
         assertEquals(expected, normal); 
