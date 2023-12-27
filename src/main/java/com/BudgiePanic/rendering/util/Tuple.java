@@ -366,7 +366,8 @@ public class Tuple {
      *     A new vector reflected about the normal
      */
     public Tuple reflect(Tuple normal) {
-        return null;
+        var scalar = 2.0f * this.dot(normal);
+        return this.subtract(normal.multiply(scalar));
     }
 
     @Override
