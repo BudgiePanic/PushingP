@@ -159,4 +159,22 @@ public class SphereTest {
         var expected = normal.normalize();
         assertEquals(expected, normal);
     }
+
+    @Test
+    void testNormalNonOrigin() {
+        var sphere = new Sphere(Translation.makeTranslationMatrix(0, 1, 0));
+        var normal = sphere.normal(Tuple.makePoint(0f, 1.70711f, -0.70711f));
+        var expected = Tuple.makeVector(0f, 0.70711f, -0.70711f);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testNormalTransformedOrigin() {
+        var piOverFive = (float)(Math.PI / 5.0);
+        var sqrtTwoOverTwo = (float)(Math.sqrt(2.0) / 2.0);
+        var sphere = new Sphere(Transforms.identity().scale(1f, 0.5f, 1f).rotateZ(piOverFive).assemble());
+        var normal = sphere.normal(Tuple.makePoint(0f, sqrtTwoOverTwo, -sqrtTwoOverTwo));
+        var expected = Tuple.makeVector(0f, 0.97014f, -0.24254f);
+        assertEquals(expected, normal); 
+    }
 }
