@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.BudgiePanic.rendering.util.Color;
+import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
@@ -176,5 +178,15 @@ public class SphereTest {
         var normal = sphere.normal(Tuple.makePoint(0f, sqrtTwoOverTwo, -sqrtTwoOverTwo));
         var expected = Tuple.makeVector(0f, 0.97014f, -0.24254f);
         assertEquals(expected, normal); 
+    }
+
+    @Test
+    void testSphereMaterialProperty() {
+        assertDoesNotThrow(()->{
+            var sphere = new Sphere(
+                            Matrix4.identity(), 
+                            new Material(new Color(), 1f, 0f,0f,0f));
+            assertEquals(1f, sphere.material().ambient());
+        });
     }
 }
