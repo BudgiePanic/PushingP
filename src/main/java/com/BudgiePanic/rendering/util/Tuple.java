@@ -358,6 +358,18 @@ public class Tuple {
             (this.x * other.y) - (this.y * other.x));
     }
 
+    /**
+     * Reflect's this tuple about a normal vector.
+     * @param normal
+     *     Normal vector
+     * @return
+     *     A new vector reflected about the normal
+     */
+    public Tuple reflect(Tuple normal) {
+        var scalar = 2.0f * this.dot(normal);
+        return this.subtract(normal.multiply(scalar));
+    }
+
     @Override
     public String toString(){
         return "[" + this.x + "," + this.y + "," + this.z + "," + this.w + "]";

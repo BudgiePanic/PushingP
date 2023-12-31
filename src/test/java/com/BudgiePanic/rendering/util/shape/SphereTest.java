@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.BudgiePanic.rendering.util.Color;
+import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
@@ -116,5 +118,75 @@ public class SphereTest {
         var sphere = new Sphere(Transforms.identity().translate(5, 0, 0).assemble());
         var intersections = sphere.intersect(ray);
         assertTrue(intersections.isEmpty());
+    }
+
+    @Test
+    void testSphereNormalX() {
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(1,0,0));
+        var expected = Tuple.makeVector(1, 0, 0);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testSphereNormalZ() {
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(0,0,1));
+        var expected = Tuple.makeVector(0, 0, 1);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testSphereNormalY() {
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(0, 1,0));
+        var expected = Tuple.makeVector(0, 1, 0);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testSphereNormal() {
+        var sqrtThreeOverThree = (float) (Math.sqrt(3.0) / 3.0);
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(sqrtThreeOverThree,sqrtThreeOverThree,sqrtThreeOverThree));
+        var expected = Tuple.makeVector(sqrtThreeOverThree,sqrtThreeOverThree,sqrtThreeOverThree);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testNormalMagnitude() {
+        var sqrtThreeOverThree = (float) (Math.sqrt(3.0) / 3.0);
+        var sphere = Sphere.defaultSphere();
+        var normal = sphere.normal(Tuple.makePoint(sqrtThreeOverThree,sqrtThreeOverThree,sqrtThreeOverThree));
+        var expected = normal.normalize();
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testNormalNonOrigin() {
+        var sphere = new Sphere(Translation.makeTranslationMatrix(0, 1, 0));
+        var normal = sphere.normal(Tuple.makePoint(0f, 1.70711f, -0.70711f));
+        var expected = Tuple.makeVector(0f, 0.70711f, -0.70711f);
+        assertEquals(expected, normal);
+    }
+
+    @Test
+    void testNormalTransformedOrigin() {
+        var piOverFive = (float)(Math.PI / 5.0);
+        var sqrtTwoOverTwo = (float)(Math.sqrt(2.0) / 2.0);
+        var sphere = new Sphere(Transforms.identity().rotateZ(piOverFive).scale(1f, 0.5f, 1f).assemble());
+        var normal = sphere.normal(Tuple.makePoint(0f, sqrtTwoOverTwo, -sqrtTwoOverTwo));
+        var expected = Tuple.makeVector(0f, 0.97014f, -0.24254f);
+        assertEquals(expected, normal); 
+    }
+
+    @Test
+    void testSphereMaterialProperty() {
+        assertDoesNotThrow(()->{
+            var sphere = new Sphere(
+                            Matrix4.identity(), 
+                            new Material(new Color(), 1f, 0f,0f,0f));
+            assertEquals(1f, sphere.material().ambient());
+        });
     }
 }
