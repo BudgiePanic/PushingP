@@ -90,6 +90,7 @@ public record Sphere(Matrix4 transform, Material material) {
      *   A new vector representing the normal of the sphere at the given point.
      */
     public Tuple normal(Tuple point) {
+      if (point == null) throw new IllegalArgumentException("point is null");
       // optimized technique described in in Jamis Buck's book The Ray Tracer Challenge
       var inverse = this.transform.inverse();
       var pointObject = inverse.multiply(point); // the point in object space
