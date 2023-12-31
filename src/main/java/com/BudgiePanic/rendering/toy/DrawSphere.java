@@ -30,31 +30,18 @@ public class DrawSphere implements Runnable {
 
     @Override
     public void run() {
-        var mat = Material.defaultMaterial();
-        var sphere = new Sphere(Transforms.identity().assemble(), 
-                                new Material(new Color(1, 0.2f, 1),
-                                        mat.ambient(),
-                                        mat.diffuse(),
-                                        mat.specular(),
-                                        mat.shininess()));
+        var sphere = new Sphere(Transforms.identity().assemble(), Material.color(new Color(1, 0.2f, 1)));
         operate(sphere);
         System.out.println("Finished casting rays 1/3");
-        sphere = new Sphere(Transforms.identity().scale(0.8f, 0.6f, 1.25f).rotateY(3f).assemble(), 
-                                new Material(Colors.green,
-                                        mat.ambient(),
-                                        mat.diffuse(),
-                                        mat.specular(),
-                                        mat.shininess()));
+
+        sphere = new Sphere(Transforms.identity().scale(0.8f, 0.6f, 1.25f).rotateY(3f).assemble(), Material.color(Colors.green));
         operate(sphere);
         System.out.println("Finished casting rays 2/3");
-        sphere = new Sphere(Transforms.identity().scale(0.25f, 1.66f, 1f).rotateZ(0.5f * 3f).assemble(), 
-                                new Material(Colors.red,
-                                        mat.ambient(),
-                                        mat.diffuse(),
-                                        mat.specular(),
-                                        mat.shininess()));
+
+        sphere = new Sphere(Transforms.identity().scale(0.25f, 1.66f, 1f).rotateZ(0.5f * 3f).assemble(), Material.color(Colors.red));
         operate(sphere);
         System.out.println("Finished casting rays 3/3");
+
         var lines = CanvasWriter.canvasToPPMString(canvas);
         File file = new File(System.getProperty("user.dir"), fileName);
         try {
