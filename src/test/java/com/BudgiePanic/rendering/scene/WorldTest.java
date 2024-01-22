@@ -21,7 +21,7 @@ public class WorldTest {
     static World defaultTestWorld;
 
     @BeforeAll
-    void initializeTestWorld() {
+    static void initializeTestWorld() {
         var light = new PointLight(Tuple.makePoint(-10, 10, -10), Colors.white);
         var sphereA = new Sphere(
             Transforms.identity().assemble(),
