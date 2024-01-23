@@ -45,7 +45,7 @@ public class ViewTest {
         var transform = View.makeViewMatrix(from, to, up);
         assertEquals(Matrix4.buildMatrix(
              -0.50709f, 0.50709f, 0.67612f, -2.36643f,
-             0.76772f, 0.60609f, 0.12122f, 2.82843f,
+             0.76772f, 0.60609f, 0.12122f, -2.82843f,
              -0.35857f, 0.59761f, -0.71714f, 0f,
              0f, 0f, 0f, 1f), transform);
     }
