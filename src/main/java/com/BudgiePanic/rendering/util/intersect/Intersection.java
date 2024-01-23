@@ -37,4 +37,19 @@ public record Intersection(Float a, Sphere sphere) {
         return result;
     }
 
+    /**
+     * Precompute information required by the lighting model.
+     *
+     * @param ray
+     *   The intersecting ray.
+     * @return
+     *   Precomputed lighting information about this intersection.
+     */
+    public ShadingInfo computeShadingInfo(Ray ray) {
+        var point = ray.position(this.a);
+        var eye = ray.direction().negate();
+        var normal = this.sphere.normal(point);
+        return new ShadingInfo(this.a, this.sphere, point, eye, normal);
+    }
+
 }
