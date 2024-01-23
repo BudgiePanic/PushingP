@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.BudgiePanic.rendering.util.Color;
+import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
+import com.BudgiePanic.rendering.util.intersect.ShadingInfo;
 import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 
@@ -103,5 +106,20 @@ public class World {
         if (intersections.isEmpty()) return Optional.empty();
         intersections.sort(Comparator.comparing(Intersection::a));
         return Optional.of(intersections);
+    }
+
+    /**
+     * Determine the color of a point in the world given some shading information.
+     *
+     * @param info
+     *   Shading information derived from a ray-shape intersection test
+     * @return
+     *   The color of the point in the world given the shading information.
+     */
+    public Color shadeHit(ShadingInfo info) {
+        if (info == null) throw new IllegalArgumentException("shading info should not be null");
+        if (this.lights.isEmpty()) return Colors.black; // no light to make any color.
+        return info.shape().material().
+        compute(this.lights.get(0), info.point(), info.eyeVector(), info.normalVector());
     }
 }
