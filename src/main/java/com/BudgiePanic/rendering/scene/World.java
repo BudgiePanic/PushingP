@@ -118,8 +118,9 @@ public class World {
      */
     public Color shadeHit(ShadingInfo info) {
         if (info == null) throw new IllegalArgumentException("shading info should not be null");
-        if (this.lights.isEmpty()) return Colors.black; // no light to make any color.
-        return info.shape().material().
-        compute(this.lights.get(0), info.point(), info.eyeVector(), info.normalVector());
+        return this.lights.stream().
+            map((light) -> info.shape().material().compute(light, info.point(), info.eyeVector(), info.normalVector())).
+            reduce(Color::add). // NOTE: should this be ColorMul?
+            orElse(Colors.black);
     }
 }
