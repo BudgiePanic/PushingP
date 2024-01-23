@@ -49,7 +49,12 @@ public record Intersection(Float a, Sphere sphere) {
         var point = ray.position(this.a);
         var eye = ray.direction().negate();
         var normal = this.sphere.normal(point);
-        return new ShadingInfo(this.a, this.sphere, point, eye, normal);
+        var inside = false;
+        if (normal.dot(eye) < 0f) {
+            inside = true;
+            normal = normal.negate();
+        }
+        return new ShadingInfo(this.a, this.sphere, point, eye, normal, inside);
     }
 
 }

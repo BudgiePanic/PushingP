@@ -8,4 +8,4 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
  * 
  * @author BudgiePanic
  */
-public record ShadingInfo(float a, Sphere shape, Tuple point, Tuple eyeVector, Tuple normalVector) {}
+public record ShadingInfo(float a, Sphere shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside) {}
