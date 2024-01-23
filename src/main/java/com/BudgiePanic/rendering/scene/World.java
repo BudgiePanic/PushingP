@@ -123,4 +123,24 @@ public class World {
             reduce(Color::add). // NOTE: should this be ColorMul?
             orElse(Colors.black);
     }
+
+    /**
+     * Determine the color produced by a ray intersecting with the world.
+     *
+     * @param ray
+     *   The ray
+     * @return
+     *   The color resulting from shading the ray intersection point within the world.
+     */
+    public Color computeColor(Ray ray) {
+        var intersections = intersect(ray); 
+        if (intersections.isPresent()) {
+            var hit = Intersection.Hit(intersections.get());
+            if (hit.isPresent()) {
+                var info = hit.get().computeShadingInfo(ray);
+                return shadeHit(info);
+            }
+        }
+        return Colors.black;
+    }
 }
