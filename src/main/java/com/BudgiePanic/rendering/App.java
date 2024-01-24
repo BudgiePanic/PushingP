@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering;
 
 import com.BudgiePanic.rendering.toy.Artillery;
+import com.BudgiePanic.rendering.toy.CameraDemo;
 import com.BudgiePanic.rendering.toy.Clock;
 import com.BudgiePanic.rendering.toy.DrawSphere;
 import com.BudgiePanic.rendering.toy.Shadow;
@@ -16,6 +17,7 @@ public class App
     final static String flagClock = "-clock";
     final static String flagShadow = "-shadow";
     final static String flagSphereDraw = "-sphere";
+    final static String flagCamera = "-camera";
 
     public static void main( String[] args )
     {
@@ -42,6 +44,11 @@ public class App
                 System.out.println("Running phong sphere toy.");
                 new DrawSphere().run();
             }
+            if (args[0].equals(flagCamera)) {
+                System.out.println("Running camera toy.");
+                new CameraDemo().run();
+            }
+
         }
     }
 }
