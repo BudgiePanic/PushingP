@@ -113,7 +113,7 @@ public class Camera {
         if (world == null) throw new IllegalArgumentException("world is null");
         Canvas canvas = new ArrayCanvas(width, height);
         for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
+            for (int col = 0; col < this.width; col++) { // TODO this for loop could be executed in parrallel for massive program speed up >:)
                 canvas.writePixel(col, row, world.computeColor(createRay(col, row)));
             }
         }
