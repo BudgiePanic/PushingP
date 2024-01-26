@@ -146,15 +146,17 @@ public class World {
     }
 
     public boolean inShadow(Tuple point) {
-        //lights.stream().map(light -> )
-        var pointToLight = lights.get(0).position().subtract(point);
-        var distance = pointToLight.magnitude();
-        var ray = new Ray(point, pointToLight.normalize());
-        var intersections = this.intersect(ray);
-        if (intersections.isEmpty()) return false;
-        var hit = Intersection.Hit(intersections.get());
-        if (hit.isPresent()) {
-            if (hit.get().a() < distance) return true; 
+        for (PointLight light : lights) {
+            var pointToLight = light.position().subtract(point);
+            var distance = pointToLight.magnitude();
+            var ray = new Ray(point, pointToLight.normalize());
+            var intersections = this.intersect(ray);
+            if (intersections.isEmpty()) return false;
+            var hit = Intersection.Hit(intersections.get());
+            if (hit.isPresent()) {
+                // distance to hit is smaller than distance to light, so it must be blocking the point's view to the light
+                if (hit.get().a() < distance) return true; 
+            }
         } 
         return false;
     }
