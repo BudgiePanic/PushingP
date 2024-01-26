@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
+import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.intersect.ShadingInfo;
@@ -142,5 +143,19 @@ public class World {
             }
         }
         return Colors.black;
+    }
+
+    public boolean inShadow(Tuple point) {
+        //lights.stream().map(light -> )
+        var pointToLight = lights.get(0).position().subtract(point);
+        var distance = pointToLight.magnitude();
+        var ray = new Ray(point, pointToLight.normalize());
+        var intersections = this.intersect(ray);
+        if (intersections.isEmpty()) return false;
+        var hit = Intersection.Hit(intersections.get());
+        if (hit.isPresent()) {
+            if (hit.get().a() < distance) return true; 
+        } 
+        return false;
     }
 }
