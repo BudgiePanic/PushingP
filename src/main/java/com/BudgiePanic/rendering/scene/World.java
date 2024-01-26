@@ -145,6 +145,14 @@ public class World {
         return Colors.black;
     }
 
+    /**
+     * Check if a point in the world is in shadow from another object
+     *
+     * @param point
+     *   The location to check for illumination.
+     * @return
+     *   Whether the point can see a light in the scene without intersecting a closer object.
+     */
     public boolean inShadow(Tuple point) {
         for (PointLight light : lights) {
             var pointToLight = light.position().subtract(point);
