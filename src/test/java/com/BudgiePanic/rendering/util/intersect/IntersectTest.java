@@ -7,7 +7,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.BudgiePanic.rendering.util.FloatHelp;
+import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class IntersectTest {
     
@@ -63,6 +66,20 @@ public class IntersectTest {
         var result = Intersection.Hit(List.of(intersectA, intersectB, intersectC, intersectD));
         assertTrue(result.isPresent(), "no hit intersection was returned");
         assertEquals(intersectD, result.get());
+    }
+
+    @Test
+    void testAcneAvoidance() {
+        // test that intersection points are moved slightly above the surface along the surface normal for shadow testing
+        // to prevent the ray intersection from being beneath the surface, falsely causing the system to think the 
+        // ray hit a point in shadow, caused by floating point imprecision
+        var ray = new Ray(Tuple.makePoint(0, 0, -5), Tuple.makeVector(0, 0, 1));
+        var shape = new Sphere(Transforms.identity().translate(0, 0, 1).assemble());
+        var intersect = new Intersection(5f, shape);
+        var info = intersect.computeShadingInfo(ray);
+        Tuple result = info.overPoint();
+        assertTrue(result.z < -FloatHelp.epsilon / 2f);
+        assertTrue(result.z < info.point().z); // the point moved along the normal should be closer to 0 (smaller) because the ray came from -ve z direction
     }
 
 }
