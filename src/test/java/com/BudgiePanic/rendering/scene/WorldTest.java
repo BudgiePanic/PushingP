@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -137,5 +138,29 @@ public class WorldTest {
         var ray = new Ray(Tuple.makePoint(0, 0, 0.75f), Tuple.makeVector(0, 0, -1));
         var result = world.computeColor(ray);
         assertEquals(sphereB.material().color(), result);
+    }
+
+    @Test
+    void testIlluminatedPoint() {
+        var result = defaultTestWorld.inShadow(Tuple.makePoint(0, 10, 0));
+        assertFalse(result);
+    }
+
+    @Test
+    void testShadowedPoint() {
+        var result = defaultTestWorld.inShadow(Tuple.makePoint(10, -10, 10));
+        assertTrue(result);
+    }
+
+    @Test
+    void testIlluminatedPointA() {
+        var result = defaultTestWorld.inShadow(Tuple.makePoint(-20, 20, 20));
+        assertFalse(result);
+    }
+
+    @Test
+    void testIlluminatedPointB () {
+        var result = defaultTestWorld.inShadow(Tuple.makePoint(-2, 2, 2));
+        assertFalse(result);
     }
 }
