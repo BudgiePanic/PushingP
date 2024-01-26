@@ -6,7 +6,14 @@ package com.BudgiePanic.rendering.util;
  * @author BudgiePanic
  */
 public final class FloatHelp {
+    
     private FloatHelp() {}
+    
+    /**
+     * The maximum difference in floats for them to be considered the same.
+     */
+    public final static float epsilon = 0.00001f;
+    
     /**
      * checks if two floating point numbers are similar enough to each other.
      * Used instead of == to cope with floating point imprecision.
@@ -20,9 +27,6 @@ public final class FloatHelp {
      *   -1 if b is larger than a.
      */
     public static int compareFloat(float a, float b){
-        // Uses 5 decimal places of precision for the check. 
-        // The debuggers says any more decimal places will get rounded off.
-        final float epsilon = 0.00001f;
         float delta = (float) Math.abs(a - b);
         if (delta < epsilon) return 0;
         if (a < b) return -1;
