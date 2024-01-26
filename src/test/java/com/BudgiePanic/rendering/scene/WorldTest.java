@@ -163,4 +163,18 @@ public class WorldTest {
         var result = defaultTestWorld.inShadow(Tuple.makePoint(-2, 2, 2));
         assertFalse(result);
     }
+
+    @Test
+    void testShadeHitInShadow() {
+        var world = new World();
+        world.addLight(new PointLight(Tuple.makePoint(0, 0, -10), Colors.white));
+        world.addShape(Sphere.defaultSphere());
+        world.addShape(new Sphere(Transforms.identity().translate(0, 0, 10).assemble()));
+        var ray = new Ray(Tuple.makePoint(0, 0, 5), Tuple.makeVector(0, 0, 1));
+        var intersection = new Intersection(4f, world.getShapes().get(1));
+        var info = intersection.computeShadingInfo(ray);
+        var result = world.shadeHit(info);
+        var expected = new Color(0.1f, 0.1f, 0.1f);
+        assertEquals(expected, result);
+    }
 }
