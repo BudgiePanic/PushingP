@@ -207,7 +207,7 @@ public class WorldTest {
         world.addShape(floor);
         world.addShape(leftWall);
         world.addShape(rightWall);
-        Camera camera = new Camera(640, 480, 
+        Camera camera = new Camera(50, 50, 
             AngleHelp.toRadians(90), 
             View.makeViewMatrix(
                 Tuple.makePoint(0, 1.5f, -5f),
