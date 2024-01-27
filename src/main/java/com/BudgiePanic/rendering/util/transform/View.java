@@ -20,7 +20,7 @@ public final class View {
      * @param from
      *   The origin of the view matrix
      * @param to
-     *   The direction that the view matrix looks at
+     *   The location that the view matrix looks at
      * @param up
      *   Which direction is up
      * @return

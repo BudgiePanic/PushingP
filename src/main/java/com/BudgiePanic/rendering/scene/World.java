@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
+import com.BudgiePanic.rendering.util.FloatHelp;
+import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.intersect.ShadingInfo;
@@ -119,7 +121,7 @@ public class World {
     public Color shadeHit(ShadingInfo info) {
         if (info == null) throw new IllegalArgumentException("shading info should not be null");
         return this.lights.stream().
-            map((light) -> info.shape().material().compute(light, info.point(), info.eyeVector(), info.normalVector())).
+            map((light) -> info.shape().material().compute(light, info.point(), info.eyeVector(), info.normalVector(), inShadow(info.overPoint()))).
             reduce(Color::add). // NOTE: should this be ColorMul?
             orElse(Colors.black);
     }
@@ -142,5 +144,31 @@ public class World {
             }
         }
         return Colors.black;
+    }
+
+    /**
+     * Check if a point in the world is in shadow from another object
+     *
+     * @param point
+     *   The location to check for illumination.
+     * @return
+     *   Whether the point can see a light in the scene without intersecting a closer object.
+     */
+    public boolean inShadow(Tuple point) {
+        for (PointLight light : lights) {
+            var pointToLight = light.position().subtract(point);
+            var distance = pointToLight.magnitude();
+            var ray = new Ray(point, pointToLight.normalize());
+            var intersections = this.intersect(ray);
+            if (intersections.isEmpty()) return false;
+            var hit = Intersection.Hit(intersections.get());
+            if (hit.isPresent()) {
+                // distance to hit is smaller than distance to light, so it must be blocking the point's view to the light
+                if (FloatHelp.compareFloat(hit.get().a(), distance) < 0) {
+                    return true;
+                }
+            }
+        } 
+        return false;
     }
 }

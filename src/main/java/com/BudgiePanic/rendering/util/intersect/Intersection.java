@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import com.BudgiePanic.rendering.util.shape.Sphere;
+import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 /**
  * Ray intersection information container.
@@ -30,7 +31,7 @@ public record Intersection(Float a, Sphere sphere) {
         final var zero = Float.valueOf(0f);
         var result = intersections.stream().
         filter((intersect)->{
-            return !(intersect.a() <= zero);
+            return compareFloat(intersect.a(), zero) > 0; // !(intersect.a() <= zero);
         }).sorted((i1, i2)->{
             return i1.a().compareTo(i2.a());
         }).findFirst();

@@ -91,4 +91,14 @@ public class MaterialTest {
         var expected = new Material(Colors.white, 0.1f, 0.9f, 0.9f, 200f);
         assertEquals(expected, material);
     }
+
+    @Test
+    void testShadowLighting() {
+        eye = Tuple.makeVector(0, 0, -1);
+        normal = Tuple.makeVector(0, 0, -1);
+        light = new PointLight(Tuple.makePoint(0, 0, -10), Colors.white);
+        var result = material.compute(light, position, eye, normal, true);
+        var expected = new Color(0.1f, 0.1f, 0.1f);
+        assertEquals(expected, result);
+    }
 }

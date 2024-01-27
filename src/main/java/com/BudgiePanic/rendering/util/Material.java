@@ -73,11 +73,34 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   The color at point 'position'
      */
     public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal) {
+        return compute(light, position, eye, normal, false);
+    }
+
+    /**
+     * Uses the Phong lighting model to compute the color of a point using the material properties.
+     * 
+     * This function is in the Material record because another lighting system may wish to use 
+     * a lighting system other than Phong, which may neeed new material properties. 
+     * 
+     * @param light
+     *   The light that is illuminating the position
+     * @param position
+     *   The point being lit
+     * @param eye
+     *   the position of the observer
+     * @param normal
+     *   surface normal at 'position'
+     * @param shadow
+     *   is the surface under shadow?
+     * @return
+     *   The color at point 'position'
+     */
+    public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal, boolean shadow) {
         var effective = this.color.colorMul(light.color());
         var directionToLight = light.position().subtract(position).normalize();
         var ambient = effective.multiply(this.ambient);
         var lightNormalAngle = directionToLight.dot(normal);
-        if (lightNormalAngle < 0f) {
+        if (shadow || lightNormalAngle < 0f) {
             return ambient;
         }
         Color diffuse = effective.multiply(this.diffuse).multiply(lightNormalAngle);
