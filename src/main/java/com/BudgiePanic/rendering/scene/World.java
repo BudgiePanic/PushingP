@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
+import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -163,7 +164,9 @@ public class World {
             var hit = Intersection.Hit(intersections.get());
             if (hit.isPresent()) {
                 // distance to hit is smaller than distance to light, so it must be blocking the point's view to the light
-                if (hit.get().a() < distance) return true; 
+                if (FloatHelp.compareFloat(hit.get().a(), distance) < 0) {
+                    return true;
+                }
             }
         } 
         return false;
