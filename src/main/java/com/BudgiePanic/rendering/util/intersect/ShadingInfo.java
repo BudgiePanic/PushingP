@@ -11,6 +11,12 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
  */
 public record ShadingInfo(float a, Sphere shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside) {
 
+    // a => the distance along the ray that intersected to reach point
+    // shape => the object that the ray hit
+    // point => the point in 3D space where the ray hit the shape
+    // eyeVector => a vector looking in the opposite direction as the ray
+    // normalVector => the surface normal on the shape at the point where the ray hit the shape
+
     /**
      * Calculate a point slightly above the surface that is being shaded, to avoid floating point precision errors.
      *
@@ -18,6 +24,6 @@ public record ShadingInfo(float a, Sphere shape, Tuple point, Tuple eyeVector, T
      *   A point above the surface slightly along the normal direction.
      */
     public Tuple overPoint() {
-        return point.add(normalVector.multiply(3f*FloatHelp.epsilon));
+        return point.add(normalVector.multiply(FloatHelp.epsilon));
     }
 }
