@@ -78,8 +78,10 @@ public class IntersectTest {
         var intersect = new Intersection(5f, shape);
         var info = intersect.computeShadingInfo(ray);
         Tuple result = info.overPoint();
-        assertTrue(result.z < -FloatHelp.epsilon / 2f);
+        assertTrue(result.z < -(FloatHelp.epsilon / 2f)); 
         assertTrue(result.z < info.point().z); // the point moved along the normal should be closer to 0 (smaller) because the ray came from -ve z direction
+        assertEquals(-1, FloatHelp.compareFloat(result.z, info.point().z));
+        assertEquals(-1, FloatHelp.compareFloat(result.z, -(FloatHelp.epsilon / 2f)));
     }
 
 }
