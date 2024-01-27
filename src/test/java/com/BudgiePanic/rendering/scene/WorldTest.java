@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
@@ -16,6 +17,7 @@ import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
+import com.BudgiePanic.rendering.util.transform.View;
 
 public class WorldTest {
     
@@ -176,5 +178,55 @@ public class WorldTest {
         var result = world.shadeHit(info);
         var expected = new Color(0.1f, 0.1f, 0.1f);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void testShadingThinObject() {
+        // there should be no acne effect, all intersection points should NOT be in shadow
+        var floor = new Sphere(Transforms.identity().scale(10, 0.01f, 10).assemble(),
+            Material.color(new Color(1, 0.9f, 0.9f)).setSpecular(0));
+        Sphere leftWall = new Sphere(
+            Transforms.identity().
+                scale(10, 0.1f, 10).
+                rotateX(AngleHelp.toRadians(90)).
+                rotateY(AngleHelp.toRadians(-45)).
+                translate(0, 0, 5).assemble(),
+            floor.material()
+        );
+        Sphere rightWall = new Sphere(
+            Transforms.identity().
+                scale(10, 0.1f, 10).
+                rotateX(AngleHelp.toRadians(90)).
+                rotateY(AngleHelp.toRadians(45)).
+                translate(0, 0, 5).assemble(),
+            floor.material()
+        );
+        PointLight light = new PointLight(Tuple.makePoint(-10, 10, -10), Colors.white);
+        World world = new World();
+        world.addLight(light);
+        world.addShape(floor);
+        world.addShape(leftWall);
+        world.addShape(rightWall);
+        Camera camera = new Camera(640, 480, 
+            AngleHelp.toRadians(90), 
+            View.makeViewMatrix(
+                Tuple.makePoint(0, 1.5f, -5f),
+                Tuple.makePoint(0, 1, 0),
+                Tuple.makeVector(0, 1, 0)));
+        for (int row = 0; row < camera.height; row++) {
+            for (int col = 0; col < camera.width; col++) {
+                var ray = camera.createRay(col, row);
+                // get shading info from every ray
+                var intersections = world.intersect(ray);
+                assertTrue(intersections.isPresent(), String.format("ray for pixel r:%d c:%d did not intersect with any objects in the scene", row, col));
+                var hit = Intersection.Hit(intersections.get());
+                assertTrue(hit.isPresent(), String.format("ray for pixel r:%d c:%d intersected, but had no hit", row, col));
+                // ask if the ray is in shadow
+                // in this test set up, no intersection points should be in shadow
+                var hitInfo = hit.get().computeShadingInfo(ray);
+                var inShadow = world.inShadow(hitInfo.overPoint());
+                assertFalse(inShadow, String.format("ray at r:%d c:%d was in shadow", row, col));
+            }
+        }
     }
 }
