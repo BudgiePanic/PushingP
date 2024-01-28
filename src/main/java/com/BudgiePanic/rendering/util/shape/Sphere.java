@@ -23,7 +23,7 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  * 
  * @author BudgiePanic
  */
-public record Sphere(Matrix4 transform, Material material) {
+public record Sphere(Matrix4 transform, Material material) implements Shape {
     
     public static Sphere defaultSphere() {
       return new Sphere(Matrix4.identity(), Material.defaultMaterial());
@@ -54,6 +54,7 @@ public record Sphere(Matrix4 transform, Material material) {
      * @return
      *   A list of distances to intersection points along the ray, from the ray origin. May be empty.
      */
+    @Override
     public Optional<List<Intersection>> intersect(Ray ray) {
         // Compute discriminant, if 0, then there is no intersection
           // A vector going from the sphere origin to the ray origin
@@ -89,6 +90,7 @@ public record Sphere(Matrix4 transform, Material material) {
      * @return
      *   A new vector representing the normal of the sphere at the given point.
      */
+    @Override
     public Tuple normal(Tuple point) {
       if (point == null) throw new IllegalArgumentException("point is null");
       // optimized technique described in in Jamis Buck's book The Ray Tracer Challenge
