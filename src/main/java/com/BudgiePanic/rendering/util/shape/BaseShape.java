@@ -126,4 +126,36 @@ public abstract class BaseShape implements Shape {
         return Objects.hash(transform, material);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        BaseShape other = (BaseShape) obj;
+        if (transform == null) {
+            if (other.transform != null) {
+                return false;
+            }
+        } else if (!transform.equals(other.transform)) {
+            return false;
+        }
+        if (material == null) {
+            if (other.material != null) {
+                return false;
+            }
+        } else if (!material.equals(other.material)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+
+
 }
