@@ -2,14 +2,14 @@ package com.BudgiePanic.rendering.util.intersect;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Tuple;
-import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
  * Lighting data container that accompanies intersection information to be used in shading calculations.
  * 
  * @author BudgiePanic
  */
-public record ShadingInfo(float a, Sphere shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside) {
+public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside) {
 
     // a => the distance along the ray that intersected to reach point
     // shape => the object that the ray hit
