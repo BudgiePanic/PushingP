@@ -22,7 +22,7 @@ public interface Shape {
      * @return
      *   The object's transform
      */
-    public Matrix4 transform();
+    Matrix4 transform();
 
     /**
      * The information needed to shade the shape.
@@ -30,18 +30,19 @@ public interface Shape {
      * @return
      *   The shape's material
      */
-    public Material material();
+    Material material();
 
     /**
      * Determine the distance between the ray origin and intersection points with this shape, if any.
+     * There shouldn't be any need to override this method.
      * 
      * @param ray
      *   The ray to test against
      * @return
      *   A list of distances to intersection points along the ray, from the ray origin. May be empty.
      */
-    public Optional<List<Intersection>> intersect(Ray ray);
-
+    Optional<List<Intersection>> intersect(Ray ray);
+    
     /**
      * Determine the normal vector of a point on the shape.
      *
@@ -50,5 +51,5 @@ public interface Shape {
      * @return
      *   The normal vector at the point
      */
-    public Tuple normal(Tuple point);
+    Tuple normal(Tuple point);
 }
