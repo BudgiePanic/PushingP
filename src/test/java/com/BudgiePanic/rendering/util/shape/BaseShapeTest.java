@@ -77,7 +77,7 @@ public class BaseShapeTest {
         final float sqrtTwoOverTwo = (float) (Math.sqrt(2.0) / 2.0);
         var shape = new TestShape(Transforms.identity().rotateZ(piOverFive).scale(1, 0.5f, 1).assemble());
         var result = shape.normal(Tuple.makePoint(0, sqrtTwoOverTwo, -sqrtTwoOverTwo));
-        assertEquals(Tuple.makeVector(0, 0.97014f, -0.25254f), result);
+        assertEquals(Tuple.makeVector(0, 0.97014f, -0.24254f), result);
     }
 
 }
