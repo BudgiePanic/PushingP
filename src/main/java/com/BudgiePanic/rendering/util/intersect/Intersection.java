@@ -3,7 +3,7 @@ package com.BudgiePanic.rendering.util.intersect;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.shape.Shape;
 import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 /**
@@ -16,7 +16,7 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
  * 
  * @author BudgiePanic
  */
-public record Intersection(Float a, Sphere sphere) {
+public record Intersection(Float a, Shape sphere) {
     
     /**
      * Helper method to find hits among collections of intersections.

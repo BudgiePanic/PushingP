@@ -14,7 +14,7 @@ import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.intersect.ShadingInfo;
 import com.BudgiePanic.rendering.util.light.PointLight;
-import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
  * A world is a collection of objects and light sources that rays can intersect with.
@@ -30,7 +30,7 @@ public class World {
      * 
      * NOTE: in the future, sphere may need to be abstracted behind a Shape interface
      */
-    protected List<Sphere> shapes;
+    protected List<Shape> shapes;
     /**
      * The lights in the scene.
      * 
@@ -49,7 +49,7 @@ public class World {
      * @return
      *   A list of shapes in the world.
      */
-    public List<Sphere> getShapes() {
+    public List<Shape> getShapes() {
         return this.shapes;
     }
 
@@ -69,7 +69,7 @@ public class World {
      * @param shape
      *   The shape to add. Cannot be null.
      */
-    public void addShape(Sphere shape) {
+    public void addShape(Shape shape) {
         // precondition check, don't add null shapes
         if (shape == null) throw new IllegalArgumentException("shape cannot be null.");
         this.shapes.add(shape);
