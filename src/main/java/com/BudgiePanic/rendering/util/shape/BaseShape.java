@@ -82,8 +82,8 @@ public abstract class BaseShape implements Shape {
         var objectSpacePoint = inverse.multiply(point); // the point in object space
         var localNormal = localNormal(objectSpacePoint);
         var worldNormal = inverse.transpose().multiply(localNormal); // the normal in world space (optimization here)
-        worldNormal = Tuple.makeVector(localNormal.x, localNormal.y, localNormal.z); // hacky step here due to the optimization
-        return worldNormal.normalize();
+        // hacky step here due to the optimization
+        return Tuple.makeVector(worldNormal.x, worldNormal.y, worldNormal.z).normalize();
     }
     
     @Override
