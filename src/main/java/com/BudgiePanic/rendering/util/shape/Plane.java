@@ -54,7 +54,7 @@ public final class Plane extends BaseShape {
         }
         // this algorithm assumes an xz plane with normal = [0,1,0]
         float distanceToIntersection = -ray.origin().y / ray.direction().y;
-        return new Intersection(distanceToIntersection, this);
+        return Optional.of(List.of(new Intersection(distanceToIntersection, this)));
     }
 
     /**
