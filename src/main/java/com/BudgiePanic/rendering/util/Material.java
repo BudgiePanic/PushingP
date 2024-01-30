@@ -124,21 +124,25 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   The color at point 'position'
      */
     public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal, boolean shadow) {
-        var effective = this.color.colorMul(light.color());
-        var directionToLight = light.position().subtract(position).normalize();
-        var ambient = effective.multiply(this.ambient);
-        var lightNormalAngle = directionToLight.dot(normal);
+        final var color = pattern.map(patt -> patt.colorAt(position)).orElseGet(this::color);
+        // which one do you prefer?
+        // var color = pattern.isPresent() ? pattern.get().colorAt(position) : this.color(); 
+        assert color != null;
+        final var effective = color.colorMul(light.color());
+        final var directionToLight = light.position().subtract(position).normalize();
+        final var ambient = effective.multiply(this.ambient);
+        final var lightNormalAngle = directionToLight.dot(normal);
         if (shadow || lightNormalAngle < 0f) {
             return ambient;
         }
-        Color diffuse = effective.multiply(this.diffuse).multiply(lightNormalAngle);
-        var reflection = directionToLight.negate().reflect(normal);
-        var eyeReflectAngle = reflection.dot(eye);
+        final Color diffuse = effective.multiply(this.diffuse).multiply(lightNormalAngle);
+        final var reflection = directionToLight.negate().reflect(normal);
+        final var eyeReflectAngle = reflection.dot(eye);
         if (eyeReflectAngle < 0f) {
             return diffuse.add(ambient);
         }
-        var factor = (float)Math.pow(eyeReflectAngle, shininess);
-        var specular = light.color().multiply(this.specular).multiply(factor);
+        final var factor = (float)Math.pow(eyeReflectAngle, shininess);
+        final var specular = light.color().multiply(this.specular).multiply(factor);
         return ambient.add(diffuse).add(specular);
     }
 
