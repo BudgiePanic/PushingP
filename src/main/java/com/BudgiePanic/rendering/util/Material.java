@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.pattern.Pattern;
+import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
  * Stores information needed to light an object in a scene.
@@ -101,7 +102,7 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   The color at point 'position'
      */
     public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal) {
-        return compute(light, position, eye, normal, false);
+        return compute(light, position, eye, normal, false, Optional.empty());
     }
 
     /**
@@ -120,13 +121,13 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   surface normal at 'position'
      * @param shadow
      *   is the surface under shadow?
+     * @param shape
+     *   the shape that the surface of the point being lit belongs to, if any
      * @return
      *   The color at point 'position'
      */
-    public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal, boolean shadow) {
-        final var color = pattern.map(patt -> patt.colorAt(position)).orElseGet(this::color);
-        // which one do you prefer?
-        // var color = pattern.isPresent() ? pattern.get().colorAt(position) : this.color(); 
+    public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal, boolean shadow, Optional<Shape> shape) {
+        final var color = pattern.map(patt -> shape.map(sh -> patt.colorAt(position, sh)).orElse(patt.colorAt(position))).orElseGet(this::color);
         assert color != null;
         final var effective = color.colorMul(light.color());
         final var directionToLight = light.position().subtract(position).normalize();
