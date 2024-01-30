@@ -3,10 +3,13 @@ package com.BudgiePanic.rendering.util;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.light.PointLight;
+import com.BudgiePanic.rendering.util.pattern.Stripe;
 
 public class MaterialTest {
     
@@ -97,8 +100,20 @@ public class MaterialTest {
         eye = Tuple.makeVector(0, 0, -1);
         normal = Tuple.makeVector(0, 0, -1);
         light = new PointLight(Tuple.makePoint(0, 0, -10), Colors.white);
-        var result = material.compute(light, position, eye, normal, true);
+        var result = material.compute(light, position, eye, normal, true, Optional.empty());
         var expected = new Color(0.1f, 0.1f, 0.1f);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void testPatternLighting() {
+        var material = new Material(Colors.black, 1, 0, 0, Material.defaultShininess, Optional.of(new Stripe(Colors.white, Colors.black)));
+        var eye = Tuple.makeVector(0, 0, -1);
+        var normal = Tuple.makeVector(0, 0, -1);
+        var light = new PointLight(Tuple.makePoint(0, 0, -10), Colors.white);
+        var resultA = material.compute(light, Tuple.makePoint(0.9f,0,0), eye, normal);
+        var resultB = material.compute(light, Tuple.makePoint(1.1f,0,0), eye, normal);
+        assertEquals(Colors.white, resultA);
+        assertEquals(Colors.black, resultB);
     }
 }

@@ -1,6 +1,10 @@
 package com.BudgiePanic.rendering.util;
 
+import java.util.Optional;
+
 import com.BudgiePanic.rendering.util.light.PointLight;
+import com.BudgiePanic.rendering.util.pattern.Pattern;
+import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
  * Stores information needed to light an object in a scene.
@@ -8,7 +12,7 @@ import com.BudgiePanic.rendering.util.light.PointLight;
  * 
  * @author BudgiePanic
  */
-public record Material(Color color, float ambient, float diffuse, float specular, float shininess) {
+public record Material(Color color, float ambient, float diffuse, float specular, float shininess, Optional<Pattern> pattern) {
 
     /**
      * Default ambient value.
@@ -30,6 +34,19 @@ public record Material(Color color, float ambient, float diffuse, float specular
      */
     public static final float defaultShininess = 200f;
 
+    /**
+     * Constructor overload for no pattern.
+     * (so the rest of the code base can keep going, safely in ignorance of pattern's existance)
+     *
+     * @param color
+     * @param ambient
+     * @param diffuse
+     * @param specular
+     * @param shininess
+     */
+    public Material(Color color, float ambient, float diffuse, float specular, float shininess) {
+        this(color, ambient, diffuse, specular, shininess, Optional.empty());
+    }
 
     /**
      * Create a new default material instance.
@@ -37,7 +54,7 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   A new instance of the default material.
      */
     public static Material defaultMaterial() {
-        return new Material(Colors.white, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess);
+        return new Material(Colors.white, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess, Optional.empty());
     }
 
     /**
@@ -49,7 +66,19 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   A new material with default properties and overwritten color.
      */
     public static Material color(Color color) {
-        return new Material(color, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess);
+        return new Material(color, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess, Optional.empty());
+    }
+
+    /**
+     * A base material with a pattern.
+     * 
+     * @param pattern
+     *   The pattern to associate with this material
+     * @return
+     *   A new material with default properties and a pattern override.
+     */
+    public static Material pattern(Pattern pattern) {
+        return new Material(Colors.white, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess, Optional.of(pattern));
     }
 
     /**
@@ -73,7 +102,7 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   The color at point 'position'
      */
     public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal) {
-        return compute(light, position, eye, normal, false);
+        return compute(light, position, eye, normal, false, Optional.empty());
     }
 
     /**
@@ -92,25 +121,29 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   surface normal at 'position'
      * @param shadow
      *   is the surface under shadow?
+     * @param shape
+     *   the shape that the surface of the point being lit belongs to, if any
      * @return
      *   The color at point 'position'
      */
-    public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal, boolean shadow) {
-        var effective = this.color.colorMul(light.color());
-        var directionToLight = light.position().subtract(position).normalize();
-        var ambient = effective.multiply(this.ambient);
-        var lightNormalAngle = directionToLight.dot(normal);
+    public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal, boolean shadow, Optional<Shape> shape) {
+        final var color = pattern.map(patt -> shape.map(sh -> patt.colorAt(position, sh)).orElse(patt.colorAt(position))).orElseGet(this::color);
+        assert color != null;
+        final var effective = color.colorMul(light.color());
+        final var directionToLight = light.position().subtract(position).normalize();
+        final var ambient = effective.multiply(this.ambient);
+        final var lightNormalAngle = directionToLight.dot(normal);
         if (shadow || lightNormalAngle < 0f) {
             return ambient;
         }
-        Color diffuse = effective.multiply(this.diffuse).multiply(lightNormalAngle);
-        var reflection = directionToLight.negate().reflect(normal);
-        var eyeReflectAngle = reflection.dot(eye);
+        final Color diffuse = effective.multiply(this.diffuse).multiply(lightNormalAngle);
+        final var reflection = directionToLight.negate().reflect(normal);
+        final var eyeReflectAngle = reflection.dot(eye);
         if (eyeReflectAngle < 0f) {
             return diffuse.add(ambient);
         }
-        var factor = (float)Math.pow(eyeReflectAngle, shininess);
-        var specular = light.color().multiply(this.specular).multiply(factor);
+        final var factor = (float)Math.pow(eyeReflectAngle, shininess);
+        final var specular = light.color().multiply(this.specular).multiply(factor);
         return ambient.add(diffuse).add(specular);
     }
 
@@ -123,7 +156,7 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   A copy of this material with the ambient valued set to ambient.
      */
     public Material setAmbient(float ambient) {
-        return new Material(this.color(), ambient, this.diffuse(), this.specular(), this.shininess());
+        return new Material(this.color(), ambient, this.diffuse(), this.specular(), this.shininess(), this.pattern());
     }
 
     /**
@@ -135,7 +168,7 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   A copy of this material with the diffuse valued set to diffuse.
      */
     public Material setDiffuse(float diffuse) {
-        return new Material(this.color(), this.ambient(), diffuse, this.specular(), this.shininess());
+        return new Material(this.color(), this.ambient(), diffuse, this.specular(), this.shininess(), this.pattern());
     }
 
     /**
@@ -147,7 +180,7 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   A copy of this material with the specular valued set to specular.
      */
     public Material setSpecular(float specular) {
-        return new Material(this.color(), this.ambient(), this.diffuse(), specular, this.shininess());
+        return new Material(this.color(), this.ambient(), this.diffuse(), specular, this.shininess(), this.pattern());
     }
 
     /**
@@ -159,7 +192,7 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   A copy of this material with the shininess valued set to shininess.
      */
     public Material setShininess(float shininess) {
-        return new Material(this.color(), this.ambient(), this.diffuse(), this.specular(), shininess);
+        return new Material(this.color(), this.ambient(), this.diffuse(), this.specular(), shininess, this.pattern());
     }
 
     /**
@@ -171,6 +204,18 @@ public record Material(Color color, float ambient, float diffuse, float specular
      *   A copy of this material with the color valued set to color.
      */
     public Material setColor(Color color) {
-        return new Material(color, this.ambient(), this.diffuse(), this.specular(), this.shininess());
+        return new Material(color, this.ambient(), this.diffuse(), this.specular(), this.shininess(), this.pattern());
+    }
+
+    /**
+     * Change a material's pattern by making a copy with a new pattern.
+     * 
+     * @param pattern
+     *   The new pattern to apply to the material
+     * @return
+     *   A copy of the material with the pattern changed
+     */
+    public Material setPattern(Pattern pattern) {
+        return new Material(this.color(), this.ambient(), this.diffuse(), this.specular(), this.shininess(), Optional.of(pattern));
     }
 }
