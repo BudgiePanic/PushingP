@@ -1,32 +1,48 @@
 package com.BudgiePanic.rendering.util.pattern;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import com.BudgiePanic.rendering.util.Color;
+import com.BudgiePanic.rendering.util.Tuple;
+import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.transform.Transforms;
+
 public class PatternTest {
-    // The author of the book suggests these additional tests for checking that the pattern abstraction works
-    // I don't think these tests are needed with the currect architecture due to the use of interface and default method.
 
-    // testPattern.colorAt(point) => { return new Color(point.x, point.y, point.z) }
+    private static class TestPattern implements Pattern {
+        Matrix4 transform;
+        { transform = Matrix4.identity(); }
+        @Override
+        public Color colorAt(Tuple point) { return new Color(point.x, point.y, point.z); }
+        @Override
+        public Matrix4 transform() { return transform; }
+    }
 
-    // testDefaultPatternTransform
-    //   assert testPattern.transform == identity matrix
+    @Test
+    void testPatternObjectTransform() {
+        var shape = new Sphere(Transforms.identity().scale(2, 2, 2).assemble());
+        var pattern = new TestPattern();
+        assertEquals(new Color(1, 1.5f, 2), pattern.colorAt(Tuple.makePoint(2, 3, 4), shape));
+    }
 
-    // testPatternTransformAssignment
-    //    testPattern.setTransform(Translate(1,2,3))
-    //    assert testPatten.transform == Translate(1,2,3)
+    @Test
+    void testPatternTransform() {
+        var shape = Sphere.defaultSphere();
+        var pattern = new TestPattern();
+        pattern.transform = Transforms.identity().scale(2, 2, 2).assemble();
+        var result = pattern.colorAt(Tuple.makePoint(2, 3, 4), shape);
+        assertEquals(new Color(1, 1.5f, 2), result);
+    }
 
-    // testPatternObjectTransform
-    //   shape sphere.setTransform(scale(2,2,2))
-    //   var color = testPattern.colorAt(point(2,3,4), shape)
-    //   assert color == color(1, 1.5, 2)
-
-    // testPatternTransform
-    //   shape sphere
-    //   testPattern(scale(2,2,2))
-    //   color = testPattern.colorAt(point(2,3,4), shape)
-    //   assert color == color(1, 1.5, 2)
-
-    // testPattenTransformObjectTransform
-    //   shape sphere(scale(2,2,2))
-    //   testPattern(translate(0.5, 1, 1.5))
-    //   color = testPattern.colorAt(point(2.5, 3, 3.5), shape)
-    //   assert color == color(0.75, 0.5, 0.25)
+    @Test
+    void testPatternTransformObjectTransform() {
+        var shape = new Sphere(Transforms.identity().scale(2, 2, 2).assemble());
+        var pattern = new TestPattern();
+        pattern.transform = Transforms.identity().translate(0.5f, 1, 1.5f).assemble();
+        var output = pattern.colorAt(Tuple.makePoint(2.5f,3,3.5f), shape);
+        assertEquals(new Color(0.75f, 0.5f, 0.25f), output);
+    }
 }
