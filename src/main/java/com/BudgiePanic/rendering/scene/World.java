@@ -121,7 +121,7 @@ public class World {
     public Color shadeHit(ShadingInfo info) {
         if (info == null) throw new IllegalArgumentException("shading info should not be null");
         return this.lights.stream().
-            map((light) -> info.shape().material().compute(light, info.point(), info.eyeVector(), info.normalVector(), inShadow(info.overPoint()))).
+            map((light) -> info.shape().material().compute(light, info.point(), info.eyeVector(), info.normalVector(), inShadow(info.overPoint()), Optional.of(info.shape()))).
             reduce(Color::add). // NOTE: should this be ColorMul?
             orElse(Colors.black);
     }
