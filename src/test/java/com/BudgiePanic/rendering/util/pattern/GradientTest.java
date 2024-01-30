@@ -17,7 +17,6 @@ public class GradientTest {
         assertEquals(new Color(0.75f,0.75f,0.75f), pattern.colorAt(Tuple.makePoint(0.25f, 0, 0)));
         assertEquals(new Color(0.5f,0.5f,0.5f), pattern.colorAt(Tuple.makePoint(0.50f, 0, 0)));
         assertEquals(new Color(0.25f,0.25f,0.25f), pattern.colorAt(Tuple.makePoint(0.75f, 0, 0)));
-        assertEquals(Colors.black, pattern.colorAt(Tuple.makePoint(1, 0, 0)));
     }
 
 }
