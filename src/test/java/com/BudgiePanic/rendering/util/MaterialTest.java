@@ -82,9 +82,10 @@ public class MaterialTest {
 
     @Test
     void testMaterialProperties() {
+        // this test feels kind of silly in a compiled language, I get that the book can also apply to interpreted languages where a test like this would be useful.
         assertDoesNotThrow(() -> {
             var material = new Material(new Color(1, 1, 1), 0.1f, 0.9f, 0.9f, 200.0f);
-            assertEquals(Colors.white, material.color());
+            assertEquals(Colors.white, material.pattern().colorAt(Tuple.makePoint()));
         });
     }
 
@@ -107,7 +108,7 @@ public class MaterialTest {
 
     @Test
     void testPatternLighting() {
-        var material = new Material(Colors.black, 1, 0, 0, Material.defaultShininess, Optional.of(new Stripe(Colors.white, Colors.black)));
+        var material = new Material(new Stripe(Colors.white, Colors.black), 1, 0, 0, Material.defaultShininess);
         var eye = Tuple.makeVector(0, 0, -1);
         var normal = Tuple.makeVector(0, 0, -1);
         var light = new PointLight(Tuple.makePoint(0, 0, -10), Colors.white);
