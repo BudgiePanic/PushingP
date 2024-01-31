@@ -74,4 +74,13 @@ public interface BiOperation {
             return b.colorAt(point, transform);
         }
     };
+
+    static final BiOperation radialGradient = (point, transform, a, b) -> {
+        throw new UnsupportedOperationException("operation not implemented yet");
+    };
+
+    /**
+     * Blends the output of two patterns together.
+     */
+    static final BiOperation blend = (point, transform, a, b) -> { return a.colorAt(point, transform).colorMul(b.colorAt(point, transform)); };
 }
