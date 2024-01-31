@@ -2,6 +2,7 @@ package com.BudgiePanic.rendering.util.pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.pattern.BiOperation.stripe;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,35 +15,35 @@ public class StripeTest {
     
     @Test
     void testStripeYConstant() {
-        var stripe = new Stripe(Colors.white, Colors.black);
-        assertEquals(Colors.white, stripe.colorAt(makePoint(0, 0, 0)));
-        assertEquals(Colors.white, stripe.colorAt(makePoint(0, 1, 0)));
-        assertEquals(Colors.white, stripe.colorAt(makePoint(0, 2, 0)));
+        var pattern = new BiPattern(stripe, Colors.white, Colors.black);
+        assertEquals(Colors.white, pattern.colorAt(makePoint(0, 0, 0)));
+        assertEquals(Colors.white, pattern.colorAt(makePoint(0, 1, 0)));
+        assertEquals(Colors.white, pattern.colorAt(makePoint(0, 2, 0)));
     }
 
     @Test
     void testStripeZConstant() {
-        var stripe = new Stripe(Colors.white, Colors.black);
-        assertEquals(Colors.white, stripe.colorAt(makePoint(0, 0, 0)));
-        assertEquals(Colors.white, stripe.colorAt(makePoint(0, 0, 1)));
-        assertEquals(Colors.white, stripe.colorAt(makePoint(0, 0, 2)));
+        var pattern = new BiPattern(stripe, Colors.white, Colors.black);
+        assertEquals(Colors.white, pattern.colorAt(makePoint(0, 0, 0)));
+        assertEquals(Colors.white, pattern.colorAt(makePoint(0, 0, 1)));
+        assertEquals(Colors.white, pattern.colorAt(makePoint(0, 0, 2)));
     }
 
     @Test
     void testStripeXChanging() {
-        var stripe = new Stripe(Colors.white, Colors.black);
-        assertEquals(Colors.white, stripe.colorAt(makePoint(0f, 0f, 0f)));
-        assertEquals(Colors.white, stripe.colorAt(makePoint(0.9f, 0f, 0f)));
-        assertEquals(Colors.white, stripe.colorAt(makePoint(-1.1f, 0f, 0f)));
-        assertEquals(Colors.black, stripe.colorAt(makePoint(1f, 0f, 0f)));
-        assertEquals(Colors.black, stripe.colorAt(makePoint(-0.1f, 0f, 0f)));
-        assertEquals(Colors.black, stripe.colorAt(makePoint(-1f, 0f, 0f)));
+        var pattern = new BiPattern(stripe, Colors.white, Colors.black);
+        assertEquals(Colors.white, pattern.colorAt(makePoint(0f, 0f, 0f)));
+        assertEquals(Colors.white, pattern.colorAt(makePoint(0.9f, 0f, 0f)));
+        assertEquals(Colors.white, pattern.colorAt(makePoint(-1.1f, 0f, 0f)));
+        assertEquals(Colors.black, pattern.colorAt(makePoint(1f, 0f, 0f)));
+        assertEquals(Colors.black, pattern.colorAt(makePoint(-0.1f, 0f, 0f)));
+        assertEquals(Colors.black, pattern.colorAt(makePoint(-1f, 0f, 0f)));
     }
 
     @Test
     void testStripeWithShapeTransform() {
-        var shape = new Sphere(Transforms.identity().scale(2, 2, 2).assemble(), Material.pattern(new Stripe(Colors.white, Colors.black)));
-        var output = shape.material().pattern().colorAt(makePoint(1.5f, 0, 0), shape);
+        var shape = new Sphere(Transforms.identity().scale(2, 2, 2).assemble(), Material.pattern(new BiPattern(stripe, Colors.white, Colors.black)));
+        var output = shape.material().pattern().colorAt(makePoint(1.5f, 0, 0), shape.transform());
         assertEquals(Colors.white, output);
     }
 
@@ -50,14 +51,15 @@ public class StripeTest {
     void testStripeWithLocalTransform() {
         var shape = new Sphere(
             Transforms.identity().assemble(), 
-            Material.pattern(new Stripe(
+            Material.pattern(new BiPattern(
+                stripe,
                 Colors.white, 
                 Colors.black,
                 Transforms.identity().scale(2, 2, 2).assemble()
                 )
             )
         );
-        var output = shape.material().pattern().colorAt(makePoint(1.5f, 0, 0), shape);
+        var output = shape.material().pattern().colorAt(makePoint(1.5f, 0, 0), shape.transform());
         assertEquals(Colors.white, output);
     }
 
@@ -66,12 +68,12 @@ public class StripeTest {
         var shape = new Sphere(
             Transforms.identity().scale(2, 2, 2).assemble(),
             Material.pattern(
-                new Stripe(Colors.white, Colors.black, 
+                new BiPattern(stripe, Colors.white, Colors.black, 
                 Transforms.identity().translate(0.5f, 0, 0).assemble()
                 )
             )
         );
-        var output = shape.material().pattern().colorAt(makePoint(2.5f, 0, 0), shape);
+        var output = shape.material().pattern().colorAt(makePoint(2.5f, 0, 0), shape.transform());
         assertEquals(Colors.white, output);
     }
 }
