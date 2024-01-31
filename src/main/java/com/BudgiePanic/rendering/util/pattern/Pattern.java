@@ -3,7 +3,6 @@ package com.BudgiePanic.rendering.util.pattern;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
-import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
  * A pattern is used to augment the coloring of a shape by providing logic to change a shapes color such as a stripe pattern, gradient or grid.
