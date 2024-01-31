@@ -14,6 +14,7 @@ import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
+import com.BudgiePanic.rendering.util.light.Phong;
 import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
@@ -75,7 +76,7 @@ public class DrawSphere implements Runnable {
                         var point = ray.position(hit.get().a());
                         var normal = hit.get().sphere().normal(point);
                         var eye = ray.direction().negate();
-                        var color = hit.get().sphere().material().compute(light, point, eye, normal);
+                        var color = Phong.compute(hit.get().sphere().material(), light, point, eye, normal);
                         canvas.writePixel(column, row, color);
                     }
                 }
