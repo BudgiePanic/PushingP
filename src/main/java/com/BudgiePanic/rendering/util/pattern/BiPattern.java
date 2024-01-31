@@ -12,6 +12,20 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
 public record BiPattern(BiOperation operation, Pattern a, Pattern b, Matrix4 transform) implements Pattern {
 
     /**
+     * Convience constructor, auto populates transform with the identity matrix.
+     *
+     * @param operation
+     *   The pattern combination to use
+     * @param a
+     *   The first pattern
+     * @param b
+     *   The second pattern
+     */
+    public BiPattern(BiOperation operation, Pattern a, Pattern b) {
+        this(operation, a, b, Matrix4.identity());
+    }
+
+    /**
      * Convienience constructor, auto wraps colors in a solid color pattern.
      *
      * @param operation
