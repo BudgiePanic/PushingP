@@ -33,7 +33,7 @@ public interface BiOperation {
     /**
      * The stripe pattern alternates between two colors as the x coordinate moves along the pattern.
      */
-    static BiOperation stripe = (point, transform, a, b) -> {
+    static final BiOperation stripe = (point, transform, a, b) -> {
         if (((int)Math.floor(point.x)) % 2 == 0) {
             return a.colorAt(point, transform);
         } else {
@@ -44,7 +44,7 @@ public interface BiOperation {
     /**
      * Stripes between two colors along the xz dimensions
      */
-    static BiOperation ring = (point, transform, a, b) -> {
+    static final BiOperation ring = (point, transform, a, b) -> {
         if (Math.floor(Math.sqrt((point.x * point.x) + (point.z * point.z))) % 2 == 0) {
             return a.colorAt(point, transform);
         } else {
@@ -55,7 +55,7 @@ public interface BiOperation {
     /**
      * Linearly interpolate between pattern a and b.
      */
-    static BiOperation gradient = (point, transform, a, b) -> {
+    static final BiOperation gradient = (point, transform, a, b) -> {
         final var colorA = a.colorAt(point, transform);
         final var colorB = b.colorAt(point, transform);
         final var spectrum = colorB.subtract(colorA);
@@ -66,7 +66,7 @@ public interface BiOperation {
     /**
      * Checker pattern alternates between two colors in the xyz dimensions ensuring no two adjacent squares are the same color.
      */
-    static BiOperation checker = (point, transform, a, b) -> {
+    static final BiOperation checker = (point, transform, a, b) -> {
         final var value = ((Math.floor(point.x) + Math.floor(point.y) + Math.floor(point.z)) % 2.0);
         if (FloatHelp.compareFloat((float) value, 0) == 0) {
             return a.colorAt(point, transform);
