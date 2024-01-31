@@ -74,7 +74,7 @@ public final class Phong {
      */
     public static Color compute(Material material, PointLight light, Tuple position, Tuple eye, Tuple normal, boolean shadow,  Optional<Shape> shape) {
         final var pattern = material.pattern();
-        final var color = shape.map(sh -> pattern.colorAt(position, sh)).orElse(pattern.colorAt(position));
+        final var color = shape.map(sh -> pattern.colorAt(position, sh.transform())).orElse(pattern.colorAt(position));
         assert color != null;
         final var effective = color.colorMul(light.color());
         final var directionToLight = light.position().subtract(position).normalize();
