@@ -139,7 +139,7 @@ public class WorldTest {
 
         var ray = new Ray(Tuple.makePoint(0, 0, 0.75f), Tuple.makeVector(0, 0, -1));
         var result = world.computeColor(ray);
-        assertEquals(sphereB.material().color(), result);
+        assertEquals(sphereB.material().pattern().colorAt(Tuple.makePoint()), result);
     }
 
     @Test
