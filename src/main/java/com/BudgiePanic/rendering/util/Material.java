@@ -1,11 +1,7 @@
 package com.BudgiePanic.rendering.util;
 
-import java.util.Optional;
-
-import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.pattern.Pattern;
 import com.BudgiePanic.rendering.util.pattern.SolidColor;
-import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
  * Stores information needed to light an object in a scene.
@@ -89,72 +85,6 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      */
     public static Material pattern(Pattern pattern) {
         return new Material(pattern, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess);
-    }
-
-    /**
-     * Uses the Phong lighting model to compute the color of a point using the material properties.
-     * 
-     * This function is in the Material record because another lighting system may wish to use 
-     * a lighting system other than Phong, which may neeed new material properties. 
-     * 
-     * NOTE: it may be beneficial to add a lightmodel interface abstraction, which material can implement
-     *       to allow other lighting models to be hot swapped into a scene.
-     * 
-     * @param light
-     *   The scene light
-     * @param position
-     *   The point being lit
-     * @param eye
-     *   The camera look vector
-     * @param normal
-     *   The normal of the surface at the position
-     * @return
-     *   The color at point 'position'
-     */
-    public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal) {
-        return compute(light, position, eye, normal, false, Optional.empty());
-    }
-
-    /**
-     * Uses the Phong lighting model to compute the color of a point using the material properties.
-     * 
-     * This function is in the Material record because another lighting system may wish to use 
-     * a lighting system other than Phong, which may neeed new material properties. 
-     * 
-     * @param light
-     *   The light that is illuminating the position
-     * @param position
-     *   The point being lit
-     * @param eye
-     *   the position of the observer
-     * @param normal
-     *   surface normal at 'position'
-     * @param shadow
-     *   is the surface under shadow?
-     * @param shape
-     *   the shape that the surface of the point being lit belongs to, if any
-     * @return
-     *   The color at point 'position'
-     */
-    public Color compute(PointLight light, Tuple position, Tuple eye, Tuple normal, boolean shadow, Optional<Shape> shape) {
-        final var color = shape.map(sh -> pattern.colorAt(position, sh)).orElse(pattern.colorAt(position));
-        assert color != null;
-        final var effective = color.colorMul(light.color());
-        final var directionToLight = light.position().subtract(position).normalize();
-        final var ambient = effective.multiply(this.ambient);
-        final var lightNormalAngle = directionToLight.dot(normal);
-        if (shadow || lightNormalAngle < 0f) {
-            return ambient;
-        }
-        final Color diffuse = effective.multiply(this.diffuse).multiply(lightNormalAngle);
-        final var reflection = directionToLight.negate().reflect(normal);
-        final var eyeReflectAngle = reflection.dot(eye);
-        if (eyeReflectAngle < 0f) {
-            return diffuse.add(ambient);
-        }
-        final var factor = (float)Math.pow(eyeReflectAngle, shininess);
-        final var specular = light.color().multiply(this.specular).multiply(factor);
-        return ambient.add(diffuse).add(specular);
     }
 
     /**

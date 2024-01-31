@@ -13,6 +13,7 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.intersect.ShadingInfo;
+import com.BudgiePanic.rendering.util.light.Phong;
 import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.shape.Shape;
 
@@ -121,7 +122,7 @@ public class World {
     public Color shadeHit(ShadingInfo info) {
         if (info == null) throw new IllegalArgumentException("shading info should not be null");
         return this.lights.stream().
-            map((light) -> info.shape().material().compute(light, info.point(), info.eyeVector(), info.normalVector(), inShadow(info.overPoint()), Optional.of(info.shape()))).
+            map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
             reduce(Color::add). // NOTE: should this be ColorMul?
             orElse(Colors.black);
     }
