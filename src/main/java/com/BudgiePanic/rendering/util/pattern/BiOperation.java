@@ -75,8 +75,16 @@ public interface BiOperation {
         }
     };
 
+    /**
+     * Gradient that radially spreads out from the origin in a circle.
+     */
     static final BiOperation radialGradient = (point, transform, a, b) -> {
-        throw new UnsupportedOperationException("operation not implemented yet");
+        final var colorA = a.colorAt(point, transform);
+        final var colorB = b.colorAt(point, transform);
+        final var spectrum = colorB.subtract(colorA);
+        final var distance = Math.sqrt((point.x * point.x) + (point.z * point.z));
+        final float amout = (float) distance - (float) Math.floor(distance); 
+        return new Color(colorA.add(spectrum.multiply(amout)));
     };
 
     /**
