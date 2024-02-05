@@ -3,13 +3,20 @@ package com.BudgiePanic.rendering.util.noise;
 /**
  * Java implementation of Ken Perlin's 'improved noise' algorithm 
  * 
- * @see https://muugumuugu.github.io/bOOkshelF/generative%20art/simplexnoise.pdf
- * @see https://dl.acm.org/doi/pdf/10.1145/325165.325247
- * @see https://gist.github.com/Flafla2/f0260a861be0ebdeef76
- * @see https://adrianb.io/2014/08/09/perlinnoise.html
- * @see https://web.archive.org/web/20071008165845/http://www.noisemachine.com/talk1/15.html
- * @see https://mrl.cs.nyu.edu/~perlin/noise/
- * @see https://mrl.cs.nyu.edu/~perlin/paper445.pdf
+ * @see "Simplex noise, demystified. Includes explanation of Perlin noise."
+ *          https://muugumuugu.github.io/bOOkshelF/generative%20art/simplexnoise.pdf
+ * @see "The original SIGGRAPH paper about Perlin noise"
+ *          https://dl.acm.org/doi/pdf/10.1145/325165.325247
+ * @see "A reference implementation of Perlin noise written in C#"
+ *          https://gist.github.com/Flafla2/f0260a861be0ebdeef76
+ * @see "an 'easy to follow' analysis of the Perlin noise algorithm"
+ *          https://adrianb.io/2014/08/09/perlinnoise.html
+ * @see "Speaker notes of a presentation given by Perlin, sharing details on the noise algorithm"
+ *          https://web.archive.org/web/20071008165845/http://www.noisemachine.com/talk1/15.html
+ * @see "Perlin's reference implementation of the noise algorithm"
+ *          https://mrl.cs.nyu.edu/~perlin/noise/
+ * @see "Perlin's improved noise algorithm" 
+ *          https://mrl.cs.nyu.edu/~perlin/paper445.pdf
  * 
  * @author BudgiePanic
  */
