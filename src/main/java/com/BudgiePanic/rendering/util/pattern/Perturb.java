@@ -12,6 +12,16 @@ import com.BudgiePanic.rendering.util.noise.Perlin;
  */
 public record Perturb(Pattern pattern, float scale) implements Pattern {
 
+    /**
+     * Default noise scale perturbation pattern.
+     *
+     * @param pattern
+     *   The pattern to perturb.
+     */
+    public Perturb(Pattern pattern) {
+        this(pattern, 0.2f);
+    }
+
     @Override
     public Color colorAt(Tuple point) {
         final float noise = Perlin.noise(point.x, point.y, point.z);
