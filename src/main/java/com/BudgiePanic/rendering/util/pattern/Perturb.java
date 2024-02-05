@@ -10,12 +10,12 @@ import com.BudgiePanic.rendering.util.noise.Perlin;
  * 
  * @author BudgiePanic
  */
-public record Perturb(Pattern pattern) implements Pattern {
+public record Perturb(Pattern pattern, float scale) implements Pattern {
 
     @Override
     public Color colorAt(Tuple point) {
         final float noise = Perlin.noise(point.x, point.y, point.z);
-        final float scaledNoise = noise * 0.2f;
+        final float scaledNoise = noise * scale;
         final var perturbedPoint = point.add((point.x * scaledNoise), (point.y * scaledNoise), (point.z * scaledNoise));
         return pattern.colorAt(perturbedPoint);
     }
