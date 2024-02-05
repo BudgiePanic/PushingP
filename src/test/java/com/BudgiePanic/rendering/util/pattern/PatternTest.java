@@ -25,7 +25,7 @@ public class PatternTest {
     void testPatternObjectTransform() {
         var shape = new Sphere(Transforms.identity().scale(2, 2, 2).assemble());
         var pattern = new TestPattern();
-        assertEquals(new Color(1, 1.5f, 2), pattern.colorAt(Tuple.makePoint(2, 3, 4), shape));
+        assertEquals(new Color(1, 1.5f, 2), pattern.colorAt(Tuple.makePoint(2, 3, 4), shape.transform()));
     }
 
     @Test
@@ -33,7 +33,7 @@ public class PatternTest {
         var shape = Sphere.defaultSphere();
         var pattern = new TestPattern();
         pattern.transform = Transforms.identity().scale(2, 2, 2).assemble();
-        var result = pattern.colorAt(Tuple.makePoint(2, 3, 4), shape);
+        var result = pattern.colorAt(Tuple.makePoint(2, 3, 4), shape.transform());
         assertEquals(new Color(1, 1.5f, 2), result);
     }
 
@@ -42,7 +42,7 @@ public class PatternTest {
         var shape = new Sphere(Transforms.identity().scale(2, 2, 2).assemble());
         var pattern = new TestPattern();
         pattern.transform = Transforms.identity().translate(0.5f, 1, 1.5f).assemble();
-        var output = pattern.colorAt(Tuple.makePoint(2.5f,3,3.5f), shape);
+        var output = pattern.colorAt(Tuple.makePoint(2.5f,3,3.5f), shape.transform());
         assertEquals(new Color(0.75f, 0.5f, 0.25f), output);
     }
 }

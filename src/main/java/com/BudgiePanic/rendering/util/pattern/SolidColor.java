@@ -17,6 +17,10 @@ public record SolidColor(Color color) implements Pattern {
     @Override
     public Color colorAt(Tuple point) { return color(); }
 
+    // Solid Color doesn't care about any transforms...
+    @Override
+    public Color colorAt(Tuple point, Matrix4 parentTransform) { return colorAt(point); }
+
     @Override
     public Matrix4 transform() { return transform; }
     

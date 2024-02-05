@@ -11,7 +11,8 @@ import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Tuple;
-import com.BudgiePanic.rendering.util.pattern.Stripe;
+import com.BudgiePanic.rendering.util.pattern.BiOperation;
+import com.BudgiePanic.rendering.util.pattern.BiPattern;
 
 public class PhongTest {
     
@@ -101,7 +102,7 @@ public class PhongTest {
 
     @Test
     void testPatternLighting() {
-        var material = new Material(new Stripe(Colors.white, Colors.black), 1, 0, 0, Material.defaultShininess);
+        var material = new Material(new BiPattern(BiOperation.stripe, Colors.white, Colors.black), 1, 0, 0, Material.defaultShininess);
         var eye = Tuple.makeVector(0, 0, -1);
         var normal = Tuple.makeVector(0, 0, -1);
         var light = new PointLight(Tuple.makePoint(0, 0, -10), Colors.white);

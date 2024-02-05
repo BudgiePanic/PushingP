@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.util.pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.BudgiePanic.rendering.util.pattern.BiOperation.checker;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ public class CheckerTest {
  
     @Test
     void testCheckerPatternX() {
-        var pattern = new Checker(Colors.white, Colors.black);
+        var pattern = new BiPattern(checker, Colors.white, Colors.black);
         assertEquals(Colors.white, pattern.colorAt(Tuple.makePoint(0, 0, 0)));
         assertEquals(Colors.white, pattern.colorAt(Tuple.makePoint(0.99f, 0, 0)));
         assertEquals(Colors.black, pattern.colorAt(Tuple.makePoint(1.01f, 0, 0)));
@@ -19,7 +20,7 @@ public class CheckerTest {
     
     @Test
     void testCheckerPatternY() {
-        var pattern = new Checker(Colors.white, Colors.black);
+        var pattern = new BiPattern(checker, Colors.white, Colors.black);
         assertEquals(Colors.white, pattern.colorAt(Tuple.makePoint(0, 0, 0)));
         assertEquals(Colors.white, pattern.colorAt(Tuple.makePoint(0, 0.99f, 0)));
         assertEquals(Colors.black, pattern.colorAt(Tuple.makePoint(0, 1.01f, 0)));
@@ -27,7 +28,7 @@ public class CheckerTest {
 
     @Test
     void testCheckerPatternZ() {
-        var pattern = new Checker(Colors.white, Colors.black);
+        var pattern = new BiPattern(checker, Colors.white, Colors.black);
         assertEquals(Colors.white, pattern.colorAt(Tuple.makePoint(0, 0, 0)));
         assertEquals(Colors.white, pattern.colorAt(Tuple.makePoint(0, 0, 0.99f)));
         assertEquals(Colors.black, pattern.colorAt(Tuple.makePoint(0, 0, 1.01f)));

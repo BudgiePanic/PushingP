@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.util.pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.BudgiePanic.rendering.util.pattern.BiOperation.ring;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ public class RingTest {
     
     @Test
     void testRing() {
-        var pattern = new Ring(Colors.white, Colors.black);
+        var pattern = new BiPattern(ring, Colors.white, Colors.black);
         assertEquals(Colors.white, pattern.colorAt(Tuple.makePoint(0, 0, 0)));
         assertEquals(Colors.black, pattern.colorAt(Tuple.makePoint(1, 0, 0)));
         assertEquals(Colors.black, pattern.colorAt(Tuple.makePoint(0, 0, 1)));
