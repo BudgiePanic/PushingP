@@ -7,6 +7,9 @@ package com.BudgiePanic.rendering.util.noise;
  * @see https://dl.acm.org/doi/pdf/10.1145/325165.325247
  * @see https://gist.github.com/Flafla2/f0260a861be0ebdeef76
  * @see https://adrianb.io/2014/08/09/perlinnoise.html
+ * @see https://web.archive.org/web/20071008165845/http://www.noisemachine.com/talk1/15.html
+ * @see https://mrl.cs.nyu.edu/~perlin/noise/
+ * @see https://mrl.cs.nyu.edu/~perlin/paper445.pdf
  * 
  * @author BudgiePanic
  */
