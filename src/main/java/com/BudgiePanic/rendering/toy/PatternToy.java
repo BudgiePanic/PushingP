@@ -5,7 +5,6 @@ import static com.BudgiePanic.rendering.util.pattern.BiOperation.blend;
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.radialGradient;
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.ring;
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.stripe;
-import static com.BudgiePanic.rendering.util.pattern.BiOperation.add;
 
 import java.io.File;
 import java.io.IOException;
