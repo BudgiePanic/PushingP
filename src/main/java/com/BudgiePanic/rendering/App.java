@@ -4,6 +4,7 @@ import com.BudgiePanic.rendering.toy.Artillery;
 import com.BudgiePanic.rendering.toy.CameraDemo;
 import com.BudgiePanic.rendering.toy.Clock;
 import com.BudgiePanic.rendering.toy.DrawSphere;
+import com.BudgiePanic.rendering.toy.PatternToy;
 import com.BudgiePanic.rendering.toy.PlaneDemo;
 import com.BudgiePanic.rendering.toy.Shadow;
 import com.BudgiePanic.rendering.toy.ShadowDemo;
@@ -22,6 +23,7 @@ public class App
     final static String flagCamera = "-camera";
     final static String flagShadowDemo = "-shadowDemo";
     final static String flagPlaneDemo = "-plane";
+    final static String flagPatternDemo = "-pattern";
 
     public static void main( String[] args )
     {
@@ -59,6 +61,10 @@ public class App
             if (args[0].equals(flagPlaneDemo)) {
                 System.out.println("running plane demo toy.");
                 new PlaneDemo().run();
+            }
+            if (args[0].equals(flagPatternDemo)) {
+                System.out.println("running pattern toy.");
+                new PatternToy().run();
             }
         }
     }
