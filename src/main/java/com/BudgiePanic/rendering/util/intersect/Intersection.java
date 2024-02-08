@@ -55,7 +55,8 @@ public record Intersection(Float a, Shape shape) {
             inside = true;
             normal = normal.negate();
         }
-        return new ShadingInfo(this.a, this.shape, point, eye, normal, inside);
+        var reflection = ray.direction().reflect(normal);
+        return new ShadingInfo(this.a, this.shape, point, eye, normal, inside, reflection);
     }
 
 }
