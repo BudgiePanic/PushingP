@@ -27,9 +27,12 @@ import com.BudgiePanic.rendering.util.shape.Shape;
 public class World {
     
     /**
+     * Compute a maximum of 4 light reflections for every ray cast into the world.
+     */
+    public static final int defaultRecursionDepth = 4;
+
+    /**
      * The shapes in the scene.
-     * 
-     * NOTE: in the future, sphere may need to be abstracted behind a Shape interface
      */
     protected List<Shape> shapes;
     /**
@@ -116,16 +119,30 @@ public class World {
      *
      * @param info
      *   Shading information derived from a ray-shape intersection test
+     * @param depth
+     *   recursion limit on light reflection calculations
+     * @return
+     *   The color of the point in the world given the shading information.
+     */
+    public Color shadeHit(ShadingInfo info, int depth) {
+        if (info == null) throw new IllegalArgumentException("shading info should not be null");
+        return this.lights.stream().
+            map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
+            map((color) -> this.shadeReflection(info, depth).add(color)).
+            reduce(Color::add). // NOTE: should this be ColorMul?
+            orElse(Colors.black);
+    }
+
+    /**
+     * Determine the color of a pointin the world using the default reflection recursion limit.
+     *
+     * @param info
+     *   Shading information derived from a ray-shape intersection test
      * @return
      *   The color of the point in the world given the shading information.
      */
     public Color shadeHit(ShadingInfo info) {
-        if (info == null) throw new IllegalArgumentException("shading info should not be null");
-        return this.lights.stream().
-            map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
-            map((color) -> this.shadeReflection(info).add(color)).
-            reduce(Color::add). // NOTE: should this be ColorMul?
-            orElse(Colors.black);
+        return shadeHit(info, defaultRecursionDepth);
     }
 
     /**
@@ -133,36 +150,63 @@ public class World {
      *
      * @param ray
      *   The ray
+     * @param depth
+     *   recursion limit on light reflection calculations
      * @return
      *   The color resulting from shading the ray intersection point within the world.
      */
-    public Color computeColor(Ray ray) {
+    public Color computeColor(Ray ray, int depth) {
         var intersections = intersect(ray); 
         if (intersections.isPresent()) {
             var hit = Intersection.Hit(intersections.get());
             if (hit.isPresent()) {
                 var info = hit.get().computeShadingInfo(ray);
-                return shadeHit(info);
+                return shadeHit(info, depth);
             }
         }
         return Colors.black;
     }
 
     /**
+     * Determine the color produced by a ray intersecting with the world, using the deafult recursion limit for reflections.
+     *
+     * @param ray
+     *   The ray
+     * @return
+     *   The color resulting from shading the ray intersection point within the world.
+     */
+    public Color computeColor(Ray ray) {
+        return computeColor(ray, defaultRecursionDepth);
+    }
+
+    /**
      * Find the color of the reflection vector in a shading info.
+     * @param info
+     *   Shading information
+     * @param depth
+     *   the number of reflection bounces allowed
+     * @return
+     *   The color that lies along the shading info's reflection vector
+     */
+    public Color shadeReflection(ShadingInfo info, int depth) {
+        final float reflectivity = info.shape().material().reflectivity();
+        if (depth < 1 || reflectivity <= 0f) {
+            return Colors.black;
+        }
+        final var ray = new Ray(info.overPoint(), info.reflectVector());
+        final var color = this.computeColor(ray, --depth);
+        return color.multiply(reflectivity);
+    }
+
+    /**
+     * Find the color of the reflection vector in a shading info with a reflection depth of 1.
      * @param info
      *   Shading information
      * @return
      *   The color that lies along the shading info's reflection vector
      */
     public Color shadeReflection(ShadingInfo info) {
-        final float reflectivity = info.shape().material().reflectivity();
-        if (reflectivity <= 0f) {
-            return Colors.black;
-        }
-        final var ray = new Ray(info.overPoint(), info.reflectVector());
-        final var color = this.computeColor(ray);
-        return color.multiply(reflectivity);
+        return shadeReflection(info, 1);
     }
 
     /**
