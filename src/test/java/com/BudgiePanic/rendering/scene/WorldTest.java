@@ -294,4 +294,19 @@ public class WorldTest {
         assertTrue(zb, z + " " + zb);
     }
 
+    @Test
+    void testReflectRecursion() {
+        assertDoesNotThrow(() -> {
+            var world = new World();
+            var light = new PointLight(makePoint(), Colors.white);
+            var material = new Material(Colors.white, 1, 0, 0, 0, 1);
+            var floor = new Plane(Transforms.identity().translate(0, -1, 0).assemble(), material);
+            var ceiling = new Plane(Transforms.identity().translate(0, 1, 0).assemble(), material);
+            world.addLight(light);
+            world.addShape(floor);
+            world.addShape(ceiling);
+            var ray = new Ray(makePoint(), makeVector(0, 1, 0));
+            world.computeColor(ray);
+        });
+    }
 }
