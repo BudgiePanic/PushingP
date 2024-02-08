@@ -185,7 +185,7 @@ public class SphereTest {
         assertDoesNotThrow(()->{
             var sphere = new Sphere(
                             Matrix4.identity(), 
-                            new Material(new Color(), 1f, 0f,0f,0f));
+                            new Material(new Color(), 1f, 0f,0f,0f,0f));
             assertEquals(1f, sphere.material().ambient());
         });
     }
