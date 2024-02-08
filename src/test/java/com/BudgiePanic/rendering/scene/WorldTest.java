@@ -229,4 +229,21 @@ public class WorldTest {
             }
         }
     }
+
+    @Test
+    void testNonReflectiveSurface() {
+        var ray = new Ray(Tuple.makePoint(), Tuple.makeVector(0, 0, 1));
+        var material = new Material(Colors.white, 1,0,0,0,0);
+        
+        var shape = new Sphere(defaultTestWorld.getShapes().get(1).transform(), material); 
+        defaultTestWorld.getShapes().remove(1);
+        defaultTestWorld.getShapes().add(shape);
+
+        var intersection = new Intersection(1f, shape);
+
+        var info = intersection.computeShadingInfo(ray);
+        var output = defaultTestWorld.shadeReflection(info);
+        var expected = Colors.black;
+        assertEquals(expected, output);
+    }
 }
