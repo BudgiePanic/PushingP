@@ -85,4 +85,15 @@ public class IntersectTest {
         assertEquals(-1, FloatHelp.compareFloat(result.z, -(FloatHelp.epsilon / 2f)));
     }
 
+    @Test
+    void testIntersectionPrecomputeReflectVector() {
+        float sqrt2 = (float)(Math.sqrt(2));
+        var shape = new Plane(Transforms.identity().assemble());
+        var ray = new Ray(Tuple.makePoint(0, 1, -1), Tuple.makeVector(0, -sqrt2/2f, sqrt2/2f));
+        var intersection = new Intersection(sqrt2, shape);
+        var info = intersection.computeShadingInfo(ray);
+        var expected = Tuple.makeVector(0, sqrt2/2f, sqrt2/2f);
+        assertEquals(expected, info.reflectVector());
+    }
+
 }
