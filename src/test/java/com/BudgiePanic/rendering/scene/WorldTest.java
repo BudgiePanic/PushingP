@@ -2,6 +2,7 @@ package com.BudgiePanic.rendering.scene;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -271,4 +272,26 @@ public class WorldTest {
         assertTrue(yb, y + " " + yb);
         assertTrue(zb, z + " " + zb);
     }
+
+    @Test
+    void testReflectPlusShade() {
+        var plane = new Plane( Transforms.identity().translate(0, -1, 0).assemble(), Material.defaultMaterial().setReflectivity(0.5f));
+        defaultTestWorld.addShape(plane);
+        float sqrt2 = (float)(Math.sqrt(2));
+        float sqrt2over2 = (float)(Math.sqrt(2)/2.0);
+        var ray = new Ray(makePoint(0, 0, -3), makeVector(0, -sqrt2over2, sqrt2over2));
+        var intersection = new Intersection(sqrt2, plane);
+        var info = intersection.computeShadingInfo(ray);
+        var output = defaultTestWorld.shadeHit(info);
+        // we get slightly different color than the author due to floating point rounding errors, so we'll use big epslion for this test
+        var expected = new Color(0.87677f, 0.92436f, 0.82918f);
+        // tidy up mutations to default test world
+        defaultTestWorld.shapes.removeLast();
+        float x = output.x - expected.x, y = output.y - expected.y, z = output.z - expected.z;
+        boolean xb = Math.abs(x) < FloatHelp.bigEpsilon, yb = Math.abs(y) < FloatHelp.bigEpsilon, zb = Math.abs(z) < FloatHelp.bigEpsilon;
+        assertTrue(xb, x + " " + xb);
+        assertTrue(yb, y + " " + yb);
+        assertTrue(zb, z + " " + zb);
+    }
+
 }
