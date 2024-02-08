@@ -309,4 +309,20 @@ public class WorldTest {
             world.computeColor(ray);
         });
     }
+
+    @Test
+    void testReflectionRecursionLimit() {
+        var plane = new Plane( Transforms.identity().translate(0, -1, 0).assemble(), Material.defaultMaterial().setReflectivity(0.5f));
+        defaultTestWorld.addShape(plane);
+        float sqrt2 = (float)(Math.sqrt(2));
+        float sqrt2over2 = (float)(Math.sqrt(2)/2.0);
+        var ray = new Ray(makePoint(0, 0, -3), makeVector(0, -sqrt2over2, sqrt2over2));
+        var intersection = new Intersection(sqrt2, plane);
+        var info = intersection.computeShadingInfo(ray);
+        var output = defaultTestWorld.shadeReflection(info, 0);
+        var expected = Colors.black;
+        // tidy up mutations to default test world
+        defaultTestWorld.shapes.removeLast();
+        assertEquals(expected, output);
+    }
 }
