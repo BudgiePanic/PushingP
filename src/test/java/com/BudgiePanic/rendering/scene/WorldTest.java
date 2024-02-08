@@ -262,7 +262,7 @@ public class WorldTest {
         var info = intersection.computeShadingInfo(ray);
         var output = defaultTestWorld.shadeReflection(info);
         // we get slightly different color than the author due to floating point rounding errors, so we'll use big epslion for this test
-        var expected = new Color(0.19032f, 0.2379f, 0.14275f);
+        var expected = new Color(0.19032f, 0.2379f, 0.14274f);
         // tidy up mutations to default test world
         defaultTestWorld.shapes.removeLast();
         float x = output.x - expected.x, y = output.y - expected.y, z = output.z - expected.z;
