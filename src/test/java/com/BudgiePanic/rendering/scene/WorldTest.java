@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.scene;
 
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,6 +17,7 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.light.PointLight;
+import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
@@ -244,6 +247,21 @@ public class WorldTest {
         var info = intersection.computeShadingInfo(ray);
         var output = defaultTestWorld.shadeReflection(info);
         var expected = Colors.black;
+        assertEquals(expected, output);
+    }
+
+    @Test
+    void testReflectiveSurface() {
+        var plane = new Plane( Transforms.identity().translate(0, -1, 0).assemble(), Material.defaultMaterial().setReflectivity(0.5f));
+        defaultTestWorld.addShape(plane);
+        float sqrt2 = (float)(Math.sqrt(2));
+        var ray = new Ray(makePoint(0, 0, -3), makeVector(0, -sqrt2/2f, sqrt2/2f));
+        var intersection = new Intersection(sqrt2, plane);
+        var info = intersection.computeShadingInfo(ray);
+        var output = defaultTestWorld.shadeReflection(info);
+        var expected = new Color(0.19032f, 0.2379f, 0.14275f);
+        // tidy up
+        defaultTestWorld.shapes.removeLast();
         assertEquals(expected, output);
     }
 }
