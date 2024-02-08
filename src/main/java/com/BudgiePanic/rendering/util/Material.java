@@ -9,7 +9,7 @@ import com.BudgiePanic.rendering.util.pattern.SolidColor;
  * 
  * @author BudgiePanic
  */
-public record Material(Pattern pattern, float ambient, float diffuse, float specular, float shininess) {
+public record Material(Pattern pattern, float ambient, float diffuse, float specular, float shininess, float reflectivity) {
 
     /**
      * Default ambient value.
@@ -37,6 +37,11 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
     public static final Pattern defaultPattern = new SolidColor(Colors.white);
 
     /**
+     * Default reflectivity amount.
+     */
+    public static final float defaultReflectivity = 0f;
+
+    /**
      * Convienience material constructor for raw color. Auto wraps the color in a solid color pattern.
      *
      * @param color
@@ -49,9 +54,11 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   The material specular
      * @param shininess
      *   The material shininess
+     * @param reflectivity
+     *   The material reflectiveness 0 -> nonreflective | 1 -> mirror
      */
-    public Material(Color color, float ambient, float diffuse, float specular, float shininess) {
-        this(new SolidColor(color), ambient, diffuse, specular, shininess);
+    public Material(Color color, float ambient, float diffuse, float specular, float shininess, float reflectivity) {
+        this(new SolidColor(color), ambient, diffuse, specular, shininess, reflectivity);
     }
 
     /**
@@ -60,7 +67,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   A new instance of the default material.
      */
     public static Material defaultMaterial() {
-        return new Material(defaultPattern, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess);
+        return new Material(defaultPattern, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess, defaultReflectivity);
     }
 
     /**
@@ -72,7 +79,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   A new material with default properties and overwritten color.
      */
     public static Material color(Color color) {
-        return new Material(color, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess);
+        return new Material(color, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess, defaultReflectivity);
     }
 
     /**
@@ -84,7 +91,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   A new material with default properties and a pattern override.
      */
     public static Material pattern(Pattern pattern) {
-        return new Material(pattern, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess);
+        return new Material(pattern, defaultAmbient, defaultDiffuse, defaultSpecular, defaultShininess, defaultReflectivity);
     }
 
     /**
@@ -96,7 +103,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   A copy of this material with the ambient valued set to ambient.
      */
     public Material setAmbient(float ambient) {
-        return new Material(this.pattern(), ambient, this.diffuse(), this.specular(), this.shininess());
+        return new Material(this.pattern(), ambient, this.diffuse(), this.specular(), this.shininess(), this.reflectivity());
     }
 
     /**
@@ -108,7 +115,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   A copy of this material with the diffuse valued set to diffuse.
      */
     public Material setDiffuse(float diffuse) {
-        return new Material(this.pattern(), this.ambient(), diffuse, this.specular(), this.shininess());
+        return new Material(this.pattern(), this.ambient(), diffuse, this.specular(), this.shininess(), this.reflectivity());
     }
 
     /**
@@ -120,7 +127,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   A copy of this material with the specular valued set to specular.
      */
     public Material setSpecular(float specular) {
-        return new Material(this.pattern(), this.ambient(), this.diffuse(), specular, this.shininess());
+        return new Material(this.pattern(), this.ambient(), this.diffuse(), specular, this.shininess(), this.reflectivity());
     }
 
     /**
@@ -132,7 +139,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   A copy of this material with the shininess valued set to shininess.
      */
     public Material setShininess(float shininess) {
-        return new Material(this.pattern(), this.ambient(), this.diffuse(), this.specular(), shininess);
+        return new Material(this.pattern(), this.ambient(), this.diffuse(), this.specular(), shininess, this.reflectivity());
     }
 
     /**
@@ -144,7 +151,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   A copy of this material with the color valued set to color.
      */
     public Material setColor(Color color) {
-        return new Material(color, this.ambient(), this.diffuse(), this.specular(), this.shininess());
+        return new Material(color, this.ambient(), this.diffuse(), this.specular(), this.shininess(), this.reflectivity());
     }
 
     /**
@@ -156,6 +163,18 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   A copy of the material with the pattern changed
      */
     public Material setPattern(Pattern pattern) {
-        return new Material(pattern, this.ambient(), this.diffuse(), this.specular(), this.shininess());
+        return new Material(pattern, this.ambient(), this.diffuse(), this.specular(), this.shininess(), this.reflectivity());
+    }
+
+    /**
+     * Change material's reflectivity property.
+     * 
+     * @param reflectivity
+     *   The new reflectivity amount, between 0 and 1.
+     * @return
+     *   A copy of the material with the reflectivity changed
+     */
+    public Material setReflectivity(float reflectivity) {
+        return new Material(this.pattern(), this.ambient(), this.diffuse(), this.specular(), this.shininess(), reflectivity);
     }
 }
