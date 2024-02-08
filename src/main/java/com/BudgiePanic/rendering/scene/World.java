@@ -123,6 +123,7 @@ public class World {
         if (info == null) throw new IllegalArgumentException("shading info should not be null");
         return this.lights.stream().
             map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
+            map((color) -> this.shadeReflection(info).add(color)).
             reduce(Color::add). // NOTE: should this be ColorMul?
             orElse(Colors.black);
     }
