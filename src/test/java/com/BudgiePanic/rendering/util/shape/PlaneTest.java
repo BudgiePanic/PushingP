@@ -50,7 +50,7 @@ public class PlaneTest {
         var intersections = plane.localIntersect(ray);
         assertTrue(intersections.isPresent());
         assertEquals(1, intersections.get().size());
-        assertEquals(plane, intersections.get().get(0).sphere());
+        assertEquals(plane, intersections.get().get(0).shape());
         assertEquals(1f, intersections.get().get(0).a());
     }
 
@@ -61,7 +61,7 @@ public class PlaneTest {
         var intersections = plane.localIntersect(ray);
         assertTrue(intersections.isPresent());
         assertEquals(1, intersections.get().size());
-        assertEquals(plane, intersections.get().get(0).sphere());
+        assertEquals(plane, intersections.get().get(0).shape());
         assertEquals(1f, intersections.get().get(0).a());
     }
 }

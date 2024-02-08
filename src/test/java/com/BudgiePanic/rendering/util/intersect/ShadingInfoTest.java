@@ -19,7 +19,7 @@ public class ShadingInfoTest {
         var result = intersection.computeShadingInfo(ray);
 
         assertEquals(intersection.a(), result.a());
-        assertEquals(intersection.sphere(), result.shape());
+        assertEquals(intersection.shape(), result.shape());
         assertEquals(Tuple.makePoint(0, 0, -1), result.point());
         assertEquals(Tuple.makeVector(0, 0, -1), result.eyeVector());
         assertEquals(Tuple.makeVector(0, 0, -1), result.normalVector());

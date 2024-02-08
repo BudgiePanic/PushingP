@@ -11,12 +11,12 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
  * 
  * @param a 
  *   The distance from the ray origin to the point of intersection
- * @param sphere
+ * @param shape
  *   The sphere that was intersected with
  * 
  * @author BudgiePanic
  */
-public record Intersection(Float a, Shape sphere) {
+public record Intersection(Float a, Shape shape) {
     
     /**
      * Helper method to find hits among collections of intersections.
@@ -49,13 +49,13 @@ public record Intersection(Float a, Shape sphere) {
     public ShadingInfo computeShadingInfo(Ray ray) {
         var point = ray.position(this.a);
         var eye = ray.direction().negate();
-        var normal = this.sphere.normal(point);
+        var normal = this.shape.normal(point);
         var inside = false;
         if (normal.dot(eye) < 0f) {
             inside = true;
             normal = normal.negate();
         }
-        return new ShadingInfo(this.a, this.sphere, point, eye, normal, inside);
+        return new ShadingInfo(this.a, this.shape, point, eye, normal, inside);
     }
 
 }

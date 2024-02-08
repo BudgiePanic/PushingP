@@ -74,9 +74,9 @@ public class DrawSphere implements Runnable {
                     var hit = Intersection.Hit(intersections.get());
                     if (hit.isPresent()) {
                         var point = ray.position(hit.get().a());
-                        var normal = hit.get().sphere().normal(point);
+                        var normal = hit.get().shape().normal(point);
                         var eye = ray.direction().negate();
-                        var color = Phong.compute(hit.get().sphere().material(), light, point, eye, normal);
+                        var color = Phong.compute(hit.get().shape().material(), light, point, eye, normal);
                         canvas.writePixel(column, row, color);
                     }
                 }

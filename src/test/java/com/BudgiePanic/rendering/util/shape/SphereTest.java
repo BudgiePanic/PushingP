@@ -27,8 +27,8 @@ public class SphereTest {
         assertEquals(2, list.size());
         assertTrue(compareFloat(4f, list.get(0).a()) == 0, "the distance to the first intersection point was not 4");
         assertTrue(compareFloat(6f, list.get(1).a()) == 0, "the distance to the second intersection point was not 6");
-        assertTrue(list.get(0).sphere() == sphere, "the sphere reference in intersect 0 did not match the test sphere");
-        assertTrue(list.get(1).sphere() == sphere, "the sphere reference in intersect 1 did not match the test sphere");
+        assertTrue(list.get(0).shape() == sphere, "the sphere reference in intersect 0 did not match the test sphere");
+        assertTrue(list.get(1).shape() == sphere, "the sphere reference in intersect 1 did not match the test sphere");
     }
 
     @Test
