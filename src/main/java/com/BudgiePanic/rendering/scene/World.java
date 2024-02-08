@@ -148,6 +148,23 @@ public class World {
     }
 
     /**
+     * Find the color of the reflection vector in a shading info.
+     * @param info
+     *   Shading information
+     * @return
+     *   The color that lies along the shading info's reflection vector
+     */
+    public Color shadeReflection(ShadingInfo info) {
+        final float reflectivity = info.shape().material().reflectivity();
+        if (reflectivity <= 0f) {
+            return Colors.black;
+        }
+        final var ray = new Ray(info.overPoint(), info.reflectVector());
+        final var color = this.computeColor(ray);
+        return color.multiply(reflectivity);
+    }
+
+    /**
      * Check if a point in the world is in shadow from another object
      *
      * @param point
