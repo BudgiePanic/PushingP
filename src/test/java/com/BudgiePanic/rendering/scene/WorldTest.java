@@ -393,4 +393,38 @@ public class WorldTest {
         defaultTestWorld.shapes.add(0, shape);
     }
 
+    @Test
+    void testRefractionTransparentShape() {
+        var light = new PointLight(Tuple.makePoint(-10, 10, -10), Colors.white);
+        var sphereA = new Sphere(
+            Transforms.identity().assemble(),
+            new Material(new PatternTest.TestPattern(), 1, 0, 0, 0, 0, 0, 1)
+        );
+        var sphereB = new Sphere(
+            Transforms.identity().scale(0.5f, 0.5f, 0.5f).assemble(),
+            Sphere.defaultGlassSphere().material()
+        );
+        var world = new World();
+        world.addLight(light);
+        world.addShape(sphereA);
+        world.addShape(sphereB);
+
+        var ray = new Ray(makePoint(0, 0, 0.1f), makeVector(0, 1, 0));
+        var intersections = Optional.of(
+            List.of(
+                new Intersection(-0.9899f, sphereA),
+                new Intersection(-0.4899f, sphereB),
+                new Intersection(0.4899f, sphereB),
+                new Intersection(0.9899f, sphereA)
+            ) 
+        );
+        var info = intersections.get().get(2).computeShadingInfo(ray, intersections);
+        var result = world.shadeRefraction(info);
+        var expected = new Color(0, 0.99888f, 0.04725f);
+        // extra info in case of test failure
+        float x = result.x - expected.x, y = result.y - expected.y, z = result.z - expected.z;
+        boolean xb = Math.abs(x) < FloatHelp.bigEpsilon, yb = Math.abs(y) < FloatHelp.bigEpsilon, zb = Math.abs(z) < FloatHelp.bigEpsilon;
+        assertEquals(expected, result, xb + " " + yb + " " + zb);
+    } 
+
 }
