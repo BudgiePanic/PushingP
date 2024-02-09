@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.intersect;
 
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -94,6 +96,52 @@ public class IntersectTest {
         var info = intersection.computeShadingInfo(ray);
         var expected = Tuple.makeVector(0, sqrt2/2f, sqrt2/2f);
         assertEquals(expected, info.reflectVector());
+    }
+
+    @Test
+    void testIntersectionRefraction() {
+        // n1 is the object the ray exited
+        // n2 is the object the ray entered
+        // check that n1 and n2 values are correctly calculated in a test environment
+        var material = Sphere.defaultGlassSphere().material();
+        var a = new Sphere(Transforms.identity().scale(2, 2, 2).assemble(), material.setRefractiveIndex(1.5f));
+        var b = new Sphere(Transforms.identity().translate(0, 0, -0.25f).assemble(), material.setRefractiveIndex(2f));
+        var c = new Sphere(Transforms.identity().translate(0, 0, 0.25f).assemble(), material.setRefractiveIndex(2.5f));
+        var ray = new Ray(makePoint(0, 0, -4), makeVector(0, 0, 1));
+        var intersections = List.of(
+            new Intersection(2f, a),
+            new Intersection(2.75f, b),
+            new Intersection(3.25f, c),
+            new Intersection(4.75f, b),
+            new Intersection(5.25f, c),
+            new Intersection(6f, a)
+        );
+        var expectedN1 = List.of(
+            1.0f,
+            1.5f,
+            2.0f,
+            2.5f,
+            2.5f,
+            1.5f
+        );
+        var expectedN2 = List.of(
+            1.5f,
+            2.0f,
+            2.5f,
+            2.5f,
+            1.5f,
+            1.0f
+        );
+        for (int i = 0; i < intersections.size(); i++) {
+            var expectedn1 = expectedN1.get(i);
+            var expectedn2 = expectedN2.get(i);
+            var intersection = intersections.get(i);
+            var info = intersection.computeShadingInfo(ray, intersections);
+            var n1 = info.n1();
+            var n2 = info.n2();
+            assertEquals(expectedn1, n1, intersection.toString() + i);
+            assertEquals(expectedn2, n2, intersection.toString() + i);
+        }
     }
 
 }
