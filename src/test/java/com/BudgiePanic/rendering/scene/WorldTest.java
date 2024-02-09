@@ -344,4 +344,27 @@ public class WorldTest {
         var result = defaultTestWorld.shadeRefraction(info);
         assertEquals(Colors.black, result);
     }
+
+    @Test
+    void testRefractionRecusionLimit() {
+        var shape = defaultTestWorld.shapes.getFirst();
+        var replacement = new Sphere(shape.transform(), shape.material().setTransparency(1).setRefractiveIndex(1.5f));
+        defaultTestWorld.shapes.removeFirst();
+        defaultTestWorld.shapes.add(0, replacement);
+
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        var intersections = Optional.of(
+            List.of(
+                new Intersection(4f, shape),
+                new Intersection(6f, shape)
+            ) 
+        );
+        var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
+        var result = defaultTestWorld.shadeRefraction(info, 0);
+        assertEquals(Colors.black, result);
+
+        // tidy up
+        defaultTestWorld.shapes.remove(replacement);
+        defaultTestWorld.shapes.add(0, shape);
+    }
 }
