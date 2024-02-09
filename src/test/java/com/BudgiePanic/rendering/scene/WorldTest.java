@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -324,5 +327,21 @@ public class WorldTest {
         // tidy up mutations to default test world
         defaultTestWorld.shapes.removeLast();
         assertEquals(expected, output);
+    }
+
+    @Test
+    void testRefractionOpaqueShape() {
+        // an opaque shape does not refract, so black should be returned by the refraction function when refraction testing an opaque object
+        var shape = defaultTestWorld.shapes.getFirst();
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        var intersections = Optional.of(
+            List.of(
+                new Intersection(4f, shape),
+                new Intersection(5f, shape)
+            ) 
+        );
+        var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
+        var result = defaultTestWorld.shadeRefraction(info);
+        assertEquals(Colors.black, result);
     }
 }
