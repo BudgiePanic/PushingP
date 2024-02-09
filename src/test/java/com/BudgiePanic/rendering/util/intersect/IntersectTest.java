@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -100,8 +101,6 @@ public class IntersectTest {
 
     @Test
     void testIntersectionRefraction() {
-        // n1 is the object the ray exited
-        // n2 is the object the ray entered
         // check that n1 and n2 values are correctly calculated in a test environment
         var material = Sphere.defaultGlassSphere().material();
         var a = new Sphere(Transforms.identity().scale(2, 2, 2).assemble(), material.setRefractiveIndex(1.5f));
@@ -136,7 +135,7 @@ public class IntersectTest {
             var expectedn1 = expectedN1.get(i);
             var expectedn2 = expectedN2.get(i);
             var intersection = intersections.get(i);
-            var info = intersection.computeShadingInfo(ray, intersections);
+            var info = intersection.computeShadingInfo(ray, Optional.of(intersections));
             var n1 = info.n1();
             var n2 = info.n2();
             assertEquals(expectedn1, n1, intersection.toString() + i);

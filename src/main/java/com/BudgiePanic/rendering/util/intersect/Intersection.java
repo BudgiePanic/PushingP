@@ -95,6 +95,17 @@ public record Intersection(Float a, Shape shape) {
         return new ShadingInfo(this.a, this.shape, point, eye, normal, inside, reflection, n1, n2);
     }
 
+    /**
+     * Precompute information required by the lighting model.
+     * Convience method for supplying no extra intersections to test.
+     *
+     * @param ray
+     *   The intersecting ray.
+     * @return
+     *   Precomputed lighting information about this intersection.
+     */
+    public ShadingInfo computeShadingInfo(Ray ray) {
+        return computeShadingInfo(ray, Optional.empty());
     }
 
 }

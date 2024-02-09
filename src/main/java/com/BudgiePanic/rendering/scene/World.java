@@ -160,7 +160,7 @@ public class World {
         if (intersections.isPresent()) {
             var hit = Intersection.Hit(intersections.get());
             if (hit.isPresent()) {
-                var info = hit.get().computeShadingInfo(ray);
+                var info = hit.get().computeShadingInfo(ray, intersections);
                 return shadeHit(info, depth);
             }
         }
