@@ -19,7 +19,7 @@ public class MaterialTest {
     @Test
     void testDefaultMaterialProperties() {
         var material = Material.defaultMaterial();
-        var expected = new Material(Colors.white, 0.1f, 0.9f, 0.9f, 200f,0f,0f,0f);
+        var expected = new Material(Colors.white, 0.1f, 0.9f, 0.9f, 200f,0f,0f,1f);
         assertEquals(expected, material);
     }
 }
