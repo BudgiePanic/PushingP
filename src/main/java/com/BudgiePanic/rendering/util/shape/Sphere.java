@@ -24,6 +24,15 @@ public final class Sphere extends BaseShape {
     public static Sphere defaultSphere() {
       return new Sphere(Matrix4.identity(), Material.defaultMaterial());
     }
+    
+    /**
+     * A sphere that has glass like material properties.
+     * @return
+     *   A new sphere of radius 1 at [0,0,0] with a glass material.
+     */
+    public static Sphere defaultGlassSphere() {
+      return new Sphere(Matrix4.identity(), Material.defaultMaterial().setTransparency(1f).setRefractiveIndex(1.5f));
+    }
 
     public Sphere(Matrix4 transform, Material material) {
       super(transform, material);
