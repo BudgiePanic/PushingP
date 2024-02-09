@@ -12,7 +12,7 @@ import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class PatternTest {
 
-    private static class TestPattern implements Pattern {
+    public static class TestPattern implements Pattern {
         Matrix4 transform;
         { transform = Matrix4.identity(); }
         @Override
