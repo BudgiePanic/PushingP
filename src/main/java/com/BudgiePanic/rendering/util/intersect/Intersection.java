@@ -1,6 +1,8 @@
 package com.BudgiePanic.rendering.util.intersect;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import com.BudgiePanic.rendering.util.shape.Shape;
@@ -43,10 +45,12 @@ public record Intersection(Float a, Shape shape) {
      *
      * @param ray
      *   The intersecting ray.
+     * @param
+     *   The intersections this ray made, if any.
      * @return
      *   Precomputed lighting information about this intersection.
      */
-    public ShadingInfo computeShadingInfo(Ray ray) {
+    public ShadingInfo computeShadingInfo(Ray ray, Optional<List<Intersection>> intersections) {
         var point = ray.position(this.a);
         var eye = ray.direction().negate();
         var normal = this.shape.normal(point);
@@ -55,8 +59,42 @@ public record Intersection(Float a, Shape shape) {
             inside = true;
             normal = normal.negate();
         }
+        
         var reflection = ray.direction().reflect(normal);
-        return new ShadingInfo(this.a, this.shape, point, eye, normal, inside, reflection);
+        var n1 = 1.0f;
+        var n2 = 1.0f;
+        if (intersections.isPresent()) { 
+            // naive algorithm implementation, could be optimized later.
+            // determines the incoming and outgoing refractive index at the point the ray intersected with the object as defined in 'this' intersection by traversing the ray's sorted intersections
+            // NOTE: was unable to refactor this out to its own method because it mutates both n1 and n2, while a method can only return one value.
+            var hit = this;
+            List<Shape> shapes = new ArrayList<>();
+            for(Intersection intersection : intersections.get()) {
+                if (intersection.equals(hit)) {
+                    if (shapes.isEmpty()) {
+                        n1 = 1.0f;
+                    } else {
+                        n1 = shapes.getLast().material().refractiveIndex();
+                    }
+                }
+                if (shapes.contains(intersection.shape())) {
+                    shapes.remove(intersection.shape());
+                } else {
+                    shapes.add(intersection.shape());
+                }
+                if (intersection.equals(hit)) {
+                    if (shapes.isEmpty()) {
+                        n2 = 1.0f;
+                    } else {
+                        n2 = shapes.getLast().material().refractiveIndex();
+                    }
+                    break;
+                }
+            }
+        }
+        return new ShadingInfo(this.a, this.shape, point, eye, normal, inside, reflection, n1, n2);
+    }
+
     }
 
 }
