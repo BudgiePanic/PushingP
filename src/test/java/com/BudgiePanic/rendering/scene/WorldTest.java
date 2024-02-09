@@ -367,4 +367,30 @@ public class WorldTest {
         defaultTestWorld.shapes.remove(replacement);
         defaultTestWorld.shapes.add(0, shape);
     }
+
+    @Test
+    void testRefractionTotalInternalReflection() {
+        // when total internal reflection occurs, the ray tracer should not investigate further reflections
+        var shape = defaultTestWorld.shapes.getFirst();
+        var replacement = new Sphere(shape.transform(), shape.material().setTransparency(1).setRefractiveIndex(1.5f));
+        defaultTestWorld.shapes.removeFirst();
+        defaultTestWorld.shapes.add(0, replacement);
+
+        float sqrt2Over2 = (float) (Math.sqrt(2.0) / 2.0);
+        var ray = new Ray(makePoint(0, 0, sqrt2Over2), makeVector(0, 1, 0));
+        var intersections = Optional.of(
+            List.of(
+                new Intersection(-sqrt2Over2, shape),
+                new Intersection(sqrt2Over2, shape)
+            ) 
+        );
+        var info = intersections.get().get(1).computeShadingInfo(ray, intersections);
+        var result = defaultTestWorld.shadeRefraction(info);
+        assertEquals(Colors.black, result);
+
+        // tidy up
+        defaultTestWorld.shapes.remove(replacement);
+        defaultTestWorld.shapes.add(0, shape);
+    }
+
 }
