@@ -29,4 +29,14 @@ public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tu
     public Tuple overPoint() {
         return point.add(normalVector.multiply(FloatHelp.bigEpsilon));
     }
+
+    /**
+     * Calculate a point slightly below the surface that is being shaded.
+     *
+     * @return
+     *   A point below the surface slightly along the normal direction.
+     */
+    public Tuple underPoint() {
+        return point.subtract(normalVector.multiply(FloatHelp.epsilon));
+    }
 }
