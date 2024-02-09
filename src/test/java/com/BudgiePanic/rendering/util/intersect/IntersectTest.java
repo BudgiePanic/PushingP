@@ -143,4 +143,16 @@ public class IntersectTest {
         }
     }
 
+    @Test
+    void testUnderPointGeneration() {
+        // under point lies slightly beneath the ray-object point of intersection, used to avoid acne caused by floating point errors
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        var shape = new Sphere(Transforms.identity().translate(0, 0, 1).assemble(), Sphere.defaultGlassSphere().material());
+        var intersection = new Intersection(5f, shape);
+        var info = intersection.computeShadingInfo(ray);
+        var result = info.underPoint();
+        assertTrue(result.z > (FloatHelp.epsilon * 0.5f));
+        assertTrue(info.point().z < result.z);
+    }
+
 }
