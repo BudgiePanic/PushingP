@@ -129,6 +129,7 @@ public class World {
         return this.lights.stream().
             map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
             map((color) -> this.shadeReflection(info, depth).add(color)).
+            map((color) -> this.shadeRefraction(info, depth).add(color)).
             reduce(Color::add). // NOTE: should this be ColorMul?
             orElse(Colors.black);
     }
@@ -233,5 +234,46 @@ public class World {
             }
         } 
         return false;
+    }
+
+    /**
+     * Determine the color at a point in the world as a result of refraction.
+     * @param info
+     *   information about the point where the refraction occured
+     * @param depth
+     *   ray trace recursion limit.
+     * @return
+     *   the color produced by refracting a ray through the world
+     */
+    public Color shadeRefraction(ShadingInfo info, int depth) {
+        final float transparency = info.shape().material().transparency();
+        if (depth < 1 || transparency <= 0f) {
+            return Colors.black;
+        }
+        // use snell's law to determine if total internal reflection has occured | t ~ theta
+        // (sin(theta_i) / sin(theta_t)) = (n2 / n1)
+        final var ratio = info.n1() / info.n2();
+        final var cosI = info.eyeVector().dot(info.normalVector());
+        final var sin2t = (ratio * ratio) * (1.0f - (cosI * cosI)); // via trig identity: sin(theta)^2 = 1 - cos(theta)^2
+        if (sin2t > 1f) {
+            return Colors.black;
+        }
+        final var cosT = (float) Math.sqrt(1.0 - sin2t); // via trig identity: cos(theta)^2 = 1 - sin(theta)^2
+        final var refractionDirection = info.normalVector().multiply(ratio * cosI - cosT).subtract(info.eyeVector().multiply(ratio));
+        final var refractionRay = new Ray(info.underPoint(), refractionDirection);
+        // find the refraction color by casting the refraction ray back into the world
+        final var refractedColor = this.computeColor(refractionRay, --depth);
+        return refractedColor.multiply(transparency); // apply effect of transparency to the output
+    }
+
+    /**
+     * Determine the color at a point in the world as a result of refraction.
+     * @param info
+     *   information about the point where the refraction occured
+     * @return
+     *   the color produced by refracting a ray through the world
+     */
+    public Color shadeRefraction(ShadingInfo info) {
+        return shadeRefraction(info, defaultRecursionDepth);
     }
 }
