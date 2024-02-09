@@ -337,7 +337,7 @@ public class WorldTest {
         var intersections = Optional.of(
             List.of(
                 new Intersection(4f, shape),
-                new Intersection(5f, shape)
+                new Intersection(6f, shape)
             ) 
         );
         var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
