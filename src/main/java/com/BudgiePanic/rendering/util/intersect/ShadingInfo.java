@@ -9,7 +9,7 @@ import com.BudgiePanic.rendering.util.shape.Shape;
  * 
  * @author BudgiePanic
  */
-public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside, Tuple reflectVector) {
+public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside, Tuple reflectVector, float n1, float n2) {
 
     // a => the distance along the ray that intersected to reach point
     // shape => the object that the ray hit
@@ -17,6 +17,8 @@ public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tu
     // eyeVector => a vector looking in the opposite direction as the ray
     // normalVector => the surface normal on the shape at the point where the ray hit the shape
     // reflectVector => the direction the light ray bounced to after hitting this shape.
+    // n1 => refractive index of material that was exited during refraction
+    // n2 => refractive index of material that was entered during refraction
 
     /**
      * Calculate a point slightly above the surface that is being shaded, to avoid floating point precision errors.
