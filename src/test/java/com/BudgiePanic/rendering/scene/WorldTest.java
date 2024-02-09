@@ -22,6 +22,7 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.light.PointLight;
+import com.BudgiePanic.rendering.util.pattern.PatternTest;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
@@ -427,4 +428,35 @@ public class WorldTest {
         assertEquals(expected, result, xb + " " + yb + " " + zb);
     } 
 
+    @Test
+    void testHitShadeTransparentShape() {
+        var light = new PointLight(Tuple.makePoint(-10, 10, -10), Colors.white);
+        var floor = new Plane(
+            Transforms.identity().translate(0, -1, 0).assemble(),
+            Material.defaultMaterial().setTransparency(0.5f).setRefractiveIndex(1.5f)
+        );
+        var orb = new Sphere(
+            Transforms.identity().translate(0, -3.5f, -0.5f).assemble(),
+            Material.color(Colors.red).setAmbient(0.5f)
+        );
+        var world = new World();
+        world.addLight(light);
+        world.addShape(floor);
+        world.addShape(orb);
+        float sqrt2 = (float) Math.sqrt(2.0);
+        float sqrt2Over2 = (float) (Math.sqrt(2.0)/2.0);
+        var ray = new Ray(makePoint(0, 0, -3), makeVector(0, -sqrt2Over2, sqrt2Over2));
+        var intersections = Optional.of(
+            List.of(
+                new Intersection(sqrt2, floor)
+            ) 
+        );
+        var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
+        var result = world.shadeHit(info);
+        var expected = new Color(0.93642f, 0.68642f, 0.68642f);
+        // extra info in case of test failure
+        float x = result.x - expected.x, y = result.y - expected.y, z = result.z - expected.z;
+        boolean xb = Math.abs(x) < FloatHelp.bigEpsilon, yb = Math.abs(y) < FloatHelp.bigEpsilon, zb = Math.abs(z) < FloatHelp.bigEpsilon;
+        assertEquals(expected, result, xb + " " + yb + " " + zb);
+    }
 }
