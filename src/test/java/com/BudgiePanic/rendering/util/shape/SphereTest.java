@@ -189,4 +189,12 @@ public class SphereTest {
             assertEquals(1f, sphere.material().ambient());
         });
     }
+
+    @Test
+    void testGlassSphere() {
+        var sphere = Sphere.defaultGlassSphere();
+        assertEquals(Matrix4.identity(), sphere.transform());
+        assertEquals(1f, sphere.material().transparency());
+        assertEquals(1.5f, sphere.material().refractiveIndex());
+    }
 }
