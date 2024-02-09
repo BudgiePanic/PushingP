@@ -86,7 +86,7 @@ public class PhongTest {
     @Test
     void testDefaultMaterialProperties() {
         var material = Material.defaultMaterial();
-        var expected = new Material(Colors.white, 0.1f, 0.9f, 0.9f, 200f, 0);
+        var expected = new Material(Colors.white, 0.1f, 0.9f, 0.9f, 200f, 0,0,0);
         assertEquals(expected, material);
     }
 
@@ -102,7 +102,7 @@ public class PhongTest {
 
     @Test
     void testPatternLighting() {
-        var material = new Material(new BiPattern(BiOperation.stripe, Colors.white, Colors.black), 1, 0, 0, Material.defaultShininess, 0);
+        var material = new Material(new BiPattern(BiOperation.stripe, Colors.white, Colors.black), 1, 0, 0, Material.defaultShininess, 0,0,0);
         var eye = Tuple.makeVector(0, 0, -1);
         var normal = Tuple.makeVector(0, 0, -1);
         var light = new PointLight(Tuple.makePoint(0, 0, -10), Colors.white);
