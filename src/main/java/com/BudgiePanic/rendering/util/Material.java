@@ -66,6 +66,10 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      *   The material shininess
      * @param reflectivity
      *   The material reflectiveness 0 -> nonreflective | 1 -> mirror
+     * @param transparency
+     *   How see through the material is 0 -> opaque | 1 -> see through
+     * @param refractiveIndex
+     *   How light bends as it enters/exits the material 1 -> vacuum | 1.52 -> glass 
      */
     public Material(Color color, float ambient, float diffuse, float specular, float shininess, float reflectivity, float transparency, float refractiveIndex) {
         this(new SolidColor(color), ambient, diffuse, specular, shininess, reflectivity, transparency, refractiveIndex);
