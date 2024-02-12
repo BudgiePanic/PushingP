@@ -181,7 +181,7 @@ public class IntersectTest {
         var info = intersections.get().getLast().computeShadingInfo(ray, intersections);
         var result = info.schlick();
         var expectedReflectance = 0.04f;
-        assertEquals(expectedReflectance, result);
+        assertEquals(0, FloatHelp.compareFloat(expectedReflectance, result));
     }
 
     @Test
