@@ -155,4 +155,45 @@ public class IntersectTest {
         assertTrue(info.point().z < result.z);
     }
 
+    @Test
+    void testSchlickUnderTotalInternalReflection() {
+        var sqrt2Over2 = (float) (Math.sqrt(2.0)/2.0);
+        var shape = Sphere.defaultGlassSphere();
+        var ray = new Ray(makePoint(0, 0, sqrt2Over2), makeVector(0, 1, 0));
+        var intersections = Optional.of(List.of(
+            new Intersection(-sqrt2Over2, shape),
+            new Intersection(sqrt2Over2, shape)
+        ));
+        var info = intersections.get().getLast().computeShadingInfo(ray, intersections);
+        var result = info.schlick();
+        var expectedReflectance = 1f;
+        assertEquals(expectedReflectance, result);
+    }
+
+    @Test
+    void testPerpendicularReflectance() {
+        var shape = Sphere.defaultGlassSphere();
+        var ray = new Ray(makePoint(), makeVector(0, 1, 0));
+        var intersections = Optional.of(List.of(
+            new Intersection(-1f, shape),
+            new Intersection(1f, shape)
+        ));
+        var info = intersections.get().getLast().computeShadingInfo(ray, intersections);
+        var result = info.schlick();
+        var expectedReflectance = 0.04f;
+        assertEquals(expectedReflectance, result);
+    }
+
+    @Test
+    void testSmallAngleReflectance() {
+        var shape = Sphere.defaultGlassSphere();
+        var ray = new Ray(makePoint(0, 0.99f, -2f), makeVector(0, 0, 1));
+        var intersections = Optional.of(List.of(
+            new Intersection(1.8589f, shape)
+        ));
+        var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
+        var result = info.schlick();
+        var expectedReflectance = 0.48873f;
+        assertEquals(0, FloatHelp.compareFloat(expectedReflectance, result));
+    }
 }
