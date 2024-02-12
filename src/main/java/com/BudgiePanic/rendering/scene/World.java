@@ -126,11 +126,14 @@ public class World {
      */
     public Color shadeHit(ShadingInfo info, int depth) {
         if (info == null) throw new IllegalArgumentException("shading info should not be null");
+        final var material = info.shape().material();
+        final var hasReflectance = material.reflectivity() > 0 && material.transparency() > 0; // this expression could be extracted to Shading info 
+        final Optional<Float> reflectance = hasReflectance ?  Optional.of(info.schlick()) : Optional.empty(); // this expression could be extracted to Shading info 
         return this.lights.stream().
             map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
-            map((color) -> this.shadeReflection(info, depth).add(color)).
-            map((color) -> this.shadeRefraction(info, depth).add(color)).
-            reduce(Color::add). // NOTE: should this be ColorMul?
+            map((color) -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0f)))).
+            map((color) -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0f)))).
+            reduce(Color::add).
             orElse(Colors.black);
     }
 
