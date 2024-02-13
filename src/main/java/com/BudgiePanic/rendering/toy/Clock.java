@@ -31,6 +31,7 @@ public class Clock implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Running clock toy.");
         final var origin = Tuple.makePoint();
         // The clock is facing towards the +ve y axis
         var twelveOclock = origin.add(0, 0, 1);

@@ -91,4 +91,9 @@ public interface BiOperation {
      * Blends the output of two patterns together.
      */
     static final BiOperation blend = (point, transform, a, b) -> { return a.colorAt(point, transform).colorMul(b.colorAt(point, transform)); };
+
+    /**
+     * Add the output of two patterns together.
+     */
+    static final BiOperation add = (point, transform, a, b) -> {return a.colorAt(point, transform).add(b.colorAt(point, transform));};
 }

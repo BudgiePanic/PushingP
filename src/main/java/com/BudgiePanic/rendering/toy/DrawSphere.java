@@ -31,6 +31,7 @@ public class DrawSphere implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Running phong sphere toy.");
         var sphere = new Sphere(Transforms.identity().assemble(), Material.color(new Color(1, 0.2f, 1)));
         operate(sphere);
         System.out.println("Finished casting rays 1/3");
@@ -74,9 +75,9 @@ public class DrawSphere implements Runnable {
                     var hit = Intersection.Hit(intersections.get());
                     if (hit.isPresent()) {
                         var point = ray.position(hit.get().a());
-                        var normal = hit.get().sphere().normal(point);
+                        var normal = hit.get().shape().normal(point);
                         var eye = ray.direction().negate();
-                        var color = Phong.compute(hit.get().sphere().material(), light, point, eye, normal);
+                        var color = Phong.compute(hit.get().shape().material(), light, point, eye, normal);
                         canvas.writePixel(column, row, color);
                     }
                 }

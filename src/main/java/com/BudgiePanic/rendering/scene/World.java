@@ -1,9 +1,12 @@
 package com.BudgiePanic.rendering.scene;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.BudgiePanic.rendering.util.Color;
@@ -27,9 +30,12 @@ import com.BudgiePanic.rendering.util.shape.Shape;
 public class World {
     
     /**
+     * Compute a maximum of 4 light reflections for every ray cast into the world.
+     */
+    public static final int defaultRecursionDepth = 4;
+
+    /**
      * The shapes in the scene.
-     * 
-     * NOTE: in the future, sphere may need to be abstracted behind a Shape interface
      */
     protected List<Shape> shapes;
     /**
@@ -39,9 +45,18 @@ public class World {
      */
     protected List<PointLight> lights;
 
+    /**
+     * The shapes in the world that do not cast shadows, such as glass panes and water.
+     */
+    protected Set<Shape> noShadow;
+
+    /**
+     * Construct a new empty world.
+     */
     public World() {
         this.shapes = new ArrayList<>();
         this.lights = new ArrayList<>();
+        this.noShadow = new HashSet<>();
     }
 
     /**
@@ -69,11 +84,26 @@ public class World {
      * 
      * @param shape
      *   The shape to add. Cannot be null.
+     * @param castsShadows
+     *   Whether or not this shape casts shadows in the world  
      */
-    public void addShape(Shape shape) {
+    public void addShape(Shape shape, boolean castsShadows) {
         // precondition check, don't add null shapes
         if (shape == null) throw new IllegalArgumentException("shape cannot be null.");
+        if (!castsShadows) {
+            this.noShadow.add(shape);
+        }
         this.shapes.add(shape);
+    }
+
+    /**
+     * Add a new shape to the world that casts shadows.
+     *
+     * @param shape
+     *   The shape to add.
+     */
+    public void addShape(Shape shape) {
+        addShape(shape, true);
     }
 
     /**
@@ -92,15 +122,28 @@ public class World {
      * Perform a ray intersection test against the shapes in the world.
      * Allows for easy intersection tests against multiple shapes.
      * 
-     * NOTE: this method could be sped up in the future with a parrallel stream? 
-     * 
      * @param ray
      *   The ray to test with.
      * @return
      *   EMPTY if no intersections occured. List of intersections if any.
      */
     public Optional<List<Intersection>> intersect(Ray ray) {
+        return intersect(ray, Collections.emptySet());
+    }
+
+    /**
+     * Perform a ray intersection test against the shapes in the world.
+     * Allows for easy intersection tests against multiple shapes.
+     * @param ray
+     *   The ray to test with.
+     * @param ignoredShapes
+     *   Shapes to exclude from the intersection test, for one reason or another.
+     * @return
+     *   EMPTY if no intersections occured. List of intersections if any.
+     */
+    protected Optional<List<Intersection>> intersect(Ray ray, Set<Shape> ignoredShapes) {
         var intersections = this.shapes.stream().
+            filter(s -> !ignoredShapes.contains(s)).
             map((shape) -> shape.intersect(ray)). // NOTE: if shape becomes an interface, then this can be replaced with Shape::intersect ?
             filter(Optional::isPresent).
             map(Optional::get).
@@ -116,15 +159,34 @@ public class World {
      *
      * @param info
      *   Shading information derived from a ray-shape intersection test
+     * @param depth
+     *   recursion limit on light reflection calculations
+     * @return
+     *   The color of the point in the world given the shading information.
+     */
+    public Color shadeHit(ShadingInfo info, int depth) {
+        if (info == null) throw new IllegalArgumentException("shading info should not be null");
+        final var material = info.shape().material();
+        final var hasReflectance = material.reflectivity() > 0 && material.transparency() > 0; // this expression could be extracted to Shading info 
+        final Optional<Float> reflectance = hasReflectance ?  Optional.of(info.schlick()) : Optional.empty(); // this expression could be extracted to Shading info 
+        return this.lights.stream().
+            map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
+            map((color) -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0f)))).
+            map((color) -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0f)))).
+            reduce(Color::add).
+            orElse(Colors.black);
+    }
+
+    /**
+     * Determine the color of a pointin the world using the default reflection recursion limit.
+     *
+     * @param info
+     *   Shading information derived from a ray-shape intersection test
      * @return
      *   The color of the point in the world given the shading information.
      */
     public Color shadeHit(ShadingInfo info) {
-        if (info == null) throw new IllegalArgumentException("shading info should not be null");
-        return this.lights.stream().
-            map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
-            reduce(Color::add). // NOTE: should this be ColorMul?
-            orElse(Colors.black);
+        return shadeHit(info, defaultRecursionDepth);
     }
 
     /**
@@ -132,19 +194,63 @@ public class World {
      *
      * @param ray
      *   The ray
+     * @param depth
+     *   recursion limit on light reflection calculations
      * @return
      *   The color resulting from shading the ray intersection point within the world.
      */
-    public Color computeColor(Ray ray) {
+    public Color computeColor(Ray ray, int depth) {
         var intersections = intersect(ray); 
         if (intersections.isPresent()) {
             var hit = Intersection.Hit(intersections.get());
             if (hit.isPresent()) {
-                var info = hit.get().computeShadingInfo(ray);
-                return shadeHit(info);
+                var info = hit.get().computeShadingInfo(ray, intersections);
+                return shadeHit(info, depth);
             }
         }
         return Colors.black;
+    }
+
+    /**
+     * Determine the color produced by a ray intersecting with the world, using the deafult recursion limit for reflections.
+     *
+     * @param ray
+     *   The ray
+     * @return
+     *   The color resulting from shading the ray intersection point within the world.
+     */
+    public Color computeColor(Ray ray) {
+        return computeColor(ray, defaultRecursionDepth);
+    }
+
+    /**
+     * Find the color of the reflection vector in a shading info.
+     * @param info
+     *   Shading information
+     * @param depth
+     *   the number of reflection bounces allowed
+     * @return
+     *   The color that lies along the shading info's reflection vector
+     */
+    public Color shadeReflection(ShadingInfo info, int depth) {
+        final float reflectivity = info.shape().material().reflectivity();
+        if (depth < 1 || reflectivity <= 0f) {
+            return Colors.black;
+        }
+        final var ray = new Ray(info.overPoint(), info.reflectVector());
+        final var color = this.computeColor(ray, --depth);
+        return color.multiply(reflectivity);
+    }
+
+    /**
+     * Find the color of the reflection vector in a shading info with a reflection depth of 1.
+     * @param info
+     *   Shading information
+     * @return
+     *   The color that lies along the shading info's reflection vector
+     */
+    public Color shadeReflection(ShadingInfo info) {
+        return shadeReflection(info, 1);
     }
 
     /**
@@ -160,7 +266,7 @@ public class World {
             var pointToLight = light.position().subtract(point);
             var distance = pointToLight.magnitude();
             var ray = new Ray(point, pointToLight.normalize());
-            var intersections = this.intersect(ray);
+            var intersections = this.intersect(ray, this.noShadow);
             if (intersections.isEmpty()) return false;
             var hit = Intersection.Hit(intersections.get());
             if (hit.isPresent()) {
@@ -171,5 +277,46 @@ public class World {
             }
         } 
         return false;
+    }
+
+    /**
+     * Determine the color at a point in the world as a result of refraction.
+     * @param info
+     *   information about the point where the refraction occured
+     * @param depth
+     *   ray trace recursion limit.
+     * @return
+     *   the color produced by refracting a ray through the world
+     */
+    public Color shadeRefraction(ShadingInfo info, int depth) {
+        final float transparency = info.shape().material().transparency();
+        if (depth < 1 || transparency <= 0f) {
+            return Colors.black;
+        }
+        // use snell's law to determine if total internal reflection has occured | t ~ theta
+        // (sin(theta_i) / sin(theta_t)) = (n2 / n1)
+        final var ratio = info.n1() / info.n2();
+        final var cosI = info.eyeVector().dot(info.normalVector());
+        final var sin2t = (ratio * ratio) * (1.0f - (cosI * cosI)); // via trig identity: sin(theta)^2 = 1 - cos(theta)^2
+        if (sin2t > 1f) {
+            return Colors.black;
+        }
+        final var cosT = (float) Math.sqrt(1.0 - sin2t); // via trig identity: cos(theta)^2 = 1 - sin(theta)^2
+        final var refractionDirection = info.normalVector().multiply(ratio * cosI - cosT).subtract(info.eyeVector().multiply(ratio));
+        final var refractionRay = new Ray(info.underPoint(), refractionDirection);
+        // find the refraction color by casting the refraction ray back into the world
+        final var refractedColor = this.computeColor(refractionRay, --depth);
+        return refractedColor.multiply(transparency); // apply effect of transparency to the output
+    }
+
+    /**
+     * Determine the color at a point in the world as a result of refraction.
+     * @param info
+     *   information about the point where the refraction occured
+     * @return
+     *   the color produced by refracting a ray through the world
+     */
+    public Color shadeRefraction(ShadingInfo info) {
+        return shadeRefraction(info, defaultRecursionDepth);
     }
 }

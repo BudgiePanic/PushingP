@@ -1,14 +1,18 @@
 package com.BudgiePanic.rendering.util.intersect;
 
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Tuple;
+import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
@@ -19,7 +23,7 @@ public class IntersectTest {
         var sphere = Sphere.defaultSphere();
         var intersection = new Intersection(3.5f, sphere);
         assertEquals(3.5f, intersection.a());
-        assertTrue(sphere == intersection.sphere());
+        assertTrue(sphere == intersection.shape());
     }
 
     // NOTE: the book wanted to add a test here for checking if an intersection test returned 2 intersections
@@ -84,4 +88,112 @@ public class IntersectTest {
         assertEquals(-1, FloatHelp.compareFloat(result.z, -(FloatHelp.epsilon / 2f)));
     }
 
+    @Test
+    void testIntersectionPrecomputeReflectVector() {
+        float sqrt2 = (float)(Math.sqrt(2));
+        var shape = new Plane(Transforms.identity().assemble());
+        var ray = new Ray(Tuple.makePoint(0, 1, -1), Tuple.makeVector(0, -sqrt2/2f, sqrt2/2f));
+        var intersection = new Intersection(sqrt2, shape);
+        var info = intersection.computeShadingInfo(ray);
+        var expected = Tuple.makeVector(0, sqrt2/2f, sqrt2/2f);
+        assertEquals(expected, info.reflectVector());
+    }
+
+    @Test
+    void testIntersectionRefraction() {
+        // check that n1 and n2 values are correctly calculated in a test environment
+        var material = Sphere.defaultGlassSphere().material();
+        var a = new Sphere(Transforms.identity().scale(2, 2, 2).assemble(), material.setRefractiveIndex(1.5f));
+        var b = new Sphere(Transforms.identity().translate(0, 0, -0.25f).assemble(), material.setRefractiveIndex(2f));
+        var c = new Sphere(Transforms.identity().translate(0, 0, 0.25f).assemble(), material.setRefractiveIndex(2.5f));
+        var ray = new Ray(makePoint(0, 0, -4), makeVector(0, 0, 1));
+        var intersections = List.of(
+            new Intersection(2f, a),
+            new Intersection(2.75f, b),
+            new Intersection(3.25f, c),
+            new Intersection(4.75f, b),
+            new Intersection(5.25f, c),
+            new Intersection(6f, a)
+        );
+        var expectedN1 = List.of(
+            1.0f,
+            1.5f,
+            2.0f,
+            2.5f,
+            2.5f,
+            1.5f
+        );
+        var expectedN2 = List.of(
+            1.5f,
+            2.0f,
+            2.5f,
+            2.5f,
+            1.5f,
+            1.0f
+        );
+        for (int i = 0; i < intersections.size(); i++) {
+            var expectedn1 = expectedN1.get(i);
+            var expectedn2 = expectedN2.get(i);
+            var intersection = intersections.get(i);
+            var info = intersection.computeShadingInfo(ray, Optional.of(intersections));
+            var n1 = info.n1();
+            var n2 = info.n2();
+            assertEquals(expectedn1, n1, intersection.toString() + i);
+            assertEquals(expectedn2, n2, intersection.toString() + i);
+        }
+    }
+
+    @Test
+    void testUnderPointGeneration() {
+        // under point lies slightly beneath the ray-object point of intersection, used to avoid acne caused by floating point errors
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        var shape = new Sphere(Transforms.identity().translate(0, 0, 1).assemble(), Sphere.defaultGlassSphere().material());
+        var intersection = new Intersection(5f, shape);
+        var info = intersection.computeShadingInfo(ray);
+        var result = info.underPoint();
+        assertTrue(result.z > (FloatHelp.epsilon * 0.5f));
+        assertTrue(info.point().z < result.z);
+    }
+
+    @Test
+    void testSchlickUnderTotalInternalReflection() {
+        var sqrt2Over2 = (float) (Math.sqrt(2.0)/2.0);
+        var shape = Sphere.defaultGlassSphere();
+        var ray = new Ray(makePoint(0, 0, sqrt2Over2), makeVector(0, 1, 0));
+        var intersections = Optional.of(List.of(
+            new Intersection(-sqrt2Over2, shape),
+            new Intersection(sqrt2Over2, shape)
+        ));
+        var info = intersections.get().getLast().computeShadingInfo(ray, intersections);
+        var result = info.schlick();
+        var expectedReflectance = 1f;
+        assertEquals(expectedReflectance, result);
+    }
+
+    @Test
+    void testPerpendicularReflectance() {
+        var shape = Sphere.defaultGlassSphere();
+        var ray = new Ray(makePoint(), makeVector(0, 1, 0));
+        var intersections = Optional.of(List.of(
+            new Intersection(-1f, shape),
+            new Intersection(1f, shape)
+        ));
+        var info = intersections.get().getLast().computeShadingInfo(ray, intersections);
+        var result = info.schlick();
+        var expectedReflectance = 0.04f;
+        assertEquals(0, FloatHelp.compareFloat(expectedReflectance, result));
+    }
+
+    @Test
+    void testSmallAngleReflectance() {
+        var shape = Sphere.defaultGlassSphere();
+        var ray = new Ray(makePoint(0, 0.99f, -2f), makeVector(0, 0, 1));
+        var intersections = Optional.of(List.of(
+            new Intersection(1.8589f, shape)
+        ));
+        var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
+        var result = info.schlick();
+        var expectedReflectance = 0.48873f;
+        assertEquals(0, FloatHelp.compareFloat(expectedReflectance, result));
+    }
 }

@@ -32,6 +32,7 @@ public final class PlaneDemo implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("running plane demo toy.");
         System.out.println("constructing world");
         final List<Shape> shapes = List.of(
             new Plane(Transforms.identity().assemble()),

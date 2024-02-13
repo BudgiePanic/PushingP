@@ -41,6 +41,7 @@ public class PatternToy implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("running pattern toy.");
         System.out.println("Building world");
         final List<Shape> shapes = List.of(
             new Plane(Transforms.identity().assemble(), 
@@ -56,29 +57,24 @@ public class PatternToy implements Runnable {
                 Material.pattern(
                     new Perturb(new Perturb(new Perturb(
                         new BiPattern(BiOperation.ring, Colors.blue, Colors.white, Transforms.identity().scale(0.25f, 0.25f, 0.25f).assemble()), 0.1f),
-                        0.25f)
-                    ))),
+                        0.15f),0.25f)
+                    )),
 
             new Sphere(
                 Transforms.identity().translate(4, 2f, 1).assemble(),
                 Material.pattern(new BiPattern(blend, 
-                        new BiPattern(stripe, new Color(0.33f, 0.33f, 0), new Color(0.5f,0.5f,0.5f)),
-                        new BiPattern(stripe, Colors.black, new Color(0.5f, 0, 0.33f), 
-                            Transforms.identity().rotateX(AngleHelp.toRadians(90f)).assemble()),
+                        new BiPattern(stripe, new Color(0.33f, 0.33f, 1), new Color(0.5f,0.5f,0.5f)),
+                        new BiPattern(stripe, Colors.white, new Color(0.5f, 1, 0.33f), 
+                            Transforms.identity().rotateZ(AngleHelp.toRadians(90f)).assemble()),
                     Transforms.identity().scale(0.33f, 0.33f, 0.33f).assemble()))),
 
             new Sphere(Transforms.identity().translate(0, 3, 1).assemble(),
-                Material.pattern(new BiPattern(blend,
-                    new Perturb(new BiPattern(ring, new Color(0.3f, 0.85f, 0.8f), new Color(0.31f, 0.9f, 0.45f), 
-                        Transforms.identity().scale(0.2f, 0.2f, 0.2f).assemble())),
-                    new BiPattern(radialGradient, new Color(0.93f, 0.25f, 0.13f), new Color(0.95f, 0.13f, 0.608f), 
-                    Transforms.identity().scale(0.33f, 0.33f, 0.33f).assemble()),
-                    Transforms.identity().scale(0.45f, 0.45f, 0.45f).assemble())))
+                Material.pattern(new BiPattern(stripe,
+                    new Perturb(new BiPattern(ring, new Color(0.80f, 0.80f, 0.01f), new Color(0.01f, 0.90f, 0.23f), 
+                        Transforms.identity().scale(1f, 0.2f, 1f).assemble()), 0.05f),
+                    new BiPattern(radialGradient, new Color(0f, 0.98f, 0.6f), new Color(0.92f, 0.55f, 0.08f)),
+                    Transforms.identity().scale(0.25f, 0.25f, 0.25f).assemble())))
         );
-
-        new Perturb(new BiPattern(BiOperation.radialGradient, 
-                        new BiPattern(BiOperation.checker, new SolidColor(Colors.green), new SolidColor(Colors.blue)),
-                        new BiPattern(BiOperation.ring, new SolidColor(Colors.white), new SolidColor(Colors.red))));
 
         final List<PointLight> lights = List.of(
             new PointLight(makePoint(3, 5, -2), Colors.white)

@@ -1,14 +1,19 @@
 package com.BudgiePanic.rendering;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
+import static java.util.Map.entry;
+
 import com.BudgiePanic.rendering.toy.Artillery;
 import com.BudgiePanic.rendering.toy.CameraDemo;
 import com.BudgiePanic.rendering.toy.Clock;
 import com.BudgiePanic.rendering.toy.DrawSphere;
 import com.BudgiePanic.rendering.toy.PatternToy;
 import com.BudgiePanic.rendering.toy.PlaneDemo;
+import com.BudgiePanic.rendering.toy.RefractionDemo;
 import com.BudgiePanic.rendering.toy.Shadow;
 import com.BudgiePanic.rendering.toy.ShadowDemo;
-import com.BudgiePanic.rendering.util.Tuple;
 
 /**
  * Hello world!
@@ -16,56 +21,41 @@ import com.BudgiePanic.rendering.util.Tuple;
  */
 public class App 
 {
-    final static String flagArtillery = "-arty";
-    final static String flagClock = "-clock";
-    final static String flagShadow = "-shadow";
-    final static String flagSphereDraw = "-sphere";
-    final static String flagCamera = "-camera";
-    final static String flagShadowDemo = "-shadowDemo";
-    final static String flagPlaneDemo = "-plane";
-    final static String flagPatternDemo = "-pattern";
+    final static Map<String, Supplier<Runnable>> demos = Map.ofEntries(
+        entry("-arty", () -> new Artillery()),
+        entry("-clock", () -> new Clock()),
+        entry("-shadow", () -> new Shadow()),
+        entry("-sphere", () -> new DrawSphere()),
+        entry("-camera", () -> new CameraDemo()),
+        entry("-shadowDemo", () -> new ShadowDemo()),
+        entry("-plane", () -> new PlaneDemo()),
+        entry("-pattern", () -> new PatternToy()),
+        entry("-refraction", () -> new RefractionDemo())
+    );
 
     public static void main( String[] args )
     {
         System.out.println( "Hello World!" );
         if (args.length > 0) {
-            if(args[0].equals(flagArtillery)) {
-                System.out.println("Running artillery toy.");
-                new Artillery(
-                    Tuple.makePoint(0f, 1f, 0f),
-                    Tuple.makeVector((0.1f) * 100f,  (0.1f) * 100f, 0f),
-                    Tuple.makeVector(0f, (0.1f) * -9.8f, 0f),
-                    Tuple.makeVector(1f, 0f, 0f))
-                    .run();
+            if (args[0].equals("-demo_help")) {
+                printDemos();
+                return;
             }
-            if (args[0].equals(flagClock)) {
-                System.out.println("Running clock toy.");
-                new Clock().run();
+            var demo = demos.get(args[0]);
+            if (demo == null) {
+                System.out.println("Unknown demo argument: " + args[0]);
+                System.out.println("use \'-demo_help\' to see available demos.");
+            } else {
+                demo.get().run();
             }
-            if (args[0].equals(flagShadow)) {
-                System.out.println("Running shadow toy.");
-                new Shadow().run();
-            }
-            if (args[0].equals(flagSphereDraw)) {
-                System.out.println("Running phong sphere toy.");
-                new DrawSphere().run();
-            }
-            if (args[0].equals(flagCamera)) {
-                System.out.println("Running camera toy.");
-                new CameraDemo().run();
-            }
-            if (args[0].equals(flagShadowDemo)) {
-                System.out.println("running shadow demo toy.");
-                new ShadowDemo().run();
-            }
-            if (args[0].equals(flagPlaneDemo)) {
-                System.out.println("running plane demo toy.");
-                new PlaneDemo().run();
-            }
-            if (args[0].equals(flagPatternDemo)) {
-                System.out.println("running pattern toy.");
-                new PatternToy().run();
-            }
+        } else {
+            System.out.println("no arguments recieved");
+            System.out.println("use \'-demo_help\' to see available demos.");
         }
+    }
+
+    static void printDemos() {
+        System.out.println("supported demos:");
+        demos.keySet().forEach(System.out::println);
     }
 }

@@ -29,6 +29,15 @@ public final class Artillery implements Runnable{
     private static final int maxIterations = 2000000;
     private static final String fileName = "image.ppm";
 
+    public Artillery() {
+        this(
+            Tuple.makePoint(0f, 1f, 0f),
+            Tuple.makeVector((0.1f) * 100f,  (0.1f) * 100f, 0f),
+            Tuple.makeVector(0f, (0.1f) * -9.8f, 0f),
+            Tuple.makeVector(1f, 0f, 0f)
+        );
+    }
+
     public Artillery(Tuple projectilePosition, Tuple projectileVelocity, Tuple gravity, Tuple wind) {
         this.proj = projectilePosition;
         this.vel = projectileVelocity;
@@ -51,6 +60,7 @@ public final class Artillery implements Runnable{
 
     @Override
     public void run() {
+        System.out.println("Running artillery toy.");
         final Color projColor = Colors.white;
         final int canvasHeight = canvas.getHeight();
         final int canvasWidth = canvas.getWidth();
