@@ -38,6 +38,7 @@ public class ShadowDemo implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("running shadow demo toy.");
         // make some shadow puppets
         System.out.println("building world");
         Sphere a = new Sphere(Transforms.identity().translate(3, 0, 0).assemble());

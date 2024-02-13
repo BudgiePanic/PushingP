@@ -63,6 +63,7 @@ public class Shadow implements Runnable {
 
 	@Override
 	public void run() {
+        System.out.println("Running shadow toy.");
         operate(canvas, Sphere.defaultSphere(), Colors.green);
         System.out.println("Processed default sphere.");
         operate(canvas, new Sphere(Transforms.identity().scale(0.9f, 0.5f, 0.9f).assemble()), Colors.blue);

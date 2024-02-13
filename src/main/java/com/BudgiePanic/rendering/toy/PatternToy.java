@@ -41,6 +41,7 @@ public class PatternToy implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("running pattern toy.");
         System.out.println("Building world");
         final List<Shape> shapes = List.of(
             new Plane(Transforms.identity().assemble(), 

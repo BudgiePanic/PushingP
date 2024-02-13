@@ -28,6 +28,7 @@ public class CameraDemo implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Running camera toy.");
         System.out.println("building world");
         Sphere floor = new Sphere(Transforms.identity().scale(10, 0.01f, 10).assemble(), Material.color(new Color(1, 0.9f, 0.9f)).setSpecular(0));
         Sphere leftWall = new Sphere(

@@ -48,6 +48,7 @@ public class RefractionDemo implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("running refraction toy.");
         /*
          * A background made of 2 planes
          * A floor

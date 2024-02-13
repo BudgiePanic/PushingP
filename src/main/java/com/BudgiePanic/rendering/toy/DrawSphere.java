@@ -31,6 +31,7 @@ public class DrawSphere implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Running phong sphere toy.");
         var sphere = new Sphere(Transforms.identity().assemble(), Material.color(new Color(1, 0.2f, 1)));
         operate(sphere);
         System.out.println("Finished casting rays 1/3");
