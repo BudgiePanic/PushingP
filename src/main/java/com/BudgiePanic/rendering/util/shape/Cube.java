@@ -32,7 +32,10 @@ public class Cube extends BaseShape {
         final var y = checkAxis(origin.y, direction.y);
         final var z = checkAxis(origin.z, direction.z);
         final var min = Math.max(x.a(), Math.max(y.a(), z.a()));
-        final var max = Math.min(x.b(), Math.min(y.b(), z.b()));       
+        final var max = Math.min(x.b(), Math.min(y.b(), z.b()));
+        if (min > max) {
+            return Optional.empty();
+        }       
         return Optional.of(List.of(new Intersection(min, this), new Intersection(max, this)));
     }
 
