@@ -70,6 +70,32 @@ public class CubeTest {
     }
 
     @Test
+    void testNoIntersection() {
+        var cube = new Cube(Matrix4.identity());
+        var origins = List.of(
+            makePoint(-2f,0f,0f),
+            makePoint(0f,-2f,0f),
+            makePoint(0f,0f,-2f),
+            makePoint(2f,0f,2f),
+            makePoint(0f,2f,2f),
+            makePoint(2f,2f,0f)
+        );
+        var directions = List.of(
+            makeVector(0.2673f,5345f,0.8018f),
+            makeVector(0.8018f,0.2673f,0.5345f),
+            makeVector(0.5345f,0.8018f,0.2673f),
+            makeVector(0f,0f,-1f),
+            makeVector(0f,-1f,0f),
+            makeVector(-1f,0f,0)
+        );
+        for(int i = 0; i < directions.size(); i++) {
+            var ray = new Ray(origins.get(i), directions.get(i));
+            var result = cube.localIntersect(ray);
+            assertTrue(result.isEmpty(), Integer.toString(i));
+        }
+    }
+
+    @Test
     void testLocalNormal() {
 
     }
