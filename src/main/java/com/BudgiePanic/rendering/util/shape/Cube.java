@@ -61,8 +61,12 @@ public class Cube extends BaseShape {
 
     @Override
     protected Tuple localNormal(Tuple point) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localNormal'");
+        // the face of the cube that the point lies on can be determined by finding which component of the point is the largest
+        final float x = Math.abs(point.x), y = Math.abs(point.y), z = Math.abs(point.z);
+        final var max = Math.max(x, Math.max(y, z));
+        final var isX = max == x; // points on cube corner will map to normals on the x faces of the cube
+        final var isY = max == y; // points on the cube edges will map to normals on the y faces of the cube
+        return Tuple.makeVector(isX ? point.x : 0, !isX && isY ? point.y : 0, !isX && !isY && max == z ? point.z : 0);
     }
     
 }
