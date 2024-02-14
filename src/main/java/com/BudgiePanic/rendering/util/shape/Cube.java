@@ -26,6 +26,10 @@ public class Cube extends BaseShape {
         // along each plane pair on the cube surfaces
         // there will be a intersection point that is the smallest maximum intersection point
         // and the largest minimum intersection point, these are the cube intersection points
+        // NOTE: in graphics gems, this algorithm is optimized by first determining which 3 of the 6 cube faces
+        //       the ray would hit first based on the rays direction vector, and then only testing the intersection values on those three planes
+        //       lastly, the max value found is checked to be inside the cube.
+        //       @see: https://gamedev.stackexchange.com/questions/18436/most-efficient-aabb-vs-ray-collision-algorithms 
         final var origin = ray.origin();
         final var direction = ray.direction();
         final var x = checkAxis(origin.x, direction.x);
