@@ -97,6 +97,31 @@ public class CubeTest {
 
     @Test
     void testLocalNormal() {
-
+        var points = List.of(
+            makePoint(1f, 0.5f, -0.8f),
+            makePoint(-1f, -0.2f, 0.9f),
+            makePoint(-0.4f, 1f, -0.1f),
+            makePoint(0.3f, -1f, -0.1f),
+            makePoint(-0.6f, 0.3f, 1f),
+            makePoint(0.4f, 0.4f, -1f),
+            makePoint(1f, 1f, 1f),
+            makePoint(-1f, -1f, -1f)
+        );
+        var expectedNormals = List.of(
+            makeVector(1f, 0f, 0f),
+            makeVector(-1f, 0f, 0f),
+            makeVector(0f, 1f, 0f),
+            makeVector(0f, -1f, 0f),
+            makeVector(0f, 0f, 1f),
+            makeVector(0f, 0f, -1f),
+            makeVector(1f, 0f, 0f),
+            makeVector(-1f, 0f, 0f)
+        );
+        var cube = new Cube(Matrix4.identity());
+        for (int i = 0; i < points.size(); i++) {
+            var output = cube.localNormal(points.get(i));
+            var expected = expectedNormals.get(i);
+            assertEquals(expected, output);
+        }
     }
 }
