@@ -21,11 +21,7 @@ import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.pattern.BiOperation;
 import com.BudgiePanic.rendering.util.pattern.BiPattern;
 import com.BudgiePanic.rendering.util.pattern.Perturb;
-import com.BudgiePanic.rendering.util.pattern.SolidColor;
 import com.BudgiePanic.rendering.util.shape.Cube;
-import com.BudgiePanic.rendering.util.shape.Plane;
-import com.BudgiePanic.rendering.util.shape.Shape;
-import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
