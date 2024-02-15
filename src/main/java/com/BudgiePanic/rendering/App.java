@@ -14,6 +14,8 @@ import com.BudgiePanic.rendering.toy.PlaneDemo;
 import com.BudgiePanic.rendering.toy.RefractionDemo;
 import com.BudgiePanic.rendering.toy.Shadow;
 import com.BudgiePanic.rendering.toy.ShadowDemo;
+import com.BudgiePanic.rendering.toy.CubeDemo;
+
 
 /**
  * Hello world!
@@ -30,7 +32,8 @@ public class App
         entry("-shadowDemo", () -> new ShadowDemo()),
         entry("-plane", () -> new PlaneDemo()),
         entry("-pattern", () -> new PatternToy()),
-        entry("-refraction", () -> new RefractionDemo())
+        entry("-refraction", () -> new RefractionDemo()),
+        entry("-cube", ()-> new CubeDemo())
     );
 
     public static void main( String[] args )
