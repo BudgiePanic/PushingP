@@ -27,7 +27,7 @@ public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tu
      *   A point above the surface slightly along the normal direction.
      */
     public Tuple overPoint() {
-        return point.add(normalVector.multiply(FloatHelp.bigEpsilon));
+        return point.add(normalVector.multiply(FloatHelp.epsilon));
     }
 
     /**

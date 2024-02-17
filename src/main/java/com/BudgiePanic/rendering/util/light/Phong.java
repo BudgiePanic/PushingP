@@ -30,7 +30,7 @@ public final class Phong {
      *   The color of the point described in the shading information record.
      */
     public static Color compute(ShadingInfo info, PointLight light, boolean inShadow) {
-        return compute(info.shape().material(), light, info.point(), info.eyeVector(), info.normalVector(), inShadow, Optional.of(info.shape()));
+        return compute(info.shape().material(), light, info.overPoint(), info.eyeVector(), info.normalVector(), inShadow, Optional.of(info.shape()));
     }
 
     /**
