@@ -22,7 +22,7 @@ public final class FloatHelp {
      * @param b
      *   The second float.
      * @return
-     *    0 if the two numbers are within 0.00001 of each other.
+     *    0 if the two numbers are within 0.0001 of each other.
      *    1 if a is larger than b.
      *   -1 if b is larger than a.
      */
