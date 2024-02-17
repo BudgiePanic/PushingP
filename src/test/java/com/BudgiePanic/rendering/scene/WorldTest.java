@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
-import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
@@ -270,11 +269,7 @@ public class WorldTest {
         var expected = new Color(0.19032f, 0.2379f, 0.14274f);
         // tidy up mutations to default test world
         defaultTestWorld.shapes.removeLast();
-        float x = output.x - expected.x, y = output.y - expected.y, z = output.z - expected.z;
-        boolean xb = Math.abs(x) < FloatHelp.bigEpsilon, yb = Math.abs(y) < FloatHelp.bigEpsilon, zb = Math.abs(z) < FloatHelp.bigEpsilon;
-        assertTrue(xb, x + " " + xb);
-        assertTrue(yb, y + " " + yb);
-        assertTrue(zb, z + " " + zb);
+        assertEquals(expected, output);
     }
 
     @Test
@@ -291,11 +286,7 @@ public class WorldTest {
         var expected = new Color(0.87677f, 0.92436f, 0.82918f);
         // tidy up mutations to default test world
         defaultTestWorld.shapes.removeLast();
-        float x = output.x - expected.x, y = output.y - expected.y, z = output.z - expected.z;
-        boolean xb = Math.abs(x) < FloatHelp.bigEpsilon, yb = Math.abs(y) < FloatHelp.bigEpsilon, zb = Math.abs(z) < FloatHelp.bigEpsilon;
-        assertTrue(xb, x + " " + xb);
-        assertTrue(yb, y + " " + yb);
-        assertTrue(zb, z + " " + zb);
+        assertEquals(expected, output);
     }
 
     @Test
@@ -387,11 +378,11 @@ public class WorldTest {
         );
         var info = intersections.get().get(1).computeShadingInfo(ray, intersections);
         var result = defaultTestWorld.shadeRefraction(info);
-        assertEquals(Colors.black, result);
-
         // tidy up
         defaultTestWorld.shapes.remove(replacement);
         defaultTestWorld.shapes.add(0, shape);
+
+        assertEquals(Colors.black, result);
     }
 
     @Test
@@ -422,14 +413,7 @@ public class WorldTest {
         var info = intersections.get().get(2).computeShadingInfo(ray, intersections);
         var result = world.shadeRefraction(info);
         var expected = new Color(0, 0.99888f, 0.04725f);
-        // extra info in case of test failure
-        float x = result.x - expected.x, y = result.y - expected.y, z = result.z - expected.z;
-        boolean xb = Math.abs(x) < FloatHelp.bigEpsilon, yb = Math.abs(y) < FloatHelp.bigEpsilon, zb = Math.abs(z) < FloatHelp.bigEpsilon;
-        // manual inspection shows we're getting the correct result from this test, but floating point error is causing the test to fail,
-        // so we'll use big epsilon instead of color equals
-        assertTrue(xb, Float.toString(x));
-        assertTrue(yb, Float.toString(y));
-        assertTrue(zb, Float.toString(z));
+        assertEquals(expected, result);
     } 
 
     @Test
@@ -460,8 +444,7 @@ public class WorldTest {
         var expected = new Color(0.93642f, 0.68642f, 0.68642f);
         // extra info in case of test failure
         float x = result.x - expected.x, y = result.y - expected.y, z = result.z - expected.z;
-        boolean xb = Math.abs(x) < FloatHelp.bigEpsilon, yb = Math.abs(y) < FloatHelp.bigEpsilon, zb = Math.abs(z) < FloatHelp.bigEpsilon;
-        assertEquals(expected, result, xb + " " + yb + " " + zb);
+        assertEquals(expected, result, x + " " + y + " " + z);
     }
 
     @Test
@@ -498,13 +481,6 @@ public class WorldTest {
         var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
         var result = world.shadeHit(info);
         var expected = new Color(0.93391f, 0.69643f, 0.69243f);
-        // extra info in case of test failure
-        float x = result.x - expected.x, y = result.y - expected.y, z = result.z - expected.z;
-        boolean xb = Math.abs(x) < FloatHelp.bigEpsilon, yb = Math.abs(y) < FloatHelp.bigEpsilon, zb = Math.abs(z) < FloatHelp.bigEpsilon;
-        // manual inspection shows we're getting the correct result from this test, but floating point error is causing the test to fail,
-        // so we'll use big epsilon instead of color equals
-        assertTrue(xb, Float.toString(x));
-        assertTrue(yb, Float.toString(y));
-        assertTrue(zb, Float.toString(z));
+        assertEquals(expected, result);
     }
 }
