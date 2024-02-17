@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 import java.util.Optional;
@@ -190,6 +191,7 @@ public class WorldTest {
 
     @Test
     void testShadingThinObject() {
+        fail("this test is supposed to fail until issue #53 is resolved");
         // there should be no acne effect, all intersection points should NOT be in shadow
         var floor = new Sphere(Transforms.identity().scale(10, 0.01f, 10).assemble(),
             Material.color(new Color(1, 0.9f, 0.9f)).setSpecular(0));
@@ -215,7 +217,7 @@ public class WorldTest {
         world.addShape(floor);
         world.addShape(leftWall);
         world.addShape(rightWall);
-        Camera camera = new Camera(50, 50, 
+        Camera camera = new Camera(75, 75, 
             AngleHelp.toRadians(90), 
             View.makeViewMatrix(
                 Tuple.makePoint(0, 1.5f, -5f),
