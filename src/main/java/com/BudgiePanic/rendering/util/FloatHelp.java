@@ -12,13 +12,7 @@ public final class FloatHelp {
     /**
      * The maximum difference in floats for them to be considered the same.
      */
-    public final static float epsilon = 0.00001f;
-
-    /**
-     * A quantity that has been observed to be larger that the accumulated floating point errors in some calculations. (largest error seen so far = 0.000390)
-     * Used to check if a calculation result is close to zero when it has accumulated many floating point errors.
-     */
-    public final static float bigEpsilon = 0.001f;
+    public final static float epsilon = 0.0001f;
     
     /**
      * checks if two floating point numbers are similar enough to each other.
@@ -28,7 +22,7 @@ public final class FloatHelp {
      * @param b
      *   The second float.
      * @return
-     *    0 if the two numbers are within 0.00001 of each other.
+     *    0 if the two numbers are within 0.0001 of each other.
      *    1 if a is larger than b.
      *   -1 if b is larger than a.
      */

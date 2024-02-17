@@ -1,7 +1,11 @@
 package com.BudgiePanic.rendering.scene;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Canvas;
+import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
@@ -111,13 +115,7 @@ public class Camera {
      */
     public Canvas takePicture(World world) {
         if (world == null) throw new IllegalArgumentException("world is null");
-        Canvas canvas = new ArrayCanvas(width, height);
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) { // TODO this for loop could be executed in parrallel for massive program speed up >:)
-                canvas.writePixel(col, row, world.computeColor(createRay(col, row)));
-            }
-        }
-        return canvas;
+        return takePicture(world, new ArrayCanvas(width, height));
     }
 
     /**
@@ -133,11 +131,14 @@ public class Camera {
     public Canvas takePicture(World world, Canvas canvas) {
         // pre condition check: is the canvas big enough for the camera?
         if (canvas == null || canvas.getHeight() < this.height || canvas.getWidth() < this.width) throw new IllegalArgumentException();
+        List<Pair<Integer, Integer>> jobs = new ArrayList<>(this.height * this.width);
         for (int row = 0; row < this.height; row++) {
             for (int col = 0; col < this.width; col++) {
-                canvas.writePixel(col, row, world.computeColor(createRay(col, row)));
+                // canvas.writePixel(col, row, world.computeColor(createRay(col, row)));
+                jobs.add(new Pair<Integer,Integer>(row, col));
             }
         }
+        jobs.parallelStream().forEach(pixel -> canvas.writePixel(pixel.a(), pixel.b(), world.computeColor(createRay(pixel.a(), pixel.b()))));
         return canvas;
     }
 
