@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
+import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -68,6 +69,38 @@ public class CylinderTest {
             var result = shape.localNormal(test.a());
             var expected = test.b();
             assertEquals(expected, result, test.toString());
+        }
+    }
+
+    @Test
+    void testCylinderDefaultBounds() {
+        Cylinder shape = new Cylinder(Matrix4.identity());
+        assertEquals(Float.POSITIVE_INFINITY, shape.maximum);
+        assertEquals(Float.NEGATIVE_INFINITY, shape.minimum);
+        shape = new Cylinder(Matrix4.identity(), Material.defaultMaterial());
+        assertEquals(Float.POSITIVE_INFINITY, shape.maximum);
+        assertEquals(Float.NEGATIVE_INFINITY, shape.minimum);
+    }
+
+    @Test
+    void testCylinderTruncation() {
+        var shape = new Cylinder(Matrix4.identity(), 2, 1);
+        List<Pair<Ray, Integer>> tests = List.of(
+            new Pair<>(new Ray(makePoint(0, 1.5f, 0), makeVector(0.1f, 1, 0).normalize()), 0),
+            new Pair<>(new Ray(makePoint(0, 3, -5), makeVector(0, 0, 1).normalize()), 0),
+            new Pair<>(new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1).normalize()), 0),
+            new Pair<>(new Ray(makePoint(0, 2, -5), makeVector(0, 0, 1).normalize()), 0),
+            new Pair<>(new Ray(makePoint(0, 1, -5), makeVector(0, 0, 1).normalize()), 0),
+            new Pair<>(new Ray(makePoint(0, 1.5f, -2), makeVector(0, 0, 1).normalize()), 2)
+        );
+        for(var test : tests) {
+            var result = shape.localIntersect(test.a());
+            if (test.b() == 0) {
+                assertTrue(result.isEmpty());
+            } else {
+                var intersections = result.get();
+                assertEquals(2, intersections.size());
+            }
         }
     }
 }
