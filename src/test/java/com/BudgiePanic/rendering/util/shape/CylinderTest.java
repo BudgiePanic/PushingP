@@ -3,6 +3,7 @@ package com.BudgiePanic.rendering.util.shape;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -102,5 +103,17 @@ public class CylinderTest {
                 assertEquals(2, intersections.size());
             }
         }
+    }
+
+    @Test
+    void testCylinderCapDefaultProperties() {
+        Cylinder shape = new Cylinder(Matrix4.identity());
+        assertFalse(shape.closed);
+        shape = new Cylinder(Matrix4.identity(), Material.defaultMaterial());
+        assertFalse(shape.closed);
+        shape = new Cylinder(Matrix4.identity(), Material.defaultMaterial(),0,0);
+        assertFalse(shape.closed);
+        shape = new Cylinder(Matrix4.identity(),0,0);
+        assertFalse(shape.closed);
     }
 }
