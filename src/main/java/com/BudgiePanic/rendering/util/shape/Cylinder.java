@@ -17,9 +17,49 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  */
 public class Cylinder extends BaseShape {
 
-    public Cylinder(Matrix4 transform, Material material) { super(transform, material); }
+    /**
+     * The lower y bounds distance that causes the cylinder to be truncated.
+     */
+    protected final float minimum;
+    /**
+     * The upper y bounds distance that causes the cylinder to be truncated.
+     */
+    protected final float maximum;
 
-    public Cylinder(Matrix4 transform) { super(transform); }
+    /**
+     * The Cylinder.
+     *
+     * @param transform
+     *   The cylinder transform
+     * @param material
+     *   The cylinder material 
+     * @param maximum
+     *   The uppper length of the cylinder
+     * @param minimum
+     *   The lower length of the cylinder
+     */
+    public Cylinder(Matrix4 transform, Material material, float maximum, float minimum) { super(transform, material); this.maximum = maximum; this.minimum = minimum; }
+
+    /**
+     * 
+     * @param transform
+     * @param material
+     */
+    public Cylinder(Matrix4 transform, Material material) { this(transform, material, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY); }
+
+    /**
+     * 
+     * @param transform
+     * @param maximum
+     * @param minimum
+     */
+    public Cylinder(Matrix4 transform, float maximum, float minimum) { super(transform); this.maximum = maximum; this.minimum = minimum; }
+
+    /**
+     * 
+     * @param transform
+     */
+    public Cylinder(Matrix4 transform) { this(transform, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY); }
 
     @Override
     protected Optional<List<Intersection>> localIntersect(Ray ray) { 
@@ -34,9 +74,26 @@ public class Cylinder extends BaseShape {
             return Optional.empty();
         }
         final float sqrtDisc = (float) Math.sqrt(discriminant);
-        final var t0 = (-b - sqrtDisc) / (2*a);
-        final var t1 = (-b + sqrtDisc) / (2*a);
-        return Optional.of(List.of(new Intersection(Float.valueOf(t0), this), new Intersection(Float.valueOf(t1), this)));
+        var t0 = (-b - sqrtDisc) / (2*a);
+        var t1 = (-b + sqrtDisc) / (2*a);
+        if (t0 > t1) {
+            var temp = t0;
+            t0 = t1; 
+            t1 = temp;
+        }
+        final var y0 = ray.origin().y + t0 * ray.direction().y;
+        final var y1 = ray.origin().y + t1 * ray.direction().y;
+        final var addt0 = this.minimum < y0 && y0 < this.maximum;
+        final var addt1 = this.minimum < y1 && y1 < this.maximum;
+        if (!addt0 && !addt1) return Optional.empty();
+        if (addt0 && addt1) return Optional.of(List.of(new Intersection(Float.valueOf(t0), this), new Intersection(Float.valueOf(t1), this)));
+        if (addt0) {
+            assert !addt1;
+            return Optional.of(List.of(new Intersection(Float.valueOf(t0), this)));
+        } else {
+            assert addt1 && !addt0;
+            return Optional.of(List.of(new Intersection(Float.valueOf(t1), this)));
+        }
     }
 
     @Override
