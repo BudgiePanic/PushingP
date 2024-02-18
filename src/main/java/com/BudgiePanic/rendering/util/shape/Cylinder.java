@@ -41,8 +41,7 @@ public class Cylinder extends BaseShape {
 
     @Override
     protected Tuple localNormal(Tuple point) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localNormal'");
+        return Tuple.makeVector(point.x, 0, point.z);
     }
     
 }
