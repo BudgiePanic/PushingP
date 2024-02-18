@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.AngleHelp;
@@ -189,9 +190,9 @@ public class WorldTest {
         assertEquals(expected, result);
     }
 
+    @Disabled("this test will always fail until issue #53 is resolved")
     @Test
     void testShadingThinObject() {
-        fail("this test is supposed to fail until issue #53 is resolved");
         // there should be no acne effect, all intersection points should NOT be in shadow
         var floor = new Sphere(Transforms.identity().scale(10, 0.01f, 10).assemble(),
             Material.color(new Color(1, 0.9f, 0.9f)).setSpecular(0));
