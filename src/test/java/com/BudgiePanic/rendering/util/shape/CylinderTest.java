@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Pair;
+import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
@@ -55,6 +56,18 @@ public class CylinderTest {
 
     @Test
     void testLocalNormal() {
-
+        List<Pair<Tuple, Tuple>> tests = List.of(
+            // point input | expected result
+            new Pair<>(makePoint(1, 0, 0), makeVector(1, 0, 0)),
+            new Pair<>(makePoint(0, 5, -1), makeVector(0, 0, -1)),
+            new Pair<>(makePoint(0, -2, -1), makeVector(0, 0, 1)),
+            new Pair<>(makePoint(-1, 1, 0), makeVector(-1, 0, 0))
+        );
+        var shape = new Cylinder(Matrix4.identity());
+        for (var test: tests) {
+            var result = shape.localNormal(test.a());
+            var expected = test.b();
+            assertEquals(expected, result);
+        }
     }
 }
