@@ -116,4 +116,22 @@ public class CylinderTest {
         shape = new Cylinder(Matrix4.identity(),0,0);
         assertFalse(shape.closed);
     }
+
+    @Test
+    void testCylinderCapIntersection() {
+        var shape = new Cylinder(Matrix4.identity(), 2, 1, true);
+        List<Pair<Ray, Integer>> tests = List.of(
+            new Pair<>(new Ray(makePoint(0, 3, 0), makeVector(0, -1, 0).normalize()), 2),
+            new Pair<>(new Ray(makePoint(0, 3, -2), makeVector(0, -1, 2).normalize()), 2),
+            new Pair<>(new Ray(makePoint(0, 4, -2), makeVector(0, -1, 1).normalize()), 2),
+            new Pair<>(new Ray(makePoint(0, 0, -2), makeVector(0, 1, 2).normalize()), 2),
+            new Pair<>(new Ray(makePoint(0, -1, -2), makeVector(0, 1, 1).normalize()), 2)
+        );
+        for(var test : tests) {
+            var result = shape.localIntersect(test.a());
+            assertTrue(result.isPresent());
+            var intersections = result.get();
+            assertEquals(2, intersections.size());
+        }
+    }
 }
