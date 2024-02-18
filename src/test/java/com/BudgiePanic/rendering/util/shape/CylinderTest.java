@@ -1,0 +1,60 @@
+package com.BudgiePanic.rendering.util.shape;
+
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import com.BudgiePanic.rendering.util.FloatHelp;
+import com.BudgiePanic.rendering.util.Pair;
+import com.BudgiePanic.rendering.util.intersect.Ray;
+import com.BudgiePanic.rendering.util.matrix.Matrix4;
+
+public class CylinderTest {
+    @Test
+    void testLocalIntersectA() {
+        // a miss
+        var rays = List.of(
+            new Ray(makePoint(1, 0, 0), makeVector(0, 1, 0).normalize()),
+            new Ray(makePoint(0, 0, 0), makeVector(0, 1, 0).normalize()),
+            new Ray(makePoint(0, 0, -5), makeVector(1, 1, 1).normalize())
+        );
+        var shape = new Cylinder(Matrix4.identity());
+        for (var ray : rays) {
+            var result = shape.localIntersect(ray);
+            assertTrue(result.isEmpty());
+        }
+    }
+
+    @Test
+    void testLocalIntersectB() {
+        // hits
+        List<Pair<Ray, Pair<Float, Float>>> tests = List.of(
+            new Pair<>(new Ray(makePoint(1, 0, -5), makeVector(0,0,1).normalize()), new Pair<>(5f, 5f)),
+            new Pair<>(new Ray(makePoint(0, 0, -5), makeVector(0,0,1).normalize()), new Pair<>(4f, 6f)),
+            new Pair<>(new Ray(makePoint(0.5f, 0, -5), makeVector(0.1f,1,1).normalize()), new Pair<>(6.80798f, 7.08872f))
+        );
+        var shape = new Cylinder(Matrix4.identity());
+        for (var test : tests) {
+            var result = shape.localIntersect(test.a());
+            assertTrue(result.isPresent());
+            var intersections = result.get();
+            assertEquals(2, intersections.size());
+            var expectedA = test.b().a();
+            var actualA = intersections.get(0).a();
+            assertTrue(FloatHelp.compareFloat(expectedA, expectedA) == 0, expectedA + " " + actualA + (expectedA - actualA));
+            var expectedB = test.b().b();
+            var actualB = intersections.get(1).a();
+            assertTrue(FloatHelp.compareFloat(expectedB, expectedB) == 0, expectedB + " " + actualB + (expectedB - actualB));
+        }
+    }
+
+    @Test
+    void testLocalNormal() {
+
+    }
+}
