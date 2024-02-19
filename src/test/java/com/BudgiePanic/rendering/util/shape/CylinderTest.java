@@ -134,4 +134,22 @@ public class CylinderTest {
             assertEquals(2, intersections.size());
         }
     }
+
+    @Test
+    void testCylinderCapNormals() {
+        var shape = new Cylinder(Matrix4.identity(), 2, 1, true);
+        List<Pair<Tuple, Tuple>> tests = List.of(
+            new Pair<>(makePoint(0, 1, 0), makeVector(0,-1,0)),
+            new Pair<>(makePoint(0.5f, 1, 0), makeVector(0,-1,0)),
+            new Pair<>(makePoint(0, 1, 0.5f), makeVector(0,-1,0)),
+            new Pair<>(makePoint(0, 2, 0), makeVector(0,1,0)),
+            new Pair<>(makePoint(0.5f, 2, 0), makeVector(0,1,0)),
+            new Pair<>(makePoint(0, 2, 0.5f), makeVector(0,1,0))
+        );
+        for (var test : tests) {
+            var result = shape.localNormal(test.a());
+            var expected = test.b();
+            assertEquals(expected, result);
+        }
+    }
 }
