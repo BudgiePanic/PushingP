@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.shape;
 
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,15 @@ public class Cylinder extends BaseShape {
      * Whether the cylinder has end caps or not.
      */
     protected final boolean closed;
+
+    /**
+     * The normal of the upper cap of the cylinder
+     */
+    protected static final Tuple capNormalUp = makeVector(0, 1, 0);
+    /**
+     * The normal of the lower cap of the cylinder
+     */
+    protected static final Tuple capNormalDown = makeVector(0, -1, 0);
 
     /**
      * The Cylinder.
@@ -171,6 +182,17 @@ public class Cylinder extends BaseShape {
 
     @Override
     protected Tuple localNormal(Tuple point) {
+        if (closed) {
+            final var distance = (point.x * point.x) + (point.z * point.z);
+            if (FloatHelp.compareFloat(distance, 1) == -1) {
+                if (point.y >= maximum - FloatHelp.epsilon) {
+                    return capNormalUp;
+                }
+                if (point.y <= minimum + FloatHelp.epsilon) {
+                    return capNormalDown;
+                }
+            }
+        }
         return Tuple.makeVector(point.x, 0, point.z);
     }
     
