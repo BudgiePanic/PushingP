@@ -104,7 +104,7 @@ public class Cylinder extends BaseShape {
      * @param t
      * @return
      */
-    private boolean capRayIntersect(Ray ray, float t) {
+    private static boolean capRayIntersect(Ray ray, float t) {
         final var x = ray.origin().x + t * ray.direction().x;
         final var z = ray.origin().z + t * ray.direction().z;
         return FloatHelp.compareFloat((x*x) + (z*z), 1) != 1; // (x^2 + z^2 <= 1)
