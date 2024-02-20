@@ -26,9 +26,9 @@ public class ConeTest {
         );
         for (var test : tests) {
             var result = shape.localIntersect(test.a());
-            assertTrue(result.isPresent());
+            assertTrue(result.isPresent(), test.toString() + " had no intersection");
             var intersections = result.get();
-            assertEquals(2, intersections.size());
+            assertEquals(2, intersections.size(), test.toString() + " had abnormal number of intersections " + intersections.toString());
             var expectedA = test.b().a();
             var expectedB = test.b().b();
             var actualA = intersections.get(0).a();
@@ -63,10 +63,10 @@ public class ConeTest {
             var result = shape.localIntersect(test.a());
             var expected = test.b();
             if (expected == 0) {
-                assertTrue(result.isEmpty());
+                assertTrue(result.isEmpty(), test.toString() + " had intersections, when none were expected " + result);
             } else {
                 var intersections = result.get();
-                assertEquals(expected, intersections.size());
+                assertEquals(expected, intersections.size(), test.toString() + " number of intersections did not match expected " + intersections);
             }
         }
     }
