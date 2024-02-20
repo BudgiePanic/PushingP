@@ -174,14 +174,19 @@ public class Cone extends BaseShape {
             }
             // calculate ray-cone intersection
             final var distance = -c / (2 * b);
-            final var intersection = new Intersection(distance, this);
+            // check the height of the intersection
+            final var intersectionHeight = ray.origin().y + distance * ray.direction().y;
+            final var addIntersect = this.minimum < intersectionHeight && intersectionHeight < this.maximum;
+            final var intersection = addIntersect ? new Intersection(distance, this) : null;
             // and also check for cap intersections before returning the result
             final var intersections = capIntersections(ray, null);
             if (intersections != null) {
-                intersections.add(intersection);
+                if(addIntersect) {
+                    intersections.add(intersection);
+                }
                 return Optional.of(intersections);
             } else {
-                return Optional.of(List.of(intersection));
+                return addIntersect ? Optional.of(List.of(intersection)) : Optional.empty();
             }
         }
         final var discriminant = (b*b) - 4 * a * c;
