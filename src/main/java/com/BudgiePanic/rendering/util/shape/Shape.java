@@ -52,4 +52,11 @@ public interface Shape {
      *   The normal vector at the point
      */
     Tuple normal(Tuple point);
+
+    /**
+     * Get the parent of this shape.
+     * @return
+     *   Empty if this shape is not part of a group. The group that this shape belongs to.
+     */
+    default Optional<Group> parent() { return Optional.empty(); }
 }
