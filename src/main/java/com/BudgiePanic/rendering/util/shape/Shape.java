@@ -59,4 +59,12 @@ public interface Shape {
      *   Empty if this shape is not part of a group. The group that this shape belongs to.
      */
     default Optional<Group> parent() { return Optional.empty(); }
+
+    /**
+     * Set the parent of this shape.
+     *
+     * @param parent
+     *   The parent of the shape.
+     */
+    default void setParent(Group parent) {}
 }
