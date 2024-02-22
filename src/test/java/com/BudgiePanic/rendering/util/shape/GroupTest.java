@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.shape;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -41,6 +43,17 @@ public class GroupTest {
         assertTrue(shape.parent().isEmpty());
         var group = new Group(identity);
         assertTrue(group.parent().isEmpty());
+    }
+
+    @Test
+    void testAddChildren() {
+        var group = new Group(identity);
+        var shape = new BaseShapeTest.TestShape(identity);
+        group.addShape(shape);
+        assertFalse(group.children.isEmpty());
+        assertTrue(group.children.contains(shape));
+        assertTrue(shape.parent.isPresent());
+        assertEquals(group, shape.parent().get());
     }
 
 }
