@@ -15,7 +15,7 @@ import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class BaseShapeTest {
     
-    private static class TestShape extends BaseShape {
+    protected static class TestShape extends BaseShape {
 
         public Ray localIntersectRayResult;
 
