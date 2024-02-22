@@ -40,6 +40,13 @@ public abstract class BaseShape implements Shape {
     protected final Material material;
 
     /**
+     * The shape tree that this shape belongs to, if any.
+     * Mutable field because the group will set itself as the parent when this shape is added to a group,
+     * which may happen after the object is constructed.
+     */
+    protected Optional<Group> parent;
+
+    /**
      * A base shape
      *
      * @param transform
@@ -52,6 +59,7 @@ public abstract class BaseShape implements Shape {
         if (material == null) throw new IllegalArgumentException("sphere material cannot be null");
         this.transform = transform;
         this.material = material;
+        this.parent = Optional.empty();
     }
 
     /**
@@ -96,6 +104,16 @@ public abstract class BaseShape implements Shape {
         return this.material;
     }
     
+    @Override
+    public Optional<Group> parent() {
+        return this.parent;
+    }
+
+    @Override
+    public void setParent(Group group) {
+        this.parent = Optional.of(group);
+    }
+
     /**
      * Determine the distance between the ray origin and intersection points with this shape, if any.
      * 
