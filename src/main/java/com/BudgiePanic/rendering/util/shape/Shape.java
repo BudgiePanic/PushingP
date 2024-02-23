@@ -76,7 +76,7 @@ public interface Shape {
      *   A new transformed point relative to the shape.
      */
     default Tuple toObjectSpace(Tuple point) {
-        final var localPoint = parent().map(parent -> toObjectSpace(point)).orElse(point);
+        final var localPoint = parent().map(parent -> parent.toObjectSpace(point)).orElse(point);
         return transform().inverse().multiply(localPoint);
     }
 }
