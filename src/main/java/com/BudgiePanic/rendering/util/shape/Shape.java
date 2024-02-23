@@ -79,4 +79,17 @@ public interface Shape {
         final var localPoint = parent().map(parent -> parent.toObjectSpace(point)).orElse(point);
         return transform().inverse().multiply(localPoint);
     }
+
+    /**
+     * Convert a normal vector in local space to a vector in global space.
+     * @param normal
+     *   The local normal.
+     * @return
+     *   A new tuple containing the normal in world space.
+     */
+    default Tuple normalToWorldSpace(Tuple normal) {
+        final var temp = transform().inverse().transpose().multiply(normal);
+        final var toParent = Tuple.makeVector(temp.x, temp.y, temp.z).normalize();
+        return parent().map(parent -> parent.normalToWorldSpace(toParent)).orElse(toParent);
+    }
 }
