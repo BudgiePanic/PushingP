@@ -111,7 +111,7 @@ public abstract class BaseShape implements Shape {
 
     @Override
     public void setParent(Group group) {
-        this.parent = Optional.of(group);
+        this.parent = Optional.ofNullable(group);
     }
 
     /**
