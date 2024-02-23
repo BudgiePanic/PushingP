@@ -67,4 +67,16 @@ public interface Shape {
      *   The parent of the shape.
      */
     default void setParent(Group parent) {}
+
+    /**
+     * Convert a world space point to object space.
+     * @param point
+     *   The point to convert
+     * @return
+     *   A new transformed point relative to the shape.
+     */
+    default Tuple toObjectSpace(Tuple point) {
+        final var localPoint = parent().map(parent -> toObjectSpace(point)).orElse(point);
+        return transform().inverse().multiply(localPoint);
+    }
 }
