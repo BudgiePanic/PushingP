@@ -79,4 +79,15 @@ public class GroupTest {
         assertEquals(2, intersections.size());
     }
 
+    @Test
+    void testRecursivePointTransformation() {
+        float piOver2 = (float) (Math.PI / 2.0);
+        var groupA = new Group(Transforms.identity().rotateY(piOver2).assemble());
+        var groupB = new Group(Transforms.identity().scale(2, 2, 2).assemble());
+        groupA.addShape(groupB);
+        var shape = new Sphere(Transforms.identity().translate(5, 0, 0).assemble());
+        groupB.addShape(shape);
+        var result = shape.toObjectSpace(makePoint(-2, 0, -10));
+        assertEquals(makePoint(0, 0, -1), result);
+    }
 }
