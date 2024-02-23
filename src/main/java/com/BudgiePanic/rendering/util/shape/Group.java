@@ -76,9 +76,6 @@ public class Group extends BaseShape {
     }
 
     @Override
-    protected Tuple localNormal(Tuple point) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localNormal'");
-    }
+    protected Tuple localNormal(Tuple point) { throw new UnsupportedOperationException("Shape group does not support localNormal operation"); }
 
 }
