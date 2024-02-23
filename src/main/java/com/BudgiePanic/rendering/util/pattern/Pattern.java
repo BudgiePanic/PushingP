@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.pattern;
 
+import java.util.function.Function;
+
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
@@ -31,17 +33,17 @@ public interface Pattern {
     Matrix4 transform();
 
     /**
-     * Sample the pattern for a color. The sample point is converted from world space to an object, then to the pattern.
+     * Sample the pattern for a color. The sample point is converted from world space to local object space, then to the pattern space via this pattern's transform.
      * 
      * @param point
      *   A point in world space to sample the pattern
-     * @param parentTransform
-     *   The transform of the object that the pattern is attached to (may be another pattern, or a top level object like a shape)
+     * @param toObjectSpace
+     *   A function supplied by this pattern's parent (typically a shape's, or another pattern's transform inverse multiply) that converts the point to local space.
      * @return
      *   The color that was sampled from the pattern
      */
-    default Color colorAt(Tuple point, Matrix4 parentTransform) {
-        final var worldSpaceToObjectSpace = parentTransform.inverse().multiply(point);
+    default Color colorAt(Tuple point, Function<Tuple, Tuple> toObjectSpace) {
+        final var worldSpaceToObjectSpace = toObjectSpace.apply(point);
         final var objectSpaceToPatternSpace = this.transform().inverse().multiply(worldSpaceToObjectSpace);
         return colorAt(objectSpaceToPatternSpace);
     }
