@@ -54,6 +54,13 @@ public class Group extends BaseShape {
         shape.setParent(this);
     }
 
+    public void removeShape(Shape shape) {
+        var removed = this.children.remove(shape);
+        if (removed) {
+            shape.setParent(null);
+        }
+    }
+
     @Override
     protected Optional<List<Intersection>> localIntersect(Ray ray) {
         List<Intersection> result = null;
