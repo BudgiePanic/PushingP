@@ -24,23 +24,6 @@ public class GroupTest {
     }
 
     @Test
-    void testParentAttribute() {
-        var shape = new Shape() {
-            @Override
-            public Matrix4 transform() { return null; }
-            @Override
-            public Material material() { return null; }
-            @Override
-            public Optional<List<Intersection>> intersect(Ray ray) { return Optional.empty(); }
-            @Override
-            public Tuple normal(Tuple point) { return makeVector(); }
-        };
-        assertTrue(shape.parent().isEmpty());
-        var group = new Group(identity);
-        assertTrue(group.parent().isEmpty());
-    }
-
-    @Test
     void testAddChildren() {
         var group = new Group(identity);
         var shape = new BaseShapeTest.TestShape(identity);
@@ -59,6 +42,12 @@ public class GroupTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    void testParentAttribute() {
+        var group = new Group(identity);
+        assertTrue(group.parent().isEmpty());
+    }
+    
     @Test
     void testNonEmptyGroupIntersection() {
         var group = new Group(identity);

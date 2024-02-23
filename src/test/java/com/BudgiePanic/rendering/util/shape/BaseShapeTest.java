@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.util.shape;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
@@ -78,6 +79,13 @@ public class BaseShapeTest {
         var shape = new TestShape(Transforms.identity().rotateZ(piOverFive).scale(1, 0.5f, 1).assemble());
         var result = shape.normal(Tuple.makePoint(0, sqrtTwoOverTwo, -sqrtTwoOverTwo));
         assertEquals(Tuple.makeVector(0, 0.97014f, -0.24254f), result);
+    }
+
+   
+    @Test
+    void testParentAttribute() {
+        var shape = new TestShape(Transforms.identity().assemble());
+        assertTrue(shape.parent().isEmpty());
     }
 
 }
