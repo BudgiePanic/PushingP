@@ -90,4 +90,19 @@ public class GroupTest {
         var result = shape.toObjectSpace(makePoint(-2, 0, -10));
         assertEquals(makePoint(0, 0, -1), result);
     }
+
+    @Test
+    void testRecusriveNormalTransformation() {
+        float piOver2 = (float) (Math.PI / 2.0);
+        float sqrt3over3 = (float) (Math.sqrt(3.0) / 3.0);
+        var groupA = new Group(Transforms.identity().rotateY(piOver2).assemble());
+        var groupB = new Group(Transforms.identity().scale(1, 2, 3).assemble());
+        groupA.addShape(groupB);
+        var shape = new Sphere(Transforms.identity().translate(5, 0, 0).assemble());
+        groupB.addShape(shape);
+        var result = shape.normalToWorldSpace(makeVector(sqrt3over3, sqrt3over3, sqrt3over3));
+        var expected = makeVector(0.2857f, 0.4286f, -0.8571f);
+        assertEquals(expected, result);
+    }
+
 }
