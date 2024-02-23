@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.pattern;
 
+import java.util.function.Function;
+
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
@@ -19,7 +21,7 @@ public record SolidColor(Color color) implements Pattern {
 
     // Solid Color doesn't care about any transforms...
     @Override
-    public Color colorAt(Tuple point, Matrix4 parentTransform) { return colorAt(point); }
+    public Color colorAt(Tuple point, Function<Tuple, Tuple> toObjectSapce) { return colorAt(point); }
 
     @Override
     public Matrix4 transform() { return transform; }
