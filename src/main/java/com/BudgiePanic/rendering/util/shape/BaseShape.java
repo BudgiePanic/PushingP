@@ -85,13 +85,9 @@ public abstract class BaseShape implements Shape {
     @Override
     public Tuple normal(Tuple point) {
         if (point == null) throw new IllegalArgumentException("point is null");
-        // optimized technique described in in Jamis Buck's book The Ray Tracer Challenge
-        var inverse = this.transform.inverse();
-        var objectSpacePoint = inverse.multiply(point); // the point in object space
-        var localNormal = localNormal(objectSpacePoint);
-        var worldNormal = inverse.transpose().multiply(localNormal); // the normal in world space (optimization here)
-        // hacky step here due to the optimization
-        return Tuple.makeVector(worldNormal.x, worldNormal.y, worldNormal.z).normalize();
+        final var localPoint = toObjectSpace(point);
+        final var localNormal = localNormal(localPoint);
+        return normalToWorldSpace(localNormal);
     }
     
     @Override
