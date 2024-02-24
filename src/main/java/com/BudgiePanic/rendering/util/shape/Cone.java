@@ -240,8 +240,9 @@ public class Cone extends BaseShape {
 
     @Override
     public BoundingBox bounds() {
+        final float max = Math.abs(maximum) > Math.abs(minimum) ? Math.abs(maximum) : Math.abs(minimum);
         return new BoundingBox(
-            Tuple.makePoint(minimum, minimum, minimum), 
-            Tuple.makePoint(maximum, maximum, maximum));
+            Tuple.makePoint(-max, minimum, -max), 
+            Tuple.makePoint(max, maximum, max));
     }
 }
