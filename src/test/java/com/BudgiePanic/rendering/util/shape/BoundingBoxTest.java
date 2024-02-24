@@ -26,8 +26,10 @@ public class BoundingBoxTest {
         assertTrue(box.contains(makePoint(-5, -5, -5)));
         assertTrue(box.contains(makePoint(6, 6, 6)));
         assertTrue(box.contains(makePoint(-2, 3, 9)));
-        assertFalse(box.contains(makePoint(10, 10, 10)));
-        assertFalse(box.contains(makePoint(-10, -10, -10)));
+        assertTrue(box.contains(makePoint(10, 10, 10)));
+        assertTrue(box.contains(makePoint(-10, -10, -10)));
+        assertFalse(box.contains(makePoint(10.0001f, 10, 10)));
+        assertFalse(box.contains(makePoint(-10, -10, -10.0001f)));
         // simple case fail
         assertFalse(box.contains(makePoint(11, 0, 0)));
         assertFalse(box.contains(makePoint(0, -11, 0)));
@@ -46,8 +48,18 @@ public class BoundingBoxTest {
     @Test
     void testBoundingBoxGrow() {
         // simple case 
+        var box = new BoundingBox(makePoint(), makePoint());
+        box = box.grow(makePoint(1, 1, 1));
+        assertEquals(makePoint(0, 0, 0), box.minimum());
+        assertEquals(makePoint(1, 1, 1), box.maximum());
+        box = box.grow(makePoint(-1, -1, -1));
+        assertEquals(makePoint(-1, -1, -1), box.minimum());
+        assertEquals(makePoint(1, 1, 1), box.maximum());
         // infinity case 
-        fail("test not implemented yet");
+        box = new BoundingBox(makePoint(), makePoint());
+        box = box.grow(makePoint(Float.NEGATIVE_INFINITY, 0, Float.NEGATIVE_INFINITY));
+        assertEquals(makePoint(0, 0, 0), box.maximum());
+        assertEquals(makePoint(Float.NEGATIVE_INFINITY, 0, Float.NEGATIVE_INFINITY), box.minimum());
     }
 
     /*
