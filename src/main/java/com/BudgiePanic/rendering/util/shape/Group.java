@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.BudgiePanic.rendering.util.Tuple;
@@ -98,6 +97,7 @@ public class Group extends BaseShape {
         // I don't know if this code actually achieves this goal, Help is needed.
         // Alternative ideas: - regenerate the AABB every time addShape and removeShape are called
         //                    - allow the programmer to manually trigger AABB regeneration when they think it is appropriate
+        //                    - use a synchronized block
         if (AABB.getAcquire() == null) {
             BoundingBox box = new BoundingBox(makePoint(), makePoint());
             // the cube has 8 points [000,100,001,101,010,110,011,111]
