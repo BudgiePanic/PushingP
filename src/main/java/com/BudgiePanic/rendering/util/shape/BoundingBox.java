@@ -10,5 +10,19 @@ import com.BudgiePanic.rendering.util.Tuple;
  */
 public record BoundingBox(Tuple minimum, Tuple maximum) {
 
+    /**
+     * Check if the point is inside of this bounding box.
+     * @param point
+     *   The point to check
+     * @return
+     *   True if the point is inside of the bounding box
+     */
+    public boolean contains(Tuple point) {
+        return 
+            point.x >= minimum.x && point.x <= maximum.x &&
+            point.y >= minimum.y && point.y <= maximum.y &&
+            point.z >= minimum.z && point.z <= maximum.z;
+    }
+
 }
     
