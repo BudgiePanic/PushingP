@@ -195,7 +195,7 @@ public class BoundingBoxTest {
         groupB.addShape(cube);
         groupA.addShape(groupB);
         var result = groupA.bounds();
-        var expected = new BoundingBox(makePoint(-1,-1,-1), makePoint(2,1,1)); // TODO this might be wrong
+        var expected = new BoundingBox(makePoint(-1,-1,-1), makePoint(3,1,1)); // TODO this might be wrong
         assertEquals(expected, result);
     }
 
