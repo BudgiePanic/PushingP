@@ -1,6 +1,11 @@
 package com.BudgiePanic.rendering.util.shape;
 
+import java.util.List;
+import java.util.Optional;
+
+import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
+import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 
 /**
@@ -52,8 +57,44 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
         return new BoundingBox(newMinimum, newMaximum);
     }
 
+    /**
+     * Lifted the code from Cube::intersect but with support for variable plane offsets.
+     * @param origin
+     * @param direction
+     * @param axisMin
+     * @param axisMax
+     * @return
+     */
+    private Pair<Float, Float> checkAxis(float origin, float direction, float axisMin, float axisMax) {
+        final var closePlane = (axisMin - origin);
+        final var farPlane = (axisMax - origin);
+        final var min = closePlane / direction;
+        final var max = farPlane / direction;
+        if (min > max) {
+            return new Pair<>(max, min);
+        }
+        return new Pair<>(min, max);
+    }
+
+    /**
+     * Test is a ray intersects with a AABB.
+     * @param ray
+     *   The ray to test against.
+     * @return
+     *   true if the ray intersects with the AABB, false if the ray misses the AABB.
+     */
     public boolean intersect(Ray ray) {
-        throw new UnsupportedOperationException("method not implemented yet");
+        final var origin = ray.origin();
+        final var direction = ray.direction();
+        final var x = checkAxis(origin.x, direction.x, minimum.x, maximum.x);
+        final var y = checkAxis(origin.y, direction.y, minimum.y, maximum.y);
+        final var z = checkAxis(origin.z, direction.z, minimum.z, maximum.z);
+        final var min = Math.max(x.a(), Math.max(y.a(), z.a()));
+        final var max = Math.min(x.b(), Math.min(y.b(), z.b()));
+        if (min > max) {
+            return false;
+        }       
+        return true;
     }
 
 }
