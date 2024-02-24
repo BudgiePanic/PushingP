@@ -205,10 +205,10 @@ public class BoundingBoxTest {
         var cube = new Cube(Transforms.identity().rotateX(AngleHelp.toRadians(45f)).assemble());
         group.addShape(cube);
         var result = group.bounds();
-        var matrix = Transforms.identity().rotateX(AngleHelp.toRadians(45f)).assemble();
-        var expectedPointMax = matrix.multiply(makePoint(1, 1, 1));
-        var expectedPointMin = matrix.multiply(makePoint(-1, -1, -1));
-        var expected = new BoundingBox(expectedPointMin, expectedPointMax); // TODO this might be wrong
+        float sqrt2 = (float) Math.sqrt(2.0);
+        var expectedPointMax = makePoint(1, sqrt2, sqrt2);
+        var expectedPointMin = makePoint(-1, -sqrt2, -sqrt2);
+        var expected = new BoundingBox(expectedPointMin, expectedPointMax); 
         assertEquals(expected, result);
     }
 
