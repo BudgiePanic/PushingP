@@ -1,11 +1,7 @@
 package com.BudgiePanic.rendering.util.shape;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
-import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 
 /**
