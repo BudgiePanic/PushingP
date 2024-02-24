@@ -75,5 +75,18 @@ public final class Plane extends BaseShape {
     protected Tuple localNormal(Tuple point) {
         return normal;
     }
+
+    /**
+     * The infinite plane has a constant AABB.
+     */
+    protected static final BoundingBox AABB = new BoundingBox(
+        Tuple.makePoint(Float.NEGATIVE_INFINITY, 0, Float.NEGATIVE_INFINITY), 
+        Tuple.makePoint(Float.POSITIVE_INFINITY, 0, Float.POSITIVE_INFINITY)
+    );
+
+    @Override
+    public BoundingBox bounds() {
+        return AABB;
+    }
     
 }

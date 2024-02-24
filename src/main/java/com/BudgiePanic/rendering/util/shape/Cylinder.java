@@ -195,5 +195,12 @@ public class Cylinder extends BaseShape {
         }
         return Tuple.makeVector(point.x, 0, point.z);
     }
+
+    @Override
+    public BoundingBox bounds() {
+        return new BoundingBox(
+            Tuple.makePoint(-1, this.minimum, -1),
+            Tuple.makePoint(1, this.maximum, 1));
+    }
     
 }

@@ -38,7 +38,8 @@ public class BaseShapeTest {
             // passing it to localNormal
             return Tuple.makeVector(point.x, point.y, point.z); 
         }
-
+        @Override
+        public BoundingBox bounds() { throw new UnsupportedOperationException(); }
     }
 
     @Test

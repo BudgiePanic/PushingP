@@ -80,5 +80,15 @@ public final class Sphere extends BaseShape {
     protected Tuple localNormal(Tuple point) {
       return point.subtract(origin).normalize(); // the normal in object space
     }
+
+    /**
+     * The unit sphere has a constant AABB.
+     */
+    protected static final BoundingBox AABB = new BoundingBox(Tuple.makePoint(-1, -1, -1), Tuple.makePoint(1, 1, 1));
+
+    @Override
+    public BoundingBox bounds() {
+      return AABB;
+    }
   
 }

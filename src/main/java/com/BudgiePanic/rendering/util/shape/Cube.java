@@ -72,5 +72,15 @@ public class Cube extends BaseShape {
         final var isY = max == y; // points on the cube edges will map to normals on the y faces of the cube
         return Tuple.makeVector(isX ? point.x : 0, !isX && isY ? point.y : 0, !isX && !isY && max == z ? point.z : 0);
     }
+
+    /**
+     * The unit cube AABB has a constant bounding box.
+     */
+    protected static final BoundingBox AABB = new BoundingBox(Tuple.makePoint(-1, -1, -1), Tuple.makePoint(1, 1, 1));
+
+    @Override
+    public BoundingBox bounds() {
+        return AABB;
+    }
     
 }
