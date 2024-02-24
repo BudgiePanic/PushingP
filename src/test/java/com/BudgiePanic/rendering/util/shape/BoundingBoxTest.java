@@ -2,6 +2,9 @@ package com.BudgiePanic.rendering.util.shape;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +13,42 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class BoundingBoxTest {
+
+    /**
+     * BOUNDING BOX FUNCTIONALITY TESTS
+     */
+
+    @Test
+    void testBoundingBoxContains() {
+        var box = new BoundingBox(makePoint(-10, -10, -10), makePoint(10, 10, 10));
+        // simple case pass
+        assertTrue(box.contains(makePoint(0, 0, 0)));
+        assertTrue(box.contains(makePoint(-5, -5, -5)));
+        assertTrue(box.contains(makePoint(6, 6, 6)));
+        assertTrue(box.contains(makePoint(-2, 3, 9)));
+        assertFalse(box.contains(makePoint(10, 10, 10)));
+        assertFalse(box.contains(makePoint(-10, -10, -10)));
+        // simple case fail
+        assertFalse(box.contains(makePoint(11, 0, 0)));
+        assertFalse(box.contains(makePoint(0, -11, 0)));
+        assertFalse(box.contains(makePoint(1, -3, -15)));
+        // infinity case pass
+        box = new BoundingBox(makePoint(Float.NEGATIVE_INFINITY, 0, Float.NEGATIVE_INFINITY), makePoint(Float.POSITIVE_INFINITY,0,Float.POSITIVE_INFINITY));
+        assertTrue(box.contains(makePoint(0,0,0)));
+        assertTrue(box.contains(makePoint(10,0,10)));
+        assertTrue(box.contains(makePoint(-1000,0,-1000)));
+        assertTrue(box.contains(makePoint(Float.POSITIVE_INFINITY,0,0)));
+        assertTrue(box.contains(makePoint(Float.POSITIVE_INFINITY,0,Float.NEGATIVE_INFINITY)));
+        // infinity case fail
+        assertFalse(box.contains(makePoint(0, 1, 0)));
+    }
+
+    @Test
+    void testBoundingBoxGrow() {
+        // simple case 
+        // infinity case 
+        fail("test not implemented yet");
+    }
 
     /*
      * LOCAL BOUNDING BOX TESTS
