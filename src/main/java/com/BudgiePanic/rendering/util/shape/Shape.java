@@ -92,4 +92,11 @@ public interface Shape {
         final var toParent = Tuple.makeVector(temp.x, temp.y, temp.z).normalize();
         return parent().map(parent -> parent.normalToWorldSpace(toParent)).orElse(toParent);
     }
+
+    /**
+     * Get the local bounding box for the shape.
+     * @return
+     *   A bounding for the shape in local space.
+     */
+    BoundingBox bounds();
 }
