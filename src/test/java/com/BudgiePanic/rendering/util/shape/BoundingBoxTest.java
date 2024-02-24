@@ -4,7 +4,6 @@ import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +34,9 @@ public class BoundingBoxTest {
         assertFalse(box.contains(makePoint(0, -11, 0)));
         assertFalse(box.contains(makePoint(1, -3, -15)));
         // infinity case pass
-        box = new BoundingBox(makePoint(Float.NEGATIVE_INFINITY, 0, Float.NEGATIVE_INFINITY), makePoint(Float.POSITIVE_INFINITY,0,Float.POSITIVE_INFINITY));
+        box = new BoundingBox(
+            makePoint(Float.NEGATIVE_INFINITY, 0, Float.NEGATIVE_INFINITY),
+            makePoint(Float.POSITIVE_INFINITY,0,Float.POSITIVE_INFINITY));
         assertTrue(box.contains(makePoint(0,0,0)));
         assertTrue(box.contains(makePoint(10,0,10)));
         assertTrue(box.contains(makePoint(-1000,0,-1000)));
@@ -79,7 +80,9 @@ public class BoundingBoxTest {
         // infinite cone
         var cone = new Cone(Matrix4.identity());
         var result = cone.bounds();
-        var expected = new BoundingBox(makePoint(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY), makePoint(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY));
+        var expected = new BoundingBox(
+            makePoint(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY),
+            makePoint(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY));
         assertEquals(expected, result);
     }
 
@@ -143,7 +146,7 @@ public class BoundingBoxTest {
         group.addShape(sphereA);
         group.addShape(sphereB);
         var result = group.bounds();
-        var expected = new BoundingBox(makePoint(-2,-4,-2), makePoint(3, 2, 2)); // TODO this might be wrong
+        var expected = new BoundingBox(makePoint(-2,-4,-2), makePoint(3, 2, 2));
         assertEquals(expected, result);
     }
 
@@ -156,7 +159,9 @@ public class BoundingBoxTest {
         group.addShape(plane);
         group.addShape(cube);
         var result = group.bounds();
-        var expected = new BoundingBox(makePoint(Float.NEGATIVE_INFINITY,-2,Float.NEGATIVE_INFINITY), makePoint(Float.POSITIVE_INFINITY,2,Float.POSITIVE_INFINITY)); // TODO this might be wrong
+        var expected = new BoundingBox(
+            makePoint(Float.NEGATIVE_INFINITY,-2,Float.NEGATIVE_INFINITY),
+            makePoint(Float.POSITIVE_INFINITY,2,Float.POSITIVE_INFINITY));
         assertEquals(expected, result);
     }
 
@@ -167,7 +172,9 @@ public class BoundingBoxTest {
         var cone = new Cone(Matrix4.identity());
         group.addShape(cone);
         var result = group.bounds();
-        var expected = new BoundingBox(makePoint(Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY), makePoint(Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY)); // TODO this might be wrong
+        var expected = new BoundingBox(
+            makePoint(Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY,Float.NEGATIVE_INFINITY),
+            makePoint(Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY,Float.POSITIVE_INFINITY));
         assertEquals(expected, result);
     }
 
@@ -178,7 +185,7 @@ public class BoundingBoxTest {
         var cylinder = new Cylinder(Transforms.identity().rotateZ(AngleHelp.toRadians(90)).assemble());
         group.addShape(cylinder);
         var result = group.bounds();
-        var expected = new BoundingBox(makePoint(Float.NEGATIVE_INFINITY,-1,-1), makePoint(Float.POSITIVE_INFINITY,1,1)); // TODO this might be wrong
+        var expected = new BoundingBox(makePoint(Float.NEGATIVE_INFINITY,-1,-1), makePoint(Float.POSITIVE_INFINITY,1,1)); 
         assertEquals(expected, result);
     }
 
@@ -195,7 +202,7 @@ public class BoundingBoxTest {
         groupB.addShape(cube);
         groupA.addShape(groupB);
         var result = groupA.bounds();
-        var expected = new BoundingBox(makePoint(-1,-1,-1), makePoint(3,1,1)); // TODO this might be wrong
+        var expected = new BoundingBox(makePoint(-1,-1,-1), makePoint(3,1,1)); 
         assertEquals(expected, result);
     }
 
