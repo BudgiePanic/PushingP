@@ -126,7 +126,7 @@ public class GroupDemo implements Runnable {
         }
 
         System.out.println("taking image");
-        Canvas canvas = camera.takePicture(world, (new ArrayCanvas(width, height)));
+        Canvas canvas = camera.takePicture(world, new ProgressWrapper(new ArrayCanvas(width, height)));
 
         System.out.println("saving image");
         var lines = CanvasWriter.canvasToPPMString(canvas);
