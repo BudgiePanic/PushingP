@@ -49,7 +49,7 @@ public class ProgressWrapper implements Canvas {
         counter++;
         int percentWritten = (int) ((counter / (double) numbPixels) * 100);
         if (lastReport != percentWritten && percentWritten % reportingInterval == 0) {
-            System.out.println("INFO: canvas " + internalCanvas + " has had " + percentWritten + "% of its pixels written to.");
+            System.out.println("INFO: canvas " + this + " has had " + percentWritten + "% of its pixels written to.");
             lastReport = percentWritten;
         }
     }

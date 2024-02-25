@@ -20,7 +20,7 @@ public class TimingWrapper extends Camera {
 
     @Override
     public Canvas takePicture(World world, Canvas canvas) {
-        System.out.println("INFO: timing duration of image capture");
+        System.out.println("INFO: timing image capture duration of " + world + " to " + canvas + " by camera " + this);
         var startTime = System.currentTimeMillis();
         var result = super.takePicture(world, canvas);
         var endTime = System.currentTimeMillis();
