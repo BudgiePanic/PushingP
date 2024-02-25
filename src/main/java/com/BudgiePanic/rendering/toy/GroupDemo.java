@@ -94,14 +94,13 @@ public class GroupDemo implements Runnable {
 
     @Override
     public void run() {
-        // generate 13 hexagons of varying materials within 8 AABB containers
         System.out.println("Running groups demo");
         System.out.println("building world");
         World world = new World();
 
         world.addLight(new PointLight(cameraLocation, Colors.white));
         world.addShape(background);
-        
+        // create a 6*6*6 construct of hexagons, giving each hexagon a random rotation and random material
         int limit = 6;
         for (int x = 0; x < limit; x++) {
             for (int y = 0; y < limit; y++) {

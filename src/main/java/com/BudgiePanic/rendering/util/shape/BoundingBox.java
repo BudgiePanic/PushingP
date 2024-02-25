@@ -73,7 +73,7 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
     }
 
     /**
-     * Test is a ray intersects with a AABB.
+     * Test if a ray intersects with a AABB.
      * @param ray
      *   The ray to test against.
      * @return
