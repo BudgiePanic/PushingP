@@ -42,7 +42,7 @@ public class GroupDemo implements Runnable {
     private static final String fileName = "group.ppm";
     private static final int width = 768, height = width;
     private final static float fov = AngleHelp.toRadians(90f);
-    private final Tuple cameraLocation = Tuple.makePoint(3,3.5f,-3);
+    private final Tuple cameraLocation = Tuple.makePoint(3,0,-3);
     private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(cameraLocation, Tuple.makePoint(3, 0, 0), Tuple.makePoint(0,1,0)));
     private final List<Material> materials = List.of(
             Material.defaultMaterial(),
