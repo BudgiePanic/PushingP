@@ -14,7 +14,6 @@ import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Canvas;
-import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Tuple;
