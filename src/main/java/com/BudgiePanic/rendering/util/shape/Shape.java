@@ -52,4 +52,51 @@ public interface Shape {
      *   The normal vector at the point
      */
     Tuple normal(Tuple point);
+
+    /**
+     * Get the parent of this shape.
+     * @return
+     *   Empty if this shape is not part of a group. The group that this shape belongs to.
+     */
+    default Optional<Group> parent() { return Optional.empty(); }
+
+    /**
+     * Set the parent of this shape.
+     *
+     * @param parent
+     *   The parent of the shape.
+     */
+    default void setParent(Group parent) {}
+
+    /**
+     * Convert a world space point to object space.
+     * @param point
+     *   The point to convert
+     * @return
+     *   A new transformed point relative to the shape.
+     */
+    default Tuple toObjectSpace(Tuple point) {
+        final var localPoint = parent().map(parent -> parent.toObjectSpace(point)).orElse(point);
+        return transform().inverse().multiply(localPoint);
+    }
+
+    /**
+     * Convert a normal vector in local space to a vector in global space.
+     * @param normal
+     *   The local normal.
+     * @return
+     *   A new tuple containing the normal in world space.
+     */
+    default Tuple normalToWorldSpace(Tuple normal) {
+        final var temp = transform().inverse().transpose().multiply(normal);
+        final var toParent = Tuple.makeVector(temp.x, temp.y, temp.z).normalize();
+        return parent().map(parent -> parent.normalToWorldSpace(toParent)).orElse(toParent);
+    }
+
+    /**
+     * Get the local bounding box for the shape.
+     * @return
+     *   A bounding for the shape in local space.
+     */
+    BoundingBox bounds();
 }

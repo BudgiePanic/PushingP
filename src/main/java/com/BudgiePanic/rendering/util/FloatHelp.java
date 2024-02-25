@@ -27,6 +27,18 @@ public final class FloatHelp {
      *   -1 if b is larger than a.
      */
     public static int compareFloat(float a, float b){
+
+        final boolean aIsInfinite = Float.isInfinite(a), bIsInfinite = Float.isInfinite(b);
+        if (aIsInfinite || bIsInfinite) {
+            if (a < b) {
+                return -1;
+            } else if (a > b) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
         float delta = (float) Math.abs(a - b);
         if (delta < epsilon) return 0;
         if (a < b) return -1;

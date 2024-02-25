@@ -43,7 +43,7 @@ public class StripeTest {
     @Test
     void testStripeWithShapeTransform() {
         var shape = new Sphere(Transforms.identity().scale(2, 2, 2).assemble(), Material.pattern(new BiPattern(stripe, Colors.white, Colors.black)));
-        var output = shape.material().pattern().colorAt(makePoint(1.5f, 0, 0), shape.transform());
+        var output = shape.material().pattern().colorAt(makePoint(1.5f, 0, 0), shape::toObjectSpace);
         assertEquals(Colors.white, output);
     }
 
@@ -59,7 +59,7 @@ public class StripeTest {
                 )
             )
         );
-        var output = shape.material().pattern().colorAt(makePoint(1.5f, 0, 0), shape.transform());
+        var output = shape.material().pattern().colorAt(makePoint(1.5f, 0, 0), shape::toObjectSpace);
         assertEquals(Colors.white, output);
     }
 
@@ -73,7 +73,7 @@ public class StripeTest {
                 )
             )
         );
-        var output = shape.material().pattern().colorAt(makePoint(2.5f, 0, 0), shape.transform());
+        var output = shape.material().pattern().colorAt(makePoint(2.5f, 0, 0), shape::toObjectSpace);
         assertEquals(Colors.white, output);
     }
 }

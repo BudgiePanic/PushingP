@@ -40,6 +40,13 @@ public abstract class BaseShape implements Shape {
     protected final Material material;
 
     /**
+     * The shape tree that this shape belongs to, if any.
+     * Mutable field because the group will set itself as the parent when this shape is added to a group,
+     * which may happen after the object is constructed.
+     */
+    protected Optional<Group> parent;
+
+    /**
      * A base shape
      *
      * @param transform
@@ -52,6 +59,7 @@ public abstract class BaseShape implements Shape {
         if (material == null) throw new IllegalArgumentException("sphere material cannot be null");
         this.transform = transform;
         this.material = material;
+        this.parent = Optional.empty();
     }
 
     /**
@@ -77,13 +85,9 @@ public abstract class BaseShape implements Shape {
     @Override
     public Tuple normal(Tuple point) {
         if (point == null) throw new IllegalArgumentException("point is null");
-        // optimized technique described in in Jamis Buck's book The Ray Tracer Challenge
-        var inverse = this.transform.inverse();
-        var objectSpacePoint = inverse.multiply(point); // the point in object space
-        var localNormal = localNormal(objectSpacePoint);
-        var worldNormal = inverse.transpose().multiply(localNormal); // the normal in world space (optimization here)
-        // hacky step here due to the optimization
-        return Tuple.makeVector(worldNormal.x, worldNormal.y, worldNormal.z).normalize();
+        final var localPoint = toObjectSpace(point);
+        final var localNormal = localNormal(localPoint);
+        return normalToWorldSpace(localNormal);
     }
     
     @Override
@@ -96,6 +100,16 @@ public abstract class BaseShape implements Shape {
         return this.material;
     }
     
+    @Override
+    public Optional<Group> parent() {
+        return this.parent;
+    }
+
+    @Override
+    public void setParent(Group group) {
+        this.parent = Optional.ofNullable(group);
+    }
+
     /**
      * Determine the distance between the ray origin and intersection points with this shape, if any.
      * 

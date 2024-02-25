@@ -4,6 +4,7 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 import java.util.Arrays;
 
+import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Tuple;
 
 /**
@@ -162,11 +163,42 @@ public final class Matrix4 extends Matrix {
      *   A new tuple: tuple * 'this'.
      */
     public Tuple multiply(Tuple tuple) {
+        if (Float.isInfinite(tuple.x) || Float.isInfinite(tuple.y) || Float.isInfinite(tuple.y) || Float.isInfinite(tuple.z)) {
+            return multiplyInfinity(tuple);
+        }
         float a = (tuple.x * this.matrix[0][0]) + (tuple.y * this.matrix[0][1]) + (tuple.z * this.matrix[0][2]) + (tuple.w * this.matrix[0][3]);
         float b = (tuple.x * this.matrix[1][0]) + (tuple.y * this.matrix[1][1]) + (tuple.z * this.matrix[1][2]) + (tuple.w * this.matrix[1][3]);
         float c = (tuple.x * this.matrix[2][0]) + (tuple.y * this.matrix[2][1]) + (tuple.z * this.matrix[2][2]) + (tuple.w * this.matrix[2][3]);
         float d = (tuple.x * this.matrix[3][0]) + (tuple.y * this.matrix[3][1]) + (tuple.z * this.matrix[3][2]) + (tuple.w * this.matrix[3][3]);
         return new Tuple(a, b, c, d);
+    }
+
+    /**
+     * Helper method to handle case where tuple contains infinities.
+     * @param tuple
+     *   the tuple
+     * @return
+     *   tuple * matrix output
+     */
+    protected Tuple multiplyInfinity(Tuple tuple) {
+        float a = infiniteFloatMul(tuple.x, this.matrix[0][0]) + infiniteFloatMul(tuple.y, this.matrix[0][1]) + infiniteFloatMul(tuple.z, this.matrix[0][2]) + infiniteFloatMul(tuple.w, this.matrix[0][3]);
+        float b = infiniteFloatMul(tuple.x, this.matrix[1][0]) + infiniteFloatMul(tuple.y, this.matrix[1][1]) + infiniteFloatMul(tuple.z, this.matrix[1][2]) + infiniteFloatMul(tuple.w, this.matrix[1][3]);
+        float c = infiniteFloatMul(tuple.x, this.matrix[2][0]) + infiniteFloatMul(tuple.y, this.matrix[2][1]) + infiniteFloatMul(tuple.z, this.matrix[2][2]) + infiniteFloatMul(tuple.w, this.matrix[2][3]);
+        float d = infiniteFloatMul(tuple.x, this.matrix[3][0]) + infiniteFloatMul(tuple.y, this.matrix[3][1]) + infiniteFloatMul(tuple.z, this.matrix[3][2]) + infiniteFloatMul(tuple.w, this.matrix[3][3]);
+        return new Tuple(a, b, c, d);
+    }
+
+    /**
+     * Multiply two floats together. If one float is infinity, and the other is near zero, returns zero instead of typical behaviour: returning NaN.
+     * @param a
+     * @param b
+     * @return
+     */
+    private float infiniteFloatMul(float a, float b) {
+        if(Float.isInfinite(a) && FloatHelp.compareFloat(b, 0) == 0 || Float.isInfinite(b) && FloatHelp.compareFloat(a, 0) == 0) {
+            return 0;
+        }
+        return a*b;
     }
 
     /**

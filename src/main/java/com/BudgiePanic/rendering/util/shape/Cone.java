@@ -237,4 +237,12 @@ public class Cone extends BaseShape {
         y = FloatHelp.compareFloat(point.y, 0) == 1 ? -y : y;
         return makeVector(point.x, y, point.z);
     }
+
+    @Override
+    public BoundingBox bounds() {
+        final float max = Math.abs(maximum) > Math.abs(minimum) ? Math.abs(maximum) : Math.abs(minimum);
+        return new BoundingBox(
+            Tuple.makePoint(-max, minimum, -max), 
+            Tuple.makePoint(max, maximum, max));
+    }
 }

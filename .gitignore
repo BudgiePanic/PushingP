@@ -17,3 +17,21 @@ buildNumber.properties
 .classpath
 .vscode/settings.json
 .vscode/launch.json
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# intellij
+out/
+.idea_modules/
+.idea/

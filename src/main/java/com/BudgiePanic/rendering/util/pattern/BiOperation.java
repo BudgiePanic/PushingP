@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.pattern;
 
+import java.util.function.Function;
+
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Tuple;
@@ -28,6 +30,15 @@ public interface BiOperation {
      */
     Color colorAt(Tuple point, Matrix4 transform, Pattern a, Pattern b);
 
+    /**
+     * Creates a function that multiplies point's by the matrix's inverse.
+     * @param transform
+     *   The matrix to be inverted.
+     * @return
+     *   A function that multiplies the input tuple by the supplied matrix's inverse.
+     */
+    static Function<Tuple, Tuple> toLocalSpace(Matrix4 transform) { return (p)->transform.inverse().multiply(p); }
+
     // Premade BiOperations ready for use.
 
     /**
@@ -35,9 +46,9 @@ public interface BiOperation {
      */
     static final BiOperation stripe = (point, transform, a, b) -> {
         if (((int)Math.floor(point.x)) % 2 == 0) {
-            return a.colorAt(point, transform);
+            return a.colorAt(point, toLocalSpace(transform));
         } else {
-            return b.colorAt(point, transform);
+            return b.colorAt(point, toLocalSpace(transform));
         }
     };
 
@@ -46,9 +57,9 @@ public interface BiOperation {
      */
     static final BiOperation ring = (point, transform, a, b) -> {
         if (Math.floor(Math.sqrt((point.x * point.x) + (point.z * point.z))) % 2 == 0) {
-            return a.colorAt(point, transform);
+            return a.colorAt(point, toLocalSpace(transform));
         } else {
-            return b.colorAt(point, transform);
+            return b.colorAt(point, toLocalSpace(transform));
         }
     };
 
@@ -56,12 +67,14 @@ public interface BiOperation {
      * Linearly interpolate between pattern a and b.
      */
     static final BiOperation gradient = (point, transform, a, b) -> {
-        final var colorA = a.colorAt(point, transform);
-        final var colorB = b.colorAt(point, transform);
+        final var colorA = a.colorAt(point, toLocalSpace(transform));
+        final var colorB = b.colorAt(point, toLocalSpace(transform));
         final var spectrum = colorB.subtract(colorA);
         final float amout = point.x - (float) Math.floor(point.x); 
         return new Color(colorA.add(spectrum.multiply(amout)));
     };
+
+    
 
     /**
      * Checker pattern alternates between two colors in the xyz dimensions ensuring no two adjacent squares are the same color.
@@ -69,9 +82,9 @@ public interface BiOperation {
     static final BiOperation checker = (point, transform, a, b) -> {
         final var value = ((Math.floor(point.x) + Math.floor(point.y) + Math.floor(point.z)) % 2.0);
         if (FloatHelp.compareFloat((float) value, 0) == 0) {
-            return a.colorAt(point, transform);
+            return a.colorAt(point, toLocalSpace(transform));
         } else {
-            return b.colorAt(point, transform);
+            return b.colorAt(point, toLocalSpace(transform));
         }
     };
 
@@ -79,8 +92,8 @@ public interface BiOperation {
      * Gradient that radially spreads out from the origin in a circle.
      */
     static final BiOperation radialGradient = (point, transform, a, b) -> {
-        final var colorA = a.colorAt(point, transform);
-        final var colorB = b.colorAt(point, transform);
+        final var colorA = a.colorAt(point, toLocalSpace(transform));
+        final var colorB = b.colorAt(point, toLocalSpace(transform));
         final var spectrum = colorB.subtract(colorA);
         final var distance = Math.sqrt((point.x * point.x) + (point.z * point.z));
         final float amout = (float) distance - (float) Math.floor(distance); 
@@ -90,10 +103,16 @@ public interface BiOperation {
     /**
      * Blends the output of two patterns together.
      */
-    static final BiOperation blend = (point, transform, a, b) -> { return a.colorAt(point, transform).colorMul(b.colorAt(point, transform)); };
+    static final BiOperation blend = (point, transform, a, b) -> { 
+        final var function = toLocalSpace(transform);
+        return a.colorAt(point, function).colorMul(b.colorAt(point, function)); 
+    };
 
     /**
      * Add the output of two patterns together.
      */
-    static final BiOperation add = (point, transform, a, b) -> {return a.colorAt(point, transform).add(b.colorAt(point, transform));};
+    static final BiOperation add = (point, transform, a, b) -> {
+        final var function = toLocalSpace(transform);
+        return a.colorAt(point, function).add(b.colorAt(point, function));
+    };
 }

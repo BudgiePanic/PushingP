@@ -5,18 +5,7 @@ import java.util.function.Supplier;
 
 import static java.util.Map.entry;
 
-import com.BudgiePanic.rendering.toy.Artillery;
-import com.BudgiePanic.rendering.toy.CameraDemo;
-import com.BudgiePanic.rendering.toy.Clock;
-import com.BudgiePanic.rendering.toy.DrawSphere;
-import com.BudgiePanic.rendering.toy.PatternToy;
-import com.BudgiePanic.rendering.toy.PlaneDemo;
-import com.BudgiePanic.rendering.toy.RefractionDemo;
-import com.BudgiePanic.rendering.toy.Shadow;
-import com.BudgiePanic.rendering.toy.ShadowDemo;
-import com.BudgiePanic.rendering.toy.CubeDemo;
-import com.BudgiePanic.rendering.toy.CylinderDemo;
-
+import com.BudgiePanic.rendering.toy.*;
 
 /**
  * Hello world!
@@ -35,7 +24,10 @@ public class App
         entry("-pattern", () -> new PatternToy()),
         entry("-refraction", () -> new RefractionDemo()),
         entry("-cube", ()-> new CubeDemo()),
-        entry("-cylinder", ()-> new CylinderDemo())
+        entry("-cylinder", ()-> new CylinderDemo()),
+        entry("-aabb_demo", ()-> new AABBDemo()),
+        entry("-acne_test", ()-> new TestScene()),
+        entry("-group", ()-> new GroupDemo())
     );
 
     public static void main( String[] args )
