@@ -1,6 +1,5 @@
 package com.BudgiePanic.rendering.toy;
 
-import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.checker;
 
 import java.io.File;
