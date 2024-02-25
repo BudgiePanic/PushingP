@@ -102,7 +102,7 @@ public class GroupDemo implements Runnable {
         world.addLight(new PointLight(makePoint(-8,10,-8), Colors.white));
         world.addShape(background);
         
-        int limit = 8;
+        int limit = 6;
         var offsetter = Transforms.identity().translate(-limit / 2, -limit / 2, 0).assemble();
         for (int x = 0; x < limit; x++) {
             var groupa = new Group(offsetter);
