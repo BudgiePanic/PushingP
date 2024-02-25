@@ -42,7 +42,8 @@ public class GroupDemo implements Runnable {
     private static final String fileName = "group.ppm";
     private static final int width = 768, height = width;
     private final static float fov = AngleHelp.toRadians(90f);
-    private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(Tuple.makePoint(0,0,-3), Tuple.makePoint(0, 0, 0), Tuple.makePoint(0,1,0)));
+    private final Tuple cameraLocation = Tuple.makePoint(3,3.5f,-3);
+    private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(cameraLocation, Tuple.makePoint(3, 0, 0), Tuple.makePoint(0,1,0)));
     private final List<Material> materials = List.of(
             Material.defaultMaterial(),
             Material.pattern(new Perturb(new BiPattern(BiOperation.radialGradient, 
@@ -61,7 +62,7 @@ public class GroupDemo implements Runnable {
     private final float pi2 = (float) (Math.PI * 2.0);
     private final Plane background = new Plane(
         Transforms.identity().rotateX(AngleHelp.toRadians(90f)).translate(0, 0, 15).assemble(), 
-        Material.pattern(new BiPattern(checker, Colors.white, Colors.white.multiply(0.7f))).setSpecular(0.2f));
+        Material.pattern(new BiPattern(checker, Colors.white, Colors.white.multiply(0.7f))).setAmbient(1).setDiffuse(0).setSpecular(0));
 
     private Shape buildHexagonCorner(Material material) {
         return new Sphere(Transforms.identity().scale(0.25f, 0.25f, 0.25f).translate(0, 0, -1).assemble(), material);
@@ -99,13 +100,11 @@ public class GroupDemo implements Runnable {
         System.out.println("building world");
         World world = new World();
 
-        world.addLight(new PointLight(makePoint(-8,10,-8), Colors.white));
+        world.addLight(new PointLight(cameraLocation, Colors.white));
         world.addShape(background);
         
         int limit = 6;
-        var offsetter = Transforms.identity().translate(-limit / 2, -limit / 2, 0).assemble();
         for (int x = 0; x < limit; x++) {
-            var groupa = new Group(offsetter);
             for (int y = 0; y < limit; y++) {
                 var group = new Group(Transforms.identity().assemble());
                 for (int z = 0; z < limit; z++) {
@@ -120,9 +119,8 @@ public class GroupDemo implements Runnable {
                     var hexagon = buildHexagon(transform, randomMaterial());
                     group.addShape(hexagon);
                 }
-                groupa.addShape(group);
+                world.addShape(group);
             }
-            world.addShape(groupa);
         }
 
         System.out.println("taking image");
