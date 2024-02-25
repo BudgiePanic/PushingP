@@ -26,7 +26,8 @@ public class App
         entry("-cube", ()-> new CubeDemo()),
         entry("-cylinder", ()-> new CylinderDemo()),
         entry("-aabb_demo", ()-> new AABBDemo()),
-        entry("-acne_test", ()-> new TestScene())
+        entry("-acne_test", ()-> new TestScene()),
+        entry("-group", ()-> new GroupDemo())
     );
 
     public static void main( String[] args )
