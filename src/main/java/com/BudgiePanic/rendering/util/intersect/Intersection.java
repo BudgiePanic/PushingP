@@ -5,21 +5,29 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.shape.Shape;
 import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 /**
  * Ray intersection information container.
  * 
- * @param a 
- *   The distance from the ray origin to the point of intersection
- * @param shape
- *   The sphere that was intersected with
- * 
  * @author BudgiePanic
  */
-public record Intersection(Float a, Shape shape) {
+public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv) {
     
+    // u & v specify the point on the shape's surface where the intersection occured, relative to the shape's corners (unwrapped)
+    // not all intersections supply uv coordinates
+
+    /**
+     * 
+     * @param a
+     *   The distance from the ray origin to the point of intersection
+     * @param shape
+     *   The sphere that was intersected with
+     */
+    public Intersection(Float a, Shape shape) { this(a, shape, Optional.empty()); }
+
     /**
      * Helper method to find hits among collections of intersections.
      * Some intersections may be behind the ray, and are thus not hits.
