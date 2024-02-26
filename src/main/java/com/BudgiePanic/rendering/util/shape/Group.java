@@ -3,7 +3,6 @@ package com.BudgiePanic.rendering.util.shape;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -25,7 +24,7 @@ public class Group extends BaseShape {
     /**
      * A mutable collection of shapes.
      */
-    protected final Collection<Shape> children;
+    protected final List<Shape> children;
 
     /**
      * Creates a new empty group with no parent.
@@ -44,8 +43,8 @@ public class Group extends BaseShape {
      * @return
      *   The shapes that belong to this group.
      */
-    public Collection<Shape> getShapes() {
-        return Collections.unmodifiableCollection(this.children);
+    public List<Shape> getShapes() {
+        return Collections.unmodifiableList(this.children);
     }
     
     /**
