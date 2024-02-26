@@ -20,11 +20,22 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
     // not all intersections supply uv coordinates
 
     /**
-     * 
+     * Create a Ray intersection information container.
      * @param a
      *   The distance from the ray origin to the point of intersection
      * @param shape
-     *   The sphere that was intersected with
+     *   The shape that was intersected with
+     * @param uv
+     *   The uv coordinates of the intersection
+     */
+    public Intersection(Float a, Shape shape, Pair<Float, Float> uv) { this(a, shape, Optional.ofNullable(uv)); }
+
+    /**
+     * Create a Ray intersection information container.
+     * @param a
+     *   The distance from the ray origin to the point of intersection
+     * @param shape
+     *   The shape that was intersected with
      */
     public Intersection(Float a, Shape shape) { this(a, shape, Optional.empty()); }
 
