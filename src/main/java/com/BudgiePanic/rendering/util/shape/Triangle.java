@@ -85,6 +85,18 @@ public class Triangle extends BaseShape {
     }
 
     /**
+     * Convienience constructor.
+     *
+     * @param p1
+     * @param p2
+     * @param p3
+     * @param material
+     */
+    public Triangle(Tuple p1, Tuple p2, Tuple p3, Material material) {
+        this(p1, p2, p3, defaultTransform, material);
+    }
+
+    /**
      * Convience constructor.
      * @param p1
      * @param p2
