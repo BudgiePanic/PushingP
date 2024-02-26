@@ -70,16 +70,48 @@ public class WavefrontObjectLoader {
      * Places the object's internal groups into an uber group for rendering.
      * @param object
      *   The object data.
+     * @param
+     *   The transform to apply to the group.
      * @return
      *   A group containing object shapes.
      */
-    public static Group objectToGroup(ObjectData object) {
-        throw new RuntimeException("method not implemented yet");
+    public static Group objectToGroup(ObjectData object, Matrix4 transform) {
+        final Group uberGroup = new Group(transform);
+        for (var group : object.groups) {
+            uberGroup.addShape(group.b());
+        }
+        return uberGroup;
     }
 
+    /**
+     * Places the object's internal groups into an uber group for rendering. Ubergroup will have default transform.
+     * @param object
+     *   The object data.
+     * @return
+     *   A group containing object shapes.
+     */
+    public static Group objectToGroup(ObjectData object) { return objectToGroup(object, Matrix4.identity()); }
+
+    /**
+     * Create a shape group from a wavefront obj object with the default material.
+     * @param lines
+     *   Lines of text from the obj file.
+     * @return
+     *   Geometry information extracted from the obj file.
+     */
     public static ObjectData parseObj(List<String> lines) { return parseObj(lines, Material.defaultMaterial()); }
 
+    /**
+     * Create a shape group from a wavefront obj object with the default material.
+     * @param lines
+     *   Lines of text from the obj file.
+     * @param material
+     *   The material to apply to the generated triangles.
+     * @return
+     *   Geometry information extracted from the obj file.
+     */
     public static ObjectData parseObj(List<String> lines, Material material) {
+        // TODO this method needs code improvement
         final List<Tuple> vertices = new ArrayList<>();
         final List<Triangle> triangles = new ArrayList<>();
         final List<String> groupNames = new ArrayList<>();
