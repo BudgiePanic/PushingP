@@ -125,4 +125,10 @@ public class Triangle extends BaseShape {
     @Override
     protected Tuple localNormal(Tuple point) { return normal; }
     
+    public Tuple p1() { return p1; }
+
+    public Tuple p2() { return p2; }
+
+    public Tuple p3() { return p3; }
+
 }
