@@ -38,7 +38,7 @@ public class TriangleTest {
     }
 
     @Test
-    void testTriangleIntersection() {
+    void testTriangleIntersection() { // parrallel miss
         var triangle = new Triangle(makePoint(0, 1, 0), makePoint(-1, 0, 0), makePoint(1, 0, 0));
         var ray = new Ray(makePoint(0, -1, -2), makeVector(0, 1, 0));
         var result = triangle.localIntersect(ray);
@@ -46,15 +46,15 @@ public class TriangleTest {
     }
 
     @Test
-    void testTriangleIntersectionA () {
+    void testTriangleIntersectionA () { // p1-p3 edge
         var triangle = new Triangle(makePoint(0, 1, 0), makePoint(-1, 0, 0), makePoint(1, 0, 0));
-        var ray = new Ray(makePoint(1, -1, -2), makeVector(0, 0, 1));
+        var ray = new Ray(makePoint(1, 1, -2), makeVector(0, 0, 1));
         var result = triangle.localIntersect(ray);
         assertTrue(result.isEmpty());
     }
     
     @Test
-    void testTriangleIntersectionB () {
+    void testTriangleIntersectionB () { // p1-p2 edge
         var triangle = new Triangle(makePoint(0, 1, 0), makePoint(-1, 0, 0), makePoint(1, 0, 0));
         var ray = new Ray(makePoint(-1, 1, -2), makeVector(0, 0, 1));
         var result = triangle.localIntersect(ray);
@@ -62,7 +62,7 @@ public class TriangleTest {
     }
 
     @Test
-    void testTriangleIntersectionC () {
+    void testTriangleIntersectionC () { // p2-p3 edge
         var triangle = new Triangle(makePoint(0, 1, 0), makePoint(-1, 0, 0), makePoint(1, 0, 0));
         var ray = new Ray(makePoint(0, -1, -2), makeVector(0, 0, 1));
         var result = triangle.localIntersect(ray);
@@ -70,7 +70,7 @@ public class TriangleTest {
     }
 
     @Test
-    void testTriangleIntersectionD () {
+    void testTriangleIntersectionD () { // hit
         var triangle = new Triangle(makePoint(0, 1, 0), makePoint(-1, 0, 0), makePoint(1, 0, 0));
         var ray = new Ray(makePoint(0, 0.5f, -2), makeVector(0, 0, 1));
         var result = triangle.localIntersect(ray);
