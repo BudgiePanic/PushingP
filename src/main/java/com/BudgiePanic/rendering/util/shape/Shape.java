@@ -54,6 +54,19 @@ public interface Shape {
     Tuple normal(Tuple point);
 
     /**
+     * Determine the normal vector of a point on the shape, with extra information from an intersection.
+     * @param point
+     *   The point on the shape.
+     * @param intersection
+     *   Extra information about the point.
+     * 
+     *   TODO I think intersection could be replaced with just the UVs (Pair<Float, Float>)
+     * @return
+     *   The normal vector at the point.
+     */
+    default Tuple normal(Tuple point, Intersection intersection) { return normal(point); }
+
+    /**
      * Get the parent of this shape.
      * @return
      *   Empty if this shape is not part of a group. The group that this shape belongs to.
