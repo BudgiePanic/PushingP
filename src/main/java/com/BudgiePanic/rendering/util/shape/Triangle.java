@@ -16,14 +16,42 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  */
 public class Triangle extends BaseShape {
 
+    /**
+     * The first vertex
+     */
     protected final Tuple p1;
+    /**
+     * The second vertex
+     */
     protected final Tuple p2;
+    /**
+     * The third vertex
+     */
     protected final Tuple p3;
+    /**
+     * p2 - p1
+     */
     protected final Tuple edge1;
+    /**
+     * p3 - p1
+     */
     protected final Tuple edge2;
+    /**
+     * e2 cross e1
+     */
     protected final Tuple normal;
+    /**
+     * A static matrix to avoid excess matrix heap allocation
+     */
     protected static final Matrix4 defaultTransform = Matrix4.identity();
+    /**
+     * A static material to avoid excess matrix heap allocation
+     */
     protected static final Material defaultMaterial = Material.defaultMaterial();
+    /**
+     * Triangle AABB to satisfy the interface shape contract
+     */
+    protected final BoundingBox AABB;
 
     
     public Triangle(Tuple p1, Tuple p2, Tuple p3, Matrix4 transform, Material material) {
@@ -34,6 +62,15 @@ public class Triangle extends BaseShape {
         this.edge1 = p2.subtract(p1);
         this.edge2 = p3.subtract(p1);
         this.normal = edge2.cross(edge1).normalize();
+        this.AABB = new BoundingBox( // should this be lazilly initialized? 
+            Tuple.makePoint(
+                Math.min(Math.min(p1.x,p2.x),p3.x),
+                Math.min(Math.min(p1.y,p2.y),p3.y),
+                Math.min(Math.min(p1.z,p2.z),p3.z)), 
+            Tuple.makePoint(
+                Math.max(Math.min(p1.x,p2.x),p3.x),
+                Math.max(Math.min(p1.y,p2.y),p3.y),
+                Math.max(Math.min(p1.z,p2.z),p3.z)));
     }
     /**
      * Convienience constructor.
@@ -58,10 +95,7 @@ public class Triangle extends BaseShape {
     }
 
     @Override
-    public BoundingBox bounds() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bounds'");
-    }
+    public synchronized BoundingBox bounds() { return AABB; }
 
     @Override
     protected Optional<List<Intersection>> localIntersect(Ray ray) {
