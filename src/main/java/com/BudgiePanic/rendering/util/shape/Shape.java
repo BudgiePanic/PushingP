@@ -64,7 +64,7 @@ public interface Shape {
      * @return
      *   The normal vector at the point.
      */
-    default Tuple normal(Tuple point, Intersection intersection) { return normal(point); }
+    Tuple normal(Tuple point, Intersection intersection);
 
     /**
      * Get the parent of this shape.
