@@ -15,8 +15,8 @@ public class WavefrontObjectLoaderTest {
     @Test
     void testParseJunkObject() {
         var lines = List.of(
-            "well this clearly",
-            "is not what we would",
+            "gee well this clearly shows",
+            "visually something that is not what we would",
             "expect to find in a wave",
             "front object file now",
             "is it?"
