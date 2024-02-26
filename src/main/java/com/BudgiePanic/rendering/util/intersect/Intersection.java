@@ -64,7 +64,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
      *
      * @param ray
      *   The intersecting ray.
-     * @param
+     * @param intersections
      *   The intersections this ray made, if any.
      * @return
      *   Precomputed lighting information about this intersection.
@@ -72,7 +72,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
     public ShadingInfo computeShadingInfo(Ray ray, Optional<List<Intersection>> intersections) {
         var point = ray.position(this.a);
         var eye = ray.direction().negate();
-        var normal = this.shape.normal(point);
+        var normal = this.shape.normal(point, this);
         var inside = false;
         if (normal.dot(eye) < 0f) {
             inside = true;
