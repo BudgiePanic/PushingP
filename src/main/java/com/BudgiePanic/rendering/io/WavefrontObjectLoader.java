@@ -1,7 +1,11 @@
 package com.BudgiePanic.rendering.io;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
@@ -70,11 +74,138 @@ public class WavefrontObjectLoader {
      *   A group containing object shapes.
      */
     public static Group objectToGroup(ObjectData object) {
-        return null;
+        throw new RuntimeException("method not implemented yet");
     }
 
-    public static ObjectData parseObj(List<String> lines) {
-        return null;
+    public static ObjectData parseObj(List<String> lines) { return parseObj(lines, Material.defaultMaterial()); }
+
+    public static ObjectData parseObj(List<String> lines, Material material) {
+        final List<Tuple> vertices = new ArrayList<>();
+        final List<Triangle> triangles = new ArrayList<>();
+        final List<String> groupNames = new ArrayList<>();
+        final List<Group> groups = new ArrayList<>();
+        int linesSkipped = 0;
+        Optional<Group> currentGroup = Optional.empty();
+        Optional<String> currentName = Optional.empty();
+        vertices.add(null); // the WF OBJ file format is 1 indexed, not 0 indexed.
+
+        for (var line : lines) {
+            if (line.isEmpty()) {
+                linesSkipped++;
+                continue;
+            }
+            String[] tokens = line.split(" ");
+            if (line.charAt(0) == 'v') {
+                // might be a vertex
+                // try to read tokens 1 - 3 as floats
+                if (tokens.length != 4) {
+                    System.out.println("WARN: could not process line [" + line + "] as vertex");
+                    linesSkipped++;
+                    continue;
+                }
+                try {
+                    float x = Float.parseFloat(tokens[1]);
+                    float y = Float.parseFloat(tokens[2]);
+                    float z = Float.parseFloat(tokens[3]);
+                    var vertex = Tuple.makePoint(x, y, z);
+                    vertices.add(vertex);
+                } catch (NumberFormatException e) {
+                    linesSkipped++;
+                    System.out.println("WARN: could not process line [" + line + "] as vertex");
+                    continue;
+                }
+                // parsed line successfully
+                continue;
+            }
+            if (line.charAt(0) == 'f') {
+                // might be a face (triangle)
+                // a face has 3 or more vertices + 1 identifier char at position 0
+                // if there are more than 3, we must triangulate the face ourselves
+                // if a group is active, this face should be added to the active group
+                if (tokens.length < 4) {
+                    System.out.println("WARN: could not process line [" + line + "] as face");
+                    linesSkipped++;
+                    continue;
+                }
+                if (tokens.length > 4) { // need to triangulate
+                    try {
+                        List<Tuple> verts = Arrays.stream(tokens).skip(1).map(Integer::parseInt).map(vertices::get).toList();
+                        // assuming a convex polygon, whose internal angles sum to 180 degrees or less, allows for fan triangulation
+                        for (int i = 1; i < tokens.length - 1; i++) {
+                            Tuple p1 = verts.get(0);
+                            Tuple p2 = verts.get(i);
+                            Tuple p3 = verts.get(i + 1);
+                            Triangle triangle = new Triangle(p1, p2, p3, material);
+                            triangles.add(triangle);
+                        }
+                    } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                        linesSkipped++;
+                        System.out.println("WARN: could not process line [" + line + "] as face");
+                        continue;
+                    }
+                }
+                // try get the verts specified, if all found, build a triangle and save it
+                try {
+                    int index1 = Integer.parseInt(tokens[1]);
+                    int index2 = Integer.parseInt(tokens[2]);
+                    int index3 = Integer.parseInt(tokens[3]);
+                    Tuple p1 = vertices.get(index1);
+                    Tuple p2 = vertices.get(index2);
+                    Tuple p3 = vertices.get(index3);
+                    Triangle triangle = new Triangle(p1, p2, p3, material);
+                    triangles.add(triangle);
+                    if (currentGroup.isPresent()) {
+                        currentGroup.get().addShape(triangle);
+                    }
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    linesSkipped++;
+                    System.out.println("WARN: could not process line [" + line + "] as face");
+                    continue;
+                }
+                // parsed line successfully
+                continue;
+            }
+            if (line.charAt(0) == 'g') {
+                // might be a group
+                // assuming group names have to be one token long
+                if (tokens.length != 2 && tokens[0].length() != 1) {
+                    linesSkipped++;
+                    System.out.println("WARN: could not process line [" + line + "] as group identifier");
+                    continue;
+                }
+                // add the current group to the groups list
+                if (currentGroup.isPresent()) {
+                    groups.add(currentGroup.get());
+                    assert currentName.isPresent();
+                    groupNames.add(currentName.get());
+                }
+                // update the current group to a new group and group name
+                currentGroup = Optional.of(new Group(Matrix4.identity()));
+                currentName = Optional.of(tokens[1]);
+                // parsed line successfully
+                continue;
+            }
+            // did not match against any known lines
+            linesSkipped++;
+        }
+
+        // add the currentGroup, if it exists
+        if (currentGroup.isPresent()) {
+            groups.add(currentGroup.get());
+            assert currentName.isPresent();
+            groupNames.add(currentName.get());
+        }
+
+        if (linesSkipped == lines.size()) {
+            System.out.println("WARN: couldn't process any information from OBJ file");
+        }
+
+        assert groups.size() == groupNames.size();
+        final List<Pair<String, Group>> groupas = new ArrayList<>();
+        for (int i = 0; i < groups.size(); i++) {
+            groupas.add(new Pair<String,Group>(groupNames.get(i), groups.get(i)));
+        }
+        return new ObjectData(linesSkipped, vertices, triangles, groupas);
     }
 
 }
