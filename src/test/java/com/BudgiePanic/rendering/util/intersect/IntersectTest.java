@@ -208,7 +208,7 @@ public class IntersectTest {
         var intersecion = intersections.getFirst();
         assertTrue(intersecion.uv().isPresent());
         var uv = intersecion.uv().get();
-        assertEquals(0, FloatHelp.compareFloat(uv.a(), 0.45f) == 0);
-        assertEquals(0, FloatHelp.compareFloat(uv.b(), 0.25f) == 0);
+        assertEquals(0, FloatHelp.compareFloat(uv.a(), 0.45f));
+        assertEquals(0, FloatHelp.compareFloat(uv.b(), 0.25f));
     }
 }
