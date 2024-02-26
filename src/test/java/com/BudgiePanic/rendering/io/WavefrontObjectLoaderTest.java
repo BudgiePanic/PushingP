@@ -59,7 +59,7 @@ public class WavefrontObjectLoaderTest {
         var verts = result.verticies();
         var triangles = result.triangles();
         assertEquals(1, result.linesSkipped());
-        assertEquals(2, triangles);
+        assertEquals(2, triangles.size());
         assertEquals(verts.get(1), triangles.get(0).p1());
         assertEquals(verts.get(2), triangles.get(0).p2());
         assertEquals(verts.get(3), triangles.get(0).p3());
@@ -82,7 +82,7 @@ public class WavefrontObjectLoaderTest {
         var result = WavefrontObjectLoader.parseObj(lines);
         var verts = result.verticies();
         var triangles = result.triangles();
-        assertEquals(3, triangles);
+        assertEquals(3, triangles.size());
 
         assertEquals(verts.get(1), triangles.get(0).p1());
         assertEquals(verts.get(2), triangles.get(0).p2());
