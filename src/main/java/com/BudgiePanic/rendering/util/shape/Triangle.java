@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Material;
+import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -131,7 +132,7 @@ public class Triangle extends BaseShape {
             return Optional.empty();
         }
         final var t = f * edge2.dot(originCrossEdge1);
-        return Optional.of(List.of(new Intersection(t, this)));
+        return Optional.of(List.of(new Intersection(t, this, Optional.of(new Pair<>(u, v)))));
     }
 
     @Override
