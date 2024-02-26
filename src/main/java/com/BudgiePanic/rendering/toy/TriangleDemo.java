@@ -33,21 +33,21 @@ import com.BudgiePanic.rendering.util.transform.View;
 public class TriangleDemo implements Runnable {
 
     private static final String fileName = "teddy_cow_teapot.ppm";
-    private static final int width = 768, height = width;
+    private static final int width = 480, height = width;
     private final static float fov = AngleHelp.toRadians(90f);
-    private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(Tuple.makePoint(0,5, 0), Tuple.makePoint(0, 0, 5), Tuple.makePoint(0,1,0)));
+    private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(Tuple.makePoint(0,3, 0), Tuple.makePoint(0, 0, 5), Tuple.makePoint(0,1,0)));
     private final PointLight light = new PointLight(makePoint(5,10,0.5f), Colors.white);
     private final Cube background = new Cube(
-        Transforms.identity().scale(15, 15, 15).translate(0, -0.25f, 10).assemble(),
+        Transforms.identity().scale(15, 15, 15).translate(0, 5f, 10).assemble(),
         Material.pattern(
             new BiPattern(BiOperation.checker, Colors.white.multiply(0.66f), Colors.green.multiply(0.66f), 
                           Transforms.identity().scale(0.25f, 0.25f, 0.25f).assemble())).
             setSpecular(0.1f));
     private int modelsLoaded = 0;
     List<Matrix4> transforms = List.of(
-        Transforms.identity().assemble(),
+        Transforms.identity().scale(1.5f, 1.5f, 1.5f).translate(0, -1, 5).assemble(),
         Transforms.identity().translate(3, 0, 3).assemble(),
-        Transforms.identity().translate(-3, 0, 3).assemble()
+        Transforms.identity().rotateY(AngleHelp.toRadians(90f)).scale(0.33f, 0.33f, 0.33f).translate(-4, 0, 3).assemble()
     );
 
     @Override
@@ -81,7 +81,7 @@ public class TriangleDemo implements Runnable {
 
         // take the image
         System.out.println("taking picture");
-        var canvas = camera.takePicture(world, new ProgressWrapper(new ArrayCanvas(width, height)));
+        var canvas = camera.takePicture(world, new ProgressWrapper(new ArrayCanvas(width, height), 2));
 
         System.out.println("saving image");
         var lines = CanvasWriter.canvasToPPMString(canvas);
