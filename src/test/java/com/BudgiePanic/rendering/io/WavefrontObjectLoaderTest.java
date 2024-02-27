@@ -225,9 +225,9 @@ public class WavefrontObjectLoaderTest {
         assertEquals(verts.get(2), t1.p2());
         assertEquals(verts.get(3), t1.p3());
 
-        assertEquals(normals.get(1), t1.normal1());
-        assertEquals(normals.get(2), t1.normal2());
-        assertEquals(normals.get(3), t1.normal3());
+        assertEquals(normals.get(3), t1.normal1());
+        assertEquals(normals.get(1), t1.normal2());
+        assertEquals(normals.get(2), t1.normal3());
     }
 
     @Test
