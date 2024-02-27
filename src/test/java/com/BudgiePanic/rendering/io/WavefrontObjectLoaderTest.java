@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.io;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -8,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.BudgiePanic.rendering.util.shape.SmoothTriangle;
 import com.BudgiePanic.rendering.util.shape.Triangle;
 
 public class WavefrontObjectLoaderTest {
@@ -155,4 +157,74 @@ public class WavefrontObjectLoaderTest {
         assertTrue(result.getShapes().contains(a.groups().get(0).b()));
         assertTrue(result.getShapes().contains(a.groups().get(1).b()));
     }    
+
+    @Test
+    void testUberGroupGenerationNoSubGroup() {
+        // loader had undefined behaviour when making uber group from obj with no subgroups
+        // this test describes the desired behaviour of the loader in that situation
+        var lines = List.of(
+            "v -1 1 0",
+            "v -1 0 0",
+            "v 1 0 0",
+            "v 1 1 0",
+            "",
+            "f 1 2 3",
+            "f 1 3 4"
+        );
+        var a = WavefrontObjectLoader.parseObj(lines);
+        var result = WavefrontObjectLoader.objectToGroup(a);
+        assertEquals(2, result.getShapes().size());
+    }
+
+    @Test
+    void testVertexNormalParsing() {
+        var lines = List.of(
+            "vn 0 0 1",
+            "vn 0.707 0 -0.707",
+            "vn 1 2 3"
+        );
+        var data = WavefrontObjectLoader.parseObj(lines);
+        assertEquals(4, data.normals().size());
+        assertEquals(null, data.normals().get(0)); // wf obj files are 1 indexed, so the first element should be blank
+        assertEquals(makeVector(0, 0, 1), data.normals().get(1));
+        assertEquals(makeVector(0.707f, 0, 0.707f), data.normals().get(2));
+        assertEquals(makeVector(1, 2, 3), data.normals().get(3));
+    }
+
+    @Test
+    void testVertexNormalApplication() {
+        // are smooth faces created when vertex normals are present in face parsing?
+        var lines = List.of(
+            "v 0 1 0",
+            "v -1 0 0",
+            "v 1 0 0",
+            "",
+            "vn -1 0 0",
+            "vn 1 0 0",
+            "vn 0 1 0",
+            "",
+            "f 1//3 2//1 3//2",
+            "f 1/0/3 2/102/1 3/14/2" // face (vertex index)/(texture vertex)/(vertex normal index)
+        );
+        var data = WavefrontObjectLoader.parseObj(lines);
+        var verts = data.verticies();
+        var normals = data.normals();
+        assertEquals(2, data.triangles().size());
+
+        data.triangles().forEach(triangle -> assertTrue(triangle instanceof SmoothTriangle));
+
+        var t1 = (SmoothTriangle) data.triangles().get(0);
+        var t2 = data.triangles().get(1);
+
+        assertTrue(t1.equals(t2));
+        assertTrue(t2.equals(t1));
+
+        assertEquals(verts.get(1), t1.p1());
+        assertEquals(verts.get(2), t1.p2());
+        assertEquals(verts.get(3), t1.p3());
+
+        assertEquals(normals.get(1), t1.normal1());
+        assertEquals(normals.get(2), t1.normal2());
+        assertEquals(normals.get(3), t1.normal3());
+    }
 }
