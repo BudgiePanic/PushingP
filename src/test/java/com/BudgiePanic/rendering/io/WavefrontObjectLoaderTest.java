@@ -3,6 +3,7 @@ package com.BudgiePanic.rendering.io;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -84,6 +85,7 @@ public class WavefrontObjectLoaderTest {
         var result = WavefrontObjectLoader.parseObj(lines);
         var verts = result.verticies();
         var triangles = result.triangles();
+        assertTrue(result.linesSkipped() == 1);
         assertEquals(3, triangles.size());
 
         assertEquals(verts.get(1), triangles.get(0).p1());
@@ -226,5 +228,53 @@ public class WavefrontObjectLoaderTest {
         assertEquals(normals.get(1), t1.normal1());
         assertEquals(normals.get(2), t1.normal2());
         assertEquals(normals.get(3), t1.normal3());
+    }
+
+    @Test
+    void smoothFacePatternMatchTest() {
+        String[] passCases = {
+            "1/2/3",
+            "4321654/6541231/98471",
+            "1//2",
+            "87//654",
+        };
+        String[] failCases = {
+            "1//",
+            "2154//",
+            "1/2/",
+            "4/65/",
+            "1",
+            "98741",
+            "1/",
+            "987/"
+        };
+        for (String test : passCases) {
+            assertTrue(WavefrontObjectLoader.FaceParser.smoothFace.matcher(test).matches());
+        }
+        for (String test : failCases) {
+            assertFalse(WavefrontObjectLoader.FaceParser.smoothFace.matcher(test).matches());
+        }
+    }
+
+    @Test
+    void flatFacePatternMatchTest() {
+        String[] passCases = {
+            "1",
+            "123",
+            "741698"
+        };
+        String[] failCases = {
+            "02154/",
+            "4.654",
+            "657\\5454",
+            "57641//654",
+            "89541//"
+        }; 
+        for (String test : passCases) {
+            assertTrue(WavefrontObjectLoader.FaceParser.simpleFace.matcher(test).matches());
+        }
+        for (String test : failCases) {
+            assertFalse(WavefrontObjectLoader.FaceParser.simpleFace.matcher(test).matches());
+        }
     }
 }
