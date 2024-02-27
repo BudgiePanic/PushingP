@@ -269,7 +269,7 @@ public class WavefrontObjectLoader {
             try {
                 final List<Tuple> verts = Arrays.stream(tokens).skip(1).map(Integer::parseInt).map(vertices.data::get).toList();
                 // assuming a convex polygon, whose internal angles sum to 180 degrees or less, allows for fan triangulation
-                for (int i = 1; i < tokens.length - 1; i++) {
+                for (int i = 1; i < tokens.length - 2; i++) { // token.length - 2 because the stream removed the first token
                     final Tuple p1 = verts.get(0);
                     final Tuple p2 = verts.get(i);
                     final Tuple p3 = verts.get(i + 1);
