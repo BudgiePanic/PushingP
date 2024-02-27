@@ -7,12 +7,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.Group;
+import com.BudgiePanic.rendering.util.shape.SmoothTriangle;
 import com.BudgiePanic.rendering.util.shape.Triangle;
 
 /**
@@ -90,7 +93,7 @@ public class WavefrontObjectLoader {
     /**
      * Line parsers consume lines of input from the wavefront obj file.
      */
-    private static interface LineParser<T> {
+    protected static interface LineParser<T> {
 
         /**
          * Parse a line of wf obj file input.
@@ -131,7 +134,7 @@ public class WavefrontObjectLoader {
     /**
      * An object that recieves updates when a line parser successfully parses a datum from the obj file.
      */
-    private static interface Observer<D> {
+    protected static interface Observer<D> {
         /**
          * 
          * @param datum
@@ -142,20 +145,20 @@ public class WavefrontObjectLoader {
     /**
      * core functionality of all line parsers
      */
-    private static abstract class BaseParser<T> implements LineParser<T> {
+    protected static abstract class BaseParser<T> implements LineParser<T> {
         protected final List<T> data = new ArrayList<>();
         protected final List<Observer<T>> observers = new ArrayList<>(1);
         @Override 
         public Collection<Observer<T>> getObservers() { return observers; }
         @Override 
         public List<T> collect() { return Collections.unmodifiableList(data); }
-        protected void printParseFailMessage(String[] tokens) { System.out.println("WARN: " + this.getClass().getSimpleName() + " could not process " + tokens); }
+        protected void printParseFailMessage(String[] tokens) { System.out.println("WARN: " + this.getClass().getSimpleName() + " could not process " + Arrays.toString(tokens)); }
     }
 
     /**
      * The vertex parser parses vertex lines which start with "v".
      */
-    private static class VertexParser extends BaseParser<Tuple> {
+    protected static class VertexParser extends BaseParser<Tuple> {
         public VertexParser() { this.data.add(null); } // need to add a dummy at position 0 because obj files use 1 indexing.
         @Override
         public boolean parseLine(String[] tokens) {
@@ -183,7 +186,7 @@ public class WavefrontObjectLoader {
     /**
      * VertexNormalParser parses vertex normal lines, which start with "vn".
      */
-    private static class VertexNormalParser extends BaseParser<Tuple> {
+    protected static class VertexNormalParser extends BaseParser<Tuple> {
         public VertexNormalParser() { this.data.add(null); } // need to add a dummy at position 0 because obj files use 1 indexing.
         @Override
         public boolean parseLine(String[] tokens) {
@@ -206,7 +209,7 @@ public class WavefrontObjectLoader {
     /**
      * Group Parser parses group lines that start with a "g".
      */
-    private static class GroupParser extends BaseParser<Pair<String, Group>> {
+    protected static class GroupParser extends BaseParser<Pair<String, Group>> {
         private static final Matrix4 identity = Matrix4.identity();
         @Override
         public boolean parseLine(String[] tokens) {
@@ -221,7 +224,7 @@ public class WavefrontObjectLoader {
     /**
      * The face parser builds triangles from face lines that start with an "f".
      */
-    private static class FaceParser extends BaseParser<Triangle> {
+    protected static class FaceParser extends BaseParser<Triangle> {
 
         private final VertexParser vertices;
         private final VertexNormalParser normals;
@@ -356,7 +359,7 @@ public class WavefrontObjectLoader {
         return new ObjectData(
             linesSkipped,
             ((VertexNormalParser) loader.parsers.get("vn")).collect(),
-            ((VertexParser) loader.parsers.get("v")).collect(), // I wonder if there is a better way to go about doing this.
+            ((VertexParser) loader.parsers.get("v")).collect(), // I wonder if there is a better way to go about doing this instead of doing these casts.
             ((FaceParser) loader.parsers.get("f")).collect(),
             ((GroupParser) loader.parsers.get("g")).collect());
     }
