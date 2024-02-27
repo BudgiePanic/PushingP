@@ -2,7 +2,10 @@ package com.BudgiePanic.rendering.io;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.BudgiePanic.rendering.util.Material;
@@ -24,7 +27,7 @@ public class WavefrontObjectLoader {
      * A group containing all the triangles in the object can be created at the callers convience by adding all the triangles to a group (ObjectData::rawTriangles)
      * likewise, all the groups can be added to a single top level group at the callers convience (WavefrontObjectLoader::objectToGroup)
      */
-    public static record ObjectData(int linesSkipped, List<Tuple> verticies, List<Triangle> triangles, List<Pair<String, Group>> groups) {
+    public static record ObjectData(int linesSkipped, List<Tuple> normals, List<Tuple> verticies, List<Triangle> triangles, List<Pair<String, Group>> groups) {
         /**
          * Wavefront object data container.
          * @param linesSkipped
@@ -37,8 +40,8 @@ public class WavefrontObjectLoader {
          *   A list of all the groups of triangles in the object, accompanied by the group name.
          *   Object groups will always contain Triangle Shapes.
          */
-        public ObjectData(int linesSkipped, List<Tuple> verticies, List<Triangle> triangles, List<Pair<String, Group>> groups) {
-            this.linesSkipped = linesSkipped; this.verticies = verticies; this.triangles = triangles; this.groups = groups;
+        public ObjectData(int linesSkipped, List<Tuple> normals, List<Tuple> verticies, List<Triangle> triangles, List<Pair<String, Group>> groups) {
+            this.linesSkipped = linesSkipped; this.normals = normals; this.verticies = verticies; this.triangles = triangles; this.groups = groups;
         }
 
         /**
@@ -63,8 +66,224 @@ public class WavefrontObjectLoader {
             return group;
         }
     }
-    
-    private WavefrontObjectLoader () {}
+
+    /**
+     * Map from line type identifier token to line parser
+     */
+    protected final Map<String, LineParser<?>> parsers;
+
+    /**
+     * 
+     * @param material
+     *   The material the object will be made out of.
+     */
+    private WavefrontObjectLoader (Material material) {
+        final var faceParser = new FaceParser(new VertexParser(), new VertexNormalParser(), new GroupParser(), material);
+        parsers = Map.ofEntries(
+            Map.entry("f", faceParser),
+            Map.entry("v", faceParser.vertices),
+            Map.entry("vn", faceParser.normals),
+            Map.entry("g", faceParser.groups)
+        );
+    }
+
+    /**
+     * Line parsers consume lines of input from the wavefront obj file.
+     */
+    private static interface LineParser<T> {
+
+        /**
+         * Parse a line of wf obj file input.
+         *
+         * @param tokens
+         *   The tokens from the line of text being parsed
+         * @return
+         *   Whether the line was successfully parsed by this parser.
+         */
+        boolean parseLine(String[] tokens);
+
+        /**
+         * Add an observer to this parser that will be notified when a datum is successfully parsed by this parser 
+         * @param observer
+         *   The object that wants to know when the line parser successfully parses a datum
+         */
+        default void addObserver(Observer<T> observer) { getObservers().add(observer); }
+        /**
+         * Tell the observers that a datum was successfully parsed.
+         */
+        default void emitCollectionEvent(T datum) { getObservers().forEach(o -> o.collected(datum)); }
+
+        /**
+         * Get the observers of this line parser.
+         * @return
+         *   The observers of the line parsers.
+         */
+        Collection<Observer<T>> getObservers();
+
+        /**
+         * Get the data collected by this line parser so far
+         * @return
+         *   The data collected by this line parser
+         */
+        List<T> collect();
+    }
+
+    /**
+     * An object that recieves updates when a line parser successfully parses a datum from the obj file.
+     */
+    private static interface Observer<D> {
+        /**
+         * 
+         * @param datum
+         */
+        void collected(D datum);
+    }
+
+    /**
+     * core functionality of all line parsers
+     */
+    private static abstract class BaseParser<T> implements LineParser<T> {
+        protected final List<T> data = new ArrayList<>();
+        protected final List<Observer<T>> observers = new ArrayList<>(1);
+        @Override 
+        public Collection<Observer<T>> getObservers() { return observers; }
+        @Override 
+        public List<T> collect() { return Collections.unmodifiableList(data); }
+        protected void printParseFailMessage(String[] tokens) { System.out.println("WARN: " + this.getClass().getSimpleName() + " could not process " + tokens); }
+    }
+
+    /**
+     * The vertex parser parses vertex lines which start with "v".
+     */
+    private static class VertexParser extends BaseParser<Tuple> {
+        public VertexParser() { this.data.add(null); } // need to add a dummy at position 0 because obj files use 1 indexing.
+        @Override
+        public boolean parseLine(String[] tokens) {
+            // if you wanted to be real wack, you could refactor out this validation check out of all the parsers and push 
+            // the validation logic somewhere else, technically these methods are each doing 2 things, validation and parsing.
+            if (tokens.length != 4) { 
+                printParseFailMessage(tokens);
+                return false;
+            }
+            try {
+                float x = Float.parseFloat(tokens[1]);
+                float y = Float.parseFloat(tokens[2]);
+                float z = Float.parseFloat(tokens[3]);
+                var vertex = Tuple.makePoint(x, y, z);
+                data.add(vertex);
+                emitCollectionEvent(vertex);
+                return true;
+            } catch (NumberFormatException e) {
+                printParseFailMessage(tokens);
+                return false;
+            }
+        }
+    }
+
+    /**
+     * VertexNormalParser parses vertex normal lines, which start with "vn".
+     */
+    private static class VertexNormalParser extends BaseParser<Tuple> {
+        public VertexNormalParser() { this.data.add(null); } // need to add a dummy at position 0 because obj files use 1 indexing.
+        @Override
+        public boolean parseLine(String[] tokens) {
+            if (tokens.length != 4) { printParseFailMessage(tokens); return false; }
+            try {
+                final float x = Float.parseFloat(tokens[1]);
+                final float y = Float.parseFloat(tokens[2]);
+                final float z = Float.parseFloat(tokens[3]);
+                final var vertexNormal = Tuple.makeVector(x, y, z);
+                data.add(vertexNormal);
+                emitCollectionEvent(vertexNormal);
+                return true;
+            } catch (NumberFormatException e) {
+                printParseFailMessage(tokens);
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Group Parser parses group lines that start with a "g".
+     */
+    private static class GroupParser extends BaseParser<Pair<String, Group>> {
+        private static final Matrix4 identity = Matrix4.identity();
+        @Override
+        public boolean parseLine(String[] tokens) {
+            // assuming group names have to be one token long
+            if (tokens.length != 2 && tokens[0].length() != 1) { printParseFailMessage(tokens); return false; }
+            this.data.add(new Pair<String,Group>(tokens[1], new Group(identity)));
+            emitCollectionEvent(data.getLast());
+            return true;
+        }
+    }
+
+    /**
+     * The face parser builds triangles from face lines that start with an "f".
+     */
+    private static class FaceParser extends BaseParser<Triangle> {
+
+        private final VertexParser vertices;
+        private final VertexNormalParser normals;
+        private final GroupParser groups;
+        private final Material material;
+
+        private Optional<Group> currentGroup;
+        
+        public FaceParser(VertexParser vertices, VertexNormalParser normals, GroupParser groups, Material material) {
+            this.vertices = vertices; this.groups = groups; this.normals = normals; this.material = material;
+            currentGroup = Optional.empty();
+            groups.addObserver((group)-> { currentGroup = Optional.of(group.b()); });
+        }
+
+        @Override
+        public boolean parseLine(String[] tokens) {
+            if (tokens.length < 4) { printParseFailMessage(tokens); return false; }
+            // TODO update face parsing, faces can now take the pattern: face (vertex index)/(texture vertex)/(vertex normal index) | f 1/2/3 1/2/3 1/2/3 1/2/3 1//3 1/2/ 1//
+            if (tokens.length > 4) { // need to triangulate
+                return triangulateFace(tokens);
+            }
+            // try get the verts specified, if all found, build a triangle and save it
+            try {
+                final var verts = this.vertices.data;
+                final int index1 = Integer.parseInt(tokens[1]);
+                final int index2 = Integer.parseInt(tokens[2]);
+                final int index3 = Integer.parseInt(tokens[3]);
+                final Tuple p1 = verts.get(index1);
+                final Tuple p2 = verts.get(index2);
+                final Tuple p3 = verts.get(index3);
+                final Triangle triangle = new Triangle(p1, p2, p3, material);
+                this.data.add(triangle);
+                if (currentGroup.isPresent()) {
+                    currentGroup.get().addShape(triangle);
+                }
+                emitCollectionEvent(triangle);
+                return true;
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                printParseFailMessage(tokens);
+                return false;
+            }
+        }
+
+        private boolean triangulateFace(String[] tokens) {
+            try {
+                final List<Tuple> verts = Arrays.stream(tokens).skip(1).map(Integer::parseInt).map(vertices.data::get).toList();
+                // assuming a convex polygon, whose internal angles sum to 180 degrees or less, allows for fan triangulation
+                for (int i = 1; i < tokens.length - 1; i++) {
+                    final Tuple p1 = verts.get(0);
+                    final Tuple p2 = verts.get(i);
+                    final Tuple p3 = verts.get(i + 1);
+                    final Triangle triangle = new Triangle(p1, p2, p3, material);
+                    data.add(triangle);
+                    emitCollectionEvent(triangle);
+                }
+                return true;
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                printParseFailMessage(tokens);
+                return false;
+            }
+        } 
+    }
 
     /**
      * Places the object's internal groups into an uber group for rendering.
@@ -76,15 +295,14 @@ public class WavefrontObjectLoader {
      *   A group containing object shapes.
      */
     public static Group objectToGroup(ObjectData object, Matrix4 transform) {
-        final Group uberGroup = new Group(transform);
         if (object.groups().isEmpty()) {
             System.out.println("INFO: could not find any groups, making new group from raw triangles");
-            uberGroup.addShape(object.rawTriangles(transform));
-        } else {
-            System.out.println("INFO: building uber group from object's groups");
-            for (var group : object.groups) {
-                uberGroup.addShape(group.b());
-            }
+            return object.rawTriangles(transform);
+        }
+        final Group uberGroup = new Group(transform);
+        System.out.println("INFO: building uber group from object's groups");
+        for (var group : object.groups) {
+            uberGroup.addShape(group.b());
         }
         return uberGroup;
     }
@@ -117,133 +335,30 @@ public class WavefrontObjectLoader {
      *   Geometry information extracted from the obj file.
      */
     public static ObjectData parseObj(List<String> lines, Material material) {
-        // TODO this method needs code improvement
-        final List<Tuple> vertices = new ArrayList<>();
-        final List<Triangle> triangles = new ArrayList<>();
-        final List<String> groupNames = new ArrayList<>();
-        final List<Group> groups = new ArrayList<>();
+        final var loader = new WavefrontObjectLoader(material);
         int linesSkipped = 0;
-        Optional<Group> currentGroup = Optional.empty();
-        Optional<String> currentName = Optional.empty();
-        vertices.add(null); // the WF OBJ file format is 1 indexed, not 0 indexed.
-
         for (var line : lines) {
             if (line.isEmpty()) {
                 linesSkipped++;
                 continue;
             }
             String[] tokens = line.split(" ");
-            if (line.charAt(0) == 'v') {
-                // might be a vertex
-                // try to read tokens 1 - 3 as floats
-                if (tokens.length != 4) {
-                    System.out.println("WARN: could not process line [" + line + "] as vertex");
-                    linesSkipped++;
-                    continue;
-                }
-                try {
-                    float x = Float.parseFloat(tokens[1]);
-                    float y = Float.parseFloat(tokens[2]);
-                    float z = Float.parseFloat(tokens[3]);
-                    var vertex = Tuple.makePoint(x, y, z);
-                    vertices.add(vertex);
-                } catch (NumberFormatException e) {
-                    linesSkipped++;
-                    System.out.println("WARN: could not process line [" + line + "] as vertex");
-                    continue;
-                }
-                // parsed line successfully
+            final var parser = loader.parsers.get(tokens[0]);
+            if (parser == null) {
+                System.out.println("INFO: encountered unknown type of obj line, skipping: " + line);
+                linesSkipped++;
                 continue;
             }
-            if (line.charAt(0) == 'f') {
-                // might be a face (triangle)
-                // a face has 3 or more vertices + 1 identifier char at position 0
-                // if there are more than 3, we must triangulate the face ourselves
-                // if a group is active, this face should be added to the active group
-                if (tokens.length < 4) {
-                    System.out.println("WARN: could not process line [" + line + "] as face");
-                    linesSkipped++;
-                    continue;
-                }
-                if (tokens.length > 4) { // need to triangulate
-                    try {
-                        List<Tuple> verts = Arrays.stream(tokens).skip(1).map(Integer::parseInt).map(vertices::get).toList();
-                        // assuming a convex polygon, whose internal angles sum to 180 degrees or less, allows for fan triangulation
-                        for (int i = 1; i < tokens.length - 1; i++) {
-                            Tuple p1 = verts.get(0);
-                            Tuple p2 = verts.get(i);
-                            Tuple p3 = verts.get(i + 1);
-                            Triangle triangle = new Triangle(p1, p2, p3, material);
-                            triangles.add(triangle);
-                        }
-                    } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                        linesSkipped++;
-                        System.out.println("WARN: could not process line [" + line + "] as face");
-                        continue;
-                    }
-                }
-                // try get the verts specified, if all found, build a triangle and save it
-                try {
-                    int index1 = Integer.parseInt(tokens[1]);
-                    int index2 = Integer.parseInt(tokens[2]);
-                    int index3 = Integer.parseInt(tokens[3]);
-                    Tuple p1 = vertices.get(index1);
-                    Tuple p2 = vertices.get(index2);
-                    Tuple p3 = vertices.get(index3);
-                    Triangle triangle = new Triangle(p1, p2, p3, material);
-                    triangles.add(triangle);
-                    if (currentGroup.isPresent()) {
-                        currentGroup.get().addShape(triangle);
-                    }
-                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                    linesSkipped++;
-                    System.out.println("WARN: could not process line [" + line + "] as face");
-                    continue;
-                }
-                // parsed line successfully
-                continue;
-            }
-            if (line.charAt(0) == 'g') {
-                // might be a group
-                // assuming group names have to be one token long
-                if (tokens.length != 2 && tokens[0].length() != 1) {
-                    linesSkipped++;
-                    System.out.println("WARN: could not process line [" + line + "] as group identifier");
-                    continue;
-                }
-                // add the current group to the groups list
-                if (currentGroup.isPresent()) {
-                    groups.add(currentGroup.get());
-                    assert currentName.isPresent();
-                    groupNames.add(currentName.get());
-                }
-                // update the current group to a new group and group name
-                currentGroup = Optional.of(new Group(Matrix4.identity()));
-                currentName = Optional.of(tokens[1]);
-                // parsed line successfully
-                continue;
-            }
-            // did not match against any known lines
-            linesSkipped++;
+            final var parsed = parser.parseLine(tokens);
+            if (!parsed) { linesSkipped++; }
         }
-
-        // add the currentGroup, if it exists
-        if (currentGroup.isPresent()) {
-            groups.add(currentGroup.get());
-            assert currentName.isPresent();
-            groupNames.add(currentName.get());
-        }
-
-        if (linesSkipped == lines.size()) {
-            System.out.println("WARN: couldn't process any information from OBJ file");
-        }
-
-        assert groups.size() == groupNames.size();
-        final List<Pair<String, Group>> groupas = new ArrayList<>();
-        for (int i = 0; i < groups.size(); i++) {
-            groupas.add(new Pair<String,Group>(groupNames.get(i), groups.get(i)));
-        }
-        return new ObjectData(linesSkipped, vertices, triangles, groupas);
+        if (linesSkipped == lines.size()) { System.out.println("WARN: couldn't process any information from OBJ file"); } 
+        return new ObjectData(
+            linesSkipped,
+            ((VertexNormalParser) loader.parsers.get("vn")).collect(),
+            ((VertexParser) loader.parsers.get("v")).collect(), // I wonder if there is a better way to go about doing this.
+            ((FaceParser) loader.parsers.get("f")).collect(),
+            ((GroupParser) loader.parsers.get("g")).collect());
     }
 
 }
