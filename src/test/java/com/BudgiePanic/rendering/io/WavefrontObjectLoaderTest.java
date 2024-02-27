@@ -187,7 +187,7 @@ public class WavefrontObjectLoaderTest {
         assertEquals(4, data.normals().size());
         assertEquals(null, data.normals().get(0)); // wf obj files are 1 indexed, so the first element should be blank
         assertEquals(makeVector(0, 0, 1), data.normals().get(1));
-        assertEquals(makeVector(0.707f, 0, 0.707f), data.normals().get(2));
+        assertEquals(makeVector(0.707f, 0, -0.707f), data.normals().get(2));
         assertEquals(makeVector(1, 2, 3), data.normals().get(3));
     }
 
