@@ -230,8 +230,19 @@ public class WavefrontObjectLoader {
         private final VertexNormalParser normals;
         private final GroupParser groups;
         private final Material material;
-
         private Optional<Group> currentGroup;
+        /**
+         * starts with a digit, allows 0 or more digits, string ends
+         */
+        protected final static Pattern simpleFace = Pattern.compile("^[0-9]+$");
+        /**
+         * matches strings that contain a vertex index a forward slash, an optional texture vertex index, a forward slash, and a vertex normal index
+         */
+        protected final static Pattern smoothFace = Pattern.compile("^[0-9]+\\/[0-9]*\\/[0-9]+$");
+
+        private final Function<String, Boolean> isSimpleFaceToken = (token) -> simpleFace.matcher(token).matches();
+        private final Function<String, Boolean> isSmoothFaceToken = (token) -> smoothFace.matcher(token).matches();
+
         
         public FaceParser(VertexParser vertices, VertexNormalParser normals, GroupParser groups, Material material) {
             this.vertices = vertices; this.groups = groups; this.normals = normals; this.material = material;
@@ -239,14 +250,68 @@ public class WavefrontObjectLoader {
             groups.addObserver((group)-> { currentGroup = Optional.of(group.b()); });
         }
 
+        /**
+         * Helper method to check if a line's tokens matches the expected pattern for a face line.
+         * @param tokens
+         * @param condition
+         * @return
+         */
+        private boolean checkLine(String[] tokens, Function<String, Boolean> condition) {
+            boolean flag = true;
+            for (int i = 1; i < tokens.length; i++) {
+                flag &= condition.apply(tokens[i]);
+            }
+            return flag;
+        }
+
         @Override
         public boolean parseLine(String[] tokens) {
             if (tokens.length < 4) { printParseFailMessage(tokens); return false; }
-            // TODO update face parsing, faces can now take the pattern: face (vertex index)/(texture vertex)/(vertex normal index) | f 1/2/3 1/2/3 1/2/3 1/2/3 1//3 1/2/ 1//
-            if (tokens.length > 4) { // need to triangulate
-                return triangulateFace(tokens);
+            // I have decided there will be no mix matching of token types | i.e. either f 1 2 3 OR f 1/2/3 1/2/3 1/2/3 
+            final boolean shouldTriangulate = tokens.length > 4;
+            if (checkLine(tokens, isSimpleFaceToken)) {
+                if (shouldTriangulate) {
+                    return triangulateFace(tokens);
+                }
+                return parseFace(tokens);
+            } 
+            else if (checkLine(tokens, isSmoothFaceToken)) {
+                if (shouldTriangulate) {
+                    return triangulateSmoothFace(tokens);
+                }
+                return parseSmoothFace(tokens);
+            } else {
+                printParseFailMessage(tokens);
+                return false;
             }
-            // try get the verts specified, if all found, build a triangle and save it
+        }
+
+        private boolean parseSmoothFace(String[] tokens) {
+            // we expect 4 tokens, f 'line' identifier, 3 tokens being either d/d/d or d//d
+            // so split by '/' and parse sub token 0 and 2
+            final var verts = this.vertices.data;
+            final var vertNormals = this.normals.data;
+            Tuple[] p = new Tuple[3];
+            Tuple[] n = new Tuple[3];
+            try {
+                for (int i = 1; i < tokens.length; i++) {
+                    String[] subtokens = tokens[i].split("/");
+                    int vertIndex = Integer.parseInt(subtokens[0]);
+                    int vertNormalIndex = Integer.parseInt(subtokens[2]);
+                    p[i-1] = verts.get(vertIndex);
+                    n[i-1] = vertNormals.get(vertNormalIndex);
+                }   
+                var triangle = new SmoothTriangle(p[0], p[1], p[2], n[0], n[1], n[2], material);
+                this.data.add(triangle);
+                emitCollectionEvent(triangle);
+                return true;
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                printParseFailMessage(tokens);
+                return false;
+            }
+        }
+
+        private boolean parseFace(String[] tokens) {
             try {
                 final var verts = this.vertices.data;
                 final int index1 = Integer.parseInt(tokens[1]);
