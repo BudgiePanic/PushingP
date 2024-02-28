@@ -296,17 +296,17 @@ public class WavefrontObjectLoader {
             // so split by '/' and parse sub token 0 and 2
             final var verts = this.vertices.data;
             final var vertNormals = this.normals.data;
-            Tuple[] p = new Tuple[3];
-            Tuple[] n = new Tuple[3];
+            final Tuple[] p = new Tuple[3];
+            final Tuple[] n = new Tuple[3];
             try {
                 for (int i = 1; i < tokens.length; i++) {
-                    String[] subtokens = tokens[i].split("/");
-                    int vertIndex = Integer.parseInt(subtokens[0]);
-                    int vertNormalIndex = Integer.parseInt(subtokens[2]);
+                    final String[] subtokens = tokens[i].split("/");
+                    final int vertIndex = Integer.parseInt(subtokens[0]);
+                    final int vertNormalIndex = Integer.parseInt(subtokens[2]);
                     p[i-1] = verts.get(vertIndex);
                     n[i-1] = vertNormals.get(vertNormalIndex);
                 }   
-                var triangle = new SmoothTriangle(p[0], p[1], p[2], n[0], n[1], n[2], material);
+                final var triangle = new SmoothTriangle(p[0], p[1], p[2], n[0], n[1], n[2], material);
                 this.data.add(triangle);
                 emitCollectionEvent(triangle);
                 return true;
