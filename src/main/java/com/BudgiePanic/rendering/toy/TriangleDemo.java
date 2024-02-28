@@ -27,6 +27,7 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.pattern.BiOperation;
 import com.BudgiePanic.rendering.util.pattern.BiPattern;
 import com.BudgiePanic.rendering.util.shape.Cube;
+import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
@@ -44,9 +45,12 @@ public class TriangleDemo implements Runnable {
             new BiPattern(BiOperation.checker, Colors.white.multiply(0.66f), Colors.green.multiply(0.66f), 
                           Transforms.identity().scale(0.25f, 0.25f, 0.25f).assemble())).
             setSpecular(0.1f));
+    private final Plane floor = new Plane(Transforms.identity().translate(0, -7, 0).assemble(),
+        Material.pattern(new BiPattern(BiOperation.checker, Colors.white.multiply(0.75f), Colors.red.multiply(0.50f), 
+        Transforms.identity().scale(0.25f, 0.25f, 0.25f).shear(1, 0, 0, 0, 0, 0).rotateY(AngleHelp.toRadians(45f)).assemble())).setSpecular(0.3f));
     Map<String, Matrix4> transforms = Map.ofEntries(
-        Map.entry("Teapot.obj", Transforms.identity().scale(1.5f, 1.5f, 1.5f).translate(0, -1, 5).assemble()),
-        Map.entry("Cow.obj", Transforms.identity().scale(0.70f, 0.70f, 0.70f).translate(3, 0, 4.5f).assemble()),
+        Map.entry("Teapot.obj", Transforms.identity().scale(1.5f, 1.5f, 1.5f).translate(0, -1, 9).assemble()),
+        Map.entry("Cow.obj", Transforms.identity().rotateY(AngleHelp.toRadians(110f)).scale(0.70f, 0.70f, 0.70f).translate(7, -3, 8.5f).assemble()),
         Map.entry("Teddy_bear.obj", Transforms.identity().rotateY(AngleHelp.toRadians(120f)).scale(0.12f, 0.12f, 0.12f).translate(-4, 0, 4).assemble())
     );
 
@@ -82,6 +86,7 @@ public class TriangleDemo implements Runnable {
         final World world = new World();
         world.addLight(light);
         world.addShape(background);
+        world.addShape(floor);
         models.forEach(world::addShape);
 
         // take the image
