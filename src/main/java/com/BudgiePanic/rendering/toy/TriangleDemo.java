@@ -64,7 +64,7 @@ public class TriangleDemo implements Runnable {
                 var lines = FileUtils.readLines(file, Charset.defaultCharset());
                 var modelData = WavefrontObjectLoader.parseObj(lines, Material.defaultMaterial().setReflectivity(0.2f));
                 System.out.println("INFO: model has " + modelData.triangles().size() + " triangles");
-                System.out.println("INFO: model has " + modelData.verticies().size() + " verticies");
+                System.out.println("INFO: model has " + modelData.vertices().size() + " verticies");
                 var model = WavefrontObjectLoader.objectToGroup(modelData, transforms.get(modelsLoaded));
                 // The book author says you should print the size of the group to help reason about scene placement
                 System.out.println("INFO: model " + fName + " extent is " + model.bounds().toString());

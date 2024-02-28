@@ -30,12 +30,14 @@ public class WavefrontObjectLoader {
      * A group containing all the triangles in the object can be created at the callers convience by adding all the triangles to a group (ObjectData::rawTriangles)
      * likewise, all the groups can be added to a single top level group at the callers convience (WavefrontObjectLoader::objectToGroup)
      */
-    public static record ObjectData(int linesSkipped, List<Tuple> normals, List<Tuple> verticies, List<Triangle> triangles, List<Pair<String, Group>> groups) {
+    public static record ObjectData(int linesSkipped, List<Tuple> normals, List<Tuple> vertices, List<Triangle> triangles, List<Pair<String, Group>> groups) {
         /**
          * Wavefront object data container.
          * @param linesSkipped
          *   The number of lines in the obj file that were empty or could not be processed and were subsequently skipped
-         * @param verticies
+         * @param normals
+         *   A list of all the vertex normals in the object
+         * @param vertices
          *   A list of all the vertices in the object
          * @param triangles
          *   A list of all the triangles in the object
@@ -43,8 +45,8 @@ public class WavefrontObjectLoader {
          *   A list of all the groups of triangles in the object, accompanied by the group name.
          *   Object groups will always contain Triangle Shapes.
          */
-        public ObjectData(int linesSkipped, List<Tuple> normals, List<Tuple> verticies, List<Triangle> triangles, List<Pair<String, Group>> groups) {
-            this.linesSkipped = linesSkipped; this.normals = normals; this.verticies = verticies; this.triangles = triangles; this.groups = groups;
+        public ObjectData(int linesSkipped, List<Tuple> normals, List<Tuple> vertices, List<Triangle> triangles, List<Pair<String, Group>> groups) {
+            this.linesSkipped = linesSkipped; this.normals = normals; this.vertices = vertices; this.triangles = triangles; this.groups = groups;
         }
 
         /**

@@ -38,7 +38,7 @@ public class WavefrontObjectLoaderTest {
             "v 1 1 0"
         );
         var result = WavefrontObjectLoader.parseObj(lines);
-        var verts = result.verticies();
+        var verts = result.vertices();
         assertEquals(5, verts.size());
         assertEquals(null, verts.getFirst());
         assertEquals(makePoint(-1, 1, 0), verts.get(1));
@@ -59,7 +59,7 @@ public class WavefrontObjectLoaderTest {
             "f 1 3 4"
         );
         var result = WavefrontObjectLoader.parseObj(lines);
-        var verts = result.verticies();
+        var verts = result.vertices();
         var triangles = result.triangles();
         assertEquals(1, result.linesSkipped());
         assertEquals(2, triangles.size());
@@ -83,7 +83,7 @@ public class WavefrontObjectLoaderTest {
             "f 1 2 3 4 5"
         );
         var result = WavefrontObjectLoader.parseObj(lines);
-        var verts = result.verticies();
+        var verts = result.vertices();
         var triangles = result.triangles();
         assertTrue(result.linesSkipped() == 1);
         assertEquals(3, triangles.size());
@@ -115,7 +115,7 @@ public class WavefrontObjectLoaderTest {
             "f 1 3 4"
         );
         var result = WavefrontObjectLoader.parseObj(lines);
-        var verts = result.verticies();
+        var verts = result.vertices();
         assertEquals(2, result.groups().size());
         var group1 = result.groups().get(0);
         var group2 = result.groups().get(1);
@@ -209,7 +209,7 @@ public class WavefrontObjectLoaderTest {
             "f 1/0/3 2/102/1 3/14/2" // face (vertex index)/(texture vertex)/(vertex normal index)
         );
         var data = WavefrontObjectLoader.parseObj(lines);
-        var verts = data.verticies();
+        var verts = data.vertices();
         var normals = data.normals();
         assertEquals(2, data.linesSkipped());
         assertEquals(2, data.triangles().size());
@@ -298,7 +298,7 @@ public class WavefrontObjectLoaderTest {
             "f 1//3 2//1 3//2 4//2 5//1"
         );
         var data = WavefrontObjectLoader.parseObj(lines);
-        var verts = data.verticies();
+        var verts = data.vertices();
         var normals = data.normals();
         var triangles = data.triangles();
         assertEquals(2, data.linesSkipped());
