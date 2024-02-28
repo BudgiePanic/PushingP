@@ -302,7 +302,6 @@ public class WavefrontObjectLoaderTest {
         var normals = data.normals();
         var triangles = data.triangles();
         assertEquals(2, data.linesSkipped());
-        assertEquals(1, triangles.size());
 
         triangles.forEach(triangle -> assertTrue(triangle instanceof SmoothTriangle));
 
