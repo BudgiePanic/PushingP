@@ -67,7 +67,9 @@ public class TriangleDemo implements Runnable {
                 System.out.println("INFO: model " + fName + " extent is " + model.bounds().toString());
                 models.add(model);
                 System.out.println("INFO: loaded model " + fName + " successfully");
+                modelsLoaded++;
             } catch (IOException e) {
+                modelsLoaded++;
                 System.out.println("WARN: could not load model " + fName);
                 System.out.print("WARN: ");
                 System.out.println(e);
