@@ -403,7 +403,7 @@ public class WavefrontObjectLoader {
      */
     public static Group objectToGroup(ObjectData object, Matrix4 transform) {
         if (object.groups().isEmpty()) {
-            System.out.println("INFO: could not find any groups, making new group from raw triangles");
+            System.out.println("INFO: could not find any groups, making new group from raw triangles. Rendering this object will probably be slow.");
             return object.rawTriangles(transform);
         }
         final Group uberGroup = new Group(transform);
