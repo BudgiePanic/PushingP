@@ -248,6 +248,11 @@ public class WavefrontObjectLoader {
             this.vertices = vertices; this.groups = groups; this.normals = normals; this.material = material;
             currentGroup = Optional.empty();
             groups.addObserver((group)-> { currentGroup = Optional.of(group.b()); });
+            this.addObserver(triangle -> {
+                if (currentGroup.isPresent()) {
+                    currentGroup.get().addShape(triangle);
+                }
+            });
         }
 
         /**
@@ -322,9 +327,6 @@ public class WavefrontObjectLoader {
                 final Tuple p3 = verts.get(index3);
                 final Triangle triangle = new Triangle(p1, p2, p3, material);
                 this.data.add(triangle);
-                if (currentGroup.isPresent()) {
-                    currentGroup.get().addShape(triangle);
-                }
                 emitCollectionEvent(triangle);
                 return true;
             } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
