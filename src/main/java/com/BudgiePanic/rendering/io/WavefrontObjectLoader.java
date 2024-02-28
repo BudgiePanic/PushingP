@@ -353,6 +353,41 @@ public class WavefrontObjectLoader {
                 return false;
             }
         } 
+
+        private boolean triangulateSmoothFace(String[] tokens) {
+            // tokens are in the form [f 1/2/3 1/2/3 1/2/3 1/2/3 ...] &| [f 1//3 1//3 1//3 1//3 ...]
+            final List<Tuple> verts = new ArrayList<>();
+            final List<Tuple> vertNorms = new ArrayList<>();
+            for (int i = 1; i < tokens.length; i++) {
+                try {
+                    String[] subtokens = tokens[i].split("/");
+                    final var vertIndex = Integer.parseInt(subtokens[0]);
+                    final var normalIndex = Integer.parseInt(subtokens[2]);
+                    verts.add(vertices.data.get(vertIndex));
+                    vertNorms.add(normals.data.get(normalIndex));
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    printParseFailMessage(tokens);
+                    return false;
+                }
+            }
+            try {
+                final Tuple p1 = verts.get(0);
+                final Tuple n1 = vertNorms.get(0);
+                for (int i = 1; i < tokens.length - 2; i++) {
+                    final Tuple p2 = verts.get(i);
+                    final Tuple n2 = vertNorms.get(i);
+                    final Tuple p3 = verts.get(i + 1);
+                    final Tuple n3 = vertNorms.get(i + 1);
+                    final var triangle = new SmoothTriangle(p1, p2, p3, n1, n2, n3, material);
+                    data.add(triangle);
+                    emitCollectionEvent(triangle);
+                }
+                return true;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                printParseFailMessage(tokens);
+                return false;
+            }
+        }
     }
 
     /**
