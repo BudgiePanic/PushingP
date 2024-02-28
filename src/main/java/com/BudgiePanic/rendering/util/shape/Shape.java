@@ -54,11 +54,26 @@ public interface Shape {
     Tuple normal(Tuple point);
 
     /**
+     * Determine the normal vector of a point on the shape, with extra information from an intersection.
+     * @param point
+     *   The point on the shape.
+     * @param intersection
+     *   Extra information about the point.
+     * 
+     *   TODO I think intersection could be replaced with just the UVs (Pair<Float, Float>)
+     *   TODO since Intersection::computeShadingInfo always calls this method over Shape::normal(Tuple)
+     *   TODO I think we can remove Shape::normal(Tuple) and just have this method instead [refactor]
+     * @return
+     *   The normal vector at the point.
+     */
+    Tuple normal(Tuple point, Intersection intersection);
+
+    /**
      * Get the parent of this shape.
      * @return
      *   Empty if this shape is not part of a group. The group that this shape belongs to.
      */
-    default Optional<Group> parent() { return Optional.empty(); }
+    Optional<Group> parent();
 
     /**
      * Set the parent of this shape.
@@ -66,7 +81,7 @@ public interface Shape {
      * @param parent
      *   The parent of the shape.
      */
-    default void setParent(Group parent) {}
+    void setParent(Group parent);
 
     /**
      * Convert a world space point to object space.

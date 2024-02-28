@@ -89,6 +89,13 @@ public abstract class BaseShape implements Shape {
         final var localNormal = localNormal(localPoint);
         return normalToWorldSpace(localNormal);
     }
+
+    @Override
+    public Tuple normal(Tuple point, Intersection intersection) {
+        final var localPoint = toObjectSpace(point);
+        final var localNormal = localNormal(localPoint, intersection);
+        return normalToWorldSpace(localNormal);
+    }
     
     @Override
     public Matrix4 transform() {
@@ -121,12 +128,27 @@ public abstract class BaseShape implements Shape {
     protected abstract Optional<List<Intersection>> localIntersect(Ray ray);
 
     /**
+     * Calcualte the normal of a point on the surface of the shape.
+     * 
+     * By default, we ignore the extra information. 
+     * Sub classes can override this method if they wish to use the extra information to find their normal.
+     * 
+     * @param point
+     *   the point on the surface of the shape to find the normal for
+     * @param intersection
+     *   extra information about the point to find the normal  
+     * @return
+     *   the vector normal of the shape at the point on the surface
+     */
+    protected Tuple localNormal(Tuple point, Intersection intersection) { return localNormal(point); }
+
+    /**
      * Calcualte the normal of a point on the surface of the shape
      *
      * @param point
-     *   the shape
+     *   the point on the surface of the shape to find the normal for
      * @return
-     *   the vector normal of the shape at point location
+     *   the vector normal of the shape at the point on the surface
      */
     protected abstract Tuple localNormal(Tuple point);
 

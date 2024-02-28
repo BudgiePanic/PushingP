@@ -14,6 +14,7 @@ import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.shape.Triangle;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class IntersectTest {
@@ -194,5 +195,20 @@ public class IntersectTest {
         var result = info.schlick();
         var expectedReflectance = 0.48873f;
         assertEquals(0, FloatHelp.compareFloat(expectedReflectance, result));
+    }
+
+    @Test
+    void testIntersectionUVs() {
+        // intersections with triangles should produce uv coordinates
+        var triangle = new Triangle(makePoint(0, 1, 0), makePoint(-1, 0, 0), makePoint(1, 0, 0));
+        var result = triangle.intersect(new Ray(makePoint(-0.2f, 0.3f, -2), makeVector(0, 0, 1)));
+        assertTrue(result.isPresent());
+        var intersections = result.get();
+        assertEquals(1, intersections.size());
+        var intersecion = intersections.getFirst();
+        assertTrue(intersecion.uv().isPresent());
+        var uv = intersecion.uv().get();
+        assertEquals(0, FloatHelp.compareFloat(uv.a(), 0.45f));
+        assertEquals(0, FloatHelp.compareFloat(uv.b(), 0.25f));
     }
 }

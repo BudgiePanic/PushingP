@@ -5,21 +5,40 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.shape.Shape;
 import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 /**
  * Ray intersection information container.
  * 
- * @param a 
- *   The distance from the ray origin to the point of intersection
- * @param shape
- *   The sphere that was intersected with
- * 
  * @author BudgiePanic
  */
-public record Intersection(Float a, Shape shape) {
+public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv) {
     
+    // u & v specify the point on the shape's surface where the intersection occured, relative to the shape's corners (unwrapped)
+    // not all intersections supply uv coordinates
+
+    /**
+     * Create a Ray intersection information container.
+     * @param a
+     *   The distance from the ray origin to the point of intersection
+     * @param shape
+     *   The shape that was intersected with
+     * @param uv
+     *   The uv coordinates of the intersection
+     */
+    public Intersection(Float a, Shape shape, Pair<Float, Float> uv) { this(a, shape, Optional.ofNullable(uv)); }
+
+    /**
+     * Create a Ray intersection information container.
+     * @param a
+     *   The distance from the ray origin to the point of intersection
+     * @param shape
+     *   The shape that was intersected with
+     */
+    public Intersection(Float a, Shape shape) { this(a, shape, Optional.empty()); }
+
     /**
      * Helper method to find hits among collections of intersections.
      * Some intersections may be behind the ray, and are thus not hits.
@@ -45,7 +64,7 @@ public record Intersection(Float a, Shape shape) {
      *
      * @param ray
      *   The intersecting ray.
-     * @param
+     * @param intersections
      *   The intersections this ray made, if any.
      * @return
      *   Precomputed lighting information about this intersection.
@@ -53,7 +72,7 @@ public record Intersection(Float a, Shape shape) {
     public ShadingInfo computeShadingInfo(Ray ray, Optional<List<Intersection>> intersections) {
         var point = ray.position(this.a);
         var eye = ray.direction().negate();
-        var normal = this.shape.normal(point);
+        var normal = this.shape.normal(point, this);
         var inside = false;
         if (normal.dot(eye) < 0f) {
             inside = true;
