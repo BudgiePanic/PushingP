@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
@@ -43,11 +44,10 @@ public class TriangleDemo implements Runnable {
             new BiPattern(BiOperation.checker, Colors.white.multiply(0.66f), Colors.green.multiply(0.66f), 
                           Transforms.identity().scale(0.25f, 0.25f, 0.25f).assemble())).
             setSpecular(0.1f));
-    private int modelsLoaded = 0;
-    List<Matrix4> transforms = List.of(
-        Transforms.identity().scale(1.5f, 1.5f, 1.5f).translate(0, -1, 5).assemble(),
-        Transforms.identity().translate(3, 0, 3).assemble(),
-        Transforms.identity().rotateY(AngleHelp.toRadians(90f)).scale(0.33f, 0.33f, 0.33f).translate(-4, 0, 3).assemble()
+    Map<String, Matrix4> transforms = Map.ofEntries(
+        Map.entry("Teapot.obj", Transforms.identity().scale(1.5f, 1.5f, 1.5f).translate(0, -1, 5).assemble()),
+        Map.entry("Cow.obj", Transforms.identity().translate(3, 0, 3).assemble()),
+        Map.entry("Teddy_bear.obj", Transforms.identity().rotateY(AngleHelp.toRadians(90f)).scale(0.33f, 0.33f, 0.33f).translate(-4, 0, 3).assemble())
     );
 
     @Override
@@ -65,14 +65,12 @@ public class TriangleDemo implements Runnable {
                 var modelData = WavefrontObjectLoader.parseObj(lines, Material.defaultMaterial().setReflectivity(0.2f));
                 System.out.println("INFO: model has " + modelData.triangles().size() + " triangles");
                 System.out.println("INFO: model has " + modelData.vertices().size() + " verticies");
-                var model = WavefrontObjectLoader.objectToGroup(modelData, transforms.get(modelsLoaded));
+                var model = WavefrontObjectLoader.objectToGroup(modelData, transforms.get(fName));
                 // The book author says you should print the size of the group to help reason about scene placement
                 System.out.println("INFO: model " + fName + " extent is " + model.bounds().toString());
                 models.add(model);
                 System.out.println("INFO: loaded model " + fName + " successfully");
-                modelsLoaded++;
             } catch (IOException e) {
-                modelsLoaded++;
                 System.out.println("WARN: could not load model " + fName);
                 System.out.print("WARN: ");
                 System.out.println(e);
