@@ -63,6 +63,8 @@ public class TriangleDemo implements Runnable {
                 File file = new File(fName);
                 var lines = FileUtils.readLines(file, Charset.defaultCharset());
                 var model = WavefrontObjectLoader.objectToGroup(WavefrontObjectLoader.parseObj(lines), transforms.get(modelsLoaded++));
+                // The book author says you should print the size of the group to help reason about scene placement
+                System.out.println("INFO: model " + fName + " extent is " + model.bounds().toString());
                 models.add(model);
                 System.out.println("INFO: loaded model " + fName + " successfully");
             } catch (IOException e) {
