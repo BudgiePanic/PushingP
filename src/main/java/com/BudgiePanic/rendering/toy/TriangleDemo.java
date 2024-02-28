@@ -67,7 +67,7 @@ public class TriangleDemo implements Runnable {
                 System.out.println("INFO: model has " + modelData.vertices().size() + " verticies");
                 var model = WavefrontObjectLoader.objectToGroup(modelData, transforms.get(fName));
                 // The book author says you should print the size of the group to help reason about scene placement
-                System.out.println("INFO: model " + fName + " extent is " + model.bounds().toString());
+                System.out.println("INFO: model " + fName + " local extent is " + model.bounds().toString());
                 models.add(model);
                 System.out.println("INFO: loaded model " + fName + " successfully");
             } catch (IOException e) {
