@@ -61,6 +61,8 @@ public interface Shape {
      *   Extra information about the point.
      * 
      *   TODO I think intersection could be replaced with just the UVs (Pair<Float, Float>)
+     *   TODO since Intersection::computeShadingInfo always calls this method over Shape::normal(Tuple)
+     *   TODO I think we can remove Shape::normal(Tuple) and just have this method instead [refactor]
      * @return
      *   The normal vector at the point.
      */

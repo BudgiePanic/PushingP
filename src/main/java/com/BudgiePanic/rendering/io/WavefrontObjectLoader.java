@@ -431,7 +431,7 @@ public class WavefrontObjectLoader {
     public static ObjectData parseObj(List<String> lines) { return parseObj(lines, Material.defaultMaterial()); }
 
     /**
-     * Create a shape group from a wavefront obj object with the default material.
+     * Create a shape group from a wavefront obj object.
      * @param lines
      *   Lines of text from the obj file.
      * @param material
