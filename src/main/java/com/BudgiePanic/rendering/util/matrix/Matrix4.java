@@ -21,6 +21,21 @@ public final class Matrix4 extends Matrix {
     private static final int dimension = 4;
 
     /**
+     * Cached reference to this matrix's inverse to speed calculations up.
+     */
+    private Matrix4 inverse;
+
+    /**
+     * Cached matrix inverse to prevent excessive heap allocation
+     */
+    private static final Matrix4 identity = buildMatrixRow(
+        new float[] {1f, 0f, 0f, 0f},
+        new float[] {0f, 1f, 0f, 0f},
+        new float[] {0f, 0f, 1f, 0f},
+        new float[] {0f, 0f, 0f, 1f}
+    );
+
+    /**
      * Build a matrix by manually specifying values.
      *
      * @return
@@ -109,12 +124,7 @@ public final class Matrix4 extends Matrix {
      *     The identity matrix.
      */
     public static Matrix4 identity() {
-        return buildMatrixRow(
-            new float[] {1f, 0f, 0f, 0f},
-            new float[] {0f, 1f, 0f, 0f},
-            new float[] {0f, 0f, 1f, 0f},
-            new float[] {0f, 0f, 0f, 1f}
-        );
+        return identity;
     }
 
     /**
@@ -127,6 +137,7 @@ public final class Matrix4 extends Matrix {
      */
     private Matrix4(final float[][] matrix){
         super(matrix);
+        this.inverse = null;
     }
 
     /**
@@ -222,7 +233,10 @@ public final class Matrix4 extends Matrix {
      * @return
      *   The inverse of this matrix.
      */
-    public Matrix4 inverse() {
+    public synchronized Matrix4 inverse() {
+        if (this.inverse != null) {
+            return this.inverse;
+        }
         if (!isInvertible()) throw new RuntimeException("cannot invert matrix: " + this.toString());
         var result = new float[dimension][dimension];
         var det = getDeterminant();
@@ -233,7 +247,8 @@ public final class Matrix4 extends Matrix {
                 result[col][row] = c / det;
             }
         }
-        return new Matrix4(result);
+        this.inverse = new Matrix4(result);
+        return this.inverse;
     }
 
     @Override
