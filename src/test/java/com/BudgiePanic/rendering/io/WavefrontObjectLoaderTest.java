@@ -211,6 +211,7 @@ public class WavefrontObjectLoaderTest {
         var data = WavefrontObjectLoader.parseObj(lines);
         var verts = data.verticies();
         var normals = data.normals();
+        assertEquals(2, data.linesSkipped());
         assertEquals(2, data.triangles().size());
 
         data.triangles().forEach(triangle -> assertTrue(triangle instanceof SmoothTriangle));
@@ -231,7 +232,7 @@ public class WavefrontObjectLoaderTest {
     }
 
     @Test
-    void smoothFacePatternMatchTest() {
+    void testSmoothFacePatternMatchTest() {
         String[] passCases = {
             "1/2/3",
             "4321654/6541231/98471",
@@ -243,6 +244,8 @@ public class WavefrontObjectLoaderTest {
             "2154//",
             "1/2/",
             "4/65/",
+            "45/85/68/",
+            "7/89/5/1",
             "1",
             "98741",
             "1/",
@@ -257,7 +260,7 @@ public class WavefrontObjectLoaderTest {
     }
 
     @Test
-    void flatFacePatternMatchTest() {
+    void testFlatFacePatternMatchTest() {
         String[] passCases = {
             "1",
             "123",
@@ -276,5 +279,57 @@ public class WavefrontObjectLoaderTest {
         for (String test : failCases) {
             assertFalse(WavefrontObjectLoader.FaceParser.simpleFace.matcher(test).matches());
         }
+    }
+
+    @Test
+    void testSmoothTriangleTriangulation() {
+        // are smooth faces created when vertex normals are present in face parsing?
+        var lines = List.of(
+            "v -1 1 0",
+            "v -1 0 0",
+            "v 1 0 0",
+            "v 1 1 0",
+            "v 0 2 0",
+            "",
+            "vn -1 0 0",
+            "vn 1 0 0",
+            "vn 0 1 0",
+            "",
+            "f 1//3 2//1 3//2 4//2 5//1"
+        );
+        var data = WavefrontObjectLoader.parseObj(lines);
+        var verts = data.verticies();
+        var normals = data.normals();
+        var triangles = data.triangles();
+        assertEquals(2, data.linesSkipped());
+        assertEquals(1, triangles.size());
+
+        triangles.forEach(triangle -> assertTrue(triangle instanceof SmoothTriangle));
+
+        assertEquals(3, triangles.size());
+
+        assertEquals(verts.get(1), triangles.get(0).p1());
+        assertEquals(verts.get(2), triangles.get(0).p2());
+        assertEquals(verts.get(3), triangles.get(0).p3());
+
+        assertEquals(verts.get(1), triangles.get(1).p1());
+        assertEquals(verts.get(3), triangles.get(1).p2());
+        assertEquals(verts.get(4), triangles.get(1).p3());
+        
+        assertEquals(verts.get(1), triangles.get(2).p1());
+        assertEquals(verts.get(4), triangles.get(2).p2());
+        assertEquals(verts.get(5), triangles.get(2).p3());
+
+        assertEquals(normals.get(3), ((SmoothTriangle) triangles.get(0)).normal1());
+        assertEquals(normals.get(1), ((SmoothTriangle) triangles.get(0)).normal2());
+        assertEquals(normals.get(2), ((SmoothTriangle) triangles.get(0)).normal3());
+
+        assertEquals(normals.get(3), ((SmoothTriangle) triangles.get(1)).normal1());
+        assertEquals(normals.get(2), ((SmoothTriangle) triangles.get(1)).normal2());
+        assertEquals(normals.get(2), ((SmoothTriangle) triangles.get(1)).normal3());
+
+        assertEquals(normals.get(3), ((SmoothTriangle) triangles.get(2)).normal1());
+        assertEquals(normals.get(2), ((SmoothTriangle) triangles.get(2)).normal2());
+        assertEquals(normals.get(1), ((SmoothTriangle) triangles.get(2)).normal3());
     }
 }
