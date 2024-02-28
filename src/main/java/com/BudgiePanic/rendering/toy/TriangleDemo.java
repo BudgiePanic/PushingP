@@ -62,7 +62,7 @@ public class TriangleDemo implements Runnable {
             try {
                 File file = new File(fName);
                 var lines = FileUtils.readLines(file, Charset.defaultCharset());
-                var model = WavefrontObjectLoader.objectToGroup(WavefrontObjectLoader.parseObj(lines), transforms.get(modelsLoaded++));
+                var model = WavefrontObjectLoader.objectToGroup(WavefrontObjectLoader.parseObj(lines, Material.defaultMaterial().setReflectivity(0.2f)), transforms.get(modelsLoaded));
                 // The book author says you should print the size of the group to help reason about scene placement
                 System.out.println("INFO: model " + fName + " extent is " + model.bounds().toString());
                 models.add(model);
@@ -82,7 +82,7 @@ public class TriangleDemo implements Runnable {
         models.forEach(world::addShape);
 
         // take the image
-        System.out.println("taking picture");
+        System.out.println("taking picture, this could take a while, try removing \'Cow.obj\' or \'Teapot.obj\' from local directory to speed up the render.");
         var canvas = camera.takePicture(world, new ProgressWrapper(new ArrayCanvas(width, height), 2));
 
         System.out.println("saving image");
