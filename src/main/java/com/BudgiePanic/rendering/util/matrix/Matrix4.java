@@ -26,16 +26,6 @@ public final class Matrix4 extends Matrix {
     private Matrix4 inverse;
 
     /**
-     * Cached matrix inverse to prevent excessive heap allocation
-     */
-    private static final Matrix4 identity = buildMatrixRow(
-        new float[] {1f, 0f, 0f, 0f},
-        new float[] {0f, 1f, 0f, 0f},
-        new float[] {0f, 0f, 1f, 0f},
-        new float[] {0f, 0f, 0f, 1f}
-    );
-
-    /**
      * Build a matrix by manually specifying values.
      *
      * @return
@@ -124,7 +114,12 @@ public final class Matrix4 extends Matrix {
      *     The identity matrix.
      */
     public static Matrix4 identity() {
-        return identity;
+        return buildMatrixRow(
+            new float[] {1f, 0f, 0f, 0f},
+            new float[] {0f, 1f, 0f, 0f},
+            new float[] {0f, 0f, 1f, 0f},
+            new float[] {0f, 0f, 0f, 1f}
+        );
     }
 
     /**
