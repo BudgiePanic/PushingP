@@ -87,7 +87,7 @@ public class TriangleDemo implements Runnable {
         models.forEach(world::addShape);
 
         // take the image
-        System.out.println("taking picture, this could take a while, try removing \'Cow.obj\' or \'Teapot.obj\' from local directory to speed up the render.");
+        System.out.println("INFO: taking picture, this could take a while, try removing \'Cow.obj\' or \'Teapot.obj\' from local directory to speed up the render.");
         var canvas = camera.takePicture(world, new ProgressWrapper(new ArrayCanvas(width, height), 2));
 
         System.out.println("saving image");
