@@ -46,8 +46,8 @@ public class TriangleDemo implements Runnable {
             setSpecular(0.1f));
     Map<String, Matrix4> transforms = Map.ofEntries(
         Map.entry("Teapot.obj", Transforms.identity().scale(1.5f, 1.5f, 1.5f).translate(0, -1, 5).assemble()),
-        Map.entry("Cow.obj", Transforms.identity().translate(3, 0, 3).assemble()),
-        Map.entry("Teddy_bear.obj", Transforms.identity().rotateY(AngleHelp.toRadians(90f)).scale(0.33f, 0.33f, 0.33f).translate(-4, 0, 3).assemble())
+        Map.entry("Cow.obj", Transforms.identity().scale(0.70f, 0.70f, 0.70f).translate(3, 0, 4.5f).assemble()),
+        Map.entry("Teddy_bear.obj", Transforms.identity().rotateY(AngleHelp.toRadians(120f)).scale(0.12f, 0.12f, 0.12f).translate(-4, 0, 4).assemble())
     );
 
     @Override
