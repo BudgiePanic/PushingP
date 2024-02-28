@@ -47,7 +47,7 @@ public class TriangleDemo implements Runnable {
             setSpecular(0.1f));
     private final Plane floor = new Plane(Transforms.identity().translate(0, -7, 0).assemble(),
         Material.pattern(new BiPattern(BiOperation.checker, Colors.white.multiply(0.75f), Colors.red.multiply(0.50f), 
-        Transforms.identity().scale(0.25f, 0.25f, 0.25f).shear(1, 0, 0, 0, 0, 0).rotateY(AngleHelp.toRadians(45f)).assemble())).setSpecular(0.3f));
+        Transforms.identity().scale(3f, 3f, 3f).shear(1, 0, 0, 0, 0, 0).rotateY(AngleHelp.toRadians(45f)).assemble())).setSpecular(0.3f));
     Map<String, Matrix4> transforms = Map.ofEntries(
         Map.entry("Teapot.obj", Transforms.identity().scale(1.5f, 1.5f, 1.5f).translate(0, -1, 9).assemble()),
         Map.entry("Cow.obj", Transforms.identity().rotateY(AngleHelp.toRadians(110f)).scale(0.70f, 0.70f, 0.70f).translate(7, -3, 8.5f).assemble()),
