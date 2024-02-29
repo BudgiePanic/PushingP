@@ -116,6 +116,9 @@ public abstract class BaseShape implements Shape {
     public void setParent(Parent group) {
         this.parent = Optional.ofNullable(group);
     }
+    
+    @Override
+    public boolean contains(Shape shape) { return this.equals(shape); }
 
     /**
      * Determine the distance between the ray origin and intersection points with this shape, if any.
