@@ -22,5 +22,13 @@ public interface CompoundOperation {
      */
     public static final CompoundOperation union = (ilh, il, ir) -> { return (ilh && !ir) || (!ilh && !il); };
     
+    /**
+     * Intersect keeps intersectionss that overlap both shapes
+     */
     public static final CompoundOperation intersect = (ilh, il, ir) -> { return false; };
+
+    /**
+     * Difference keeps intersections that are not exclusively inside the right object (left object + not right object)
+     */
+    public static final CompoundOperation difference = (ilh, il, ir) -> {return false; };
 }
