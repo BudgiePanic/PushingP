@@ -114,4 +114,13 @@ public interface Shape {
      *   A bounding for the shape in local space.
      */
     BoundingBox bounds();
+
+     /**
+     * Check if this shape contains another shape.
+     * @param shape
+     *   The shape to check for containment.
+     * @return
+     *   True if the shape is contained within this shape.
+     */
+    boolean contains(Shape shape);
 }
