@@ -22,7 +22,7 @@ public class GroupTest {
     @Test
     void testGetShapes() {
         Group group = new Group(identity);
-        var shapes = group.getShapes();
+        var shapes = group.children();
         assertTrue(shapes.isEmpty());
     }
 

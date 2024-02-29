@@ -1,19 +1,16 @@
 package com.BudgiePanic.rendering.util.shape.composite;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
-import com.BudgiePanic.rendering.util.shape.BaseShape;
-import com.BudgiePanic.rendering.util.shape.BoundingBox;
-import com.BudgiePanic.rendering.util.shape.Parent;
 import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
@@ -21,11 +18,15 @@ import com.BudgiePanic.rendering.util.shape.Shape;
  * 
  * @author BudgiePanic
  */
-public class CompoundShape extends BaseShape implements Parent {
+public class CompoundShape extends CompositeShape {
 
     protected final Shape left;
     protected final Shape right;
+    /**
+     * The rule that decides how the children are combined together.
+     */
     protected final CompoundOperation operation;
+    private final Collection<Shape> children;
 
     public CompoundShape(CompoundOperation operation, Shape left, Shape right, Matrix4 transform) {
         super(transform);
@@ -34,19 +35,14 @@ public class CompoundShape extends BaseShape implements Parent {
         this.operation = operation;
         this.left.setParent(this);
         this.right.setParent(this);
+        this.children = List.of(this.left, this.right);
     }
 
-    public Shape left() { return left; }
+    protected Shape left() { return left; }
 
-    public Shape right() { return right; }
+    protected Shape right() { return right; }
 
-    public CompoundOperation operation() { return operation; }
-
-    @Override
-    public BoundingBox bounds() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'bounds'");
-    }
+    protected CompoundOperation operation() { return operation; }
 
     @Override
     protected Optional<List<Intersection>> localIntersect(Ray ray) {
@@ -57,9 +53,6 @@ public class CompoundShape extends BaseShape implements Parent {
         }
         return Optional.of(filter(intersections));
     }
-
-    @Override
-    protected Tuple localNormal(Tuple point) { throw new UnsupportedOperationException("Composite shape does not support localNormal operation"); }
 
     /**
      * Applies this compound shape's operation to remove intersections that violate the operation rule.
@@ -86,5 +79,8 @@ public class CompoundShape extends BaseShape implements Parent {
 
     @Override
     public boolean childrenContains(Shape shape) { return left.contains(shape) || right.contains(shape); }
+
+    @Override
+    protected Collection<Shape> children() { return children; };
 
 }
