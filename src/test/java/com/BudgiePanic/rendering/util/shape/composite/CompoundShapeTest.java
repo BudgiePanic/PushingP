@@ -3,7 +3,6 @@ package com.BudgiePanic.rendering.util.shape.composite;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
