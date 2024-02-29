@@ -18,7 +18,9 @@ public interface CompoundOperation {
 
     /**
      * A union preserves all ray shape intersections on the exteriour of the shapes within the compound shape.
+     * Rejects intersections that are inside another object
      */
-    public static final CompoundOperation union = (ilh, il, ir) -> { return false; };
+    public static final CompoundOperation union = (ilh, il, ir) -> { return (ilh && !ir) || (!ilh && !il); };
     
+    public static final CompoundOperation intersect = (ilh, il, ir) -> { return false; };
 }
