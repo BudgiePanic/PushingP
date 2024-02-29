@@ -1,4 +1,4 @@
-package com.BudgiePanic.rendering.util.shape.compound;
+package com.BudgiePanic.rendering.util.shape.composite;
 
 /**
  * Operations are ways of combining shapes together.
