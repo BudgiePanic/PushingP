@@ -56,4 +56,7 @@ public class CompoundShape extends BaseShape implements Parent {
         throw new UnsupportedOperationException("Unimplemented method 'localNormal'");
     }
 
+    @Override
+    public boolean childrenContains(Shape shape) { return left.contains(shape) || right.contains(shape); }
+    
 }

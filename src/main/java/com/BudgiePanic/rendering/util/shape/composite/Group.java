@@ -124,4 +124,7 @@ public class Group extends BaseShape implements Parent {
         return AABB;
     }
 
+    @Override
+    public boolean childrenContains(Shape shape) { return this.children.contains(shape); }
+
 }
