@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.util.shape.composite;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,12 +52,32 @@ public class CompoundShape extends BaseShape implements Parent {
     }
 
     @Override
-    protected Tuple localNormal(Tuple point) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localNormal'");
+    protected Tuple localNormal(Tuple point) { throw new UnsupportedOperationException("Composite shape does not support localNormal operation"); }
+
+    /**
+     * Applies this compound shape's operation to remove intersections that violate the operation rule.
+     * @param intersections
+     *   The intersections to filter
+     * @return
+     *   Intersections that are valid according to this shape's combination rule.
+     */
+    protected List<Intersection> filter(List<Intersection> intersections) {
+        assert !intersections.isEmpty();
+        var inLeft = false;
+        var inRight = false;
+        List<Intersection> answer = new ArrayList<>(intersections.size());
+        for (var intersection : intersections) {
+            var isLeftHit = left.contains(intersection.shape());
+            if (operation.isIntersectionValid(isLeftHit, inLeft, inRight)) {
+                answer.add(intersection);
+            }
+            inLeft = isLeftHit ? !inLeft : inLeft;
+            inRight = !isLeftHit ? !inRight : inRight;
+        }
+        return answer;
     }
 
     @Override
     public boolean childrenContains(Shape shape) { return left.contains(shape) || right.contains(shape); }
-    
+
 }
