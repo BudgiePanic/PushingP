@@ -9,6 +9,7 @@ import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.BaseShape;
 import com.BudgiePanic.rendering.util.shape.BoundingBox;
+import com.BudgiePanic.rendering.util.shape.Parent;
 import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
@@ -16,7 +17,7 @@ import com.BudgiePanic.rendering.util.shape.Shape;
  * 
  * @author BudgiePanic
  */
-public class CompoundShape extends BaseShape {
+public class CompoundShape extends BaseShape implements Parent {
 
     protected final Shape left;
     protected final Shape right;
@@ -27,8 +28,8 @@ public class CompoundShape extends BaseShape {
         this.left = left;
         this.right = right;
         this.operation = operation;
-        // this.left.setParent(this);
-        // this.right.setParent(this);
+        this.left.setParent(this);
+        this.right.setParent(this);
     }
 
     public Shape left() { return left; }

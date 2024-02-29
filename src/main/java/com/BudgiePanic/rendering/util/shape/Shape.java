@@ -8,7 +8,6 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
-import com.BudgiePanic.rendering.util.shape.compound.Group;
 
 /**
  * Common functionality that all shapes have.
@@ -74,7 +73,7 @@ public interface Shape {
      * @return
      *   Empty if this shape is not part of a group. The group that this shape belongs to.
      */
-    Optional<Group> parent();
+    Optional<Parent> parent();
 
     /**
      * Set the parent of this shape.
@@ -82,7 +81,7 @@ public interface Shape {
      * @param parent
      *   The parent of the shape.
      */
-    void setParent(Group parent);
+    void setParent(Parent parent);
 
     /**
      * Convert a world space point to object space.

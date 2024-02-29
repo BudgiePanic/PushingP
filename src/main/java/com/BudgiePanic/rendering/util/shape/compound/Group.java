@@ -14,6 +14,7 @@ import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.BaseShape;
 import com.BudgiePanic.rendering.util.shape.BoundingBox;
+import com.BudgiePanic.rendering.util.shape.Parent;
 import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
@@ -21,7 +22,7 @@ import com.BudgiePanic.rendering.util.shape.Shape;
  * 
  * @author BudgiePanic
  */
-public class Group extends BaseShape {
+public class Group extends BaseShape implements Parent {
     
     /**
      * A mutable collection of shapes.

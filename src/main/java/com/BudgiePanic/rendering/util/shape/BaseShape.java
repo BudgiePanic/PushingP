@@ -9,7 +9,6 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
-import com.BudgiePanic.rendering.util.shape.compound.Group;
 
 /**
  * Base shape converts incoming locations from world space to object space before passing calculations off to shape implementations.
@@ -45,7 +44,7 @@ public abstract class BaseShape implements Shape {
      * Mutable field because the group will set itself as the parent when this shape is added to a group,
      * which may happen after the object is constructed.
      */
-    protected Optional<Group> parent;
+    protected Optional<Parent> parent;
 
     /**
      * A base shape
@@ -109,12 +108,12 @@ public abstract class BaseShape implements Shape {
     }
     
     @Override
-    public Optional<Group> parent() {
+    public Optional<Parent> parent() {
         return this.parent;
     }
 
     @Override
-    public void setParent(Group group) {
+    public void setParent(Parent group) {
         this.parent = Optional.ofNullable(group);
     }
 
@@ -191,8 +190,4 @@ public abstract class BaseShape implements Shape {
         }
         return true;
     }
-
-    
-
-
 }
