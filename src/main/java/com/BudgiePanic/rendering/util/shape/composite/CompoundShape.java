@@ -65,7 +65,7 @@ public class CompoundShape extends BaseShape implements Parent {
         assert !intersections.isEmpty();
         var inLeft = false;
         var inRight = false;
-        List<Intersection> answer = new ArrayList<>(intersections.size());
+        List<Intersection> answer = new ArrayList<>(intersections.size() / 2);
         for (var intersection : intersections) {
             var isLeftHit = left.contains(intersection.shape());
             if (operation.isIntersectionValid(isLeftHit, inLeft, inRight)) {

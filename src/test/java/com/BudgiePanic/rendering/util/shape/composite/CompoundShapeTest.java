@@ -1,16 +1,23 @@
 package com.BudgiePanic.rendering.util.shape.composite;
 
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
+import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.Cube;
 import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class CompoundShapeTest {
 
@@ -50,7 +57,36 @@ public class CompoundShapeTest {
             assertEquals(dummyIntersections.get(test.b().a()), resultA);
             assertEquals(dummyIntersections.get(test.b().b()), resultB);
         }
-        
+    }
+
+    @Test
+    void testCompoundShapeRayIntersectionA() {
+        var shape1 = new Sphere(Matrix4.identity());
+        var shape2 = new Cube(Matrix4.identity());
+        var shapeCompound = new CompoundShape(CompoundOperation.union, shape1, shape2, Matrix4.identity());
+        var ray = new Ray(makePoint(0, 2, -5), makeVector(0, 0, 1));
+        var result = shapeCompound.intersect(ray);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testCompoundShapeRayIntersectionB() {
+        var shape1 = new Sphere(Matrix4.identity());
+        var shape2 = new Sphere(Transforms.identity().translate(0, 0, 0.5f).assemble());
+        var shapeCompound = new CompoundShape(CompoundOperation.union, shape1, shape2, Matrix4.identity());
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        var result = shapeCompound.intersect(ray);
+        assertTrue(result.isPresent());
+        var intersections = result.get();
+        assertEquals(2, intersections.size());
+        var intersection1 = intersections.getFirst();
+        var intersection2 = intersections.getLast();
+
+        assertEquals(0, FloatHelp.compareFloat(4, intersection1.a()), "4 == " + intersection1.a());
+        assertEquals(shape1, intersection1.shape());
+
+        assertEquals(0, FloatHelp.compareFloat(6.5f, intersection2.a()), "6.5 == " + intersection2.a());
+        assertEquals(shape2, intersection2.shape());
     }
 
 }
