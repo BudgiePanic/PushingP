@@ -8,6 +8,7 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.compound.Group;
 
 /**
  * Common functionality that all shapes have.

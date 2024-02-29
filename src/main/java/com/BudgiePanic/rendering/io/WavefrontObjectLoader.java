@@ -14,9 +14,9 @@ import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
-import com.BudgiePanic.rendering.util.shape.Group;
 import com.BudgiePanic.rendering.util.shape.SmoothTriangle;
 import com.BudgiePanic.rendering.util.shape.Triangle;
+import com.BudgiePanic.rendering.util.shape.compound.Group;
 
 /**
  * Wavefront OBJ file loader. Creates shape groups consisting of triangles from the model data.

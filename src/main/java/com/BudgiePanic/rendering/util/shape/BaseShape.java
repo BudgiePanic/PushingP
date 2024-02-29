@@ -9,6 +9,7 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.compound.Group;
 
 /**
  * Base shape converts incoming locations from world space to object space before passing calculations off to shape implementations.

@@ -1,4 +1,4 @@
-package com.BudgiePanic.rendering.util.shape;
+package com.BudgiePanic.rendering.util.shape.compound;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
@@ -12,6 +12,9 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.BaseShape;
+import com.BudgiePanic.rendering.util.shape.BoundingBox;
+import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
  * A group is a shape comprised of more shapes.

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.compound.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class BoundingBoxTest {
