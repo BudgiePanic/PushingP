@@ -1,8 +1,11 @@
 package com.BudgiePanic.rendering.util.shape.composite;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
@@ -47,8 +50,12 @@ public class CompoundShape extends BaseShape implements Parent {
 
     @Override
     protected Optional<List<Intersection>> localIntersect(Ray ray) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localIntersect'");
+        final var intersections = Stream.concat(left.intersect(ray).stream(), right.intersect(ray).stream()).
+        flatMap(List::stream).sorted(Comparator.comparing(Intersection::a)).collect(Collectors.toList());
+        if (intersections.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(filter(intersections));
     }
 
     @Override
