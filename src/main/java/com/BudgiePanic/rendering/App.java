@@ -28,7 +28,8 @@ public class App
         entry("-aabb_demo", ()-> new AABBDemo()),
         entry("-acne_test", ()-> new TestScene()),
         entry("-group", ()-> new GroupDemo()),
-        entry("-mesh", ()-> new TriangleDemo())
+        entry("-mesh_loader", ()-> new TriangleDemo()),
+        entry("-compound_shapes", ()-> new CompoundShapeDemo())
     );
 
     public static void main( String[] args )
