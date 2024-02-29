@@ -25,10 +25,10 @@ public interface CompoundOperation {
     /**
      * Intersect keeps intersectionss that overlap both shapes
      */
-    public static final CompoundOperation intersect = (ilh, il, ir) -> { return false; };
+    public static final CompoundOperation intersect = (ilh, il, ir) -> { return (ilh && ir) || (!ilh && il); };
 
     /**
      * Difference keeps intersections that are not exclusively inside the right object (left object + not right object)
      */
-    public static final CompoundOperation difference = (ilh, il, ir) -> {return false; };
+    public static final CompoundOperation difference = (ilh, il, ir) -> {return (ilh && !ir) || (!ilh && il); };
 }
