@@ -21,9 +21,9 @@ public class CompoundShape extends BaseShape implements Parent {
 
     protected final Shape left;
     protected final Shape right;
-    protected final Operation operation;
+    protected final CompoundOperation operation;
 
-    public CompoundShape(Operation operation, Shape left, Shape right, Matrix4 transform) {
+    public CompoundShape(CompoundOperation operation, Shape left, Shape right, Matrix4 transform) {
         super(transform);
         this.left = left;
         this.right = right;
@@ -36,7 +36,7 @@ public class CompoundShape extends BaseShape implements Parent {
 
     public Shape right() { return right; }
 
-    public Operation operation() { return operation; }
+    public CompoundOperation operation() { return operation; }
 
     @Override
     public BoundingBox bounds() {
