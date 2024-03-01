@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.intersect.ShadingInfo;
 import com.BudgiePanic.rendering.util.light.Phong;
 import com.BudgiePanic.rendering.util.light.PointLight;
+import com.BudgiePanic.rendering.util.shape.Parent;
 import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
@@ -120,13 +122,20 @@ public class World {
      * @return
      *   EMPTY if no intersections occured. List of intersections if any.
      */
-    protected Optional<List<Intersection>> intersect(Ray ray, Predicate<Intersection> inclusionCondition) {
+    protected Optional<List<Intersection>> intersect(Ray ray, Predicate<Shape> inclusionCondition) {
+        final Function<Shape, Optional<List<Intersection>>> intersectShape = (Shape s) -> {
+            if (s instanceof Parent) {
+                return ((Parent)s).intersect(ray, inclusionCondition);
+            } else {
+                return s.intersect(ray);
+            }
+        };
         var intersections = this.shapes.stream().
-            map((shape) -> shape.intersect(ray)).
+            filter(inclusionCondition).
+            map(intersectShape).
             filter(Optional::isPresent).
             map(Optional::get).
             flatMap(List::stream).
-            filter(inclusionCondition).
             collect(Collectors.toList());
         if (intersections.isEmpty()) return Optional.empty();
         intersections.sort(Comparator.comparing(Intersection::a));
@@ -245,7 +254,7 @@ public class World {
             var pointToLight = light.position().subtract(point);
             var distance = pointToLight.magnitude();
             var ray = new Ray(point, pointToLight.normalize());
-            var intersections = this.intersect(ray, (i) -> i.shape().material().shadow());
+            var intersections = this.intersect(ray, (s) -> s.material().shadow());
             if (intersections.isEmpty()) return false;
             var hit = Intersection.Hit(intersections.get());
             if (hit.isPresent()) {
