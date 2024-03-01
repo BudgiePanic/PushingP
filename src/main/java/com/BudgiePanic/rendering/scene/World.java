@@ -1,12 +1,10 @@
 package com.BudgiePanic.rendering.scene;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.BudgiePanic.rendering.util.Color;
@@ -46,17 +44,11 @@ public class World {
     protected List<PointLight> lights;
 
     /**
-     * The shapes in the world that do not cast shadows, such as glass panes and water.
-     */
-    protected Set<Shape> noShadow;
-
-    /**
      * Construct a new empty world.
      */
     public World() {
         this.shapes = new ArrayList<>();
         this.lights = new ArrayList<>();
-        this.noShadow = new HashSet<>();
     }
 
     /**
@@ -87,23 +79,10 @@ public class World {
      * @param castsShadows
      *   Whether or not this shape casts shadows in the world  
      */
-    public void addShape(Shape shape, boolean castsShadows) {
+    public void addShape(Shape shape) {
         // precondition check, don't add null shapes
         if (shape == null) throw new IllegalArgumentException("shape cannot be null.");
-        if (!castsShadows) {
-            this.noShadow.add(shape);
-        }
         this.shapes.add(shape);
-    }
-
-    /**
-     * Add a new shape to the world that casts shadows.
-     *
-     * @param shape
-     *   The shape to add.
-     */
-    public void addShape(Shape shape) {
-        addShape(shape, true);
     }
 
     /**
@@ -128,7 +107,7 @@ public class World {
      *   EMPTY if no intersections occured. List of intersections if any.
      */
     public Optional<List<Intersection>> intersect(Ray ray) {
-        return intersect(ray, Collections.emptySet());
+        return intersect(ray, (s)->true);
     }
 
     /**
@@ -136,15 +115,15 @@ public class World {
      * Allows for easy intersection tests against multiple shapes.
      * @param ray
      *   The ray to test with.
-     * @param ignoredShapes
-     *   Shapes to exclude from the intersection test, for one reason or another.
+     * @param inclusionCondition
+     *   A predicate function that identifies Shapes to include in the intersection test.
      * @return
      *   EMPTY if no intersections occured. List of intersections if any.
      */
-    protected Optional<List<Intersection>> intersect(Ray ray, Set<Shape> ignoredShapes) {
+    protected Optional<List<Intersection>> intersect(Ray ray, Predicate<Shape> inclusionCondition) {
         var intersections = this.shapes.stream().
-            filter(s -> !ignoredShapes.contains(s)).
-            map((shape) -> shape.intersect(ray)). // NOTE: if shape becomes an interface, then this can be replaced with Shape::intersect ?
+            filter(inclusionCondition).
+            map((shape) -> shape.intersect(ray)).
             filter(Optional::isPresent).
             map(Optional::get).
             flatMap(List::stream).
@@ -266,7 +245,7 @@ public class World {
             var pointToLight = light.position().subtract(point);
             var distance = pointToLight.magnitude();
             var ray = new Ray(point, pointToLight.normalize());
-            var intersections = this.intersect(ray, this.noShadow);
+            var intersections = this.intersect(ray, (s) -> s.material().shadow());
             if (intersections.isEmpty()) return false;
             var hit = Intersection.Hit(intersections.get());
             if (hit.isPresent()) {
