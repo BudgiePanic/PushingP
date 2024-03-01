@@ -116,17 +116,17 @@ public class World {
      * @param ray
      *   The ray to test with.
      * @param inclusionCondition
-     *   A predicate function that identifies Shapes to include in the intersection test.
+     *   A predicate function that identifies whether an intersection is valid and should be kept.
      * @return
      *   EMPTY if no intersections occured. List of intersections if any.
      */
-    protected Optional<List<Intersection>> intersect(Ray ray, Predicate<Shape> inclusionCondition) {
+    protected Optional<List<Intersection>> intersect(Ray ray, Predicate<Intersection> inclusionCondition) {
         var intersections = this.shapes.stream().
-            filter(inclusionCondition).
             map((shape) -> shape.intersect(ray)).
             filter(Optional::isPresent).
             map(Optional::get).
             flatMap(List::stream).
+            filter(inclusionCondition).
             collect(Collectors.toList());
         if (intersections.isEmpty()) return Optional.empty();
         intersections.sort(Comparator.comparing(Intersection::a));
@@ -245,7 +245,7 @@ public class World {
             var pointToLight = light.position().subtract(point);
             var distance = pointToLight.magnitude();
             var ray = new Ray(point, pointToLight.normalize());
-            var intersections = this.intersect(ray, (s) -> s.material().shadow());
+            var intersections = this.intersect(ray, (i) -> i.shape().material().shadow());
             if (intersections.isEmpty()) return false;
             var hit = Intersection.Hit(intersections.get());
             if (hit.isPresent()) {
