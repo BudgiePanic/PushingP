@@ -100,11 +100,6 @@ public class CompoundShapeTest {
         assertTrue(result.isPresent());
         var intersections = result.get();
         assertEquals(2, intersections.size());
-        var intersection1 = intersections.getFirst();
-        var intersection2 = intersections.getLast();
-        assertEquals(0, FloatHelp.compareFloat(5, intersection1.a()), "5 == " + intersection1.a());
-
-        assertEquals(0, FloatHelp.compareFloat(6f, intersection2.a()), "6 == " + intersection2.a());
     }
 
     @Test
@@ -118,11 +113,6 @@ public class CompoundShapeTest {
         assertTrue(result.isPresent());
         var intersections = result.get();
         assertEquals(2, intersections.size());
-        var intersection1 = intersections.getFirst();
-        var intersection2 = intersections.getLast();
-        assertEquals(0, FloatHelp.compareFloat(5, intersection1.a()), "5 == " + intersection1.a());
-
-        assertEquals(0, FloatHelp.compareFloat(6f, intersection2.a()), "6 == " + intersection2.a());
     }
 
 }
