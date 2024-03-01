@@ -123,16 +123,9 @@ public class World {
      *   EMPTY if no intersections occured. List of intersections if any.
      */
     protected Optional<List<Intersection>> intersect(Ray ray, Predicate<Shape> inclusionCondition) {
-        final Function<Shape, Optional<List<Intersection>>> intersectShape = (Shape s) -> {
-            if (s instanceof Parent) {
-                return ((Parent)s).intersect(ray, inclusionCondition);
-            } else {
-                return s.intersect(ray);
-            }
-        };
         var intersections = this.shapes.stream().
             filter(inclusionCondition).
-            map(intersectShape).
+            map(Intersection.buildIntersector(ray, inclusionCondition)).
             filter(Optional::isPresent).
             map(Optional::get).
             flatMap(List::stream).

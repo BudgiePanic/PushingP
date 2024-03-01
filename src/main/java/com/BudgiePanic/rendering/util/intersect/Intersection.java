@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.BudgiePanic.rendering.util.Pair;
+import com.BudgiePanic.rendering.util.shape.Parent;
 import com.BudgiePanic.rendering.util.shape.Shape;
 import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
@@ -125,6 +128,27 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
      */
     public ShadingInfo computeShadingInfo(Ray ray) {
         return computeShadingInfo(ray, Optional.empty());
+    }
+
+    /**
+     * Create a mapping function from ray and shape inclusion condition to shape-ray Intersection objects.
+     * @param ray
+     *     The ray to use in the intersection tests
+     * @param inclusionCondition
+     *     The condition to include shapes in the intersection test.
+     * @return
+     *   A function that intersects the ray with a shape, passing extra information to parent shapes for their intersection tests.
+     */
+    public static Function<Shape, Optional<List<Intersection>>> buildIntersector(Ray ray, Predicate<Shape> inclusionCondition) {
+        // TODO maybe we won't make so many garbage collected Function objects if we pass 'this' to the parent
+        // TODO instead of the predicate, since the concrete Parent shapes just call this function again anyway?
+        return (s) -> { 
+            if (s instanceof Parent) { 
+                return ((Parent)s).intersect(ray, inclusionCondition);
+            } else {
+                return s.intersect(ray);
+            }
+        };
     }
 
 }
