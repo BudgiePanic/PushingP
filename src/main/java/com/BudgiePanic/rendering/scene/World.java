@@ -247,7 +247,7 @@ public class World {
             var pointToLight = light.position().subtract(point);
             var distance = pointToLight.magnitude();
             var ray = new Ray(point, pointToLight.normalize());
-            var intersections = this.intersect(ray, (s) -> s.material().shadow());
+            var intersections = this.intersect(ray, (s) -> s.material().shadow() || (s instanceof Parent));
             if (intersections.isEmpty()) return false;
             var hit = Intersection.Hit(intersections.get());
             if (hit.isPresent()) {
