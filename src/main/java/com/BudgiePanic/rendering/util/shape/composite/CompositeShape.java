@@ -74,4 +74,9 @@ public abstract class CompositeShape extends BaseShape implements Parent {
         return AABB;
     }
     
+    @Override
+    public boolean contains(Shape shape) {
+        return Parent.super.contains(shape);
+    }
+
 }
