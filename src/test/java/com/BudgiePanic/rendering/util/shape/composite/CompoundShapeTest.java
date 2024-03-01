@@ -2,6 +2,8 @@ package com.BudgiePanic.rendering.util.shape.composite;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.difference;
+import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.union;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -86,6 +88,41 @@ public class CompoundShapeTest {
 
         assertEquals(0, FloatHelp.compareFloat(6.5f, intersection2.a()), "6.5 == " + intersection2.a());
         assertEquals(shape2, intersection2.shape());
+    }
+
+    @Test
+    void testCompoundShapeDifferenceNested() {
+        var compound = new CompoundShape(union, new Cube(Matrix4.identity()), new Cube(Matrix4.identity()), Matrix4.identity());
+        var subtracted = new Cube(Transforms.identity().translate(0, 0, -1).assemble());
+        var shape = new CompoundShape(difference, compound, subtracted, Matrix4.identity());
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        var result = shape.intersect(ray);
+        assertTrue(result.isPresent());
+        var intersections = result.get();
+        assertEquals(2, intersections.size());
+        var intersection1 = intersections.getFirst();
+        var intersection2 = intersections.getLast();
+        assertEquals(0, FloatHelp.compareFloat(5, intersection1.a()), "5 == " + intersection1.a());
+
+        assertEquals(0, FloatHelp.compareFloat(6f, intersection2.a()), "6 == " + intersection2.a());
+    }
+
+    @Test
+    void testCompoundShapeGroupDifference() {
+        var compound = new CompoundShape(union, new Cube(Matrix4.identity()), new Cube(Matrix4.identity()), Matrix4.identity());
+        var subtracted = new Group(Matrix4.identity());
+        subtracted.addShape(new Cube(Transforms.identity().translate(0, 0, -1).assemble()));
+        var shape = new CompoundShape(difference, compound, subtracted, Matrix4.identity());
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        var result = shape.intersect(ray);
+        assertTrue(result.isPresent());
+        var intersections = result.get();
+        assertEquals(2, intersections.size());
+        var intersection1 = intersections.getFirst();
+        var intersection2 = intersections.getLast();
+        assertEquals(0, FloatHelp.compareFloat(5, intersection1.a()), "5 == " + intersection1.a());
+
+        assertEquals(0, FloatHelp.compareFloat(6f, intersection2.a()), "6 == " + intersection2.a());
     }
 
 }
