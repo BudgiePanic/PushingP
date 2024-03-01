@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,14 +46,22 @@ public class CompoundShape extends CompositeShape {
     protected CompoundOperation operation() { return operation; }
 
     @Override
-    protected Optional<List<Intersection>> localIntersect(Ray ray) {
-        final var intersections = Stream.concat(left.intersect(ray).stream(), right.intersect(ray).stream()).
+    protected Optional<List<Intersection>> localIntersect(Ray ray, Predicate<Shape> condition) {
+        final var mapper = Intersection.buildIntersector(ray, condition);
+        final Optional<List<Intersection>> leftIntersections = 
+            condition.test(left) ? mapper.apply(left) : Optional.empty();
+        final Optional<List<Intersection>> rightIntersections = 
+            condition.test(right) ? mapper.apply(right) : Optional.empty();
+        final var intersections = Stream.concat(leftIntersections.stream(), rightIntersections.stream()).
         flatMap(List::stream).sorted(Comparator.comparing(Intersection::a)).collect(Collectors.toList());
         if (intersections.isEmpty()) {
             return Optional.empty();
         }
         return Optional.of(filter(intersections));
-    }
+    };
+
+    @Override
+    protected Optional<List<Intersection>> localIntersect(Ray ray) { return localIntersect(ray, (s) -> true); }
 
     /**
      * Applies this compound shape's operation to remove intersections that violate the operation rule.
@@ -81,6 +90,6 @@ public class CompoundShape extends CompositeShape {
     public boolean childrenContains(Shape shape) { return left.contains(shape) || right.contains(shape); }
 
     @Override
-    protected Collection<Shape> children() { return children; };
+    protected Collection<Shape> children() { return children; }
 
 }

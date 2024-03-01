@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -64,23 +65,29 @@ public class Group extends CompositeShape {
     }
 
     @Override
-    protected Optional<List<Intersection>> localIntersect(Ray ray) {
+    protected Optional<List<Intersection>> localIntersect(Ray ray, Predicate<Shape> condition) {
         if (!bounds().intersect(ray)) {
             return Optional.empty();
         }
-        List<Intersection> result = null;
+        if (children.isEmpty()) { return Optional.empty(); }
+        List<Intersection> result = new ArrayList<>();
+        final var mapper = Intersection.buildIntersector(ray, condition);
         for (var child : children) {
-            var intersect = child.intersect(ray);
+            if (!condition.test(child)) { continue; }
+            var intersect = mapper.apply(child);
             if (intersect.isPresent()) {
-                if (result == null) result = new ArrayList<>();
                 result.addAll(intersect.get());
             }
         }
-        if (result != null) result.sort(Comparator.comparing(Intersection::a));
-        return Optional.ofNullable(result);
+        result.sort(Comparator.comparing(Intersection::a));
+        return Optional.of(result);
     }
 
     @Override
+    protected Optional<List<Intersection>> localIntersect(Ray ray) { return localIntersect(ray, (s) -> true); };
+
+    @Override
     public boolean childrenContains(Shape shape) { return this.children.contains(shape); }
+
 
 }
