@@ -2,10 +2,14 @@ package com.BudgiePanic.rendering.util.shape.composite;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import com.BudgiePanic.rendering.util.Tuple;
+import com.BudgiePanic.rendering.util.intersect.Intersection;
+import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.BaseShape;
 import com.BudgiePanic.rendering.util.shape.BoundingBox;
@@ -36,6 +40,24 @@ public abstract class CompositeShape extends BaseShape implements Parent {
      *   The shapes that composit this shape.
      */
     protected abstract Collection<Shape> children();
+
+    /**
+     * Perform local intersection tests on children shapes.
+     * @param ray
+     *   The ray to test with.
+     * @param condition
+     *   perform intersection tests against shapes matching this condition
+     * @return
+     *   A list of ray-shape intersections made on the composite shapes children, if any.
+     */
+    protected abstract Optional<List<Intersection>> localIntersect(Ray ray, Predicate<Shape> condition);
+
+    @Override
+    public Optional<List<Intersection>> intersect(Ray ray, Predicate<Shape> inclusionCondition) {
+        var transformInverse = this.transform().inverse();
+        var rayInObjectSpace = ray.transform(transformInverse);
+        return localIntersect(rayInObjectSpace, inclusionCondition);
+    }
 
     @Override
     protected Tuple localNormal(Tuple point) { throw new UnsupportedOperationException("Composite shape does not support localNormal operation"); }
