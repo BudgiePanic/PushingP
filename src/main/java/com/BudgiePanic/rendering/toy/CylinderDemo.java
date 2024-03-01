@@ -45,7 +45,7 @@ public class CylinderDemo implements Runnable {
 
         world.addShape(new Cylinder(Transforms.identity().shear(0.1f, 0, 0, 0, 0.2f, 0).assemble(), Material.pattern(new BiPattern(checker, new SolidColor(Colors.blue.multiply(0.8f)), new Perturb(new BiPattern(radialGradient, Colors.red, Colors.green, Transforms.identity().scale(0.15f, 0.15f, 0.15f).assemble()), 0.2f))).setShininess(500).setDiffuse(0.50f).setReflectivity(0.15f).setRefractiveIndex(1.55f).setTransparency(0.90f), 3, -3, true));
         world.addShape(new Cone(Transforms.identity().scale(2.5f, 2.5f, 2.5f).translate(-4, 1, 3f).assemble(), Material.pattern(new Perturb(new BiPattern(ring, Colors.blue, Colors.white, Transforms.identity().scale(0.2f, 0.2f, 0.2f).assemble()))).setReflectivity(0.33f), 0, -1, true));
-        world.addShape(new Cube(Transforms.identity().scale(15, 15, 15).assemble(), Material.pattern(new Perturb(new BiPattern(gradient, new BiPattern(checker, Colors.white, new Color(0.66f, 0f, 0.66f)), new SolidColor(new Color(0.80f, 0.50f, 0f)), Transforms.identity().scale(0.33f, 0.33f, 0.33f).assemble()), 0.08f)).setReflectivity(0.1f).setSpecular(0.33f)), false);
+        world.addShape(new Cube(Transforms.identity().scale(15, 15, 15).assemble(), Material.pattern(new Perturb(new BiPattern(gradient, new BiPattern(checker, Colors.white, new Color(0.66f, 0f, 0.66f)), new SolidColor(new Color(0.80f, 0.50f, 0f)), Transforms.identity().scale(0.33f, 0.33f, 0.33f).assemble()), 0.08f)).setShadow(false).setReflectivity(0.1f).setSpecular(0.33f)));
 
         System.out.println("taking image");
         Canvas canvas = camera.takePicture(world);
