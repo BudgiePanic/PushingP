@@ -117,7 +117,7 @@ public class World {
      * @param ray
      *   The ray to test with.
      * @param inclusionCondition
-     *   A predicate function that identifies whether an intersection is valid and should be kept.
+     *   A predicate function that identifies whether a shape should be included in the intersection tests.
      * @return
      *   EMPTY if no intersections occured. List of intersections if any.
      */
