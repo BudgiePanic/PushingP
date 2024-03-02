@@ -69,18 +69,19 @@ public class Group extends CompositeShape {
         if (!bounds().intersect(ray)) {
             return Optional.empty();
         }
+        List<Intersection> result = null;
         if (children.isEmpty()) { return Optional.empty(); }
-        List<Intersection> result = new ArrayList<>();
         final var mapper = Intersection.buildIntersector(ray, condition);
         for (var child : children) {
             if (!condition.test(child)) { continue; }
             var intersect = mapper.apply(child);
             if (intersect.isPresent()) {
+                if (result == null) { result = new ArrayList<>(); }
                 result.addAll(intersect.get());
             }
         }
-        result.sort(Comparator.comparing(Intersection::a));
-        return Optional.of(result);
+        if (result != null) { result.sort(Comparator.comparing(Intersection::a)); }
+        return Optional.ofNullable(result);
     }
 
     @Override
