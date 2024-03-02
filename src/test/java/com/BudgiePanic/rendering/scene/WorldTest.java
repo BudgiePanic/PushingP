@@ -2,6 +2,7 @@ package com.BudgiePanic.rendering.scene;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.difference;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,9 +23,12 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.light.PointLight;
+import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.pattern.PatternTest;
+import com.BudgiePanic.rendering.util.shape.Cube;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
@@ -484,5 +488,71 @@ public class WorldTest {
         var result = world.shadeHit(info);
         var expected = new Color(0.93391f, 0.69643f, 0.69243f);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void testInShadowCompositeShape() { // light on side of compound shape
+        // compound shape: cube with half sphere dimple via difference operation
+        // ray comes directly in
+        // get that intersection point
+        // ask if the overpoint is in shadow
+        // it should not be in shadow
+        // point light origin == ray origin
+        var shape = new CompoundShape(
+            difference, new Cube(Matrix4.identity()), new Sphere(Transforms.identity().scale(0.5f).translate(0, 0, -1f).assemble()), Matrix4.identity());
+        World world = new World();
+        world.addShape(shape);
+        var ray = new Ray(makePoint(0, 0, -2), makeVector(0, 0, 1));
+        world.addLight(new PointLight(ray.origin(), Colors.white));
+        var result = world.intersect(ray);
+        assertTrue(result.isPresent());
+        var intersections = result.get();
+        assertEquals(2, intersections.size());
+        var hit = Intersection.Hit(intersections);
+        assertTrue(hit.isPresent());
+        var intersection = hit.get();
+        var info = intersection.computeShadingInfo(ray, result);
+        assertFalse(world.inShadow(info.overPoint()));
+    }
+
+    @Test
+    void testInShadowCompositeShapeA() { // light on opposite side of compound shape
+        // compound shape: cube with half sphere dimple via difference operation
+        // ray comes directly in
+        // get that intersection point
+        // ask if the overpoint is in shadow
+        // it should be in shadow
+        // point light origin == ray origin * ray direction * (enough) such that the light is on the other side of the cube
+        var shape = new CompoundShape(
+            difference, new Cube(Matrix4.identity()), new Sphere(Transforms.identity().scale(0.5f).translate(0, 0, -1f).assemble()), Matrix4.identity());
+        World world = new World();
+        world.addShape(shape);
+        var ray = new Ray(makePoint(0, 0, -2), makeVector(0, 0, 1));
+        world.addLight(new PointLight(ray.origin().add(0, 0, 6), Colors.white));
+        var result = world.intersect(ray);
+        assertTrue(result.isPresent());
+        var intersections = result.get();
+        assertEquals(2, intersections.size());
+        var hit = Intersection.Hit(intersections);
+        assertTrue(hit.isPresent());
+        var intersection = hit.get();
+        var info = intersection.computeShadingInfo(ray, result);
+        assertTrue(world.inShadow(info.overPoint()));
+    }
+
+    @Test
+    void testInShadowCompositeShapeB() { // (swiss cheese shadows)
+        // compound shape: cube with half sphere dimple via difference operation
+        // point light origin == ray origin * ray direction * (enough) such that the light is on the other side of the cube
+        // ask if point: ray origin is in shadow
+        // it should be
+        var shape = new CompoundShape(
+            difference, new Cube(Matrix4.identity()), new Sphere(Transforms.identity().scale(0.5f).translate(0, 0, -1f).assemble()), Matrix4.identity());
+        World world = new World();
+        world.addShape(shape);
+        var ray = new Ray(makePoint(0, 0, -2), makeVector(0, 0, 1));
+        world.addLight(new PointLight(ray.origin().add(0, 0, 6), Colors.white));
+        
+        assertTrue(world.inShadow(ray.origin()));
     }
 }
