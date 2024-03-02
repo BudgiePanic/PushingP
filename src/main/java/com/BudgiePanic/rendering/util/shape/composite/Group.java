@@ -69,7 +69,7 @@ public class Group extends CompositeShape {
         if (!bounds().intersect(ray)) {
             return Optional.empty();
         }
-        List<Intersection> result = null;
+        List<Intersection> result = null; // lazilly initialize intersect list to avoid excessive list creation
         if (children.isEmpty()) { return Optional.empty(); }
         final var mapper = Intersection.buildIntersector(ray, condition);
         for (var child : children) {
