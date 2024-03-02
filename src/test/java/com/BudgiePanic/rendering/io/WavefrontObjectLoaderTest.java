@@ -122,11 +122,11 @@ public class WavefrontObjectLoaderTest {
         assertEquals("FirstGroup", group1.a());
         assertEquals("SecondGroup", group2.a());
 
-        var group1Shapes = group1.b().getShapes();
+        var group1Shapes = group1.b().children();
         assertEquals(1, group1Shapes.size());
         var triangle1 = (Triangle) group1Shapes.get(0);
 
-        var group2Shapes = group2.b().getShapes();
+        var group2Shapes = group2.b().children();
         assertEquals(1, group2Shapes.size());
         var triangle2 = (Triangle) group2Shapes.get(0);
 
@@ -155,9 +155,9 @@ public class WavefrontObjectLoaderTest {
         var a = WavefrontObjectLoader.parseObj(lines);
         var result = WavefrontObjectLoader.objectToGroup(a);
         assertEquals(2, a.groups().size());
-        assertEquals(2, result.getShapes().size());
-        assertTrue(result.getShapes().contains(a.groups().get(0).b()));
-        assertTrue(result.getShapes().contains(a.groups().get(1).b()));
+        assertEquals(2, result.children().size());
+        assertTrue(result.children().contains(a.groups().get(0).b()));
+        assertTrue(result.children().contains(a.groups().get(1).b()));
     }    
 
     @Test
@@ -175,7 +175,7 @@ public class WavefrontObjectLoaderTest {
         );
         var a = WavefrontObjectLoader.parseObj(lines);
         var result = WavefrontObjectLoader.objectToGroup(a);
-        assertEquals(2, result.getShapes().size());
+        assertEquals(2, result.children().size());
     }
 
     @Test

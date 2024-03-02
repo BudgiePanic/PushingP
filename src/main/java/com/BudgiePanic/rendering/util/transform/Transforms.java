@@ -115,6 +115,19 @@ public class Transforms {
     }
 
     /**
+     * Adds a scaling to this transform.
+     *
+     * @param scale
+     *   uniform scale amount to apply to xyz axis
+     * @return
+     *   Transforms assembler chain.
+     */
+    public Transforms scale(float scale) {
+        var matrix = Scale.makeScaleMatrix(scale, scale, scale);
+        return new Transforms(this, matrix);
+    }
+
+    /**
      * Adds a axis reflection to this transform.
      *
      * @param x

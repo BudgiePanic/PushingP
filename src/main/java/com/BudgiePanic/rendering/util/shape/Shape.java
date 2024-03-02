@@ -73,7 +73,7 @@ public interface Shape {
      * @return
      *   Empty if this shape is not part of a group. The group that this shape belongs to.
      */
-    Optional<Group> parent();
+    Optional<Parent> parent();
 
     /**
      * Set the parent of this shape.
@@ -81,7 +81,7 @@ public interface Shape {
      * @param parent
      *   The parent of the shape.
      */
-    void setParent(Group parent);
+    void setParent(Parent parent);
 
     /**
      * Convert a world space point to object space.
@@ -114,4 +114,13 @@ public interface Shape {
      *   A bounding for the shape in local space.
      */
     BoundingBox bounds();
+
+     /**
+     * Check if this shape contains another shape.
+     * @param shape
+     *   The shape to check for containment.
+     * @return
+     *   True if the shape is contained within this shape.
+     */
+    boolean contains(Shape shape);
 }

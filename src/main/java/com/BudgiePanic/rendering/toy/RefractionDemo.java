@@ -86,8 +86,7 @@ public class RefractionDemo implements Runnable {
             Transforms.identity().assemble(), 
             new Material(new Perturb(new BiPattern(BiOperation.radialGradient, Colors.white, new Color(0.75f, 0.75f, 0.95f), Transforms.identity().scale(1.33f, 1.33f, 1.33f).assemble()),
             0.8f),
-            0.005f, 0.5f, 0.9f, 300f, 0.89f, 0.92f, 1.33f)), 
-            false
+            0.005f, 0.5f, 0.9f, 300f, 0.89f, 0.92f, 1.33f, false))
         );
 
         System.out.println("taking image");

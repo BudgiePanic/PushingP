@@ -44,7 +44,7 @@ public abstract class BaseShape implements Shape {
      * Mutable field because the group will set itself as the parent when this shape is added to a group,
      * which may happen after the object is constructed.
      */
-    protected Optional<Group> parent;
+    protected Optional<Parent> parent;
 
     /**
      * A base shape
@@ -108,14 +108,17 @@ public abstract class BaseShape implements Shape {
     }
     
     @Override
-    public Optional<Group> parent() {
+    public Optional<Parent> parent() {
         return this.parent;
     }
 
     @Override
-    public void setParent(Group group) {
+    public void setParent(Parent group) {
         this.parent = Optional.ofNullable(group);
     }
+    
+    @Override
+    public boolean contains(Shape shape) { return this.equals(shape); }
 
     /**
      * Determine the distance between the ray origin and intersection points with this shape, if any.
@@ -190,8 +193,4 @@ public abstract class BaseShape implements Shape {
         }
         return true;
     }
-
-    
-
-
 }

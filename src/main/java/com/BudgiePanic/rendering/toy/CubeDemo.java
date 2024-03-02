@@ -46,8 +46,8 @@ public class CubeDemo implements Runnable {
         var shape = new Cube(
             Transforms.identity().scale(1.5f, 0.05f, 0.75f).rotateX(angle).translate(2, 2, 0).assemble(),
             new Material(new Perturb(new BiPattern(BiOperation.gradient, Colors.white, new Color(0.8f,0.8f,0.8f))),
-            0.008f, 0.46f, 0.9f, 400f, 0.9f, 0.95f, 1.33f));
-        world.addShape(shape, false);
+            0.008f, 0.46f, 0.9f, 400f, 0.9f, 0.95f, 1.33f, false));
+        world.addShape(shape);
 
         shape = new Cube(
             Transforms.identity().scale(10, 10, 10).assemble(),

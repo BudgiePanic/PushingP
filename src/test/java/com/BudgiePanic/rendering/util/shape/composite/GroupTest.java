@@ -1,4 +1,4 @@
-package com.BudgiePanic.rendering.util.shape;
+package com.BudgiePanic.rendering.util.shape.composite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,6 +10,9 @@ import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.BaseShapeTest;
+import com.BudgiePanic.rendering.util.shape.Shape;
+import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class GroupTest {
@@ -19,7 +22,7 @@ public class GroupTest {
     @Test
     void testGetShapes() {
         Group group = new Group(identity);
-        var shapes = group.getShapes();
+        var shapes = group.children();
         assertTrue(shapes.isEmpty());
     }
 
@@ -30,7 +33,7 @@ public class GroupTest {
         group.addShape(shape);
         assertFalse(group.children.isEmpty());
         assertTrue(group.children.contains(shape));
-        assertTrue(shape.parent.isPresent());
+        assertTrue(shape.parent().isPresent());
         assertEquals(group, shape.parent().get());
     }
 

@@ -1,98 +1,74 @@
-package com.BudgiePanic.rendering.util.shape;
+package com.BudgiePanic.rendering.util.shape.composite;
 
-import static com.BudgiePanic.rendering.util.Tuple.makePoint;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.BaseShape;
+import com.BudgiePanic.rendering.util.shape.BoundingBox;
+import com.BudgiePanic.rendering.util.shape.Parent;
+import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
- * A group is a shape comprised of more shapes.
+ * Composit Shape automatically computes its AABB using its children shapes.
  * 
  * @author BudgiePanic
  */
-public class Group extends BaseShape {
-    
-    /**
-     * A mutable collection of shapes.
-     */
-    protected final List<Shape> children;
+public abstract class CompositeShape extends BaseShape implements Parent {
 
     /**
-     * Creates a new empty group with no parent.
-     *
-     * @param transform
-     *   The transform to enter group space.
+     * Cached nullable bounding box.
      */
-    public Group(Matrix4 transform) {
-        super(transform);
-        this.children = new ArrayList<>();
-        this.AABB = null;
-    }
-
-    /**
-     * Gets the shapes that are part of this group.
-     * @return
-     *   The shapes that belong to this group.
-     */
-    public List<Shape> getShapes() {
-        return Collections.unmodifiableList(this.children);
-    }
-    
-    /**
-     * Adds the shape to this group and sets the group's parent to 'this'.
-     * @param shape
-     *   The shape to add to the group.
-     */
-    public void addShape(Shape shape) {
-        this.AABB = null;
-        this.children.add(shape);
-        shape.setParent(this);
-    }
-
-    public void removeShape(Shape shape) {
-        this.AABB = null;
-        var removed = this.children.remove(shape);
-        if (removed) {
-            shape.setParent(null);
-        }
-    }
-
-    @Override
-    protected Optional<List<Intersection>> localIntersect(Ray ray) {
-        if (!bounds().intersect(ray)) {
-            return Optional.empty();
-        }
-        List<Intersection> result = null;
-        for (var child : children) {
-            var intersect = child.intersect(ray);
-            if (intersect.isPresent()) {
-                if (result == null) result = new ArrayList<>();
-                result.addAll(intersect.get());
-            }
-        }
-        if (result != null) result.sort(Comparator.comparing(Intersection::a));
-        return Optional.ofNullable(result);
-    }
-
-    @Override
-    protected Tuple localNormal(Tuple point) { throw new UnsupportedOperationException("Shape group does not support localNormal operation"); }
-
     protected BoundingBox AABB;
+
+    public CompositeShape(Matrix4 transform) {
+        super(transform);
+        this.AABB = null;
+    }
+
+    /**
+     * Get the children shapes of this composite shape.
+     *
+     * @return
+     *   The shapes that composit this shape.
+     */
+    protected abstract Collection<Shape> children();
+
+    /**
+     * Perform local intersection tests on children shapes.
+     * @param ray
+     *   The ray to test with.
+     * @param condition
+     *   perform intersection tests against shapes matching this condition
+     * @return
+     *   A list of ray-shape intersections made on the composite shapes children, if any.
+     */
+    protected abstract Optional<List<Intersection>> localIntersect(Ray ray, Predicate<Shape> condition);
+
+    @Override
+    public Optional<List<Intersection>> intersect(Ray ray, Predicate<Shape> inclusionCondition) {
+        var transformInverse = this.transform().inverse();
+        var rayInObjectSpace = ray.transform(transformInverse);
+        return localIntersect(rayInObjectSpace, inclusionCondition);
+    }
+
+    @Override
+    protected Tuple localNormal(Tuple point) { throw new UnsupportedOperationException("Composite shape does not support localNormal operation"); }
 
     @Override
     public synchronized BoundingBox bounds() {
         if (AABB == null) {
             BoundingBox box = new BoundingBox(makePoint(), makePoint());
+            final var children = children();
             // the cube has 8 points [000,100,001,101,010,110,011,111]
-            for (var shape : this.children) {
+            for (var shape : children) {
                 final BoundingBox localAABB = shape.bounds();
                 final var aabbMin = localAABB.minimum();
                 final var aabbMax = localAABB.maximum();
@@ -118,6 +94,11 @@ public class Group extends BaseShape {
             AABB = box;
         }
         return AABB;
+    }
+    
+    @Override
+    public boolean contains(Shape shape) {
+        return Parent.super.contains(shape);
     }
 
 }
