@@ -555,4 +555,63 @@ public class WorldTest {
         
         assertTrue(world.inShadow(ray.origin()));
     }
+
+    @Test
+    void testInShadowCompositeShapeC() {
+        var shape = new CompoundShape(
+            difference, new Cube(Matrix4.identity()), new Sphere(Transforms.identity().scale(0.5f).translate(0, 0, -1f).assemble()), Matrix4.identity());
+            World world = new World();
+            world.addShape(shape);
+            world.addLight(new PointLight(makePoint(2, 0, 0.1f), Colors.white));
+            var result = world.inShadow(makePoint(0, 0, 0.001f));
+            assertTrue(result);
+    }
+
+    @Test
+    void testInShadowCompositeShapeD() {
+        final int cameraWidth = 1536, cameraHeight = cameraWidth;
+        Shape shape = new TestCompound(identity());
+        final var fov = 90f;
+        final var cameraPostion = makePoint(0, 0, -3);
+        final var cameraTarget = makePoint(0, 0, 1);
+        var light = new PointLight(cameraPostion, Colors.white);
+        var world = new World();
+        world.addLight(light);
+        world.addShape(shape);
+        final var camera = new Camera(cameraWidth, cameraHeight, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
+        int col = 810, row = 536;
+        var ray = camera.createRay(col, row);
+        var cast = world.intersect(ray);
+        assertTrue(cast.isPresent());
+        var intersections = cast.get();
+        var hit = Intersection.Hit(intersections).get();
+        var info = hit.computeShadingInfo(ray, cast);
+        var point = info.overPoint();
+        var result = world.inShadow(point);
+        assertFalse(result);
+    }
+
+    @Test
+    void testInShadowCompositeShapeE() {
+        final int cameraWidth = 1536, cameraHeight = cameraWidth;
+        final Shape shape = new TestCompound(identity());
+        final var fov = 90f;
+        final var cameraPostion = makePoint(0, 0, -3);
+        final var cameraTarget = makePoint(0, 0, 1);
+        var light = new PointLight(cameraPostion, Colors.white);
+        var world = new World();
+        world.addLight(light);
+        world.addShape(shape);
+        final var camera = new Camera(cameraWidth, cameraHeight, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
+        int col = 770, row = 610;
+        var ray = camera.createRay(col, row);
+        var cast = world.intersect(ray);
+        assertTrue(cast.isPresent());
+        var intersections = cast.get();
+        var hit = Intersection.Hit(intersections).get();
+        var info = hit.computeShadingInfo(ray, cast);
+        var point = info.overPoint();
+        var result = world.inShadow(point);
+        assertFalse(result);
+    }
 }
