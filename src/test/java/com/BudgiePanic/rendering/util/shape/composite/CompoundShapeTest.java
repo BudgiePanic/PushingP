@@ -121,14 +121,13 @@ public class CompoundShapeTest {
         // open shapes that do not enclose a volume
         var compound = new CompoundShape(difference, 
         new Cylinder(Matrix4.identity(), 1, 0, false), 
-        new Sphere(Transforms.identity().scale(0.5f).translate(0, 0.5f, 0).assemble()), Matrix4.identity());
-        var ray = new Ray(makePoint(0, 0.5f, 0), makeVector(0, 1, 1));
+        new Sphere(Transforms.identity().scale(0.5f).translate(0, 0.5f, -1).assemble()), Matrix4.identity());
+        var ray = new Ray(makePoint(0, 0.5f, -1), makeVector(0, 0.5f, 0.5f));
         var result = compound.intersect(ray);
         assertTrue(result.isPresent());
         var intersections = result.get();
         assertEquals(1, intersections.size());
         assertEquals(compound.right, intersections.get(0).shape());
-
     }
 
 }
