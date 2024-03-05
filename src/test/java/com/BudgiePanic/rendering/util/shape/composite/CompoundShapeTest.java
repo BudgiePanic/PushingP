@@ -17,6 +17,7 @@ import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.Cube;
+import com.BudgiePanic.rendering.util.shape.Cylinder;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
@@ -113,6 +114,21 @@ public class CompoundShapeTest {
         assertTrue(result.isPresent());
         var intersections = result.get();
         assertEquals(2, intersections.size());
+    }
+
+    @Test
+    void testCompoundShapeDifferenceA() {
+        // open shapes that do not enclose a volume
+        var compound = new CompoundShape(difference, 
+        new Cylinder(Matrix4.identity(), 1, 0, false), 
+        new Sphere(Transforms.identity().scale(0.5f).translate(0, 0.5f, 0).assemble()), Matrix4.identity());
+        var ray = new Ray(makePoint(0, 0.5f, 0), makeVector(0, 1, 1));
+        var result = compound.intersect(ray);
+        assertTrue(result.isPresent());
+        var intersections = result.get();
+        assertEquals(1, intersections.size());
+        assertEquals(compound.right, intersections.get(0).shape());
+
     }
 
 }
