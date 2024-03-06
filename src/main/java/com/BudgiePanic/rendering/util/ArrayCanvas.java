@@ -75,7 +75,7 @@ public final class ArrayCanvas implements Canvas {
         // make a new array
         this.colors = new Color[this.getWidth()][other.getHeight()];
         // write each color to the new arrays
-        for (int row = 0; row < getWidth(); row++) {
+        for (int row = 0; row < getHeight(); row++) {
             for (int column = 0; column < getWidth();  column++) {
                 // use shallow copy because color methods don't modify the orginal color.
                 var color = other.colors[column][row];
