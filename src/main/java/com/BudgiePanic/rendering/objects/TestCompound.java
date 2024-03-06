@@ -11,6 +11,11 @@ import com.BudgiePanic.rendering.util.shape.composite.CompoundOperation;
 import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * A compound shape comprised a non-solid sub shape. Used for experimenting with the CSG algorithm.
+ * 
+ * @author BudgiePanic
+ */
 public class TestCompound extends CompoundShape {
 
     public TestCompound(Matrix4 transform) {
