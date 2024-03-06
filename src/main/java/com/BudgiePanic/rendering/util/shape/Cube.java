@@ -82,5 +82,8 @@ public class Cube extends BaseShape {
     public BoundingBox bounds() {
         return AABB;
     }
+
+    @Override
+    public boolean isSolid() { return true; }
     
 }

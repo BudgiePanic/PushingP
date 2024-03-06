@@ -90,5 +90,7 @@ public class Sphere extends BaseShape {
     public BoundingBox bounds() {
       return AABB;
     }
-  
+    
+    @Override
+    public boolean isSolid() { return true; }
 }

@@ -203,4 +203,7 @@ public class Cylinder extends BaseShape {
             Tuple.makePoint(1, this.maximum, 1));
     }
     
+    @Override
+    public boolean isSolid() { return this.closed; }
+
 }

@@ -245,4 +245,7 @@ public class Cone extends BaseShape {
             Tuple.makePoint(-max, minimum, -max), 
             Tuple.makePoint(max, maximum, max));
     }
+
+    @Override
+    public boolean isSolid() { return this.closed; }
 }

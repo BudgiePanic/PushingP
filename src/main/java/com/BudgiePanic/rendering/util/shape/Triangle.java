@@ -143,5 +143,8 @@ public class Triangle extends BaseShape {
     public Tuple p2() { return p2; }
 
     public Tuple p3() { return p3; }
+    
+    @Override
+    public boolean isSolid() { return false; }
 
 }

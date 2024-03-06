@@ -40,6 +40,8 @@ public class BaseShapeTest {
         }
         @Override
         public BoundingBox bounds() { throw new UnsupportedOperationException(); }
+        @Override
+        public boolean isSolid() { throw new UnsupportedOperationException(); }
     }
 
     @Test

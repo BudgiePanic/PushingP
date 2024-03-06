@@ -89,4 +89,7 @@ public final class Plane extends BaseShape {
         return AABB;
     }
     
+    @Override
+    public boolean isSolid() { return false; }
+
 }
