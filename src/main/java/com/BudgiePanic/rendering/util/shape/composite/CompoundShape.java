@@ -37,6 +37,9 @@ public class CompoundShape extends CompositeShape {
         this.left.setParent(this);
         this.right.setParent(this);
         this.children = List.of(this.left, this.right);
+        if (!this.isSolid()) {
+            System.out.println("WARN: Compound shape contains non-solid shapes, this may lead to visual artefacts in the render!");
+        }
     }
 
     protected Shape left() { return left; }
