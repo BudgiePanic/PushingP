@@ -60,6 +60,9 @@ public abstract class CompositeShape extends BaseShape implements Parent {
     }
 
     @Override
+    protected Optional<List<Intersection>> localIntersect(Ray ray) { return localIntersect(ray, (s)->true); }
+
+    @Override
     protected Tuple localNormal(Tuple point) { throw new UnsupportedOperationException("Composite shape does not support localNormal operation"); }
 
     @Override

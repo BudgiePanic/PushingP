@@ -63,9 +63,6 @@ public class CompoundShape extends CompositeShape {
         return Optional.of(filter(intersections));
     };
 
-    @Override
-    protected Optional<List<Intersection>> localIntersect(Ray ray) { return localIntersect(ray, (s) -> true); }
-
     /**
      * Applies this compound shape's operation to remove intersections that violate the operation rule.
      * @param intersections
