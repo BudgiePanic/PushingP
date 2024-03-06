@@ -49,7 +49,7 @@ public class CompoundShape extends CompositeShape {
     protected CompoundOperation operation() { return operation; }
 
     @Override
-    protected Optional<List<Intersection>> localIntersect(Ray ray, Predicate<Shape> condition) {
+    protected Optional<List<Intersection>> localIntersectI(Ray ray, Predicate<Shape> condition) {
         final var mapper = Intersection.buildIntersector(ray, condition);
         final Optional<List<Intersection>> leftIntersections = 
             condition.test(left) ? mapper.apply(left) : Optional.empty();

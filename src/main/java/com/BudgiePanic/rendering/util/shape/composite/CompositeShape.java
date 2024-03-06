@@ -42,6 +42,17 @@ public abstract class CompositeShape extends BaseShape implements Parent {
     protected abstract Collection<Shape> children();
 
     /**
+     * Perform local intersection test against the composite shape's children.
+     * @param ray
+     *     The ray to test with.
+     * @param condition
+     *     Perform intersection tests against shapes matching this condition.
+     * @return
+     *     A list of ray-shape intersections made on the composite shapes children, if any.
+     */
+    protected abstract Optional<List<Intersection>> localIntersectI(Ray ray, Predicate<Shape> condition);
+
+    /**
      * Perform local intersection tests on children shapes.
      * @param ray
      *   The ray to test with.
@@ -50,7 +61,12 @@ public abstract class CompositeShape extends BaseShape implements Parent {
      * @return
      *   A list of ray-shape intersections made on the composite shapes children, if any.
      */
-    protected abstract Optional<List<Intersection>> localIntersect(Ray ray, Predicate<Shape> condition);
+    protected final Optional<List<Intersection>> localIntersect(Ray ray, Predicate<Shape> condition) {
+        if (!bounds().intersect(ray)) { // AABB check
+            return Optional.empty();
+        }
+        return localIntersectI(ray, condition);
+    };
 
     @Override
     public Optional<List<Intersection>> intersect(Ray ray, Predicate<Shape> inclusionCondition) {

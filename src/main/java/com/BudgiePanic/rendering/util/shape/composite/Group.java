@@ -65,10 +65,7 @@ public class Group extends CompositeShape {
     }
 
     @Override
-    protected Optional<List<Intersection>> localIntersect(Ray ray, Predicate<Shape> condition) {
-        if (!bounds().intersect(ray)) {
-            return Optional.empty();
-        }
+    protected Optional<List<Intersection>> localIntersectI(Ray ray, Predicate<Shape> condition) {
         List<Intersection> result = null; // lazilly initialize intersect list to avoid excessive list creation
         if (children.isEmpty()) { return Optional.empty(); }
         final var mapper = Intersection.buildIntersector(ray, condition);
