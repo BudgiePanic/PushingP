@@ -124,4 +124,10 @@ public class CubeTest {
             assertEquals(expected, output);
         }
     }
+
+    @Test
+    void testCubeSolid() {
+        var cube = new Cube(Matrix4.identity());
+        assertTrue(cube.isSolid());
+    }
 }

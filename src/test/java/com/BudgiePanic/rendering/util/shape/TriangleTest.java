@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.util.shape;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -78,6 +79,12 @@ public class TriangleTest {
         var intersections = result.get();
         assertEquals(1, intersections.size());
         assertTrue(FloatHelp.compareFloat(2f, intersections.get(0).a()) == 0);
+    }
+
+    @Test
+    void testTriangleSolid() {
+        var triangle = new Triangle(makePoint(1, 0, 0), makePoint(0, 1, 0), makePoint(0, 0, 1));
+        assertFalse(triangle.isSolid());
     }
 
 }

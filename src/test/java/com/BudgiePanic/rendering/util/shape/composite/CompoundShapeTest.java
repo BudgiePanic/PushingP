@@ -2,9 +2,11 @@ package com.BudgiePanic.rendering.util.shape.composite;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+import static com.BudgiePanic.rendering.util.matrix.Matrix4.identity;
 import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.difference;
 import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.union;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -133,6 +135,14 @@ public class CompoundShapeTest {
         var expected = -0.707107f;
         var actual = intersections.get(0).a();
         assertEquals(0, FloatHelp.compareFloat(expected, actual), "expected " + Float.toString(expected) + " actual " + Float.toString(actual));
+    }
+
+    @Test
+    void testCompoundShapeSolid() {
+        var compound = new CompoundShape(union, new Sphere(identity()), new Sphere(identity()), identity());
+        assertTrue(compound.isSolid());
+        compound = new CompoundShape(union, new Cylinder(identity(), 0, 0, false), new Sphere(identity()), identity());
+        assertFalse(compound.isSolid());
     }
 
 }

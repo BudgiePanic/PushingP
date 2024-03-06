@@ -197,4 +197,10 @@ public class SphereTest {
         assertEquals(1f, sphere.material().transparency());
         assertEquals(1.5f, sphere.material().refractiveIndex());
     }
+
+    @Test
+    void testSphereSolid() {
+        var sphere = new Sphere(Matrix4.identity());
+        assertTrue(sphere.isSolid());
+    }
 }

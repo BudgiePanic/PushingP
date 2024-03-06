@@ -3,6 +3,7 @@ package com.BudgiePanic.rendering.util.shape;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -85,5 +86,13 @@ public class ConeTest {
             var expected = test.b();
             assertEquals(expected, result);
         }
+    }
+
+    @Test
+    void testConeSolid() {
+        var cone = new Cone(Matrix4.identity(), 0, 0, false);
+        assertFalse(cone.isSolid());
+        cone = new Cone(Matrix4.identity(), 0, 0, true);
+        assertTrue(cone.isSolid());
     }
 }

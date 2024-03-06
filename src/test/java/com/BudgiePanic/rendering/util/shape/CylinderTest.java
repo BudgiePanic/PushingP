@@ -152,4 +152,12 @@ public class CylinderTest {
             assertEquals(expected, result);
         }
     }
+
+    @Test
+    void testCylinderSolid() {
+        var cylinder = new Cylinder(Matrix4.identity(),1,0,false);
+        assertFalse(cylinder.isSolid());
+        cylinder = new Cylinder(Matrix4.identity(), 1, 0, true);
+        assertTrue(cylinder.isSolid());
+    }
 }
