@@ -11,6 +11,7 @@ import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.BaseShapeTest;
+import com.BudgiePanic.rendering.util.shape.Cone;
 import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
@@ -119,6 +120,15 @@ public class GroupTest {
         var result = shape.normal(makePoint(1.7321f, 1.1547f, -5.5774f));
         var expected = makeVector(0.2857f, 0.4286f, -0.8571f);
         assertEquals(expected, result);
+    }
+
+    @Test
+    void testGroupSolid() {
+        var group = new Group(identity);
+        group.addShape(new Sphere(identity));
+        assertTrue(group.isSolid());
+        group.addShape(new Cone(identity, 1, 0, false));
+        assertFalse(group.isSolid());
     }
 
 }

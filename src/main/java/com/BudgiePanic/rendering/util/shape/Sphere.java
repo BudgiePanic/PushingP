@@ -14,7 +14,7 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  * 
  * @author BudgiePanic
  */
-public final class Sphere extends BaseShape {
+public class Sphere extends BaseShape {
     /**
      * A sphere with default properties. Useful for testing.
      * 
@@ -90,5 +90,7 @@ public final class Sphere extends BaseShape {
     public BoundingBox bounds() {
       return AABB;
     }
-  
+    
+    @Override
+    public boolean isSolid() { return true; }
 }

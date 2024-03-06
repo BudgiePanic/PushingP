@@ -37,6 +37,9 @@ public class CompoundShape extends CompositeShape {
         this.left.setParent(this);
         this.right.setParent(this);
         this.children = List.of(this.left, this.right);
+        if (!this.isSolid()) {
+            System.out.println("WARN: compound shape contains non-solid shapes, intersection tests against this shape may have unexpected results!");
+        }
     }
 
     protected Shape left() { return left; }

@@ -2,13 +2,16 @@ package com.BudgiePanic.rendering.util.shape.composite;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+import static com.BudgiePanic.rendering.util.matrix.Matrix4.identity;
 import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.difference;
 import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.union;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
@@ -17,6 +20,7 @@ import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.Cube;
+import com.BudgiePanic.rendering.util.shape.Cylinder;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
@@ -113,6 +117,32 @@ public class CompoundShapeTest {
         assertTrue(result.isPresent());
         var intersections = result.get();
         assertEquals(2, intersections.size());
+    }
+
+    @Disabled("disabled until issue #79 is resolved")
+    @Test
+    void testCompoundShapeDifferenceA() {
+        // open shapes that do not enclose a volume
+        var compound = new CompoundShape(difference, 
+        new Cylinder(Matrix4.identity(), 1, 0, false), 
+        new Sphere(Transforms.identity().scale(0.5f).translate(0, 0.5f, -1).assemble()), Matrix4.identity());
+        var ray = new Ray(makePoint(0, 0.5f, -1), makeVector(0, 0.5f, 0.5f));
+        var result = compound.intersect(ray);
+        assertTrue(result.isPresent());
+        var intersections = result.get();
+        assertEquals(1, intersections.size());
+        assertEquals(compound.right, intersections.get(0).shape());
+        var expected = -0.707107f;
+        var actual = intersections.get(0).a();
+        assertEquals(0, FloatHelp.compareFloat(expected, actual), "expected " + Float.toString(expected) + " actual " + Float.toString(actual));
+    }
+
+    @Test
+    void testCompoundShapeSolid() {
+        var compound = new CompoundShape(union, new Sphere(identity()), new Sphere(identity()), identity());
+        assertTrue(compound.isSolid());
+        compound = new CompoundShape(union, new Cylinder(identity(), 0, 0, false), new Sphere(identity()), identity());
+        assertFalse(compound.isSolid());
     }
 
 }

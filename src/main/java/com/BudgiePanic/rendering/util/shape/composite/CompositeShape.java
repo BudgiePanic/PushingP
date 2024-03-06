@@ -101,4 +101,7 @@ public abstract class CompositeShape extends BaseShape implements Parent {
         return Parent.super.contains(shape);
     }
 
+    @Override
+    public boolean isSolid() { return this.children().stream().allMatch(Shape::isSolid); }
+
 }

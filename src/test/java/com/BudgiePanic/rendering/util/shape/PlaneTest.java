@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -63,5 +64,11 @@ public class PlaneTest {
         assertEquals(1, intersections.get().size());
         assertEquals(plane, intersections.get().get(0).shape());
         assertEquals(1f, intersections.get().get(0).a());
+    }
+
+    @Test
+    void testCylinderSolid() {
+        var plane = new Plane(Matrix4.identity());
+        assertFalse(plane.isSolid());
     }
 }

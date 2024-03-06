@@ -123,4 +123,12 @@ public interface Shape {
      *   True if the shape is contained within this shape.
      */
     boolean contains(Shape shape);
+
+    /**
+     * Does this shape enclose a volume?
+     * 
+     * @return
+     *   Returns true if the shape encloses a volume with no holes.
+     */
+    boolean isSolid();
 }
