@@ -30,7 +30,6 @@ import com.BudgiePanic.rendering.util.pattern.PatternTest;
 import com.BudgiePanic.rendering.util.shape.Cube;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Shape;
-import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
