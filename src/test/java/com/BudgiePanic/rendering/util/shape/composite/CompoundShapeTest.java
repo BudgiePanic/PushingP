@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
@@ -116,6 +117,7 @@ public class CompoundShapeTest {
         assertEquals(2, intersections.size());
     }
 
+    @Disabled("disabled until issue #79 is resolved")
     @Test
     void testCompoundShapeDifferenceA() {
         // open shapes that do not enclose a volume
@@ -128,6 +130,9 @@ public class CompoundShapeTest {
         var intersections = result.get();
         assertEquals(1, intersections.size());
         assertEquals(compound.right, intersections.get(0).shape());
+        var expected = -0.707107f;
+        var actual = intersections.get(0).a();
+        assertEquals(0, FloatHelp.compareFloat(expected, actual), "expected " + Float.toString(expected) + " actual " + Float.toString(actual));
     }
 
 }

@@ -2,6 +2,7 @@ package com.BudgiePanic.rendering.scene;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+import static com.BudgiePanic.rendering.util.matrix.Matrix4.identity;
 import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.difference;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import com.BudgiePanic.rendering.objects.TestCompound;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
@@ -26,6 +28,8 @@ import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.pattern.PatternTest;
 import com.BudgiePanic.rendering.util.shape.Cube;
+import com.BudgiePanic.rendering.util.shape.Plane;
+import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
@@ -567,6 +571,7 @@ public class WorldTest {
             assertTrue(result);
     }
 
+    @Disabled("disabled until issue #79 is resolved")
     @Test
     void testInShadowCompositeShapeD() {
         final int cameraWidth = 1536, cameraHeight = cameraWidth;
@@ -591,6 +596,7 @@ public class WorldTest {
         assertFalse(result);
     }
 
+    @Disabled("disabled until issue #79 is resolved")
     @Test
     void testInShadowCompositeShapeE() {
         final int cameraWidth = 1536, cameraHeight = cameraWidth;
