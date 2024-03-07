@@ -24,7 +24,7 @@ public class TimingWrapper extends Camera {
         var startTime = System.currentTimeMillis();
         var result = super.takePicture(world, canvas);
         var endTime = System.currentTimeMillis();
-        System.out.println("INFO: image of" + world + " via " + this.toString() + " took " + (endTime - startTime) + " milliseconds to complete.");
+        System.out.println("INFO: image of " + world + " via " + this.toString() + " took " + (endTime - startTime) + " milliseconds to complete.");
         return result;
     }
     
