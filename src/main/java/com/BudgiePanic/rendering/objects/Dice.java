@@ -42,7 +42,7 @@ public class Dice extends CompoundShape {
     public Dice(Matrix4 transform, Material cubeMaterial, Material dimpleMaterial) {
         super(
             difference,
-            makeSmoothCube(Transforms.identity().translate(0.25f, 0.25f, 0.25f).scale(0.65f).assemble(), cubeMaterial),
+            makeSmoothCube(Transforms.identity().translate(0.30f, 0.30f, 0.30f).scale(0.65f).assemble(), cubeMaterial),
             makeDimples(dimpleMaterial),
             transform
         );
