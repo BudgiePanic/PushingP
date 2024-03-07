@@ -2,6 +2,7 @@ package com.BudgiePanic.rendering.toy;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+import static com.BudgiePanic.rendering.util.matrix.Matrix4.identity;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class CompoundShapeDemo implements Runnable {
     private static final int width = 1536, height = width;
     private static final float fov = 90f;
     private final Tuple cameraPostion = makePoint(0, 3, -3);
-    private final Tuple cameraTarget = makePoint(0, 0, 1);
+    private final Tuple cameraTarget = makePoint(0, 0, 1.5f);
     // private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(makePoint(0, 5, 0), makePoint(0, 0, 10), makeVector(0, 1, 0)));
     private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
 
@@ -63,11 +64,23 @@ public class CompoundShapeDemo implements Runnable {
                         new Perturb(new BiPattern(BiOperation.stripe, Colors.green.multiply(0.66f), Colors.blue.multiply(0.70f), 
                         Transforms.identity().rotateY(AngleHelp.toRadians(45f)).scale(0.5f, 0.5f, 0.5f).assemble()))
                     )
-                )
+                ).setReflectivity(0.06f)
             )
         );
-        world.addShape(new Dice());
-        // TODO we'll come back to this once #76 is fixed...
+        world.addShape(new Dice( // RED BOTTOM
+            Transforms.identity().assemble(), 
+            Material.color(Colors.red.multiply(0.75f)), 
+            Material.defaultMaterial()));
+
+        world.addShape(new Dice( // GREEN BOTTOM
+            Transforms.identity().rotateY(AngleHelp.toRadians(101f)).translate(-1f, 0, 0.5f).assemble(), 
+            Material.color(Colors.green.multiply(0.18f)).setReflectivity(0.80f).setRefractiveIndex(1.5f).setTransparency(0.95f).setDiffuse(0.46f).setAmbient(0.06f).setShininess(500f), 
+            Material.defaultMaterial()));
+
+        world.addShape(new Dice( // BLUE TOP
+            Transforms.identity().rotateX(AngleHelp.toRadians(90f)).rotateY(-10f).translate(-0.23f, 2, 1f).assemble(),
+            Material.color(Colors.blue.multiply(0.75f)).setReflectivity(0.33f), 
+            Material.defaultMaterial().setReflectivity(0.10f)));
 
 
         // ====== take the image ========
