@@ -21,14 +21,24 @@ import com.BudgiePanic.rendering.util.transform.Transforms;
  */
 public class Dice extends CompoundShape {
     
-    public Dice() {
-        this(Transforms.identity().scale(1.0f).rotateY(AngleHelp.toRadians(-45f)).translate(0, 0, 0).assemble());
-    }
-
+    /**
+     * Creates a smooth dice wtih default materials
+     * @param transform
+     *   The dice transform, defines the dice's world position.
+     */
     public Dice(Matrix4 transform) {    
         this(transform, Material.defaultMaterial(), Material.defaultMaterial());
     }
 
+    /**
+     * Create a smooth dice.
+     * @param transform
+     *   The dice transform, defines the dice's world position.
+     * @param cubeMaterial
+     *   The material of the dice cube.
+     * @param dimpleMaterial
+     *   The material of the dice number dimples
+     */
     public Dice(Matrix4 transform, Material cubeMaterial, Material dimpleMaterial) {
         super(
             difference,
