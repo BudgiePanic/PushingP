@@ -33,6 +33,7 @@ import com.BudgiePanic.rendering.util.shape.Cylinder;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
+import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
@@ -101,7 +102,23 @@ public class CompoundShapeDemo implements Runnable {
               new Cylinder(Transforms.identity().scale(factor,1,factor).rotateZ(AngleHelp.toRadians(90f)).rotateY(AngleHelp.toRadians(90f)).assemble(),mat, 1, -1, true), identity()), 
           Transforms.identity().scale(0.5f).rotateY(AngleHelp.toRadians(60f)).rotateZ(AngleHelp.toRadians(30f)).rotateX(AngleHelp.toRadians(-45f)).translate(1f, 3f, 0.3f).assemble()
         ));
-        
+        // pac man
+        final var eyeLeftPos = new Tuple(-0.5f, 0.5f, 1f).normalize().multiply(1.2f);
+        final var eyeRightPos = new Tuple(-0.5f, -0.5f, 1f).normalize().multiply(1.2f);
+        final var pacManShapes = new Group(
+            Transforms.identity().scale(0.66f).rotateX(AngleHelp.toRadians(-90f)).rotateZ(AngleHelp.toRadians(90f)).rotateY(AngleHelp.toRadians(-110f)).rotateZ(AngleHelp.toRadians(180f)).rotateX(AngleHelp.toRadians(33f)).rotateY(AngleHelp.toRadians(-15f)).translate(2.5f, 2.5f, -0.66f).assemble()
+        );
+        pacManShapes.addShape(new CompoundShape(difference,
+        new CompoundShape(union, 
+            new Sphere(Transforms.identity().assemble(), Material.color(Colors.red.add(Colors.green))),
+            new CompoundShape(union, 
+                new Sphere(Transforms.identity().scale(0.1f).translate(eyeLeftPos.x, eyeLeftPos.y, eyeLeftPos.z).assemble(), Material.color(Colors.black).setReflectivity(0.10f)),
+                new Sphere(Transforms.identity().scale(0.1f).translate(eyeRightPos.x, eyeRightPos.y, eyeRightPos.z).assemble(), Material.color(Colors.black).setReflectivity(0.10f)),
+                Transforms.identity().assemble()),
+            Transforms.identity().assemble()),
+        new Cube(Transforms.identity().shear(0, 0, 0, 0, 1, 0).translate(1.1f, 0, 2.1f).assemble(), Material.color(Colors.black).setTransparency(1).setShadow(false)), identity()));
+        pacManShapes.addShape(new Sphere(Transforms.identity().scale(0.20f).translate(0.5f, 0, 1.15f).assemble(), Material.color(Colors.red.add(Colors.green))));
+        world.addShape(pacManShapes);
 
 
         // ====== take the image ========
