@@ -119,6 +119,16 @@ public class CompoundShapeDemo implements Runnable {
         new Cube(Transforms.identity().shear(0, 0, 0, 0, 1, 0).translate(1.1f, 0, 2.1f).assemble(), Material.color(Colors.black).setTransparency(1).setShadow(false)), identity()));
         pacManShapes.addShape(new Sphere(Transforms.identity().scale(0.20f).translate(0.5f, 0, 1.15f).assemble(), Material.color(Colors.red.add(Colors.green))));
         world.addShape(pacManShapes);
+        // The lenses
+        world.addShape(new CompoundShape(intersect, 
+            new Sphere(Transforms.identity().translate(0, 0, 0.5f).assemble(), Sphere.defaultGlassSphere().material()),
+            new Sphere(Transforms.identity().translate(0, 0, -0.5f).assemble(), Sphere.defaultGlassSphere().material()), 
+            Transforms.identity().rotateY(AngleHelp.toRadians(0f)).translate(-1, 1f, -1.8f).assemble()));
+        
+        world.addShape(new CompoundShape(intersect, 
+            new Sphere(Transforms.identity().translate(0, 0, 0.5f).assemble(), Sphere.defaultGlassSphere().material()),
+            new Sphere(Transforms.identity().translate(0, 0, -0.5f).assemble(), Sphere.defaultGlassSphere().material()), 
+            Transforms.identity().scale(0.25f).rotateY(AngleHelp.toRadians(0f)).translate(cameraPostion.x - 0.1f, cameraPostion.y + 0.2f, cameraPostion.z + 0.1f).assemble()));
 
 
         // ====== take the image ========
