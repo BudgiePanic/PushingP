@@ -3,6 +3,9 @@ package com.BudgiePanic.rendering.toy;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static com.BudgiePanic.rendering.util.matrix.Matrix4.identity;
+import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.difference;
+import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.intersect;
+import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.union;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +28,11 @@ import com.BudgiePanic.rendering.util.pattern.BiOperation;
 import com.BudgiePanic.rendering.util.pattern.BiPattern;
 import com.BudgiePanic.rendering.util.pattern.Perturb;
 import com.BudgiePanic.rendering.util.pattern.SolidColor;
+import com.BudgiePanic.rendering.util.shape.Cube;
+import com.BudgiePanic.rendering.util.shape.Cylinder;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
@@ -44,7 +50,7 @@ public class CompoundShapeDemo implements Runnable {
     public void run() {
         World world = new World();
         // makePoint(-2, 8, -2)
-        world.addLight(new PointLight(makePoint(-2, 8, -2), Colors.white));
+        world.addLight(new PointLight(makePoint(-2, 6.5f, -2), Colors.white));
         world.addShape( // "sky box"
             new Sphere(
                 Transforms.identity().scale(15, 15, 15).assemble(),
@@ -67,6 +73,7 @@ public class CompoundShapeDemo implements Runnable {
                 ).setReflectivity(0.06f)
             )
         );
+        // the dice
         world.addShape(new Dice( // RED BOTTOM
             Transforms.identity().assemble(), 
             Material.color(Colors.red.multiply(0.75f)), 
@@ -81,6 +88,20 @@ public class CompoundShapeDemo implements Runnable {
             Transforms.identity().rotateX(AngleHelp.toRadians(90f)).rotateY(-10f).translate(-0.23f, 2, 1f).assemble(),
             Material.color(Colors.blue.multiply(0.75f)).setReflectivity(0.33f), 
             Material.defaultMaterial().setReflectivity(0.10f)));
+        // super compound shape
+        final var factor = 0.33f;
+        final var mat = Material.color(Colors.blue.add(Colors.red).multiply(0.80f).add(Colors.green.multiply(0.2f))).setReflectivity(0.10f).setAmbient(0.30f);
+        world.addShape(new CompoundShape(difference, 
+          new CompoundShape(intersect, new Sphere(identity(), mat), new Cube(Transforms.identity().scale(0.70f).assemble(), mat), identity()),
+          new CompoundShape(union,
+              new CompoundShape(union, 
+                    new Cylinder(Transforms.identity().scale(factor,1,factor).assemble(), mat, 1, -1, true), 
+                    new Cylinder(Transforms.identity().scale(factor,1,factor).rotateZ(AngleHelp.toRadians(90f)).assemble(), mat, 1, -1, true), 
+                identity()),
+              new Cylinder(Transforms.identity().scale(factor,1,factor).rotateZ(AngleHelp.toRadians(90f)).rotateY(AngleHelp.toRadians(90f)).assemble(),mat, 1, -1, true), identity()), 
+          Transforms.identity().scale(0.5f).rotateY(AngleHelp.toRadians(60f)).rotateZ(AngleHelp.toRadians(30f)).rotateX(AngleHelp.toRadians(-45f)).translate(1f, 3f, 0.3f).assemble()
+        ));
+        
 
 
         // ====== take the image ========
