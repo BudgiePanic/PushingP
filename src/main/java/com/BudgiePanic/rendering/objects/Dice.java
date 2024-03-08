@@ -21,18 +21,28 @@ import com.BudgiePanic.rendering.util.transform.Transforms;
  */
 public class Dice extends CompoundShape {
     
-    public Dice() {
-        this(Transforms.identity().scale(1.0f).rotateY(AngleHelp.toRadians(-45f)).translate(0, 0, 0).assemble());
-    }
-
+    /**
+     * Creates a smooth dice wtih default materials
+     * @param transform
+     *   The dice transform, defines the dice's world position.
+     */
     public Dice(Matrix4 transform) {    
         this(transform, Material.defaultMaterial(), Material.defaultMaterial());
     }
 
+    /**
+     * Create a smooth dice.
+     * @param transform
+     *   The dice transform, defines the dice's world position.
+     * @param cubeMaterial
+     *   The material of the dice cube.
+     * @param dimpleMaterial
+     *   The material of the dice number dimples
+     */
     public Dice(Matrix4 transform, Material cubeMaterial, Material dimpleMaterial) {
         super(
             difference,
-            makeSmoothCube(Transforms.identity().translate(0.25f, 0.25f, 0.25f).scale(0.65f).assemble(), cubeMaterial),
+            makeSmoothCube(Transforms.identity().translate(0.30f, 0.30f, 0.30f).scale(0.65f).assemble(), cubeMaterial),
             makeDimples(dimpleMaterial),
             transform
         );
@@ -43,53 +53,53 @@ public class Dice extends CompoundShape {
         final var max = 1;
         final var min = 0;
         // cylinders
-        final var a = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateZ(-rotation).translate(0, 0, 0).assemble(), material, max, min) 
+        final var a = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateZ(-rotation).translate(0, 0, 0).assemble(), material, max, min, true) 
         {
             @Override public String toString() { return "a"; };
         }; 
-        final var b = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(1, 0, 0).rotateX(rotation).assemble(), material, max, min)
+        final var b = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(1, 0, 0).rotateX(rotation).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "b"; };
         }; 
-        final var c = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(0, 0, 1).rotateZ(-rotation).assemble(), material, max, min) 
+        final var c = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(0, 0, 1).rotateZ(-rotation).assemble(), material, max, min, true) 
         {
             @Override public String toString() { return "c"; };
         };
-        final var d = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateX(rotation).translate(0, 0, 0).assemble(), material, max, min)
+        final var d = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateX(rotation).translate(0, 0, 0).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "d"; };
         };
 
-        final var e = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(0, 0, 0).assemble(), material, max, min)
+        final var e = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(0, 0, 0).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "e"; };
         }; 
-        final var f = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(1, 0, 0).assemble(), material, max, min)
+        final var f = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(1, 0, 0).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "f"; };
         }; 
-        final var g = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(1, 0, 1).assemble(), material, max, min)
+        final var g = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(1, 0, 1).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "g"; };
         }; 
-        final var h = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(0, 0, 1).assemble(), material, max, min)
+        final var h = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).translate(0, 0, 1).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "h"; };
         }; 
 
-        final var i = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateZ(-rotation).translate(0, 1, 0).assemble(), material, max, min)
+        final var i = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateZ(-rotation).translate(0, 1, 0).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "i"; };
         }; 
-        final var j = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateX(rotation).translate(0, 1, 0).assemble(), material, max, min)
+        final var j = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateX(rotation).translate(0, 1, 0).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "j"; };
         }; 
-        final var k = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateZ(-rotation).translate(0, 1, 1).assemble(), material, max, min)
+        final var k = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateZ(-rotation).translate(0, 1, 1).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "k"; };
         }; 
-        final var l = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateX(rotation).translate(1, 1, 0).assemble(), material, max, min)
+        final var l = new Cylinder(Transforms.identity().scale(0.25f, 1.0f, 0.25f).rotateX(rotation).translate(1, 1, 0).assemble(), material, max, min, true)
         {
             @Override public String toString() { return "l"; };
         }; 
