@@ -34,6 +34,11 @@ public class World {
     public static final int defaultRecursionDepth = 4;
 
     /**
+     * Predicate to include all shapes in the word in intersection tests
+     */
+    public static final Predicate<Shape> allShapes = (s) -> true;
+
+    /**
      * The shapes in the scene.
      */
     protected List<Shape> shapes;
@@ -108,7 +113,7 @@ public class World {
      *   EMPTY if no intersections occured. List of intersections if any.
      */
     public Optional<List<Intersection>> intersect(Ray ray) {
-        return intersect(ray, (s)->true);
+        return intersect(ray, allShapes);
     }
 
     /**
@@ -234,6 +239,33 @@ public class World {
     }
 
     /**
+     * Test if any shapes block the view from one point to another.
+     * @param from
+     *   The first point.
+     * @param to
+     *   The second point.3
+     * @param condition
+     *   A predicate to decide if a shape should be used in the occulusion test.
+     * @return
+     *   True if any shapes block the line traced by 'from' to 'to'.
+     */
+    public boolean isOcculuded(Tuple from, Tuple to, Predicate<Shape> condition) {
+        final var trace = to.subtract(from);
+        final var distance = trace.magnitude();
+        final var ray = new Ray(from, trace.normalize());
+        final var intersections = this.intersect(ray, condition);
+        if (intersections.isEmpty()) return false;
+        var hit = Intersection.Hit(intersections.get());
+        if (hit.isPresent()) {
+            // distance to hit is smaller than distance to target point, so it must be blocking the point's view to the target
+            if (FloatHelp.compareFloat(hit.get().a(), distance) < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check if a point in the world is in shadow from another object
      *
      * @param point
@@ -242,18 +274,9 @@ public class World {
      *   Whether the point can see a light in the scene without intersecting a closer object.
      */
     public boolean inShadow(Tuple point) {
-        for (PointLight light : lights) {
-            var pointToLight = light.position().subtract(point);
-            var distance = pointToLight.magnitude();
-            var ray = new Ray(point, pointToLight.normalize());
-            var intersections = this.intersect(ray, (s) -> s.material().shadow() || (s instanceof Parent));
-            if (intersections.isEmpty()) return false;
-            var hit = Intersection.Hit(intersections.get());
-            if (hit.isPresent()) {
-                // distance to hit is smaller than distance to light, so it must be blocking the point's view to the light
-                if (FloatHelp.compareFloat(hit.get().a(), distance) < 0) {
-                    return true;
-                }
+        for (Light light : lights) {
+            if (isOcculuded(point, light.position(), (s) -> s.material().shadow() || (s instanceof Parent))) {
+                return true;
             }
         } 
         return false;
