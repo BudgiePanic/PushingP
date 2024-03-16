@@ -160,7 +160,7 @@ public class World {
         final var hasReflectance = material.reflectivity() > 0 && material.transparency() > 0; // this expression could be extracted to Shading info 
         final Optional<Float> reflectance = hasReflectance ?  Optional.of(info.schlick()) : Optional.empty(); // this expression could be extracted to Shading info 
         return this.lights.stream().
-            map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
+            map((light) -> Phong.compute(info, light, intensityAt(info.overPoint()))).
             map((color) -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0f)))).
             map((color) -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0f)))).
             reduce(Color::add).
@@ -278,13 +278,13 @@ public class World {
      * @return
      *   Whether the point can see a light in the scene without intersecting a closer object.
      */
-    public boolean inShadow(Tuple point) {
+    public float intensityAt(Tuple point) {
+        float accumulator = 0f;
         for (Light light : lights) {
-            if (isOccluded(point, light.position(), shadowCasters)) {
-                return true;
-            }
+            accumulator += light.intensityAt(point, this);
         } 
-        return false;
+        accumulator /= lights.size();
+        return accumulator;
     }
 
     /**
