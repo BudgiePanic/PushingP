@@ -1,10 +1,5 @@
 package com.BudgiePanic.rendering.toy;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-
 import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.reporting.ProgressWrapper;
 import com.BudgiePanic.rendering.scene.Camera;
@@ -59,17 +54,7 @@ public abstract class BaseDemo implements Runnable {
     }
 
     protected static void saveImageToFile(Canvas canvas, String fileName) {
-        System.out.println("INFO: saving image");
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        var file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-            return;
-        }
-        System.out.println("INFO: saved image");
-        System.out.println("INFO: done");
+        CanvasWriter.saveImageToFile(canvas, fileName);
     }
 
     @Override
