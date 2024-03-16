@@ -7,19 +7,11 @@ import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.d
 import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.intersect;
 import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.union;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.objects.Dice;
-import com.BudgiePanic.rendering.reporting.ProgressWrapper;
 import com.BudgiePanic.rendering.reporting.TimingWrapper;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
-import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Tuple;
@@ -37,18 +29,13 @@ import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
-public class CompoundShapeDemo implements Runnable {
+public class CompoundShapeDemo extends BaseDemo {
 
-    private static final String fileName = "compound_shapes.ppm";
-    private static final int width = 1536, height = width;
-    private static final float fov = 90f;
     private final Tuple cameraPostion = makePoint(0, 3, -3);
-    private final Tuple cameraTarget = makePoint(0, 0, 1.5f);
-    // private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(makePoint(0, 5, 0), makePoint(0, 0, 10), makeVector(0, 1, 0)));
-    private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
 
     @Override
-    public void run() {
+    protected World createWorld() {
+
         World world = new World();
         // makePoint(-2, 8, -2)
         world.addLight(new PointLight(makePoint(-2, 6.5f, -2), Colors.white));
@@ -129,23 +116,15 @@ public class CompoundShapeDemo implements Runnable {
             new Sphere(Transforms.identity().translate(0, 0, 0.5f).assemble(), Sphere.defaultGlassSphere().material()),
             new Sphere(Transforms.identity().translate(0, 0, -0.5f).assemble(), Sphere.defaultGlassSphere().material()), 
             Transforms.identity().scale(0.25f).rotateY(AngleHelp.toRadians(0f)).translate(cameraPostion.x - 0.1f, cameraPostion.y + 0.2f, cameraPostion.z + 0.1f).assemble()));
+        return world;
+    }
 
+    @Override
+    protected String getName() { return "compound_shapes.ppm"; }
 
-        // ====== take the image ========
-        System.out.println("INFO: taking picture");
-        var canvas = camera.takePicture(world, new ProgressWrapper(new ArrayCanvas(width, height), 20));
-
-        System.out.println("INFO: saving image");
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        var file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-            return;
-        }
-        System.out.println("INFO: saved image");
-        System.out.println("INFO: done");
+    @Override
+    protected Camera getCamera() {
+        return new TimingWrapper(1536, 1536, 90f, View.makeViewMatrix(cameraPostion, makePoint(0, 0, 1.5f), makeVector(0, 1, 0)));
     }
     
 }

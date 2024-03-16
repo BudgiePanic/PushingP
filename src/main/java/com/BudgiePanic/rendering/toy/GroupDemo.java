@@ -2,21 +2,13 @@ package com.BudgiePanic.rendering.toy;
 
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.checker;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
-import com.BudgiePanic.rendering.reporting.ProgressWrapper;
 import com.BudgiePanic.rendering.reporting.TimingWrapper;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
-import com.BudgiePanic.rendering.util.ArrayCanvas;
-import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
@@ -36,13 +28,10 @@ import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
-public class GroupDemo implements Runnable {
+public class GroupDemo extends BaseDemo {
 
-    private static final String fileName = "group.ppm";
-    private static final int width = 768, height = width;
-    private final static float fov = AngleHelp.toRadians(90f);
     private final Tuple cameraLocation = Tuple.makePoint(3,0,-3);
-    private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(cameraLocation, Tuple.makePoint(3, 0, 0), Tuple.makePoint(0,1,0)));
+
     private final List<Material> materials = List.of(
             Material.defaultMaterial(),
             Material.pattern(new Perturb(new BiPattern(BiOperation.radialGradient, 
@@ -93,9 +82,9 @@ public class GroupDemo implements Runnable {
     private Material randomMaterial() { return materials.get(random.nextInt(materials.size())); }
 
     @Override
-    public void run() {
-        System.out.println("Running groups demo");
-        System.out.println("building world");
+    protected World createWorld() {
+        System.out.println("INFO: running groups demo");
+        System.out.println("INFO: building world");
         World world = new World();
 
         world.addLight(new PointLight(cameraLocation, Colors.white));
@@ -120,19 +109,15 @@ public class GroupDemo implements Runnable {
                 world.addShape(group);
             }
         }
+        return world;
+    }
 
-        System.out.println("taking image");
-        Canvas canvas = camera.takePicture(world, new ProgressWrapper(new ArrayCanvas(width, height)));
+    @Override
+    protected String getName() { return "group.ppm"; }
 
-        System.out.println("saving image");
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        File file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        System.out.println("done");
+    @Override
+    protected Camera getCamera() {
+        return new TimingWrapper(768, 768, AngleHelp.toRadians(90f), View.makeViewMatrix(cameraLocation, Tuple.makePoint(3, 0, 0), Tuple.makePoint(0,1,0)));
     }
     
 }

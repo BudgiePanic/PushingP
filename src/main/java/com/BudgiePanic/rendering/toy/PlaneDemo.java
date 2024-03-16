@@ -3,17 +3,11 @@ package com.BudgiePanic.rendering.toy;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
-import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.light.PointLight;
@@ -23,15 +17,10 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
-public final class PlaneDemo implements Runnable {
-
-    private final static String fileName = "plane_demo.ppm";
-    private final static int width = 250, height = 250;
-    private final static float fov = AngleHelp.toRadians(70f);
-    private final Camera camera = new Camera(width, height, fov, View.makeViewMatrix(makePoint(0,3f,-10), makePoint(0,0,1), makeVector(0, 1, 0)));
+public final class PlaneDemo extends BaseDemo {
 
     @Override
-    public void run() {
+    protected World createWorld() {
         System.out.println("running plane demo toy.");
         System.out.println("constructing world");
         final List<Shape> shapes = List.of(
@@ -60,19 +49,15 @@ public final class PlaneDemo implements Runnable {
         World world = new World();
         world.getShapes().addAll(shapes);
         world.getLights().addAll(lights);
-        
-        System.out.println("taking image");
-        Canvas canvas = camera.takePicture(world);
+        return world;
+    }
 
-        System.out.println("saving image");
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        File file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        System.out.println("done");
+    @Override
+    protected String getName() { return "plane_demo.ppm"; }
+
+    @Override
+    protected Camera getCamera() {
+        return new Camera(250, 250, AngleHelp.toRadians(70f), View.makeViewMatrix(makePoint(0,3f,-10), makePoint(0,0,1), makeVector(0, 1, 0)));
     }
     
 }

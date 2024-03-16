@@ -1,11 +1,5 @@
 package com.BudgiePanic.rendering.toy;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
@@ -72,15 +66,7 @@ public class Shadow implements Runnable {
         System.out.println("Processed sheared sphere.");
         operate(canvas, new Sphere(Transforms.identity().scale(0.5f, 0.8f, 0.8f).rotateZ(0.785398f/*(0.25 * PI)*/).assemble()), Colors.red);
         System.out.println("Processed rotated sphere.");
-        // Write the canvas to file.
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        File file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-		System.out.println("done");
+        BaseDemo.saveImageToFile(canvas, fileName);
 	}
     
 }
