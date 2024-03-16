@@ -1,18 +1,12 @@
 package com.BudgiePanic.rendering.toy;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
-import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
@@ -25,16 +19,11 @@ import com.BudgiePanic.rendering.util.shape.Cube;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
-public class CubeDemo implements Runnable {
-
-    private static final String fileName = "cube.ppm";
-    private static final int width = 500, height = width;
-    private final static float fov = AngleHelp.toRadians(70f);
-    private final Camera camera = new Camera(width, height, fov, View.makeViewMatrix(Tuple.makePoint(0,1.5f,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
+public class CubeDemo extends BaseDemo { 
 
     @Override
-    public void run() {
-        System.out.println("Running cube demo");
+    protected World createWorld() {
+        System.out.println("INFO: Running cube demo");
         World world = new World();
 
         final var small = Transforms.identity().scale(0.2f, 0.2f, 0.2f).assemble();
@@ -65,19 +54,18 @@ public class CubeDemo implements Runnable {
             Material.pattern(new BiPattern(BiOperation.stripe, Colors.green, Colors.white, Transforms.identity().scale(0.15f, 0.15f, 0.15f).assemble())));
         world.addShape(shape);
 
-        System.out.println("taking image");
-        Canvas canvas = camera.takePicture(world);
-
-        System.out.println("saving image");
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        File file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        System.out.println("done");
-
+        return world;
     }
+
+    @Override
+    protected String getName() { return "cube.ppm"; }
+
+    @Override
+    protected Camera getCamera() {
+        return new Camera(500, 500, AngleHelp.toRadians(70f), View.makeViewMatrix(getCameraLocation(), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
+    }
+
+    @Override
+    protected Tuple getCameraLocation() { return Tuple.makePoint(0,1.5f,-6f); }
     
 }

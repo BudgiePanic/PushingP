@@ -6,17 +6,11 @@ import static com.BudgiePanic.rendering.util.pattern.BiOperation.radialGradient;
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.ring;
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.stripe;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
-import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
@@ -32,17 +26,12 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
-public class PatternToy implements Runnable {
-
-    private final static String fileName = "pattern_demo.ppm";
-    private final static int width = 700, height = 700;
-    private final static float fov = AngleHelp.toRadians(65f);
-    private final Camera camera = new Camera(width, height, fov, View.makeViewMatrix(Tuple.makePoint(0,5,-4.5f), Tuple.makePoint(0, 1, 1), Tuple.makePoint(0,1,0)));
+public class PatternToy extends BaseDemo {
 
     @Override
-    public void run() {
-        System.out.println("running pattern toy.");
-        System.out.println("Building world");
+    protected World createWorld() {
+        System.out.println("INFO: running pattern toy");
+        System.out.println("INFO: building world");
         final List<Shape> shapes = List.of(
             new Plane(Transforms.identity().assemble(), 
             Material.pattern(
@@ -83,19 +72,18 @@ public class PatternToy implements Runnable {
         World world = new World();
         world.getShapes().addAll(shapes);
         world.getLights().addAll(lights);
-
-        System.out.println("taking image");
-        Canvas canvas = camera.takePicture(world);
-
-        System.out.println("saving image");
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        File file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        System.out.println("done");
+        return world;
     }
+
+    @Override
+    protected String getName() { return "pattern_demo.ppm"; }
+
+    @Override
+    protected Camera getCamera() {
+        return new Camera(700, 700, AngleHelp.toRadians(65f), View.makeViewMatrix(getCameraLocation(), Tuple.makePoint(0, 1, 1), Tuple.makePoint(0,1,0)));
+    }
+
+    @Override
+    protected Tuple getCameraLocation() { return Tuple.makePoint(0,5,-4.5f); }
     
 }

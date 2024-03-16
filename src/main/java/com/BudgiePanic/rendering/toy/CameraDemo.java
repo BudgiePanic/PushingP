@@ -1,15 +1,8 @@
 package com.BudgiePanic.rendering.toy;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
-import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
@@ -24,12 +17,29 @@ import com.BudgiePanic.rendering.util.transform.View;
  * 
  * @author BudgiePanic
  */
-public class CameraDemo implements Runnable {
+public class CameraDemo extends BaseDemo {
 
     @Override
-    public void run() {
-        System.out.println("Running camera toy.");
-        System.out.println("building world");
+    protected String getName() { return "camera_demo.ppm"; }
+
+    @Override
+    protected Camera getCamera() {
+        Camera camera = new Camera(640, 480, 
+            AngleHelp.toRadians(90), 
+            View.makeViewMatrix(
+                getCameraLocation(),
+                Tuple.makePoint(0, 1, 0),
+                Tuple.makeVector(0, 1, 0)));
+        return camera;
+    }
+
+    @Override
+    protected Tuple getCameraLocation() { return Tuple.makePoint(0, 1.5f, -5f); }
+
+    @Override
+    protected World createWorld() {
+        System.out.println("INFO: Running camera toy.");
+        System.out.println("INFO: building world");
         Sphere floor = new Sphere(Transforms.identity().scale(10, 0.01f, 10).assemble(), Material.color(new Color(1, 0.9f, 0.9f)).setSpecular(0));
         Sphere leftWall = new Sphere(
             Transforms.identity().
@@ -68,26 +78,7 @@ public class CameraDemo implements Runnable {
         world.addShape(middleSphere);
         world.addShape(rightSphere);
         world.addShape(leftSphere);
-        Camera camera = new Camera(640, 480, 
-            AngleHelp.toRadians(90), 
-            View.makeViewMatrix(
-                Tuple.makePoint(0, 1.5f, -5f),
-                Tuple.makePoint(0, 1, 0),
-                Tuple.makeVector(0, 1, 0)));
-        System.out.println("taking image");
-        Canvas image = camera.takePicture(world);
-        // write the image to file for viewing
-        // Write the canvas to file.
-        System.out.println("saving image");
-        final String fileName = "camera_demo.ppm";
-        var lines = CanvasWriter.canvasToPPMString(image);
-        File file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        System.out.println("done");
+        return world;
     }
     
 }

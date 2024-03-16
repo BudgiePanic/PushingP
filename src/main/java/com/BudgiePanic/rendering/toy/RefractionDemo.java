@@ -2,17 +2,11 @@ package com.BudgiePanic.rendering.toy;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
-import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
@@ -28,12 +22,7 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
-public class RefractionDemo implements Runnable {
-
-    private static final String fileName = "refraction.ppm";
-    private static final int width = 500, height = width;
-    private final static float fov = AngleHelp.toRadians(65f);
-    private final Camera camera = new Camera(width, height, fov, View.makeViewMatrix(Tuple.makePoint(0,1.5f,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
+public class RefractionDemo extends BaseDemo {
 
     /*
      * Tips from the book author on transparent and reflective materials:
@@ -47,8 +36,8 @@ public class RefractionDemo implements Runnable {
      */
 
     @Override
-    public void run() {
-        System.out.println("running refraction toy.");
+    protected World createWorld() {
+        System.out.println("INFO: running refraction toy.");
         /*
          * A background made of 2 planes
          * A floor
@@ -88,19 +77,18 @@ public class RefractionDemo implements Runnable {
             0.8f),
             0.005f, 0.5f, 0.9f, 300f, 0.89f, 0.92f, 1.33f, false))
         );
-
-        System.out.println("taking image");
-        Canvas canvas = camera.takePicture(world);
-
-        System.out.println("saving image");
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        File file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        System.out.println("done");
+        return world;
     }
+
+    @Override
+    protected String getName() { return "refraction.ppm"; }
+
+    @Override
+    protected Camera getCamera() {
+        return new Camera(500, 500, AngleHelp.toRadians(65f), View.makeViewMatrix(getCameraLocation(), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
+    }
+
+    @Override
+    protected Tuple getCameraLocation() { return Tuple.makePoint(0,1.5f,-6f); }
     
 }
