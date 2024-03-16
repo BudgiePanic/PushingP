@@ -249,7 +249,7 @@ public class World {
      * @return
      *   True if any shapes block the line traced by 'from' to 'to'.
      */
-    public boolean isOcculuded(Tuple from, Tuple to, Predicate<Shape> condition) {
+    public boolean isOccluded(Tuple from, Tuple to, Predicate<Shape> condition) {
         final var trace = to.subtract(from);
         final var distance = trace.magnitude();
         final var ray = new Ray(from, trace.normalize());
@@ -275,7 +275,7 @@ public class World {
      */
     public boolean inShadow(Tuple point) {
         for (Light light : lights) {
-            if (isOcculuded(point, light.position(), (s) -> s.material().shadow() || (s instanceof Parent))) {
+            if (isOccluded(point, light.position(), (s) -> s.material().shadow() || (s instanceof Parent))) {
                 return true;
             }
         } 

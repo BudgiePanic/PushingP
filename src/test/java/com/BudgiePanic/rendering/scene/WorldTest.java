@@ -622,7 +622,7 @@ public class WorldTest {
     }
 
     @Test
-    void testWorldOcculsion() {
+    void testWorldOcclusion() {
         final var to = makePoint(-10, -10, -10);
         final var tests = List.of(
             new Pair<>(makePoint(-10, -10, -10), false),
@@ -632,7 +632,7 @@ public class WorldTest {
         );
         for (var test: tests) {
             final var from = test.a();
-            var result = defaultTestWorld.isOcculuded(from, to, World.allShapes);
+            var result = defaultTestWorld.isOccluded(from, to, World.allShapes);
             var expected = test.b();
             assertEquals(expected, result, "test: " + test.toString());
         }
