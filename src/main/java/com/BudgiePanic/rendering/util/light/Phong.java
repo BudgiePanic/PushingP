@@ -3,6 +3,7 @@ package com.BudgiePanic.rendering.util.light;
 import java.util.Optional;
 
 import com.BudgiePanic.rendering.util.Color;
+import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.ShadingInfo;
@@ -24,13 +25,13 @@ public final class Phong {
      *   Information about the point being illuminated
      * @param light
      *   The light that is illuminating the point
-     * @param inShadow
-     *   Is the point being shadowed by another object?
+     * @param intensity
+     *   the intensity of the light source
      * @return
      *   The color of the point described in the shading information record.
      */
-    public static Color compute(ShadingInfo info, Light light, boolean inShadow) {
-        return compute(info.shape().material(), light, info.overPoint(), info.eyeVector(), info.normalVector(), inShadow, Optional.of(info.shape()));
+    public static Color compute(ShadingInfo info, Light light, float intensity) {
+        return compute(info.shape().material(), light, info.overPoint(), info.eyeVector(), info.normalVector(), intensity, Optional.of(info.shape()));
     }
 
     /**
@@ -51,7 +52,7 @@ public final class Phong {
      *   The color at point 'position'
      */
     public static Color compute(Material material, Light light, Tuple position, Tuple eye, Tuple normal) {
-        return compute(material, light, position, eye, normal, false, Optional.empty());
+        return compute(material, light, position, eye, normal, 0f, Optional.empty());
     }
 
     /**
@@ -65,14 +66,14 @@ public final class Phong {
      *   the position of the observer
      * @param normal
      *   surface normal at 'position'
-     * @param shadow
-     *   is the surface under shadow?
+     * @param intensity
+     *   the intensity of the light source
      * @param shape
      *   the shape that the surface of the point being lit belongs to, if any
      * @return
      *   The color at point 'position'
      */
-    public static Color compute(Material material, Light light, Tuple position, Tuple eye, Tuple normal, boolean shadow,  Optional<Shape> shape) {
+    public static Color compute(Material material, Light light, Tuple position, Tuple eye, Tuple normal, float intensity,  Optional<Shape> shape) {
         final var pattern = material.pattern();
         final var color = shape.map(sh -> pattern.colorAt(position, sh::toObjectSpace)).orElse(pattern.colorAt(position));
         assert color != null;
@@ -80,17 +81,17 @@ public final class Phong {
         final var directionToLight = light.position().subtract(position).normalize();
         final var ambient = effective.multiply(material.ambient());
         final var lightNormalAngle = directionToLight.dot(normal);
-        if (shadow || lightNormalAngle < 0f) {
+        if (FloatHelp.compareFloat(0, intensity) != -1 || lightNormalAngle < 0f) {
             return ambient;
         }
-        final Color diffuse = effective.multiply(material.diffuse()).multiply(lightNormalAngle);
+        final Color diffuse = effective.multiply(material.diffuse()).multiply(lightNormalAngle).multiply(intensity);
         final var reflection = directionToLight.negate().reflect(normal);
         final var eyeReflectAngle = reflection.dot(eye);
         if (eyeReflectAngle < 0f) {
             return diffuse.add(ambient);
         }
         final var factor = (float)Math.pow(eyeReflectAngle, material.shininess());
-        final var specular = light.color().multiply(material.specular()).multiply(factor);
+        final var specular = light.color().multiply(material.specular()).multiply(factor).multiply(intensity);
         return ambient.add(diffuse).add(specular);
     }
 
