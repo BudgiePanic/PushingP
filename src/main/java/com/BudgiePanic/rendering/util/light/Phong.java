@@ -52,7 +52,7 @@ public final class Phong {
      *   The color at point 'position'
      */
     public static Color compute(Material material, Light light, Tuple position, Tuple eye, Tuple normal) {
-        return compute(material, light, position, eye, normal, 0f, Optional.empty());
+        return compute(material, light, position, eye, normal, 1f, Optional.empty());
     }
 
     /**
