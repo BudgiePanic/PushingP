@@ -20,6 +20,7 @@ import com.BudgiePanic.rendering.objects.TestCompound;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
+import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
@@ -635,6 +636,26 @@ public class WorldTest {
             var result = defaultTestWorld.isOccluded(from, to, World.allShapes);
             var expected = test.b();
             assertEquals(expected, result, "test: " + test.toString());
+        }
+    }
+
+    @Test
+    void testLightIntensityInWorld() {
+        final var light = defaultTestWorld.lights.getFirst();
+        final var tests = List.of(
+            new Pair<>(makePoint(0f, 0f, 0f), 0f),
+            new Pair<>(makePoint(0f, 1.0001f, 0f), 1f),
+            new Pair<>(makePoint(-1.0001f, 0f, 0), 1f),
+            new Pair<>(makePoint(0f, 0f, -1.0001f), 1f),
+            new Pair<>(makePoint(0f, 0f, 1.0001f), 0f),
+            new Pair<>(makePoint(1.0001f,0f, 0f), 0f),
+            new Pair<>(makePoint(0f, -1.0001f, 0f), 0f)
+        );
+        for (var test : tests) {
+            var point = test.a();
+            var expected = test.b();
+            var result = light.intensityAt(point, defaultTestWorld);
+            assertTrue(FloatHelp.compareFloat(expected, result) == 0, "expected:" + expected + " result:" + result);
         }
     }
 }
