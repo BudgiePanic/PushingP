@@ -21,6 +21,7 @@ import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
+import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -618,5 +619,22 @@ public class WorldTest {
         var point = info.overPoint();
         var result = world.inShadow(point);
         assertFalse(result);
+    }
+
+    @Test
+    void testWorldOcculsion() {
+        final var to = makePoint(-10, -10, -10);
+        final var tests = List.of(
+            new Pair<>(makePoint(-10, -10, -10), false),
+            new Pair<>(makePoint(10, 10, 10), true),
+            new Pair<>(makePoint(-20, -20, -20), false),
+            new Pair<>(makePoint(-5, -5, -5), false)
+        );
+        for (var test: tests) {
+            final var from = test.a();
+            var result = defaultTestWorld.isOcculuded(from, to, World.allShapes);
+            var expected = test.b();
+            assertEquals(expected, result, "test: " + test.toString());
+        }
     }
 }
