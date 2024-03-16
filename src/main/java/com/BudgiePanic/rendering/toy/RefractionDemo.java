@@ -85,10 +85,7 @@ public class RefractionDemo extends BaseDemo {
 
     @Override
     protected Camera getCamera() {
-        return new Camera(500, 500, AngleHelp.toRadians(65f), View.makeViewMatrix(getCameraLocation(), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
+        return new Camera(500, 500, AngleHelp.toRadians(65f), View.makeViewMatrix(Tuple.makePoint(0,1.5f,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
     }
-
-    @Override
-    protected Tuple getCameraLocation() { return Tuple.makePoint(0,1.5f,-6f); }
     
 }

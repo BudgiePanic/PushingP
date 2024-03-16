@@ -30,6 +30,8 @@ import com.BudgiePanic.rendering.util.transform.View;
 
 public class GroupDemo extends BaseDemo {
 
+    private final Tuple cameraLocation = Tuple.makePoint(3,0,-3);
+
     private final List<Material> materials = List.of(
             Material.defaultMaterial(),
             Material.pattern(new Perturb(new BiPattern(BiOperation.radialGradient, 
@@ -117,8 +119,5 @@ public class GroupDemo extends BaseDemo {
     protected Camera getCamera() {
         return new TimingWrapper(768, 768, AngleHelp.toRadians(90f), View.makeViewMatrix(cameraLocation, Tuple.makePoint(3, 0, 0), Tuple.makePoint(0,1,0)));
     }
-
-    @Override
-    protected Tuple getCameraLocation() { return Tuple.makePoint(3,0,-3); }
     
 }

@@ -126,8 +126,5 @@ public class CompoundShapeDemo extends BaseDemo {
     protected Camera getCamera() {
         return new TimingWrapper(1536, 1536, 90f, View.makeViewMatrix(cameraPostion, makePoint(0, 0, 1.5f), makeVector(0, 1, 0)));
     }
-
-    @Override
-    protected Tuple getCameraLocation() { return cameraLocation; }
     
 }

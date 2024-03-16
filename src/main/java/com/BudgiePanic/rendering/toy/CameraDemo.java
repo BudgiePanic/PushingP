@@ -27,14 +27,11 @@ public class CameraDemo extends BaseDemo {
         Camera camera = new Camera(640, 480, 
             AngleHelp.toRadians(90), 
             View.makeViewMatrix(
-                getCameraLocation(),
+                Tuple.makePoint(0, 1.5f, -5f),
                 Tuple.makePoint(0, 1, 0),
                 Tuple.makeVector(0, 1, 0)));
         return camera;
     }
-
-    @Override
-    protected Tuple getCameraLocation() { return Tuple.makePoint(0, 1.5f, -5f); }
 
     @Override
     protected World createWorld() {

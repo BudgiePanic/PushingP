@@ -90,10 +90,7 @@ public class TriangleDemo extends BaseDemo {
 
     @Override
     protected Camera getCamera() {
-        return new TimingWrapper(480, 480, AngleHelp.toRadians(90f), View.makeViewMatrix(getCameraLocation(), Tuple.makePoint(0, 0, 5), Tuple.makePoint(0,1,0)));
+        return new TimingWrapper(480, 480, AngleHelp.toRadians(90f), View.makeViewMatrix(Tuple.makePoint(0,3, 0), Tuple.makePoint(0, 0, 5), Tuple.makePoint(0,1,0)));
     }
-
-    @Override
-    protected Tuple getCameraLocation() { return Tuple.makePoint(0,3, 0); }
     
 }

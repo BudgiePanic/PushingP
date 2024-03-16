@@ -41,10 +41,7 @@ public class CylinderDemo extends BaseDemo {
 
     @Override
     protected Camera getCamera() {
-        return new Camera(768, 768, AngleHelp.toRadians(90f), View.makeViewMatrix(getCameraLocation(), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
+        return new Camera(768, 768, AngleHelp.toRadians(90f), View.makeViewMatrix(Tuple.makePoint(0,0,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
     }
-
-    @Override
-    protected Tuple getCameraLocation() { return Tuple.makePoint(0,0,-6f); }
     
 }

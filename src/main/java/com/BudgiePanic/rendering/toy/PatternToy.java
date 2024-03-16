@@ -80,10 +80,7 @@ public class PatternToy extends BaseDemo {
 
     @Override
     protected Camera getCamera() {
-        return new Camera(700, 700, AngleHelp.toRadians(65f), View.makeViewMatrix(getCameraLocation(), Tuple.makePoint(0, 1, 1), Tuple.makePoint(0,1,0)));
+        return new Camera(700, 700, AngleHelp.toRadians(65f), View.makeViewMatrix(Tuple.makePoint(0,5,-4.5f), Tuple.makePoint(0, 1, 1), Tuple.makePoint(0,1,0)));
     }
-
-    @Override
-    protected Tuple getCameraLocation() { return Tuple.makePoint(0,5,-4.5f); }
     
 }

@@ -10,7 +10,6 @@ import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
-import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Shape;
@@ -58,10 +57,7 @@ public final class PlaneDemo extends BaseDemo {
 
     @Override
     protected Camera getCamera() {
-        return new Camera(250, 250, AngleHelp.toRadians(70f), View.makeViewMatrix(getCameraLocation(), makePoint(0,0,1), makeVector(0, 1, 0)));
+        return new Camera(250, 250, AngleHelp.toRadians(70f), View.makeViewMatrix(makePoint(0,3f,-10), makePoint(0,0,1), makeVector(0, 1, 0)));
     }
-
-    @Override
-    protected Tuple getCameraLocation() { return makePoint(0,3f,-10); }
     
 }

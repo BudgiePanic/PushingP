@@ -39,9 +39,6 @@ public class TestScene extends BaseDemo {
     protected String getName() { return "test_scene.ppm"; }
 
     @Override
-    protected Camera getCamera() { return new Camera(512, 512, AngleHelp.toRadians(90f), View.makeViewMatrix(getCameraLocation(), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0))); }
-
-    @Override
-    protected Tuple getCameraLocation() { return Tuple.makePoint(0,0,-6f); }
+    protected Camera getCamera() { return new Camera(512, 512, AngleHelp.toRadians(90f), View.makeViewMatrix(Tuple.makePoint(0,0,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0))); }
     
 }
