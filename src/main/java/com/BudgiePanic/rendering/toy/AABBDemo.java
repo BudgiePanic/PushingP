@@ -3,12 +3,6 @@ package com.BudgiePanic.rendering.toy;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.radialGradient;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.reporting.TimingWrapper;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
@@ -48,8 +42,8 @@ public class AABBDemo implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("running AABB performance demo");
-        System.out.println("building world with no AABB");
+        System.out.println("INFO: running AABB performance demo");
+        System.out.println("INFO: building world with no AABB");
         var materialA = Material.defaultMaterial().setColor(Colors.red.multiply(0.33f)).setReflectivity(0.8f).setShininess(Material.defaultShininess*2);
         var materialB = Material.pattern(new Perturb(new BiPattern(radialGradient, Colors.green.multiply(0.2f), Colors.green))).setShininess(500).setReflectivity(0.5f);
         var materialC = new Material(new Color(0.2f, 0.2f, 0.2f), 0.030f, 0.5f, 0.9f, 600, 0.85f, 0.95f, 1.313f);
@@ -72,17 +66,8 @@ public class AABBDemo implements Runnable {
             }
         }
         Canvas canvas = camera.takePicture(world);
-
-        System.out.println("saving image");
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        File file = new File(System.getProperty("user.dir"), fileNameA);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        System.out.println("saved image");
-        System.out.println("building world with AABB");
+        BaseDemo.saveImageToFile(canvas, fileNameA);
+        System.out.println("INFO: building world with AABB");
         world = new World();
         world.addLight(light);
         world.addShape(background);
@@ -103,19 +88,9 @@ public class AABBDemo implements Runnable {
             }
             world.addShape(bigGroup);
         }
-        System.out.println("taking picture");
+        System.out.println("INFO: taking picture");
         canvas = camera.takePicture(world);
-
-        System.out.println("saving image");
-        lines = CanvasWriter.canvasToPPMString(canvas);
-        file = new File(System.getProperty("user.dir"), fileNameB);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        System.out.println("saved image");
-        System.out.println("done");
+        BaseDemo.saveImageToFile(canvas, fileNameB);
     }
     
 }

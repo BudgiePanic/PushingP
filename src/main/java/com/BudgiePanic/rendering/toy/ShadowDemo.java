@@ -5,12 +5,6 @@ import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static com.BudgiePanic.rendering.util.AngleHelp.toRadians;
 import static com.BudgiePanic.rendering.util.transform.View.makeViewMatrix;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.Canvas;
@@ -38,9 +32,9 @@ public class ShadowDemo implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("running shadow demo toy.");
+        System.out.println("INFO: running shadow demo toy.");
         // make some shadow puppets
-        System.out.println("building world");
+        System.out.println("INFO: building world");
         Sphere a = new Sphere(Transforms.identity().translate(3, 0, 0).assemble());
         Sphere b = new Sphere(Transforms.identity().translate(5, 2, 0).assemble());
         Sphere c = new Sphere(Transforms.identity().translate(5, 0, 0).assemble(), a.material().setColor(Colors.green));
@@ -59,24 +53,15 @@ public class ShadowDemo implements Runnable {
         world.addShape(floor);
         world.addShape(background);
 
-        System.out.println(String.format("taking first picture \"%s\"", cameraAImageName));
+        System.out.println(String.format("INFO: taking first picture \"%s\"", cameraAImageName));
         Canvas imageA = cameraA.takePicture(world);
-        System.out.println(String.format("taking second picture \"%s\"", cameraBImageName));
+        System.out.println(String.format("INFO: taking second picture \"%s\"", cameraBImageName));
         Canvas imageB = cameraB.takePicture(world);
 
-        System.out.println("saving images...");
-        var linesA = CanvasWriter.canvasToPPMString(imageA);
-        var linesB = CanvasWriter.canvasToPPMString(imageB);
+        System.out.println("INFO: saving images...");
 
-        File fileA = new File(System.getProperty("user.dir"), cameraAImageName);
-        File fileB = new File(System.getProperty("user.dir"), cameraBImageName);
-        try {
-            FileUtils.writeLines(fileA, linesA);
-            FileUtils.writeLines(fileB, linesB);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-        System.out.println("done");
+        BaseDemo.saveImageToFile(imageA, cameraAImageName);
+        BaseDemo.saveImageToFile(imageB, cameraBImageName);
     }
     
 }

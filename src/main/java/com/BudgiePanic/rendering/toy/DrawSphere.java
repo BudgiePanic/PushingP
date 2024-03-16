@@ -1,11 +1,5 @@
 package com.BudgiePanic.rendering.toy;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
@@ -44,14 +38,7 @@ public class DrawSphere implements Runnable {
         operate(sphere);
         System.out.println("Finished casting rays 3/3");
 
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        File file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-		System.out.println("done");
+        BaseDemo.saveImageToFile(canvas, fileName);
     }
 
 

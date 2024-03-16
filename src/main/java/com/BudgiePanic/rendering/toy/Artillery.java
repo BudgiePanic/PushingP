@@ -1,16 +1,11 @@
 package com.BudgiePanic.rendering.toy;
 
-import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Tuple;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
 
 /**
  * Runs a simple projectile simulation.
@@ -84,13 +79,7 @@ public final class Artillery implements Runnable{
             iterations++;
         }
         // write the canvas to disc for viewing
-        var lines = CanvasWriter.canvasToPPMString(canvas);
-        File file = new File(System.getProperty("user.dir"), fileName);
-        try {
-            FileUtils.writeLines(file, lines);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
+        BaseDemo.saveImageToFile(canvas, fileName);
         System.out.println(String.format("Done, wrote %d pixels to canvas.", pixelsWritten));
     }  
 }
