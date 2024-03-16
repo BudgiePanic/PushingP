@@ -20,12 +20,12 @@ public class Camera {
     /**
      * The width of the camera's far plane in pixels.
      */
-    protected final int width;
+    public final int width;
 
     /**
      * The height of the camera's far plane in pixels.
      */
-    protected final int height;
+    public final int height;
 
     /**
      * The field of view of the camera in radians.
