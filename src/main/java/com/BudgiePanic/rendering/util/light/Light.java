@@ -4,6 +4,11 @@ import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Tuple;
 
+/**
+ * Common light operations needed by the phong lighting model.
+ * 
+ * @author BudgiePanic
+ */
 public interface Light {
     /**
      * Get the position of the light.
