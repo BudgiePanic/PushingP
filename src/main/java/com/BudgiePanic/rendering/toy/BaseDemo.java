@@ -11,7 +11,6 @@ import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Canvas;
-import com.BudgiePanic.rendering.util.Tuple;
 
 /**
  * Common functionality in most ray tracer demos.
@@ -22,12 +21,10 @@ public abstract class BaseDemo implements Runnable {
     
     protected final String fileName;
     protected final Camera camera;
-    protected final Tuple cameraLocation;
 
     public BaseDemo() {
         this.fileName = getName();
         this.camera = getCamera();
-        this.cameraLocation = getCameraLocation();
     }
 
     /**
@@ -47,14 +44,6 @@ public abstract class BaseDemo implements Runnable {
     protected abstract Camera getCamera();
 
     /**
-     * Get the location of the camera.
-     *
-     * @return
-     *     The camera location.
-     */
-    protected abstract Tuple getCameraLocation();
-
-    /**
      * Assemble the world that contains the content highlighted by this demo.
      *
      * @return
@@ -69,7 +58,7 @@ public abstract class BaseDemo implements Runnable {
         return canvas;
     }
 
-    private void saveImageToFile(Canvas canvas) {
+    protected static void saveImageToFile(Canvas canvas, String fileName) {
         System.out.println("INFO: saving image");
         var lines = CanvasWriter.canvasToPPMString(canvas);
         var file = new File(System.getProperty("user.dir"), fileName);
@@ -86,7 +75,7 @@ public abstract class BaseDemo implements Runnable {
     @Override
     public void run() {
         var pixels = imageWorld();
-        saveImageToFile(pixels);
+        saveImageToFile(pixels, fileName);
     }
     
 }
