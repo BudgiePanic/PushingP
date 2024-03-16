@@ -29,7 +29,7 @@ public final class Phong {
      * @return
      *   The color of the point described in the shading information record.
      */
-    public static Color compute(ShadingInfo info, PointLight light, boolean inShadow) {
+    public static Color compute(ShadingInfo info, Light light, boolean inShadow) {
         return compute(info.shape().material(), light, info.overPoint(), info.eyeVector(), info.normalVector(), inShadow, Optional.of(info.shape()));
     }
 
@@ -50,7 +50,7 @@ public final class Phong {
      * @return
      *   The color at point 'position'
      */
-    public static Color compute(Material material, PointLight light, Tuple position, Tuple eye, Tuple normal) {
+    public static Color compute(Material material, Light light, Tuple position, Tuple eye, Tuple normal) {
         return compute(material, light, position, eye, normal, false, Optional.empty());
     }
 
@@ -72,7 +72,7 @@ public final class Phong {
      * @return
      *   The color at point 'position'
      */
-    public static Color compute(Material material, PointLight light, Tuple position, Tuple eye, Tuple normal, boolean shadow,  Optional<Shape> shape) {
+    public static Color compute(Material material, Light light, Tuple position, Tuple eye, Tuple normal, boolean shadow,  Optional<Shape> shape) {
         final var pattern = material.pattern();
         final var color = shape.map(sh -> pattern.colorAt(position, sh::toObjectSpace)).orElse(pattern.colorAt(position));
         assert color != null;

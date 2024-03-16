@@ -14,8 +14,8 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.intersect.ShadingInfo;
+import com.BudgiePanic.rendering.util.light.Light;
 import com.BudgiePanic.rendering.util.light.Phong;
-import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.shape.Parent;
 import com.BudgiePanic.rendering.util.shape.Shape;
 
@@ -39,6 +39,11 @@ public class World {
     public static final Predicate<Shape> allShapes = (s) -> true;
 
     /**
+     * Predicate to include all shapes in the world that cast shadows.
+     */
+    public static final Predicate<Shape> shadowCasters = (s) -> s.material().shadow() || (s instanceof Parent);
+
+    /**
      * The shapes in the scene.
      */
     protected List<Shape> shapes;
@@ -47,7 +52,7 @@ public class World {
      * 
      * NOTE: in the future, PointLight may need to be abtracted behind a Light interface.
      */
-    protected List<PointLight> lights;
+    protected List<Light> lights;
 
     /**
      * Construct a new empty world.
@@ -73,7 +78,7 @@ public class World {
      * @return
      *   A list of point lights in the world.
      */
-    public List<PointLight> getLights() {
+    public List<Light> getLights() {
         return this.lights;
     }
 
@@ -97,7 +102,7 @@ public class World {
      * @param light
      *   The light to add. Cannot be null.
      */
-    public void addLight(PointLight light) {
+    public void addLight(Light light) {
         // precondition checks, don't add null lights
         if (light == null) throw new IllegalArgumentException("light cannot be null.");
         this.lights.add(light);
@@ -275,7 +280,7 @@ public class World {
      */
     public boolean inShadow(Tuple point) {
         for (Light light : lights) {
-            if (isOccluded(point, light.position(), (s) -> s.material().shadow() || (s instanceof Parent))) {
+            if (isOccluded(point, light.position(), shadowCasters)) {
                 return true;
             }
         } 
