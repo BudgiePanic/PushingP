@@ -28,14 +28,17 @@ public class AreaLightDemo extends BaseDemo {
     protected World createWorld() {
         System.out.println("INFO: running area light demo");
         var world = new World();
-        var light = (Light) new AreaLight(Colors.white.multiply(0.5f), makePoint(-10, 5, -0.5f), makeVector(0, 0, 1), makeVector(0, 1, 0), 8, 8, AreaLight.randomSamples);
+        var light = (Light) new AreaLight(Colors.white.multiply(0.4f), makePoint(-3.5f, 3.5f, -3.5f), makeVector(0, 0, 1), makeVector(0, 1, 0), 8, 8, AreaLight.randomSamples);
         // light = new PointLight(light.position(), Colors.white);
-        world.addLight(new AreaLight(Colors.white.multiply(0.5f), makePoint(-1.5f, 10f, 15f), makeVector(1, 0, 0), makeVector(0, 1, 0), 8, 8, AreaLight.randomSamples));
+        world.addLight(new AreaLight(Colors.white.multiply(0.35f), makePoint(-1.5f, 10f, -15f), makeVector(1, 0, 0), makeVector(0, 1, 0), 6, 6, AreaLight.randomSamples));
         world.addLight(light);
         world.addShape(new Plane(Transforms.identity().translate(0, -0.5f, 0).assemble()));
         world.addShape(new Sphere(
             Transforms.identity().scale(2).assemble(),
-            Material.color(Colors.blue.multiply(0.5f))));
+            Material.color(Colors.blue.multiply(0.5f)).setReflectivity(0.7f)));
+        world.addShape(new Sphere(
+            Transforms.identity().translate(3, 0, -1.5f).assemble(),
+            Material.color(Colors.red.multiply(0.7f)).setReflectivity(0.1f)));
         return world;
     }
     
