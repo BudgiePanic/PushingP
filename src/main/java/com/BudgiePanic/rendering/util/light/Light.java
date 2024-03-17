@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.light;
 
+import java.util.Iterator;
+
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Tuple;
@@ -36,4 +38,19 @@ public interface Light {
      *     The amount of light reaching the point.
      */
     float intensityAt(Tuple point, World world);
+
+    /**
+     * An iterator that returns sample points that cover the entire light.
+     * @return
+     *   A new iterator over the light's volume.
+     */
+    Iterator<Tuple> sampler();
+
+    /**
+     * Get the number of segments in the light.
+     *
+     * @return
+     *   The number of segments that can be sampled from this light.
+     */
+    int resolution();
 }
