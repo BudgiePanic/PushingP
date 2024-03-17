@@ -135,7 +135,7 @@ public class Camera {
         for (int row = 0; row < this.height; row++) {
             for (int col = 0; col < this.width; col++) {
                 // canvas.writePixel(col, row, world.computeColor(createRay(col, row)));
-                jobs.add(new Pair<Integer,Integer>(row, col));
+                jobs.add(new Pair<Integer,Integer>(col, row));
             }
         }
         jobs.parallelStream().forEach(pixel -> canvas.writePixel(pixel.a(), pixel.b(), world.computeColor(createRay(pixel.a(), pixel.b()))));
