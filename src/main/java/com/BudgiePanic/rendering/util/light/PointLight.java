@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.light;
 
+import java.util.Iterator;
+
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Tuple;
@@ -18,5 +20,23 @@ public record PointLight(Tuple position, Color color) implements Light {
         final boolean inShadow = world.isOccluded(point, position, World.shadowCasters);
         return inShadow ? 0f : 1f;
     }
+
+    @Override
+    public Iterator<Tuple> sampler() {
+        return new Iterator<Tuple>() {
+            protected boolean once = true;
+            @Override
+            public boolean hasNext() { return once; }
+            @Override
+            public Tuple next() {
+                once = false;
+                return PointLight.this.position;
+            }
+            
+        };
+    }
+
+    @Override
+    public int resolution() { return 1; }
     
 }

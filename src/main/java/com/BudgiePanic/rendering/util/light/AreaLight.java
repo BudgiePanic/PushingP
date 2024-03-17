@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.light;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
@@ -23,6 +25,26 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
      * Randomly sample the area light segments with a thread safe random number generator.
      */
     public static final Supplier<Float> randomSamples = () -> { return ThreadLocalRandom.current().nextFloat(); };
+
+    private final class AreaLightIterator implements Iterator<Tuple> {
+        protected int u = 0, v = 0;
+        @Override
+        public boolean hasNext() { return u < uStep && v < vStep; }
+        @Override
+        public Tuple next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            final var sample = sample(u, v);
+            u++;
+            if (u >= uStep) {
+                u = 0;
+                v++;
+            }
+            return sample;
+        }
+    }
+
+    @Override
+    public Iterator<Tuple> sampler() { return new AreaLightIterator(); }
 
     /**
      * Create a new area light. Autogenerates unit vectors and position.
