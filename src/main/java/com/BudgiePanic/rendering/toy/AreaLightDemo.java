@@ -28,9 +28,9 @@ public class AreaLightDemo extends BaseDemo {
     protected World createWorld() {
         System.out.println("INFO: running area light demo");
         var world = new World();
-        var light = (Light) new AreaLight(Colors.white, makePoint(-10, 5, -0.5f), makeVector(0, 0, 1), makeVector(0, 1, 0), 8, 8);
+        var light = (Light) new AreaLight(Colors.white.multiply(0.5f), makePoint(-10, 5, -0.5f), makeVector(0, 0, 1), makeVector(0, 1, 0), 8, 8, AreaLight.randomSamples);
         // light = new PointLight(light.position(), Colors.white);
-        world.addLight(new AreaLight(Colors.white, makePoint(-1.5f, 10f, 15f), makeVector(1, 0, 0), makeVector(0, 1, 0), 8, 8));
+        world.addLight(new AreaLight(Colors.white.multiply(0.5f), makePoint(-1.5f, 10f, 15f), makeVector(1, 0, 0), makeVector(0, 1, 0), 8, 8, AreaLight.randomSamples));
         world.addLight(light);
         world.addShape(new Plane(Transforms.identity().translate(0, -0.5f, 0).assemble()));
         world.addShape(new Sphere(
