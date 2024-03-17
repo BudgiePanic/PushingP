@@ -248,7 +248,7 @@ public class World {
      * @param from
      *   The first point.
      * @param to
-     *   The second point.3
+     *   The second point.
      * @param condition
      *   A predicate to decide if a shape should be used in the occulusion test.
      * @return

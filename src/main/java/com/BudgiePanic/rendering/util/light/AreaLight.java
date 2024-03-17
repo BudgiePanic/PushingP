@@ -62,6 +62,8 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
      *   The number of segments the u vector is divided into.
      * @param vStep
      *   The number of segments the v vector is divided into.
+     * @param generator
+     *   Supplier of sample point offsets. Supplied floats between 0 and 1.
      */
     public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Supplier<Float> generator) {
         this(color, corner, uVector, vVector, uStep, vStep, vVector.divide(vStep), uVector.divide(uStep), 
@@ -89,6 +91,8 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
      *   A unit vector of length vVector.magnitue / vStep to move one segment along the v edge.
      * @param uUnit
      *   A unit vector of length uVector.magnitue / uStep to move one segment along the u edge.
+     * @param generator
+     *   Supplier of sample point offsets. Supplied floats between 0 and 1.
      */
     public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Tuple vUnit, Tuple uUnit, Tuple position, Supplier<Float> generator) {
         if (uStep == 0) throw new IllegalArgumentException("area light cannot contain 0 u segments");
