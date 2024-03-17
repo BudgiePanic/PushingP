@@ -161,9 +161,9 @@ public class World {
         final Optional<Float> reflectance = hasReflectance ?  Optional.of(info.schlick()) : Optional.empty(); // this expression could be extracted to Shading info 
         return this.lights.stream().
             map((light) -> Phong.compute(info, light, intensityAt(info.overPoint()))).
-            map((color) -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0f)))).
-            map((color) -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0f)))).
             reduce(Color::add).
+            map(color -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0f)))).
+            map(color -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0f)))).
             orElse(Colors.black);
     }
 
