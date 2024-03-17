@@ -9,7 +9,6 @@ import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.light.AreaLight;
 import com.BudgiePanic.rendering.util.light.Light;
-import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
