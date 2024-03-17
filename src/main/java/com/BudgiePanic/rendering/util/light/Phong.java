@@ -78,21 +78,29 @@ public final class Phong {
         final var color = shape.map(sh -> pattern.colorAt(position, sh::toObjectSpace)).orElse(pattern.colorAt(position));
         assert color != null;
         final var effective = color.colorMul(light.color());
-        final var directionToLight = light.position().subtract(position).normalize();
         final var ambient = effective.multiply(material.ambient());
-        final var lightNormalAngle = directionToLight.dot(normal);
-        if (FloatHelp.compareFloat(0, intensity) != -1 || lightNormalAngle < 0f) {
-            return ambient;
+        final var sampler = light.sampler();
+        var accumulator = new Color();
+        while (sampler.hasNext()) {
+            final var sample = sampler.next();
+            final var directionToLight = sample.subtract(position).normalize();
+            final var lightNormalAngle = directionToLight.dot(normal);
+            if (FloatHelp.compareFloat(0, intensity) != -1 || lightNormalAngle < 0f) {
+                continue;
+            }
+            final Color diffuse = effective.multiply(material.diffuse()).multiply(lightNormalAngle);
+            final var reflection = directionToLight.negate().reflect(normal);
+            final var eyeReflectAngle = reflection.dot(eye);
+            if (eyeReflectAngle < 0f) {
+                accumulator = accumulator.add(diffuse);
+                continue;
+            }
+            final var factor = (float)Math.pow(eyeReflectAngle, material.shininess());
+            final var specular = light.color().multiply(material.specular()).multiply(factor);
+            accumulator = accumulator.add(specular);
+            accumulator = accumulator.add(diffuse);
         }
-        final Color diffuse = effective.multiply(material.diffuse()).multiply(lightNormalAngle).multiply(intensity);
-        final var reflection = directionToLight.negate().reflect(normal);
-        final var eyeReflectAngle = reflection.dot(eye);
-        if (eyeReflectAngle < 0f) {
-            return diffuse.add(ambient);
-        }
-        final var factor = (float)Math.pow(eyeReflectAngle, material.shininess());
-        final var specular = light.color().multiply(material.specular()).multiply(factor).multiply(intensity);
-        return ambient.add(diffuse).add(specular);
+        return ambient.add(accumulator.divide(light.resolution()).multiply(intensity));
     }
 
 }
