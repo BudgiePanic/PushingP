@@ -1,12 +1,12 @@
 package com.BudgiePanic.rendering.scene;
 
+import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static com.BudgiePanic.rendering.util.matrix.Matrix4.identity;
 import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.difference;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -20,10 +20,13 @@ import com.BudgiePanic.rendering.objects.TestCompound;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
+import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Material;
+import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
+import com.BudgiePanic.rendering.util.light.Phong;
 import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.pattern.PatternTest;
@@ -159,30 +162,6 @@ public class WorldTest {
     }
 
     @Test
-    void testIlluminatedPoint() {
-        var result = defaultTestWorld.inShadow(Tuple.makePoint(0, 10, 0));
-        assertFalse(result);
-    }
-
-    @Test
-    void testShadowedPoint() {
-        var result = defaultTestWorld.inShadow(Tuple.makePoint(10, -10, 10));
-        assertTrue(result);
-    }
-
-    @Test
-    void testIlluminatedPointA() {
-        var result = defaultTestWorld.inShadow(Tuple.makePoint(-20, 20, 20));
-        assertFalse(result);
-    }
-
-    @Test
-    void testIlluminatedPointB () {
-        var result = defaultTestWorld.inShadow(Tuple.makePoint(-2, 2, 2));
-        assertFalse(result);
-    }
-
-    @Test
     void testShadeHitInShadow() {
         var world = new World();
         world.addLight(new PointLight(Tuple.makePoint(0, 0, -10), Colors.white));
@@ -241,8 +220,9 @@ public class WorldTest {
                 // ask if the ray is in shadow
                 // in this test set up, no intersection points should be in shadow
                 var hitInfo = hit.get().computeShadingInfo(ray);
-                var inShadow = world.inShadow(hitInfo.overPoint());
-                assertFalse(inShadow, String.format("ray at r:%d c:%d was in shadow", row, col));
+                var result = world.intensityAt(hitInfo.overPoint());
+                var expected = 1f;
+                assertTrue(compareFloat(expected, result) == 0, String.format("ray at r:%d c:%d was in shadow", row, col));
             }
         }
     }
@@ -515,7 +495,10 @@ public class WorldTest {
         assertTrue(hit.isPresent());
         var intersection = hit.get();
         var info = intersection.computeShadingInfo(ray, result);
-        assertFalse(world.inShadow(info.overPoint()));
+
+        var expected = 1f;
+        var output = world.intensityAt(info.overPoint());
+        assertTrue(compareFloat(expected, output) == 0);
     }
 
     @Test
@@ -540,7 +523,10 @@ public class WorldTest {
         assertTrue(hit.isPresent());
         var intersection = hit.get();
         var info = intersection.computeShadingInfo(ray, result);
-        assertTrue(world.inShadow(info.overPoint()));
+        
+        var expected = 0f;
+        var output = world.intensityAt(info.overPoint());
+        assertTrue(compareFloat(expected, output) == 0);
     }
 
     @Test
@@ -556,7 +542,10 @@ public class WorldTest {
         var ray = new Ray(makePoint(0, 0, -2), makeVector(0, 0, 1));
         world.addLight(new PointLight(ray.origin().add(0, 0, 6), Colors.white));
         
-        assertTrue(world.inShadow(ray.origin()));
+        var expected = 0f;
+        var result = world.intensityAt(ray.origin());
+        assertTrue(compareFloat(expected, result) == 0);
+
     }
 
     @Test
@@ -566,8 +555,9 @@ public class WorldTest {
             World world = new World();
             world.addShape(shape);
             world.addLight(new PointLight(makePoint(2, 0, 0.1f), Colors.white));
-            var result = world.inShadow(makePoint(0, 0, 0.001f));
-            assertTrue(result);
+            var result = world.intensityAt(makePoint(0, 0, 0.001f));
+            var expected = 0f;
+            assertTrue(compareFloat(expected, result) == 0);
     }
 
     @Disabled("disabled until issue #79 is resolved")
@@ -591,8 +581,9 @@ public class WorldTest {
         var hit = Intersection.Hit(intersections).get();
         var info = hit.computeShadingInfo(ray, cast);
         var point = info.overPoint();
-        var result = world.inShadow(point);
-        assertFalse(result);
+        var result = world.intensityAt(point);
+        var expected = 1f;
+        assertTrue(compareFloat(expected, result) == 0);
     }
 
     @Disabled("disabled until issue #79 is resolved")
@@ -616,7 +607,78 @@ public class WorldTest {
         var hit = Intersection.Hit(intersections).get();
         var info = hit.computeShadingInfo(ray, cast);
         var point = info.overPoint();
-        var result = world.inShadow(point);
-        assertFalse(result);
+        var result = world.intensityAt(point);
+        var expected = 1f;
+        assertTrue(compareFloat(expected, result) == 0);
+    }
+
+    @Test
+    void testWorldOcclusion() {
+        final var to = makePoint(-10, -10, -10);
+        final var tests = List.of(
+            new Pair<>(makePoint(-10, -10, -10), false),
+            new Pair<>(makePoint(10, 10, 10), true),
+            new Pair<>(makePoint(-20, -20, -20), false),
+            new Pair<>(makePoint(-5, -5, -5), false)
+        );
+        for (var test: tests) {
+            final var from = test.a();
+            var result = defaultTestWorld.isOccluded(from, to, World.allShapes);
+            var expected = test.b();
+            assertEquals(expected, result, "test: " + test.toString());
+        }
+    }
+
+    @Test
+    void testLightIntensityInWorld() {
+        final var light = defaultTestWorld.lights.getFirst();
+        final var tests = List.of(
+            new Pair<>(makePoint(0f, 0f, 0f), 0f),
+            new Pair<>(makePoint(0f, 1.0001f, 0f), 1f),
+            new Pair<>(makePoint(-1.0001f, 0f, 0), 1f),
+            new Pair<>(makePoint(0f, 0f, -1.0001f), 1f),
+            new Pair<>(makePoint(0f, 0f, 1.0001f), 0f),
+            new Pair<>(makePoint(1.0001f,0f, 0f), 0f),
+            new Pair<>(makePoint(0f, -1.0001f, 0f), 0f)
+        );
+        for (var test : tests) {
+            var point = test.a();
+            var expected = test.b();
+            var result = light.intensityAt(point, defaultTestWorld);
+            assertTrue(FloatHelp.compareFloat(expected, result) == 0, "expected:" + expected + " result:" + result);
+        }
+    }
+
+    @Test
+    void testPhongWithIntensity() {
+        var world = new World();
+        var light = new PointLight(Tuple.makePoint(0, 0, -10), Colors.white);
+        var sphereA = new Sphere(
+            Transforms.identity().assemble(),
+            Material.color(Colors.white).
+                setAmbient(0.1f).
+                setSpecular(0f).
+                setDiffuse(0.9f)
+            );
+        var sphereB = new Sphere(Transforms.identity().scale(0.5f, 0.5f, 0.5f).assemble());
+        world = new World();
+        world.addLight(light);
+        world.addShape(sphereA);
+        world.addShape(sphereB);
+        var point = makePoint(0, 0, -1);
+        var eye = makeVector(0, 0, -1);
+        var normal = makeVector(0, 0, -1);
+
+        var tests = List.of(
+            new Pair<>(1f, new Color(1,1,1)),
+            new Pair<>(0.5f, new Color(0.55f,0.55f,0.55f)),
+            new Pair<>(0f, new Color(0.1f,0.1f,0.1f))
+        ); 
+        for (var test : tests) {
+            var intensity = test.a();
+            var expected = test.b();
+            var actual = Phong.compute(sphereA.material(), light, point, eye, normal, intensity, Optional.of(sphereA));
+            assertEquals(expected, actual);
+        }
     }
 }

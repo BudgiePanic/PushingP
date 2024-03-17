@@ -14,8 +14,8 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.intersect.ShadingInfo;
+import com.BudgiePanic.rendering.util.light.Light;
 import com.BudgiePanic.rendering.util.light.Phong;
-import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.shape.Parent;
 import com.BudgiePanic.rendering.util.shape.Shape;
 
@@ -34,6 +34,16 @@ public class World {
     public static final int defaultRecursionDepth = 4;
 
     /**
+     * Predicate to include all shapes in the word in intersection tests
+     */
+    public static final Predicate<Shape> allShapes = (s) -> true;
+
+    /**
+     * Predicate to include all shapes in the world that cast shadows.
+     */
+    public static final Predicate<Shape> shadowCasters = (s) -> s.material().shadow() || (s instanceof Parent);
+
+    /**
      * The shapes in the scene.
      */
     protected List<Shape> shapes;
@@ -42,7 +52,7 @@ public class World {
      * 
      * NOTE: in the future, PointLight may need to be abtracted behind a Light interface.
      */
-    protected List<PointLight> lights;
+    protected List<Light> lights;
 
     /**
      * Construct a new empty world.
@@ -68,7 +78,7 @@ public class World {
      * @return
      *   A list of point lights in the world.
      */
-    public List<PointLight> getLights() {
+    public List<Light> getLights() {
         return this.lights;
     }
 
@@ -92,7 +102,7 @@ public class World {
      * @param light
      *   The light to add. Cannot be null.
      */
-    public void addLight(PointLight light) {
+    public void addLight(Light light) {
         // precondition checks, don't add null lights
         if (light == null) throw new IllegalArgumentException("light cannot be null.");
         this.lights.add(light);
@@ -108,7 +118,7 @@ public class World {
      *   EMPTY if no intersections occured. List of intersections if any.
      */
     public Optional<List<Intersection>> intersect(Ray ray) {
-        return intersect(ray, (s)->true);
+        return intersect(ray, allShapes);
     }
 
     /**
@@ -150,10 +160,10 @@ public class World {
         final var hasReflectance = material.reflectivity() > 0 && material.transparency() > 0; // this expression could be extracted to Shading info 
         final Optional<Float> reflectance = hasReflectance ?  Optional.of(info.schlick()) : Optional.empty(); // this expression could be extracted to Shading info 
         return this.lights.stream().
-            map((light) -> Phong.compute(info, light, inShadow(info.overPoint()))).
-            map((color) -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0f)))).
-            map((color) -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0f)))).
+            map((light) -> Phong.compute(info, light, intensityAt(info.overPoint()))).
             reduce(Color::add).
+            map(color -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0f)))).
+            map(color -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0f)))).
             orElse(Colors.black);
     }
 
@@ -234,6 +244,33 @@ public class World {
     }
 
     /**
+     * Test if any shapes block the view from one point to another.
+     * @param from
+     *   The first point.
+     * @param to
+     *   The second point.
+     * @param condition
+     *   A predicate to decide if a shape should be used in the occulusion test.
+     * @return
+     *   True if any shapes block the line traced by 'from' to 'to'.
+     */
+    public boolean isOccluded(Tuple from, Tuple to, Predicate<Shape> condition) {
+        final var trace = to.subtract(from);
+        final var distance = trace.magnitude();
+        final var ray = new Ray(from, trace.normalize());
+        final var intersections = this.intersect(ray, condition);
+        if (intersections.isEmpty()) return false;
+        var hit = Intersection.Hit(intersections.get());
+        if (hit.isPresent()) {
+            // distance to hit is smaller than distance to target point, so it must be blocking the point's view to the target
+            if (FloatHelp.compareFloat(hit.get().a(), distance) < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check if a point in the world is in shadow from another object
      *
      * @param point
@@ -241,22 +278,13 @@ public class World {
      * @return
      *   Whether the point can see a light in the scene without intersecting a closer object.
      */
-    public boolean inShadow(Tuple point) {
-        for (PointLight light : lights) {
-            var pointToLight = light.position().subtract(point);
-            var distance = pointToLight.magnitude();
-            var ray = new Ray(point, pointToLight.normalize());
-            var intersections = this.intersect(ray, (s) -> s.material().shadow() || (s instanceof Parent));
-            if (intersections.isEmpty()) return false;
-            var hit = Intersection.Hit(intersections.get());
-            if (hit.isPresent()) {
-                // distance to hit is smaller than distance to light, so it must be blocking the point's view to the light
-                if (FloatHelp.compareFloat(hit.get().a(), distance) < 0) {
-                    return true;
-                }
-            }
+    public float intensityAt(Tuple point) {
+        float accumulator = 0f;
+        for (Light light : lights) {
+            accumulator += light.intensityAt(point, this);
         } 
-        return false;
+        accumulator /= lights.size();
+        return accumulator;
     }
 
     /**

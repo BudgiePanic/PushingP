@@ -29,7 +29,8 @@ public class App
         entry("-acne_test", ()-> new TestScene()),
         entry("-group", ()-> new GroupDemo()),
         entry("-mesh_loader", ()-> new TriangleDemo()),
-        entry("-compound_shapes", ()-> new CompoundShapeDemo())
+        entry("-compound_shapes", ()-> new CompoundShapeDemo()),
+        entry("-soft_shadows", ()-> new AreaLightDemo())
     );
 
     public static void main( String[] args )
