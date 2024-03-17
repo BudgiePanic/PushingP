@@ -1,5 +1,8 @@
 package com.BudgiePanic.rendering.util.light;
 
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
+
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Tuple;
@@ -9,7 +12,17 @@ import com.BudgiePanic.rendering.util.Tuple;
  * 
  * @author BudgiePanic
  */
-public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Tuple vUnit, Tuple uUnit, Tuple position) implements Light {
+public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Tuple vUnit, Tuple uUnit, Tuple position, Supplier<Float> generator) implements Light {
+
+    /**
+     * Constantly sample the area light segments.
+     */
+    public static final Supplier<Float> constantSamples = () -> { return 0.5f; };
+
+    /**
+     * Randomly sample the area light segments with a thread safe random number generator.
+     */
+    public static final Supplier<Float> randomSamples = () -> { return ThreadLocalRandom.current().nextFloat(); };
 
     /**
      * Create a new area light. Autogenerates unit vectors and position.
@@ -28,9 +41,9 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
      * @param vStep
      *   The number of segments the v vector is divided into.
      */
-    public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep) {
+    public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Supplier<Float> generator) {
         this(color, corner, uVector, vVector, uStep, vStep, vVector.divide(vStep), uVector.divide(uStep), 
-          corner.add(vVector.multiply((0.5f)).add(uVector.multiply(0.5f)))
+          corner.add(vVector.multiply((0.5f)).add(uVector.multiply(0.5f))), generator
         );
     }
 
@@ -55,11 +68,11 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
      * @param uUnit
      *   A unit vector of length uVector.magnitue / uStep to move one segment along the u edge.
      */
-    public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Tuple vUnit, Tuple uUnit, Tuple position) {
+    public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Tuple vUnit, Tuple uUnit, Tuple position, Supplier<Float> generator) {
         if (uStep == 0) throw new IllegalArgumentException("area light cannot contain 0 u segments");
         if (vStep == 0) throw new IllegalArgumentException("area light cannot contain 0 v segments");
         this.color = color; this.corner = corner; this.uVector = uVector; this.vVector = vVector;
-        this.uStep = uStep; this.vStep = vStep; this.vUnit = vUnit; this.uUnit = uUnit; this.position = position;
+        this.uStep = uStep; this.vStep = vStep; this.vUnit = vUnit; this.uUnit = uUnit; this.position = position; this.generator = generator;
     }
 
     /**
@@ -80,7 +93,7 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
      *   The world space position of the point located at uv on the light surface.
      */
     public Tuple sample(float u, float v) {
-        return corner.add(uUnit.multiply(0.5f + u)).add(vUnit.multiply(0.5f + v));
+        return corner.add(uUnit.multiply(generator.get() + u)).add(vUnit.multiply(generator.get() + v));
     }
 
     @Override
