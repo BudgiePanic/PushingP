@@ -6,13 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.scene.World;
+import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.FloatHelp;
+import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
@@ -133,6 +136,25 @@ public class AreaLightTest {
             var expected = test.b();
             var actual = light.intensityAt(point, world);
             assertEquals(0, FloatHelp.compareFloat(expected, actual), "test: [" + test + "] expected: [" + expected + "] actual: [" + actual + "]");
+        }
+    }
+
+    @Test
+    void testAreaLightIlluminationSamples() {
+        var light = new AreaLight(Colors.white, makePoint(-0.5f, -0.5f, -5), makeVector(1, 0, 0), makeVector(0, 1, 0), 2, 2, AreaLight.constantSamples);
+        var shape = new Sphere(Transforms.identity().assemble(), Material.color(Colors.white).setSpecular(0));
+        var eye = makePoint(0, 0, -5);
+        var tests = List.of(
+            new Pair<>(makePoint(0, 0, -1), new Color(0.9965f, 0.9965f, 0.9965f)),
+            new Pair<>(makePoint(0, 0.7071f, -0.7071f), new Color(0.6232f, 0.6232f, 0.6232f))
+        );
+        for (var test : tests) {
+            var point = test.a();
+            var expected = test.b();
+            var eyeVector = eye.subtract(point).normalize();
+            var normal = makeVector(point.x, point.y, point.z);
+            var result = Phong.compute(shape.material(), light, point, eyeVector, normal, 1f, Optional.of(shape));
+            assertEquals(expected, result);
         }
     }
 }
