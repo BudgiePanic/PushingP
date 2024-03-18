@@ -11,6 +11,7 @@ public class QuarticHelpTest {
     @Test
     void testSolveQuartic() {
         var tests = List.of(
+            new Pair<>(new float[]{1f/14f, 1f/14f, -13f/14f, -1f/14f, 1.35714f}, List.of(-3.93, -1.26, 1.33, 2.85)),
             new Pair<>(new float[]{1f, 1f, 1f, 1f, -1f}, List.of(-1.290, 0.518)),
             new Pair<>(new float[]{-2f, -4f, 7f, 4f, 0f}, List.of(-2.955, -0.473, 0.0, 1.428)),
             new Pair<>(new float[]{1f, 1f, 1f, 1f, -10f}, List.of(-2, 1.402)),
