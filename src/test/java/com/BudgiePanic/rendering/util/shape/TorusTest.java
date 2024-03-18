@@ -24,10 +24,19 @@ public class TorusTest {
         assertTrue(result.isPresent());
         var intersections = result.get();
         assertEquals(4, intersections.size());
-        assertEquals(0, FloatHelp.compareFloat(-1.25f, intersections.get(0).a()));
-        assertEquals(0, FloatHelp.compareFloat(-0.75f, intersections.get(1).a()));
-        assertEquals(0, FloatHelp.compareFloat(0.75f, intersections.get(2).a()));
-        assertEquals(0, FloatHelp.compareFloat(1.25f, intersections.get(3).a()));
+        var _0 = intersections.get(0).a();
+        var _1 = intersections.get(1).a();
+        var _2 = intersections.get(2).a();
+        var _3 = intersections.get(3).a();
+        var expected0 = -1.25f;
+        var expected1 = -0.75f;
+        var expected2 = 0.75f;
+        var expected3 = 1.25f;
+
+        assertEquals(0, FloatHelp.compareFloat(expected0, _0), expected0 + " " + _0);
+        assertEquals(0, FloatHelp.compareFloat(expected1, _1), expected1 + " " + _1);
+        assertEquals(0, FloatHelp.compareFloat(expected2, _2), expected2 + " " + _2);
+        assertEquals(0, FloatHelp.compareFloat(expected3, _3), expected3 + " " + _3);
     }
 
     @Test
