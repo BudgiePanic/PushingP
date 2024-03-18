@@ -30,7 +30,8 @@ public class App
         entry("-group", ()-> new GroupDemo()),
         entry("-mesh_loader", ()-> new TriangleDemo()),
         entry("-compound_shapes", ()-> new CompoundShapeDemo()),
-        entry("-soft_shadows", ()-> new AreaLightDemo())
+        entry("-soft_shadows", ()-> new AreaLightDemo()),
+        entry("-donut", ()-> new TorusDemo())
     );
 
     public static void main( String[] args )
