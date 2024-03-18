@@ -28,15 +28,15 @@ public class TorusTest {
         var _1 = intersections.get(1).a();
         var _2 = intersections.get(2).a();
         var _3 = intersections.get(3).a();
-        var expected0 = -1.25f;
-        var expected1 = -0.75f;
-        var expected2 = 0.75f;
-        var expected3 = 1.25f;
+        var expected0 = 0.75f;
+        var expected1 = 1.25f;
+        var expected2 = 2.75f;
+        var expected3 = 3.25f;
 
-        assertEquals(0, FloatHelp.compareFloat(expected0, _0), expected0 + " " + _0);
-        assertEquals(0, FloatHelp.compareFloat(expected1, _1), expected1 + " " + _1);
-        assertEquals(0, FloatHelp.compareFloat(expected2, _2), expected2 + " " + _2);
-        assertEquals(0, FloatHelp.compareFloat(expected3, _3), expected3 + " " + _3);
+        assertEquals(0, FloatHelp.compareFloat(expected0, _0), "expected: " + expected0 + " actual: " + _0);
+        assertEquals(0, FloatHelp.compareFloat(expected1, _1), "expected: " + expected1 + " actual: " + _1);
+        assertEquals(0, FloatHelp.compareFloat(expected2, _2), "expected: " + expected2 + " actual: " + _2);
+        assertEquals(0, FloatHelp.compareFloat(expected3, _3), "expected: " + expected3 + " actual: " + _3);
     }
 
     @Test
