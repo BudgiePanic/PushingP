@@ -3,11 +3,13 @@ package com.BudgiePanic.rendering.util.shape;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Material;
+import com.BudgiePanic.rendering.util.QuarticHelp;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -67,11 +69,37 @@ public class Torus extends BaseShape {
     @Override
     public boolean isSolid() { return true; }
 
-
     @Override
     protected Optional<List<Intersection>> localIntersect(Ray ray) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'localIntersect'");
+        // see: http://cosinekitty.com/raytrace/chapter13_torus.html
+        final var D = ray.origin();
+        final var E = ray.direction();
+        final var A = radius;
+        final var B = thickness;
+
+        final float g = 4 * (A * A) * ((E.x * E.x) + (E.y * E.y));
+        final float h = 8 * (A * A) * (D.x * E.x + D.y * E.y);
+        final float i = 4 * (A * A) * ((D.x * D.x) + (D.y * D.y));
+        final float j = E.magnitude();
+        final float k = 2 * D.dot(E);
+        final float l = D.magnitude() + ((A * A) - (B * B));
+        // ax^4 + bx^3 + cx^2 + dx + e = 0
+        final float a = j*j;
+        final float b = 2*j*k;
+        final float c = ((2*j*l)+(k*k)+(-g));
+        final float d = ((2*k*l)-(h));
+        final float e = (l*l) - i;
+
+        final var roots = QuarticHelp.solveQuartic(a,b,c,d,e);
+
+        if (roots.isEmpty()) {
+            return Optional.empty();
+        }
+        var answer = new ArrayList<Intersection>(roots.size());
+        for (var root : roots) {
+            answer.add(new Intersection(root, this));
+        }
+        return Optional.of(answer);
     }
 
     @Override
