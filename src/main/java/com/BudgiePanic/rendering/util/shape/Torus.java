@@ -80,9 +80,9 @@ public class Torus extends BaseShape {
         final float g = 4 * (A * A) * ((E.x * E.x) + (E.y * E.y));
         final float h = 8 * (A * A) * (D.x * E.x + D.y * E.y);
         final float i = 4 * (A * A) * ((D.x * D.x) + (D.y * D.y));
-        final float j = E.magnitude();
-        final float k = 2 * D.dot(E);
-        final float l = D.magnitude() + ((A * A) - (B * B));
+        final float j = (E.x * E.x) + (E.y * E.y) + (E.z * E.z);
+        final float k = 2 * ((D.x * E.x)+(D.y * E.y)+(D.z * E.z));
+        final float l = ((D.x * D.x)+(D.y * D.y)+(D.z * D.z)) + ((A * A) - (B * B));
         // ax^4 + bx^3 + cx^2 + dx + e = 0
         final float a = j*j;
         final float b = 2*j*k;
