@@ -41,7 +41,7 @@ public class Torus extends BaseShape {
     protected final BoundingBox aabb;
 
     /**
-     * Canonical constructor. Create a new Torus.
+     * Canonical constructor. Create a new Torus on the xy plane.
      * @param transform
      *   World space to object space transform.
      * @param material
