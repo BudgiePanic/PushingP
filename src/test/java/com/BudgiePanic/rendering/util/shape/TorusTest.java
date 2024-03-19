@@ -40,6 +40,14 @@ public class TorusTest {
     }
 
     @Test
+    void testRayTorusIntersectionMiss() {
+        var shape = new Torus(Matrix4.identity(), Material.defaultMaterial(), 1f, 0.25f);
+        var ray = new Ray(makePoint(0, 0, -2), Directions.forward);
+        var result = shape.intersect(ray); 
+        assertTrue(result.isEmpty());    
+    }
+
+    @Test
     void testLocalNormal() {
         var radius = 1f;
         var thickness = 0.25f;
