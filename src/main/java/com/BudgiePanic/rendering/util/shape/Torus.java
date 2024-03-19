@@ -105,7 +105,7 @@ public class Torus extends BaseShape {
     @Override
     protected Tuple localNormal(Tuple point) {
         // see: http://cosinekitty.com/raytrace/chapter13_torus.html
-        float denominator = (float) Math.sqrt((point.x * point.x) + (point.y + point.y));
+        float denominator = (float) Math.sqrt((point.x * point.x) + (point.y * point.y));
         if (FloatHelp.compareFloat(0, denominator) == 0) {
             // the point is not on the torus surface
             System.out.println("WARN: point " + point + " is not on the torus surface, adding small offset to avoid divide by zero");
