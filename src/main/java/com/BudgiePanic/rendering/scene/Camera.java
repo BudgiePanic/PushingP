@@ -5,7 +5,7 @@ import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 
 /**
- * A camera take take an image of a world and output the image to a canvas.
+ * A camera takes an image of a world and outputs the image to a canvas.
  * 
  * @author BudgiePanic
  */
