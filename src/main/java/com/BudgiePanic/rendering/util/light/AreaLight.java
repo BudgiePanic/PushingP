@@ -2,11 +2,11 @@ package com.BudgiePanic.rendering.util.light;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.Color;
+import com.BudgiePanic.rendering.util.RandomSuppliers;
 import com.BudgiePanic.rendering.util.Tuple;
 
 /**
@@ -24,7 +24,7 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
     /**
      * Randomly sample the area light segments with a thread safe random number generator.
      */
-    public static final Supplier<Float> randomSamples = () -> { return ThreadLocalRandom.current().nextFloat(); };
+    public static final Supplier<Float> randomSamples = RandomSuppliers.threadSafeRandomSupplier;
 
     private final class AreaLightIterator implements Iterator<Tuple> {
         protected int u = 0, v = 0;
