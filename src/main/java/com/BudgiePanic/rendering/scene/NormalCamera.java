@@ -1,7 +1,5 @@
 package com.BudgiePanic.rendering.scene;
 
-import static com.BudgiePanic.rendering.util.Tuple.makeVector;
-
 import java.util.List;
 import java.util.function.Function;
 
