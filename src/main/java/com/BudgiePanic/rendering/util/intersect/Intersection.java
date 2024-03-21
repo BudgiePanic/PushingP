@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import com.BudgiePanic.rendering.util.Pair;
+import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.shape.Parent;
 import com.BudgiePanic.rendering.util.shape.Shape;
 import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
@@ -60,6 +61,23 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
             return i1.a().compareTo(i2.a());
         }).findFirst();
         return result;
+    }
+
+    /**
+     * Helper method to get the normal on the intersected shape.
+     * @param ray
+     *     The ray that caused this intersection.
+     * @return
+     *     The normal on the surface of the shape where the ray intersected.
+     */
+    public Tuple computeNormal(Ray ray) {
+        final var point = ray.position(this.a);
+        final var eye = ray.direction().negate();
+        final var normal = this.shape.normal(point, this);
+        if (normal.dot(eye) < 0f) {
+           return normal.negate();
+        }
+        return normal;
     }
 
     /**
