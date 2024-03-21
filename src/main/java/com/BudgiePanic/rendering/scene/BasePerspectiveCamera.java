@@ -3,7 +3,7 @@ package com.BudgiePanic.rendering.scene;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
 /**
- * Base perspective camera contains the fields used by perspective concrete camera.
+ * Base perspective camera contains the fields used by perspective concrete cameras.
  * @author BudgiePanic
  */
 public abstract class BasePerspectiveCamera implements Camera {
