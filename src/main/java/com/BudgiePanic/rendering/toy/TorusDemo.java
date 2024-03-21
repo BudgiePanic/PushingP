@@ -2,7 +2,7 @@ package com.BudgiePanic.rendering.toy;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
-import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Colors;
@@ -25,8 +25,8 @@ public class TorusDemo extends BaseDemo {
     protected String getName() { return "donut.ppm"; }
 
     @Override
-    protected Camera getCamera() {
-        return new Camera(1000, 1000, 70f, View.makeViewMatrix(makePoint(0, 3, -5), makePoint(), Directions.up));
+    protected PinHoleCamera getCamera() {
+        return new PinHoleCamera(1000, 1000, 70f, View.makeViewMatrix(makePoint(0, 3, -5), makePoint(), Directions.up));
     }
 
     @Override

@@ -15,7 +15,7 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  * 
  * @author BudgiePanic
  */
-public class Camera {
+public class PinHoleCamera {
     
     /**
      * The width of the camera's far plane in pixels.
@@ -59,7 +59,7 @@ public class Camera {
      * @param transform
      *   The camera transform.
      */
-    public Camera(int width, int height, float fov, Matrix4 transform) {
+    public PinHoleCamera(int width, int height, float fov, Matrix4 transform) {
         this.width = width;
         this.height = height;
         this.fov = fov;

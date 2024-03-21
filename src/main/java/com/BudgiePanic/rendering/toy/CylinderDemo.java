@@ -6,7 +6,7 @@ import static com.BudgiePanic.rendering.util.pattern.BiOperation.gradient;
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.radialGradient;
 import static com.BudgiePanic.rendering.util.pattern.BiOperation.ring;
 
-import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
@@ -40,8 +40,8 @@ public class CylinderDemo extends BaseDemo {
     protected String getName() { return "cylinder_cone.ppm"; }
 
     @Override
-    protected Camera getCamera() {
-        return new Camera(768, 768, AngleHelp.toRadians(90f), View.makeViewMatrix(Tuple.makePoint(0,0,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
+    protected PinHoleCamera getCamera() {
+        return new PinHoleCamera(768, 768, AngleHelp.toRadians(90f), View.makeViewMatrix(Tuple.makePoint(0,0,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
     }
     
 }

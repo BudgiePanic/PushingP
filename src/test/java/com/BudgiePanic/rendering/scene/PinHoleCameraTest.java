@@ -22,7 +22,7 @@ public class CameraTest {
     void testCameraConstructor() {
         var width = 160;
         var height = 120;
-        var camera = new Camera(width, height, AngleHelp.toRadians(90), Transforms.identity().assemble());
+        var camera = new PinHoleCamera(width, height, AngleHelp.toRadians(90), Transforms.identity().assemble());
         assertEquals(width, camera.width);
         assertEquals(height, camera.height);
         assertEquals(0, FloatHelp.compareFloat((float)(Math.PI / 2.0), camera.fov));
@@ -32,20 +32,20 @@ public class CameraTest {
     @Test
     void testCameraPixelSize() {
         // width > height
-        var camera = new Camera(200, 125, AngleHelp.toRadians(90), Transforms.identity().assemble());
+        var camera = new PinHoleCamera(200, 125, AngleHelp.toRadians(90), Transforms.identity().assemble());
         assertEquals(0.01f, camera.pixelSize);
     }
 
     @Test
     void testCameraPixelSizeA() {
         // height > width
-        var camera = new Camera(125, 200, AngleHelp.toRadians(90), Transforms.identity().assemble());
+        var camera = new PinHoleCamera(125, 200, AngleHelp.toRadians(90), Transforms.identity().assemble());
         assertEquals(0.01f, camera.pixelSize);
     }
 
     @Test
     void testCameraRay() {
-        var camera = new Camera(201, 101, AngleHelp.toRadians(90), Transforms.identity().assemble());
+        var camera = new PinHoleCamera(201, 101, AngleHelp.toRadians(90), Transforms.identity().assemble());
         var result = camera.createRay(100, 50);
         assertEquals(Tuple.makePoint(), result.origin());
         assertEquals(Tuple.makeVector(0, 0, -1), result.direction());
@@ -53,7 +53,7 @@ public class CameraTest {
 
     @Test
     void testCameraRayA() {
-        var camera = new Camera(201, 101, AngleHelp.toRadians(90), Transforms.identity().assemble());
+        var camera = new PinHoleCamera(201, 101, AngleHelp.toRadians(90), Transforms.identity().assemble());
         var result = camera.createRay(0, 0);
         assertEquals(Tuple.makePoint(), result.origin());
         assertEquals(Tuple.makeVector(0.66519f, 0.33259f, -0.66851f), result.direction());
@@ -61,7 +61,7 @@ public class CameraTest {
 
     @Test
     void testCameraRayB() {
-        var camera = new Camera(
+        var camera = new PinHoleCamera(
             201, 101, 
             AngleHelp.toRadians(90),
             Transforms.identity().
@@ -91,7 +91,7 @@ public class CameraTest {
         world.addLight(light);
         world.addShape(sphereA);
         world.addShape(sphereB);
-        var camera = new Camera(11, 11, AngleHelp.toRadians(90), 
+        var camera = new PinHoleCamera(11, 11, AngleHelp.toRadians(90), 
             View.makeViewMatrix(Tuple.makePoint(0, 0, -5), Tuple.makePoint(), Tuple.makeVector(0, 1, 0)));
         var result = camera.takePicture(world);
         assertEquals(new Color(0.38066f, 0.47583f, 0.2855f), result.getPixel(5, 5));

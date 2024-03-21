@@ -2,7 +2,7 @@ package com.BudgiePanic.rendering.toy;
 
 import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.reporting.ProgressWrapper;
-import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Canvas;
@@ -15,7 +15,7 @@ import com.BudgiePanic.rendering.util.Canvas;
 public abstract class BaseDemo implements Runnable {
     
     protected final String fileName;
-    protected final Camera camera;
+    protected final PinHoleCamera camera;
 
     public BaseDemo() {
         this.fileName = getName();
@@ -36,7 +36,7 @@ public abstract class BaseDemo implements Runnable {
      * @return
      *   The camera used to image this demo scene.
      */
-    protected abstract Camera getCamera();
+    protected abstract PinHoleCamera getCamera();
 
     /**
      * Assemble the world that contains the content highlighted by this demo.

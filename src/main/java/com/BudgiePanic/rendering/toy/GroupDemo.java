@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.BudgiePanic.rendering.reporting.TimingWrapper;
-import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
@@ -116,7 +116,7 @@ public class GroupDemo extends BaseDemo {
     protected String getName() { return "group.ppm"; }
 
     @Override
-    protected Camera getCamera() {
+    protected PinHoleCamera getCamera() {
         return new TimingWrapper(768, 768, AngleHelp.toRadians(90f), View.makeViewMatrix(cameraLocation, Tuple.makePoint(3, 0, 0), Tuple.makePoint(0,1,0)));
     }
     

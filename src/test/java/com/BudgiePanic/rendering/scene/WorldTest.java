@@ -203,7 +203,7 @@ public class WorldTest {
         world.addShape(floor);
         world.addShape(leftWall);
         world.addShape(rightWall);
-        Camera camera = new Camera(75, 75, 
+        PinHoleCamera camera = new PinHoleCamera(75, 75, 
             AngleHelp.toRadians(90), 
             View.makeViewMatrix(
                 Tuple.makePoint(0, 1.5f, -5f),
@@ -572,7 +572,7 @@ public class WorldTest {
         var world = new World();
         world.addLight(light);
         world.addShape(shape);
-        final var camera = new Camera(cameraWidth, cameraHeight, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
+        final var camera = new PinHoleCamera(cameraWidth, cameraHeight, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
         int col = 810, row = 536;
         var ray = camera.createRay(col, row);
         var cast = world.intersect(ray);
@@ -598,7 +598,7 @@ public class WorldTest {
         var world = new World();
         world.addLight(light);
         world.addShape(shape);
-        final var camera = new Camera(cameraWidth, cameraHeight, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
+        final var camera = new PinHoleCamera(cameraWidth, cameraHeight, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
         int col = 770, row = 610;
         var ray = camera.createRay(col, row);
         var cast = world.intersect(ray);

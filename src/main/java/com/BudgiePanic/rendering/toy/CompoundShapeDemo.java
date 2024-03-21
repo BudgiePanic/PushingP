@@ -9,7 +9,7 @@ import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.u
 
 import com.BudgiePanic.rendering.objects.Dice;
 import com.BudgiePanic.rendering.reporting.TimingWrapper;
-import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Colors;
@@ -123,7 +123,7 @@ public class CompoundShapeDemo extends BaseDemo {
     protected String getName() { return "compound_shapes.ppm"; }
 
     @Override
-    protected Camera getCamera() {
+    protected PinHoleCamera getCamera() {
         return new TimingWrapper(1536, 1536, 90f, View.makeViewMatrix(cameraPostion, makePoint(0, 0, 1.5f), makeVector(0, 1, 0)));
     }
     
