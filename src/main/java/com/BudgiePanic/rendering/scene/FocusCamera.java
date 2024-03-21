@@ -170,8 +170,6 @@ public class FocusCamera extends BasePerspectiveCamera {
 
     @Override
     public Canvas takePicture(World world, Canvas canvas) {
-        // see: https://sighack.com/post/averaging-rgb-colors-the-right-way
-        // pre condition check: is the canvas big enough for the camera?
         if (canvas == null || canvas.getHeight() < this.height || canvas.getWidth() < this.width) throw new IllegalArgumentException();
         List<Pair<Integer, Integer>> jobs = new ArrayList<>(this.height * this.width);
         // generate jobs to execute in parrallel
@@ -191,13 +189,15 @@ public class FocusCamera extends BasePerspectiveCamera {
             for (int i = 0; i < this.raysPerPixel; i++) {
                 final var ray = createRay(column, row);
                 final var color = world.computeColor(ray);
-                red += color.getRed(); // red += color.getRed() * color.getRed();
-                green += color.getGreen(); // Green += color.getGreen() * color.getGreen();
-                blue += color.getBlue(); // Blue += color.getBlue() * color.getBlue();
+                // see: https://sighack.com/post/averaging-rgb-colors-the-right-way
+                red += color.getRed() * color.getRed(); // red += color.getRed();
+                green += color.getGreen() * color.getGreen(); // green += color.getGreen();
+                blue += color.getBlue() * color.getBlue(); // blue += color.getBlue();
             }
-            red /= raysPerPixel; // red = (float) Math.sqrt(red / raysPerPixel);
-            green /= raysPerPixel; // green = (float) Math.sqrt(green / raysPerPixel);
-            blue /= raysPerPixel; // blue = (float) Math.sqrt(blue / raysPerPixel);
+            // average the squared colors
+            red = (float) Math.sqrt(red / raysPerPixel); // red /= raysPerPixel;
+            green = (float) Math.sqrt(green / raysPerPixel); // green /= raysPerPixel; 
+            blue = (float) Math.sqrt(blue / raysPerPixel); // blue /= raysPerPixel; 
             canvas.writePixel(column, row, new Color(red, green, blue));
         });
         return canvas;
