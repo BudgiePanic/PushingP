@@ -167,5 +167,4 @@ public class DepthCamera implements Camera {
         this.minDistance = Float.MAX_VALUE;
         return canvas;
     }
-    
 }
