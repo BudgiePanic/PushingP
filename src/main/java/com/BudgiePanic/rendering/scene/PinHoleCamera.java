@@ -1,6 +1,5 @@
 package com.BudgiePanic.rendering.scene;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.BudgiePanic.rendering.util.Canvas;
@@ -17,6 +16,8 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  */
 public class PinHoleCamera extends BasePerspectiveCamera {
     
+    protected static final float focalDistance = 1f;
+
     /**
      * Create a new perspective camera. 
      * NOTE: may create orthographic camera in the future?
@@ -31,7 +32,7 @@ public class PinHoleCamera extends BasePerspectiveCamera {
      *   The camera transform.
      */
     public PinHoleCamera(int width, int height, float fov, Matrix4 transform) {
-        super(width, height, fov, transform);
+        super(width, height, fov, focalDistance,transform);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class PinHoleCamera extends BasePerspectiveCamera {
         var worldY = this.halfHeight - yOffset;
         // move this 'camera space' ray into world space
         var cameraInverse = this.transform.inverse();
-        final float worldZ = -1;
+        final float worldZ = -focalDistance;
         var pixel = cameraInverse.multiply(Tuple.makePoint(worldX, worldY, worldZ));
         var origin = cameraInverse.multiply(Tuple.makePoint());
         var direction = pixel.subtract(origin).normalize();
@@ -61,13 +62,7 @@ public class PinHoleCamera extends BasePerspectiveCamera {
     public Canvas takePicture(World world, Canvas canvas) {
         // pre condition check: is the canvas big enough for the camera?
         if (canvas == null || canvas.getHeight() < this.height || canvas.getWidth() < this.width) throw new IllegalArgumentException();
-        List<Pair<Integer, Integer>> jobs = new ArrayList<>(this.height * this.width);
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                // canvas.writePixel(col, row, world.computeColor(createRay(col, row)));
-                jobs.add(new Pair<Integer,Integer>(col, row));
-            }
-        }
+        List<Pair<Integer, Integer>> jobs = generateJobs();
         jobs.parallelStream().forEach(pixel -> canvas.writePixel(pixel.a(), pixel.b(), world.computeColor(createRay(pixel.a(), pixel.b()))));
         return canvas;
     }

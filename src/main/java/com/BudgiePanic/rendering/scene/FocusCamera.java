@@ -2,7 +2,6 @@ package com.BudgiePanic.rendering.scene;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -52,11 +51,6 @@ public class FocusCamera extends BasePerspectiveCamera {
      */
     protected final float aperture;
     /**
-     * The distance of the camera's imaging plane to the aperture. 
-     * Affects the final image FOV as more distance constrains which rays can fit through the apeture, narrowing the image.
-     */
-    protected final float focalDistance;
-    /**
      * The number of rays to cast per pixel through the aperture.
      * The color from each ray is averaged together to form the final pixel color.
      */
@@ -87,8 +81,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      *   Source of randomness of ray directions.
      */
     public FocusCamera(int width, int height, float fov, float aperture, float focalDistance, Matrix4 transform, int raysPerPixel, Supplier<Float> randomnessSource) {
-        super(width, height, fov, transform);
-        this.focalDistance = focalDistance;
+        super(width, height, fov, focalDistance, transform);
         this.aperture = aperture;
         this.raysPerPixel = raysPerPixel;
         this.randomnessSource = randomnessSource;
@@ -171,13 +164,7 @@ public class FocusCamera extends BasePerspectiveCamera {
     @Override
     public Canvas takePicture(World world, Canvas canvas) {
         if (canvas == null || canvas.getHeight() < this.height || canvas.getWidth() < this.width) throw new IllegalArgumentException();
-        List<Pair<Integer, Integer>> jobs = new ArrayList<>(this.height * this.width);
-        // generate jobs to execute in parrallel
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                jobs.add(new Pair<Integer,Integer>(col, row));
-            }
-        }
+        List<Pair<Integer, Integer>> jobs = generateJobs();
         jobs.parallelStream().forEach(pixel -> {
             final int column = pixel.a();
             final int row = pixel.b();
