@@ -11,40 +11,12 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
 /**
  * The camera allows the world to be viewed from different perspectives by abstracting the transform complexity from the user. 
+ * Pinhole camera has a fixed focal distance of 1 and a small aperture of 1 ray in size.
  * 
  * @author BudgiePanic
  */
-public class PinHoleCamera implements Camera {
+public class PinHoleCamera extends BasePerspectiveCamera {
     
-    /**
-     * The width of the camera's far plane in pixels.
-     */
-    public final int width;
-
-    /**
-     * The height of the camera's far plane in pixels.
-     */
-    public final int height;
-
-    /**
-     * The field of view of the camera in radians.
-     */
-    protected final float fov;
-
-    /**
-     * Transform to go to camera space.
-     * Can move an object in the world relative to the camera which lies at [0,0,0]
-     */
-    protected final Matrix4 transform;
-
-    /**
-     * The world space size of the pixel. 
-     * Pixel width == pixel height because pixels are square.
-     */
-    protected final float pixelSize;
-    protected final float halfHeight;
-    protected final float halfWidth;
-
     /**
      * Create a new perspective camera. 
      * NOTE: may create orthographic camera in the future?
@@ -59,17 +31,7 @@ public class PinHoleCamera implements Camera {
      *   The camera transform.
      */
     public PinHoleCamera(int width, int height, float fov, Matrix4 transform) {
-        this.width = width;
-        this.height = height;
-        this.fov = fov;
-        this.transform = transform;
-        // determine pixel size
-        float halfView = (float) Math.tan(fov/2.0);
-        float aspect = ((float) width / (float) height);
-        // assuming square pixels, so pixel width == pixel height
-        this.halfWidth = (aspect >= 1f) ? halfView : halfView * aspect; 
-        this.halfHeight = (aspect >= 1f) ? halfView / aspect : halfView;
-        this.pixelSize = (halfWidth * 2.0f) / width;
+        super(width, height, fov, transform);
     }
 
     @Override
@@ -109,11 +71,5 @@ public class PinHoleCamera implements Camera {
         jobs.parallelStream().forEach(pixel -> canvas.writePixel(pixel.a(), pixel.b(), world.computeColor(createRay(pixel.a(), pixel.b()))));
         return canvas;
     }
-
-    @Override
-    public int width() { return this.width; }
-
-    @Override
-    public int height() { return this.height; }
 
 }
