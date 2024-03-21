@@ -40,6 +40,9 @@ public class DepthCamera implements Camera {
     /**
      * Writes the raw depth values to the depth buffer.
      * This mode clamps rays that did not hit anything to 'max distance'.
+     * NOTE: the canvas writer will clamp color value to be between 0 and 1
+     *       so writing a depth buffer to image using this mode will likely yield and all white image
+     *       this is expected behaviour
      */
     public static final DepthMode rawDepthValues = (camera) -> (pixel) -> {
         final float distance = pixel.x;
@@ -50,6 +53,9 @@ public class DepthCamera implements Camera {
 
     /**
      * Writes the raw depth values to the depth buffer.
+     * NOTE: the canvas writer will clamp color value to be between 0 and 1
+     *       so writing a depth buffer to image using this mode will likely yield and all white image
+     *       this is expected behaviour
      */
     public static final DepthMode rawUnclampedDepthValues = (camera) -> (pixel) -> {
         final float distance = pixel.x;
