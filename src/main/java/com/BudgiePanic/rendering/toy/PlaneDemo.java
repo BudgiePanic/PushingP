@@ -5,7 +5,7 @@ import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 
 import java.util.List;
 
-import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Colors;
@@ -56,8 +56,8 @@ public final class PlaneDemo extends BaseDemo {
     protected String getName() { return "plane_demo.ppm"; }
 
     @Override
-    protected Camera getCamera() {
-        return new Camera(250, 250, AngleHelp.toRadians(70f), View.makeViewMatrix(makePoint(0,3f,-10), makePoint(0,0,1), makeVector(0, 1, 0)));
+    protected PinHoleCamera getCamera() {
+        return new PinHoleCamera(250, 250, AngleHelp.toRadians(70f), View.makeViewMatrix(makePoint(0,3f,-10), makePoint(0,0,1), makeVector(0, 1, 0)));
     }
     
 }

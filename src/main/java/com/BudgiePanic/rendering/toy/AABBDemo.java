@@ -5,6 +5,7 @@ import static com.BudgiePanic.rendering.util.pattern.BiOperation.radialGradient;
 
 import com.BudgiePanic.rendering.reporting.TimingWrapper;
 import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Canvas;
@@ -33,7 +34,7 @@ public class AABBDemo implements Runnable {
     private static final String fileNameB = "withAABB.ppm";
     private static final int width = 1024, height = width;
     private final static float fov = AngleHelp.toRadians(90f);
-    private final Camera camera = new TimingWrapper(width, height, fov, View.makeViewMatrix(Tuple.makePoint(11f,5, 2f), Tuple.makePoint(11, 0, 8), Tuple.makePoint(0,1,0)));
+    private final Camera camera = new TimingWrapper(new PinHoleCamera(width, height, fov, View.makeViewMatrix(Tuple.makePoint(11f,5, 2f), Tuple.makePoint(11, 0, 8), Tuple.makePoint(0,1,0))));
     private final PointLight light = new PointLight(makePoint(-3, 10, -6), Colors.white);
     private final Plane background = new Plane(
         Transforms.identity().translate(0, -1, 0).assemble(),

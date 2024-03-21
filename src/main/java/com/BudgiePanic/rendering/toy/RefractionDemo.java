@@ -4,7 +4,7 @@ import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import java.util.List;
 
-import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
@@ -84,8 +84,8 @@ public class RefractionDemo extends BaseDemo {
     protected String getName() { return "refraction.ppm"; }
 
     @Override
-    protected Camera getCamera() {
-        return new Camera(500, 500, AngleHelp.toRadians(65f), View.makeViewMatrix(Tuple.makePoint(0,1.5f,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
+    protected PinHoleCamera getCamera() {
+        return new PinHoleCamera(500, 500, AngleHelp.toRadians(65f), View.makeViewMatrix(Tuple.makePoint(0,1.5f,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
     }
     
 }

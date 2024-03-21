@@ -49,7 +49,7 @@ public abstract class BaseDemo implements Runnable {
     private Canvas imageWorld() {
         System.out.println("INFO: taking picture");
         var world = createWorld();
-        var canvas = camera.takePicture(world, new ProgressWrapper(new ArrayCanvas(camera.width, camera.height), 20));
+        var canvas = camera.takePicture(world, new ProgressWrapper(new ArrayCanvas(camera.width(), camera.height()), 20));
         return canvas;
     }
 

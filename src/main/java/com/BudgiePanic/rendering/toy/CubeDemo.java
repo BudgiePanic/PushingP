@@ -5,6 +5,7 @@ import java.util.List;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
@@ -62,7 +63,7 @@ public class CubeDemo extends BaseDemo {
 
     @Override
     protected Camera getCamera() {
-        return new Camera(500, 500, AngleHelp.toRadians(70f), View.makeViewMatrix(Tuple.makePoint(0,1.5f,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
+        return new PinHoleCamera(500, 500, AngleHelp.toRadians(70f), View.makeViewMatrix(Tuple.makePoint(0,1.5f,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0)));
     }
     
 }
