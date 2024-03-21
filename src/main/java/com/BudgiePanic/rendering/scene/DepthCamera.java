@@ -12,6 +12,7 @@ import com.BudgiePanic.rendering.util.intersect.Ray;
 
 /**
  * The depth camera records the distance each ray cast out of the camera monitoring travels to intersect with an object in the scene.
+ * Nearby values in the depth buffer are closer to zero. 
  *
  * @author BudgiePanic
  */
@@ -24,22 +25,34 @@ public class DepthCamera implements Camera {
     public static interface DepthMode extends Function<DepthCamera, Function<Color, Color>> {}
     
     /**
-     * Writes normalized depth values (between 1 and 0) to the depth buffer.
+     * Writes normalized depth values (between 0 for nearby and 1 for far away) to the depth buffer.
      */
     public static final DepthMode normalizedDepthValues = (camera) -> (pixel) -> {
         final float distance = pixel.x;
+        // infinity is a special case, means the ray didn't actually hit anything.
+        // we need to remap infinity so as to not mess up the normalization.
+        // in rasterization graphics this isn't an issue because max distance can only be as large as the far clipping plane. but since rays can miss, we can get infinities.
         final boolean isInfinity = Float.compare(distance, Float.POSITIVE_INFINITY) == 0;
-        final float normalizedDistance = isInfinity ? 0f : (distance - camera.minDistance) / (camera.maxDistance - camera.minDistance);
+        final float normalizedDistance = isInfinity ? 1f : (distance - camera.minDistance) / (camera.maxDistance - camera.minDistance);
         return new Color(normalizedDistance, normalizedDistance, normalizedDistance);
     };
     
     /**
      * Writes the raw depth values to the depth buffer.
+     * This mode clamps rays that did not hit anything to 'max distance'.
      */
     public static final DepthMode rawDepthValues = (camera) -> (pixel) -> {
-        float distance = pixel.x;
+        final float distance = pixel.x;
         final boolean isInfinity = Float.compare(distance, Float.POSITIVE_INFINITY) == 0;
-        distance = isInfinity ? 0f : distance;
+        final float clampedDistance = isInfinity ? camera.maxDistance : distance;
+        return new Color(clampedDistance, clampedDistance, clampedDistance);
+    };
+
+    /**
+     * Writes the raw depth values to the depth buffer.
+     */
+    public static final DepthMode rawUnclampedDepthValues = (camera) -> (pixel) -> {
+        final float distance = pixel.x;
         return new Color(distance, distance, distance);
     };
     
@@ -49,7 +62,7 @@ public class DepthCamera implements Camera {
     public static final DepthMode clampedDepthValues = (camera) -> (pixel) -> {
         final float distance = pixel.x;
         final boolean isInfinity = Float.compare(distance, Float.POSITIVE_INFINITY) == 0;
-        final float clampedDistance = isInfinity ? 0f : (distance) / (camera.maxDistance);
+        final float clampedDistance = isInfinity ? camera.maxDistance : (distance) / (camera.maxDistance);
         return new Color(clampedDistance, clampedDistance, clampedDistance);
     };
     
@@ -112,13 +125,22 @@ public class DepthCamera implements Camera {
             final var ray = createRay(column, row);
             final var intersections = world.intersect(ray);
             final var distance = intersections.flatMap(Intersection::Hit).map(Intersection::a).orElse(Float.POSITIVE_INFINITY);
-            final var inverseDistance = 1f / distance;
-            canvas.writePixel(column, row, new Color(inverseDistance, inverseDistance, inverseDistance));
+            canvas.writePixel(column, row, new Color(distance, distance, distance));
+        }); 
+        // find and store the minimum and maximum distances
+        canvas.forEach(pixel -> {
+            final boolean isInfinity = Float.compare(pixel.x, Float.POSITIVE_INFINITY) == 0;
+            // don't write infinity to max distance
+            if (pixel.x > this.maxDistance && !isInfinity) {
+                this.maxDistance = pixel.x;
+            }
+            if (pixel.x < this.minDistance) {
+                this.minDistance = pixel.x;
             }
         });
         canvas.writeAll(mode.apply(this));
         // reset the distances in case this function is called again with a different world supplied
-        this.maxDistance = Float.MIN_VALUE; // max distance should be a local variable, but the lambdas can write to a local var...
+        this.maxDistance = Float.MIN_VALUE; // TODO max distance should be a local variable, but the lambdas can't write to a local variable
         this.minDistance = Float.MAX_VALUE;
         return canvas;
     }
