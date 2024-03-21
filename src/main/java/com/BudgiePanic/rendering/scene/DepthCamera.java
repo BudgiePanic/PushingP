@@ -89,6 +89,23 @@ public class DepthCamera implements Camera {
      */
     protected Float minDistance;
 
+    /**
+     * Convience constructor.
+     * uses the 'campedDepthValues' depth mode, which most closely matches the behaviour most users expect from a depth buffer.
+     * @param camera
+     *   The camera to monitor.
+     */
+    public DepthCamera(BasePerspectiveCamera camera) {
+        this(camera, clampedDepthValues);
+    }
+
+    /**
+     * Canonical constructor
+     * @param camera
+     *   The camera to monitor
+     * @param mode
+     *   The depth write mode
+     */
     public DepthCamera(BasePerspectiveCamera camera, DepthMode mode) {
         this.cameraMonitoring = camera;
         this.mode = mode;
