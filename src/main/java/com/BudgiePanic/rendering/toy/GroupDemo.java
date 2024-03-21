@@ -31,7 +31,7 @@ import com.BudgiePanic.rendering.util.transform.View;
 
 public class GroupDemo extends BaseDemo {
 
-    private final Tuple cameraLocation = Tuple.makePoint(3,0,-3);
+    private final static Tuple cameraLocation = Tuple.makePoint(3,0,-3);
 
     private final List<Material> materials = List.of(
             Material.defaultMaterial(),

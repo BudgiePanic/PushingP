@@ -32,7 +32,7 @@ import com.BudgiePanic.rendering.util.transform.View;
 
 public class CompoundShapeDemo extends BaseDemo {
 
-    private final Tuple cameraPostion = makePoint(0, 3, -3);
+    private final static Tuple cameraPostion = makePoint(0, 3, -3);
 
     @Override
     protected World createWorld() {
