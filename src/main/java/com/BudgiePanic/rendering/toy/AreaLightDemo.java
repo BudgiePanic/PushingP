@@ -2,6 +2,7 @@ package com.BudgiePanic.rendering.toy;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
+import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.Colors;
@@ -19,7 +20,7 @@ public class AreaLightDemo extends BaseDemo {
     protected String getName() { return "soft_shadows.ppm"; }
 
     @Override
-    protected PinHoleCamera getCamera() {
+    protected Camera getCamera() {
         return new PinHoleCamera(1280, 720, 90f, View.makeViewMatrix(makePoint(0, 2, -5), Directions.forward.multiply(10f), Directions.up));
     }
 

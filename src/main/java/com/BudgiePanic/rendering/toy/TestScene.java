@@ -4,6 +4,7 @@ import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import static com.BudgiePanic.rendering.util.AngleHelp.toRadians;
 
+import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
@@ -39,6 +40,6 @@ public class TestScene extends BaseDemo {
     protected String getName() { return "test_scene.ppm"; }
 
     @Override
-    protected PinHoleCamera getCamera() { return new PinHoleCamera(512, 512, AngleHelp.toRadians(90f), View.makeViewMatrix(Tuple.makePoint(0,0,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0))); }
+    protected Camera getCamera() { return new PinHoleCamera(512, 512, AngleHelp.toRadians(90f), View.makeViewMatrix(Tuple.makePoint(0,0,-6f), Tuple.makePoint(0, 0, 1), Tuple.makePoint(0,1,0))); }
     
 }

@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.toy;
 
+import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
@@ -23,7 +24,7 @@ public class CameraDemo extends BaseDemo {
     protected String getName() { return "camera_demo.ppm"; }
 
     @Override
-    protected PinHoleCamera getCamera() {
+    protected Camera getCamera() {
         PinHoleCamera camera = new PinHoleCamera(640, 480, 
             AngleHelp.toRadians(90), 
             View.makeViewMatrix(

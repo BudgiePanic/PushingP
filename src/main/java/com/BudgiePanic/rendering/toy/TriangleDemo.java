@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.BudgiePanic.rendering.io.WavefrontObjectLoader;
 import com.BudgiePanic.rendering.reporting.TimingWrapper;
+import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
@@ -89,8 +90,8 @@ public class TriangleDemo extends BaseDemo {
     protected String getName() { return "teddy_cow_teapot.ppm"; }
 
     @Override
-    protected PinHoleCamera getCamera() {
-        return new TimingWrapper(480, 480, AngleHelp.toRadians(90f), View.makeViewMatrix(Tuple.makePoint(0,3, 0), Tuple.makePoint(0, 0, 5), Tuple.makePoint(0,1,0)));
+    protected Camera getCamera() {
+        return new TimingWrapper(new PinHoleCamera(480, 480, AngleHelp.toRadians(90f), View.makeViewMatrix(Tuple.makePoint(0,3, 0), Tuple.makePoint(0, 0, 5), Tuple.makePoint(0,1,0))));
     }
     
 }

@@ -8,6 +8,7 @@ import static com.BudgiePanic.rendering.util.pattern.BiOperation.stripe;
 
 import java.util.List;
 
+import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
@@ -79,7 +80,7 @@ public class PatternToy extends BaseDemo {
     protected String getName() { return "pattern_demo.ppm"; }
 
     @Override
-    protected PinHoleCamera getCamera() {
+    protected Camera getCamera() {
         return new PinHoleCamera(700, 700, AngleHelp.toRadians(65f), View.makeViewMatrix(Tuple.makePoint(0,5,-4.5f), Tuple.makePoint(0, 1, 1), Tuple.makePoint(0,1,0)));
     }
     
