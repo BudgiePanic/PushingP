@@ -1,6 +1,5 @@
 package com.BudgiePanic.rendering.scene;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.BudgiePanic.rendering.util.Canvas;
