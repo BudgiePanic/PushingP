@@ -16,7 +16,7 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
-public class CameraTest {
+public class PinHoleCameraTest {
     
     @Test
     void testCameraConstructor() {
