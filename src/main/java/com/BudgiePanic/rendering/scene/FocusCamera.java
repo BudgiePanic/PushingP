@@ -165,13 +165,7 @@ public class FocusCamera extends BasePerspectiveCamera {
     @Override
     public Canvas takePicture(World world, Canvas canvas) {
         if (canvas == null || canvas.getHeight() < this.height || canvas.getWidth() < this.width) throw new IllegalArgumentException();
-        List<Pair<Integer, Integer>> jobs = new ArrayList<>(this.height * this.width);
-        // generate jobs to execute in parrallel
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                jobs.add(new Pair<Integer,Integer>(col, row));
-            }
-        }
+        List<Pair<Integer, Integer>> jobs = generateJobs();
         jobs.parallelStream().forEach(pixel -> {
             final int column = pixel.a();
             final int row = pixel.b();

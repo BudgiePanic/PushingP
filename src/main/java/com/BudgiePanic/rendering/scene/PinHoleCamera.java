@@ -63,13 +63,7 @@ public class PinHoleCamera extends BasePerspectiveCamera {
     public Canvas takePicture(World world, Canvas canvas) {
         // pre condition check: is the canvas big enough for the camera?
         if (canvas == null || canvas.getHeight() < this.height || canvas.getWidth() < this.width) throw new IllegalArgumentException();
-        List<Pair<Integer, Integer>> jobs = new ArrayList<>(this.height * this.width);
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                // canvas.writePixel(col, row, world.computeColor(createRay(col, row)));
-                jobs.add(new Pair<Integer,Integer>(col, row));
-            }
-        }
+        List<Pair<Integer, Integer>> jobs = generateJobs();
         jobs.parallelStream().forEach(pixel -> canvas.writePixel(pixel.a(), pixel.b(), world.computeColor(createRay(pixel.a(), pixel.b()))));
         return canvas;
     }
