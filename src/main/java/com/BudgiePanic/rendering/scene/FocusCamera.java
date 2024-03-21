@@ -128,7 +128,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      *   Transform to move into camera orientation space.
      */
     public FocusCamera(int width, int height, float aperture, float focalDistance, Matrix4 transform) {
-        this(width, height, aperture, focalDistance, transform, defaultRaysPerPixel, defaultRandomness);
+        this(width, height, defaultFOV, aperture, focalDistance, transform, defaultRaysPerPixel, defaultRandomness);
     }
 
     @Override
