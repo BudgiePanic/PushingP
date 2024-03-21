@@ -35,7 +35,14 @@ public class FocusCamera extends BasePerspectiveCamera {
     /**
      * The suggested value of rays to cast per pixel.
      */
-    public static final int defaultRaysPerPixel = 3;
+    public static final int defaultRaysPerPixel = 6;
+
+    /**
+     * The suggested FOV for Focus camera.
+     * Using a consistent fov eliminates one variable that affects the FOV of the final image.
+     * (The other variable is the focal distance).
+     */
+    public static final float defaultFOV = 70f;
     
     /**
      * The size of the hole that light enters the camera through.
@@ -79,12 +86,32 @@ public class FocusCamera extends BasePerspectiveCamera {
      * @param randomnessSource
      *   Source of randomness of ray directions.
      */
-    public FocusCamera(int width, int height, float aperture, float focalDistance, Matrix4 transform, int raysPerPixel, Supplier<Float> randomnessSource) {
-        super(width, height, focalDistance, transform);
+    public FocusCamera(int width, int height, float fov, float aperture, float focalDistance, Matrix4 transform, int raysPerPixel, Supplier<Float> randomnessSource) {
+        super(width, height, fov, transform);
         this.focalDistance = focalDistance;
         this.aperture = aperture;
         this.raysPerPixel = raysPerPixel;
         this.randomnessSource = randomnessSource;
+    }
+
+    /**
+     * Create a new focus camera.
+     * @param width
+     *   The number of columns on the camera's imaging plane.
+     * @param height
+     *   The number of rows on the camera's imaging plane.
+     * @param fov
+     *   The field of view of the imaging plane. Affects the FOV of the final image.
+     * @param aperture
+     *   The size of the hole that light enters the camera through. Try starting at 0.1f.
+     *   Smaller values cause a larger depth of field. Larger values cause a narrow depth of field.
+     * @param focalDistance
+     *   The distance of the camera's imaging plane to the aperture. Affects the FOV of the final image. Larger focal distances narrows the FOV.
+     * @param transform
+     *   Transform to move into camera orientation space.
+     */
+    public FocusCamera(int width, int height, float fov, float aperture, float focalDistance, Matrix4 transform) {
+        this(width, height, fov, aperture, focalDistance, transform, defaultRaysPerPixel, defaultRandomness);
     }
 
     /**
