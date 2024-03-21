@@ -45,7 +45,8 @@ public class FocusCamera extends BasePerspectiveCamera {
      */
     protected final float aperture;
     /**
-     * The distance of the camera's imaging plane to the aperture.
+     * The distance of the camera's imaging plane to the aperture. 
+     * Affects the final image FOV as more distance constrains which rays can fit through the apeture, narrowing the image.
      */
     protected final float focalDistance;
     /**
@@ -65,10 +66,12 @@ public class FocusCamera extends BasePerspectiveCamera {
      *   The number of columns on the camera's imaging plane.
      * @param height
      *   The number of rows on the camera's imaging plane.
+     * @param fov
+     *   The field of view of the imaging plane. Affects the FOV of the final image.
      * @param aperture
-     *   The size of the hole that light enters the camera through. Smaller values cause a deeper depth of field. Larger values cause a narrow depth of field.
+     *   The size of the hole that light enters the camera through. Smaller values cause a deeper depth of field. Larger values cause a narrow depth of field. The aperture value may need to be smaller than you think to pull focus.
      * @param focalDistance
-     *   The distance of the camera's imaging plane to the aperture. Should be a positive number.
+     *   The distance of the camera's imaging plane to the aperture. Should be a positive number. Affects the FOV of the final image. Experiment with values from 0.01f to 10f.
      * @param transform
      *   Transform to move into camera orientation space.
      * @param raysPerPixel
