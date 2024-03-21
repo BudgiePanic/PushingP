@@ -52,11 +52,6 @@ public class FocusCamera extends BasePerspectiveCamera {
      */
     protected final float aperture;
     /**
-     * The distance of the camera's imaging plane to the aperture. 
-     * Affects the final image FOV as more distance constrains which rays can fit through the apeture, narrowing the image.
-     */
-    protected final float focalDistance;
-    /**
      * The number of rays to cast per pixel through the aperture.
      * The color from each ray is averaged together to form the final pixel color.
      */
@@ -87,8 +82,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      *   Source of randomness of ray directions.
      */
     public FocusCamera(int width, int height, float fov, float aperture, float focalDistance, Matrix4 transform, int raysPerPixel, Supplier<Float> randomnessSource) {
-        super(width, height, fov, transform);
-        this.focalDistance = focalDistance;
+        super(width, height, fov, focalDistance, transform);
         this.aperture = aperture;
         this.raysPerPixel = raysPerPixel;
         this.randomnessSource = randomnessSource;

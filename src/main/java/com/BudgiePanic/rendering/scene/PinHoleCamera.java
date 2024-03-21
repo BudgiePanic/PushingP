@@ -17,6 +17,8 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  */
 public class PinHoleCamera extends BasePerspectiveCamera {
     
+    protected static final float focalDistance = 1f;
+
     /**
      * Create a new perspective camera. 
      * NOTE: may create orthographic camera in the future?
@@ -31,7 +33,7 @@ public class PinHoleCamera extends BasePerspectiveCamera {
      *   The camera transform.
      */
     public PinHoleCamera(int width, int height, float fov, Matrix4 transform) {
-        super(width, height, fov, transform);
+        super(width, height, fov, focalDistance,transform);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class PinHoleCamera extends BasePerspectiveCamera {
         var worldY = this.halfHeight - yOffset;
         // move this 'camera space' ray into world space
         var cameraInverse = this.transform.inverse();
-        final float worldZ = -1;
+        final float worldZ = -focalDistance;
         var pixel = cameraInverse.multiply(Tuple.makePoint(worldX, worldY, worldZ));
         var origin = cameraInverse.multiply(Tuple.makePoint());
         var direction = pixel.subtract(origin).normalize();

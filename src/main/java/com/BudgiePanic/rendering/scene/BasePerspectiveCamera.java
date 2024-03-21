@@ -36,6 +36,12 @@ public abstract class BasePerspectiveCamera implements Camera {
     protected final float halfWidth;
 
     /**
+     * The distance of the camera's imaging plane to the aperture. 
+     * Affects the final image FOV as more distance constrains which rays can fit through the apeture, narrowing the image.
+     */
+    protected final float focalDistance;
+
+    /**
      * Create a new Base perspective camera.
      * @param width
      *   The horizontal size of the camera in pixels.
@@ -46,10 +52,11 @@ public abstract class BasePerspectiveCamera implements Camera {
      * @param transform
      *   The camera transform.
      */
-    public BasePerspectiveCamera(int width, int height, float fov, Matrix4 transform) {
+    public BasePerspectiveCamera(int width, int height, float fov, float focalDistance, Matrix4 transform) {
         this.width = width;
         this.height = height;
         this.fov = fov;
+        this.focalDistance = focalDistance;
         this.transform = transform;
         // determine pixel size
         float halfView = (float) Math.tan(fov/2.0);
