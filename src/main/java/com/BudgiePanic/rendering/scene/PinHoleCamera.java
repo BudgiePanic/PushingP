@@ -3,7 +3,6 @@ package com.BudgiePanic.rendering.scene;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
@@ -15,7 +14,7 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  * 
  * @author BudgiePanic
  */
-public class PinHoleCamera {
+public class PinHoleCamera implements Camera {
     
     /**
      * The width of the camera's far plane in pixels.
@@ -73,16 +72,7 @@ public class PinHoleCamera {
         this.pixelSize = (halfWidth * 2.0f) / width;
     }
 
-    /**
-     * Create a ray that goes through the specified pixel of the camera.
-     *
-     * @param pixelColumn
-     *   The x column of the pixel.
-     * @param pixelRow
-     *   The y row of the pixel.
-     * @return
-     *   A ray that passes through (col, row) pixel of the camera from the camera origin. 
-     */
+    @Override
     public Ray createRay (int pixelColumn, int pixelRow) {
         // pre condition checks
         if (pixelColumn < 0 || pixelColumn > this.width) throw new IllegalArgumentException("invalid pixel column for camera");
@@ -105,29 +95,7 @@ public class PinHoleCamera {
         return new Ray(origin, direction);
     }
 
-    /**
-     * Cast rays out of the camera into the scene. Fills a new canvas with colors from the rays.
-     *
-     * @param world
-     *   The world to take an image of.
-     * @return
-     *   An image of the world taken from the camera's perspective.
-     */
-    public Canvas takePicture(World world) {
-        if (world == null) throw new IllegalArgumentException("world is null");
-        return takePicture(world, new ArrayCanvas(width, height));
-    }
-
-    /**
-     * Cast rays out of the camera into the scene. Overwrites the canvas with colors from the rays.
-     * 
-     * @param world
-     *   The world to take an image of.
-     * @param canvas
-     *   The canvas to write the colors to.
-     * @return
-     *   An image of the world taken from the camera's perspective.
-     */
+    @Override
     public Canvas takePicture(World world, Canvas canvas) {
         // pre condition check: is the canvas big enough for the camera?
         if (canvas == null || canvas.getHeight() < this.height || canvas.getWidth() < this.width) throw new IllegalArgumentException();
@@ -141,5 +109,11 @@ public class PinHoleCamera {
         jobs.parallelStream().forEach(pixel -> canvas.writePixel(pixel.a(), pixel.b(), world.computeColor(createRay(pixel.a(), pixel.b()))));
         return canvas;
     }
+
+    @Override
+    public int width() { return this.width; }
+
+    @Override
+    public int height() { return this.height; }
 
 }
