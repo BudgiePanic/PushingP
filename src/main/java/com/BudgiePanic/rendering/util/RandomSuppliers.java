@@ -22,7 +22,8 @@ public final class RandomSuppliers {
     private static final Random random = new Random(seed);
 
     /**
-     * Generates pseudorandom floats with a random object. Uses the same seed everytime.
+     * Generates pseudorandom floats with a random object. Uses the same seed everytime. 
+     * Will cause lock contention in a threaded environment. Consistent between runs of the program.
      */
     public static final Supplier<Float> consistentRandomSupplier = () -> { return random.nextFloat(); };
 
