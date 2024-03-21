@@ -31,7 +31,8 @@ public class App
         entry("-mesh_loader", ()-> new TriangleDemo()),
         entry("-compound_shapes", ()-> new CompoundShapeDemo()),
         entry("-soft_shadows", ()-> new AreaLightDemo()),
-        entry("-donut", ()-> new TorusDemo())
+        entry("-donut", ()-> new TorusDemo()),
+        entry("-focus", ()-> new FocusCameraDemo())
     );
 
     public static void main( String[] args )
