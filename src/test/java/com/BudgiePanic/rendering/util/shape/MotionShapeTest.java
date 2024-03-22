@@ -49,7 +49,7 @@ public class MotionShapeTest {
             var intersections = result.get();
             assertEquals(expectedIntersectionCount, intersections.size());
         }
-    }
+     }
 
     @Test
     void testLocalIntersectA() {
@@ -79,7 +79,7 @@ public class MotionShapeTest {
 
     @Test
     void testSetMotionEndTime() {
-        var shape = new MotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.left);
+        var shape = new MotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.right);
         shape.setMotionEndTime(Optional.of(1f));
         var bounds = shape.bounds();
         var expected = new BoundingBox(makePoint(-1, -1, -1), makePoint(2, 1, 1));
