@@ -112,7 +112,7 @@ public class NormalCamera implements Camera {
     public int height() { return cameraMonitoring.height; }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow) {
+    public Ray createRay(int pixelColumn, int pixelRow, float time) {
         // create pinhole camera rays so the normal map image is crisp and in-focus
         // TODO: code smell here, this method is 99% similar to PinHoleCamera::createRay, there can probably be an abstraction
         if (pixelColumn < 0 || pixelColumn > cameraMonitoring.width) throw new IllegalArgumentException("invalid pixel column for camera");
@@ -126,7 +126,7 @@ public class NormalCamera implements Camera {
         final var pixel = cameraInverse.multiply(Tuple.makePoint(worldX, worldY, worldZ));
         final var origin = cameraInverse.multiply(Tuple.makePoint());
         final var direction = pixel.subtract(origin).normalize();
-        return new Ray(origin, direction);
+        return new Ray(origin, direction, time);
     }
 
     @Override

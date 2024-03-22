@@ -26,7 +26,21 @@ public interface Camera {
     int height();
 
     /**
-     * Create a ray that goes through the specified pixel of the camera.
+     * Create a ray that goes through a specific pixel of the camera.
+     *
+     * @param pixelColumn
+     *   The x column of the pixel.
+     * @param pixelRow
+     *   The y row of the pixel.
+     * @param time
+     *   The time the ray was created since the image exposure started.
+     * @return
+     *    A ray with time 'time' that passes through (col, row) pixel of the camera from the camera origin.
+     */
+    Ray createRay(int pixelColumn, int pixelRow, float time);
+
+    /**
+     * Create a ray that goes through the specified pixel of the camera at time zero.
      *
      * @param pixelColumn
      *   The x column of the pixel.
@@ -35,7 +49,7 @@ public interface Camera {
      * @return
      *   A ray that passes through (col, row) pixel of the camera from the camera origin. 
      */
-    Ray createRay(int pixelColumn, int pixelRow);
+    default Ray createRay(int pixelColumn, int pixelRow) { return createRay(pixelColumn, pixelRow, 0f); }
 
     /**
      * Cast rays out of the camera into the scene. Overwrites the canvas with colors from the rays.

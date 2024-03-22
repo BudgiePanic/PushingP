@@ -125,7 +125,7 @@ public class FocusCamera extends BasePerspectiveCamera {
     }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow) {
+    public Ray createRay(int pixelColumn, int pixelRow, float time) {
         // pre condition checks
         if (pixelColumn < 0 || pixelColumn > this.width) throw new IllegalArgumentException("invalid pixel column for camera");
         if (pixelRow < 0 || pixelRow > this.height) throw new IllegalArgumentException("invalid pixel row for camera");
@@ -144,7 +144,7 @@ public class FocusCamera extends BasePerspectiveCamera {
         final var origin = cameraInverse.multiply(aperturePoint);
 
         final var direction = pixel.subtract(origin).normalize();
-        return new Ray(origin, direction);
+        return new Ray(origin, direction, time);
     }
 
     /**
