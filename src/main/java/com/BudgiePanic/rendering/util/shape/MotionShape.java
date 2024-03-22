@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.shape;
 
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -9,6 +11,7 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.transform.Translation;
 
 /**
  * A motion shape is a shape that contains one internal shape.
@@ -154,7 +157,41 @@ public class MotionShape extends BaseShape implements Parent {
     @Override
     public synchronized BoundingBox bounds() { 
         if (motionEndTime.isPresent()) {
-            // TODO bake an AABB that contains the shape at all stages of the exposure
+            if (AABB == null) {
+                BoundingBox box = new BoundingBox(makePoint(), makePoint());
+                // the cube has 8 points [000,100,001,101,010,110,011,111]
+                final BoundingBox localAABB = shape.bounds();
+                final var aabbMin = localAABB.minimum();
+                final var aabbMax = localAABB.maximum();
+                final var transform = shape.transform();
+                // find the AABB points in 'group space'
+                Tuple _000 = transform.multiply(new Tuple(aabbMax.x, aabbMin.y, aabbMin.z)); // MAX MIN 
+                Tuple _100 = transform.multiply(aabbMin); // MIN                                MIN MIN
+                Tuple _001 = transform.multiply(new Tuple(aabbMax.x, aabbMin.y, aabbMax.z)); // MAX MAX
+                Tuple _101 = transform.multiply(new Tuple(aabbMin.x, aabbMin.y, aabbMax.z)); // MIN MAX
+                
+                Tuple _010 = transform.multiply(new Tuple(aabbMax.x, aabbMax.y, aabbMin.z)); // MAX MIN
+                Tuple _110 = transform.multiply(new Tuple(aabbMin.x, aabbMax.y, aabbMin.z)); // MIN MIN
+                Tuple _011 = transform.multiply(aabbMax); // MAX                                MAX MAX
+                Tuple _111 = transform.multiply(new Tuple(aabbMin.x, aabbMax.y, aabbMax.z)); // MIN MAX
+                var points = List.of(_000, _001, _010, _011, _100, _101, _110, _111);
+
+                // check if we need to grow the AABB extents to contain the points
+                for (var point : points) {
+                    if (!box.contains(point)) {
+                        box = box.grow(point);
+                    }
+                }
+                final var offset = initialVelocity.multiply(motionEndTime.get());
+                final var velocityOffset = Translation.makeTranslationMatrix(offset.x, offset.y, offset.z);
+                for (var point : points) {
+                    final var pointAtEndOfMotion = velocityOffset.multiply(point);
+                    if (!box.contains(pointAtEndOfMotion)) {
+                        box = box.grow(pointAtEndOfMotion);
+                    }
+                }
+                AABB = box;
+            }
         }
         if (AABB != null) {
             return this.AABB;
