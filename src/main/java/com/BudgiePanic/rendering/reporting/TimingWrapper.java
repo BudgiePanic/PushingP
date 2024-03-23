@@ -3,6 +3,7 @@ package com.BudgiePanic.rendering.reporting;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.Canvas;
+import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 
 /**
@@ -40,6 +41,11 @@ public class TimingWrapper implements Camera {
     public int height() { return internal.height(); }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow) { return internal.createRay(pixelColumn, pixelRow); }
+    public Ray createRay(int pixelColumn, int pixelRow, float time) { return internal.createRay(pixelColumn, pixelRow, time); }
+
+    @Override
+    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+        return internal.pixelAt(world, pixelColumn, pixelRow, time);
+    }
     
 }

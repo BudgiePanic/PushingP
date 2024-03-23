@@ -2,12 +2,9 @@ package com.BudgiePanic.rendering.scene;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
-import java.util.List;
 import java.util.function.Supplier;
 
-import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
-import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.RandomSuppliers;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -162,31 +159,24 @@ public class FocusCamera extends BasePerspectiveCamera {
     }
 
     @Override
-    public Canvas takePicture(World world, Canvas canvas) {
-        if (canvas == null || canvas.getHeight() < this.height || canvas.getWidth() < this.width) throw new IllegalArgumentException();
-        List<Pair<Integer, Integer>> jobs = generateJobs();
-        jobs.parallelStream().forEach(pixel -> {
-            final int column = pixel.a();
-            final int row = pixel.b();
-            float red = 0;
-            float green = 0;
-            float blue = 0;
-            // cast n rays into the scene for this pixel 
-            // and then average the colors from the rays together
-            for (int i = 0; i < this.raysPerPixel; i++) {
-                final var ray = createRay(column, row);
-                final var color = world.computeColor(ray);
-                // see: https://sighack.com/post/averaging-rgb-colors-the-right-way
-                red += color.getRed() * color.getRed(); // red += color.getRed();
-                green += color.getGreen() * color.getGreen(); // green += color.getGreen();
-                blue += color.getBlue() * color.getBlue(); // blue += color.getBlue();
-            }
-            // average the squared colors
-            red = (float) Math.sqrt(red / raysPerPixel); // red /= raysPerPixel;
-            green = (float) Math.sqrt(green / raysPerPixel); // green /= raysPerPixel; 
-            blue = (float) Math.sqrt(blue / raysPerPixel); // blue /= raysPerPixel; 
-            canvas.writePixel(column, row, new Color(red, green, blue));
-        });
-        return canvas;
+    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+        float red = 0;
+        float green = 0;
+        float blue = 0;
+        // cast n rays into the scene for this pixel 
+        // and then average the colors from the rays together
+        for (int i = 0; i < this.raysPerPixel; i++) {
+            final var ray = createRay(pixelColumn, pixelRow, time);
+            final var color = world.computeColor(ray);
+            // see: https://sighack.com/post/averaging-rgb-colors-the-right-way
+            red += color.getRed() * color.getRed(); // red += color.getRed();
+            green += color.getGreen() * color.getGreen(); // green += color.getGreen();
+            blue += color.getBlue() * color.getBlue(); // blue += color.getBlue();
+        }
+        // average the squared colors
+        red = (float) Math.sqrt(red / raysPerPixel); // red /= raysPerPixel;
+        green = (float) Math.sqrt(green / raysPerPixel); // green /= raysPerPixel; 
+        blue = (float) Math.sqrt(blue / raysPerPixel); // blue /= raysPerPixel;
+        return new Color(red, green, blue);
     }
 }

@@ -1,9 +1,6 @@
 package com.BudgiePanic.rendering.scene;
 
-import java.util.List;
-
-import com.BudgiePanic.rendering.util.Canvas;
-import com.BudgiePanic.rendering.util.Pair;
+import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
@@ -59,12 +56,8 @@ public class PinHoleCamera extends BasePerspectiveCamera {
     }
 
     @Override
-    public Canvas takePicture(World world, Canvas canvas) {
-        // pre condition check: is the canvas big enough for the camera?
-        if (canvas == null || canvas.getHeight() < this.height || canvas.getWidth() < this.width) throw new IllegalArgumentException();
-        List<Pair<Integer, Integer>> jobs = generateJobs();
-        jobs.parallelStream().forEach(pixel -> canvas.writePixel(pixel.a(), pixel.b(), world.computeColor(createRay(pixel.a(), pixel.b()))));
-        return canvas;
+    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+        return world.computeColor(createRay(pixelColumn, pixelRow, time));
     }
 
 }
