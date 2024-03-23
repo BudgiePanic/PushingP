@@ -20,7 +20,7 @@ import com.BudgiePanic.rendering.util.transform.Translation;
  * 
  * @author BudgiePanic
  */
-public class MotionShape extends BaseShape implements Parent {
+public class LinearMotionShape extends BaseShape implements Parent {
 
     /**
      * The time at which the object's motion starts.
@@ -63,7 +63,7 @@ public class MotionShape extends BaseShape implements Parent {
      * @param initialVelocity
      *   A vector that describes the direction the shape moves in units per second
      */
-    public MotionShape(Matrix4 transform, Shape internal, Tuple initialVelocity) { 
+    public LinearMotionShape(Matrix4 transform, Shape internal, Tuple initialVelocity) { 
         super(transform); 
         this.shape = internal;
         this.initialVelocity = initialVelocity;

@@ -18,10 +18,10 @@ import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
-public class MotionShapeTest {
+public class LinearMotionShapeTest {
     @Test
     void testBounds() {
-        var shape = new MotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.left);
+        var shape = new LinearMotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.left);
         var bounds = shape.bounds();
         var expected = new BoundingBox(makePoint(-1, -1, -1), makePoint(1, 1, 1));
         assertEquals(expected.minimum(), bounds.minimum());
@@ -30,7 +30,7 @@ public class MotionShapeTest {
 
     @Test
     void testLocalIntersect() {
-        var shape = new MotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.left);
+        var shape = new LinearMotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.left);
         var tests = List.of(
             new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 0f), 2),
             new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 0.5f), 2),
@@ -53,7 +53,7 @@ public class MotionShapeTest {
 
     @Test
     void testLocalIntersectA() {
-        var shape = new MotionShape(Matrix4.identity(), new Plane(Transforms.identity().rotateX(AngleHelp.toRadians(-90f)).assemble()), Directions.forward);
+        var shape = new LinearMotionShape(Matrix4.identity(), new Plane(Transforms.identity().rotateX(AngleHelp.toRadians(-90f)).assemble()), Directions.forward);
         var tests = List.of(
             new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 0f), 1f),
             new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 0.5f), 1.5f),
@@ -79,7 +79,7 @@ public class MotionShapeTest {
 
     @Test
     void testSetMotionEndTime() {
-        var shape = new MotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.right);
+        var shape = new LinearMotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.right);
         shape.setMotionEndTime(Optional.of(1f));
         var bounds = shape.bounds();
         var expected = new BoundingBox(makePoint(-1, -1, -1), makePoint(2, 1, 1));
