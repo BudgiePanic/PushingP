@@ -1,9 +1,5 @@
 package com.BudgiePanic.rendering.scene;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
 /**
@@ -76,19 +72,4 @@ public abstract class BasePerspectiveCamera implements Camera {
 
     @Override
     public int height() { return this.height; }
-
-    /**
-     * Creates a list of pixels that can be used as indices in a stream.
-     * @return
-     *   A list of all the rows and columns that can be imaged by this camera.
-     */
-    protected List<Pair<Integer, Integer>> generateJobs() {
-        List<Pair<Integer, Integer>> jobs = new ArrayList<>(this.height * this.width);
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                jobs.add(new Pair<Integer,Integer>(col, row));
-            }
-        }
-        return jobs;
-    }
 }
