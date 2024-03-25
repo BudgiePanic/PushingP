@@ -182,5 +182,18 @@ public class LinearMotionShape extends BaseShape implements Parent {
 
     @Override
     public void bakeExposureDuration(float duration) { this.setMotionEndTime(Optional.of(duration)); }
+
+    /**
+     * Get the velocity of this shape.
+     * @param time
+     *   The time the velocity is sampled
+     * @return
+     *   The velocity of the shape when sampled at time 'time'.
+     */
+    public Tuple velocity(float time) {
+        // linear motion shape with no forces acting upon it
+        // NOTE: if more types of motion shapes are added, this method should become part of the interface
+        return this.initialVelocity;
+    }
     
 }
