@@ -69,6 +69,7 @@ public class LinearMotionShape extends BaseShape implements Parent {
         this.initialVelocity = initialVelocity;
         this.AABB = null;
         this.motionEndTime = Optional.empty();
+        this.shape.setParent(this);
     }
 
     /**
