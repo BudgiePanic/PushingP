@@ -82,7 +82,8 @@ public class LinearMotionShape extends BaseShape implements Parent {
      *   Ray-shape intersections that occured, if any.
      */
     protected Optional<List<Intersection>> localIntersect(Ray ray, Predicate<Shape> inclusionCondition) {
-        if (!bounds().intersect(ray)) {
+        if (motionEndTime.isPresent() && !bounds().intersect(ray)) {
+            // only use AABB optimization if we know the time when the motion ends
             return Optional.empty();
         }
         // test if the shape meets the inclusion condition
@@ -114,32 +115,38 @@ public class LinearMotionShape extends BaseShape implements Parent {
 
     @Override
     public synchronized BoundingBox bounds() { 
-        if (motionEndTime.isPresent()) {
-            if (AABB == null) {
-                BoundingBox box = new BoundingBox(makePoint(), makePoint());
-                // the cube has 8 points [000,100,001,101,010,110,011,111]
-                final BoundingBox localAABB = shape.bounds();
-                final var aabbMin = localAABB.minimum();
-                final var aabbMax = localAABB.maximum();
-                final var transform = shape.transform();
-                // find the AABB points in 'group space'
-                Tuple _000 = transform.multiply(new Tuple(aabbMax.x, aabbMin.y, aabbMin.z)); // MAX MIN 
-                Tuple _100 = transform.multiply(aabbMin); // MIN                                MIN MIN
-                Tuple _001 = transform.multiply(new Tuple(aabbMax.x, aabbMin.y, aabbMax.z)); // MAX MAX
-                Tuple _101 = transform.multiply(new Tuple(aabbMin.x, aabbMin.y, aabbMax.z)); // MIN MAX
-                
-                Tuple _010 = transform.multiply(new Tuple(aabbMax.x, aabbMax.y, aabbMin.z)); // MAX MIN
-                Tuple _110 = transform.multiply(new Tuple(aabbMin.x, aabbMax.y, aabbMin.z)); // MIN MIN
-                Tuple _011 = transform.multiply(aabbMax); // MAX                                MAX MAX
-                Tuple _111 = transform.multiply(new Tuple(aabbMin.x, aabbMax.y, aabbMax.z)); // MIN MAX
-                var points = List.of(_000, _001, _010, _011, _100, _101, _110, _111);
+        if (AABB == null) {
+            BoundingBox box = new BoundingBox(makePoint(), makePoint());
+            // the cube has 8 points [000,100,001,101,010,110,011,111]
+            final BoundingBox localAABB = shape.bounds();
+            final var aabbMin = localAABB.minimum();
+            final var aabbMax = localAABB.maximum();
+            final var transform = shape.transform();
+            
+            Tuple _000 = transform.multiply(new Tuple(aabbMax.x, aabbMin.y, aabbMin.z)); // MAX MIN 
+            Tuple _100 = transform.multiply(aabbMin); // MIN                                MIN MIN
+            Tuple _001 = transform.multiply(new Tuple(aabbMax.x, aabbMin.y, aabbMax.z)); // MAX MAX
+            Tuple _101 = transform.multiply(new Tuple(aabbMin.x, aabbMin.y, aabbMax.z)); // MIN MAX
+            
+            Tuple _010 = transform.multiply(new Tuple(aabbMax.x, aabbMax.y, aabbMin.z)); // MAX MIN
+            Tuple _110 = transform.multiply(new Tuple(aabbMin.x, aabbMax.y, aabbMin.z)); // MIN MIN
+            Tuple _011 = transform.multiply(aabbMax); // MAX                                MAX MAX
+            Tuple _111 = transform.multiply(new Tuple(aabbMin.x, aabbMax.y, aabbMax.z)); // MIN MAX
+            var points = List.of(_000, _001, _010, _011, _100, _101, _110, _111);
 
-                // check if we need to grow the AABB extents to contain the points
-                for (var point : points) {
-                    if (!box.contains(point)) {
-                        box = box.grow(point);
-                    }
+            // check if we need to grow the AABB extents to contain the points
+            for (var point : points) {
+                if (!box.contains(point)) {
+                    box = box.grow(point);
                 }
+            }
+            if (motionEndTime.isEmpty()) {
+                System.out.println("WARN: motion shape has no end time set, assuming shape does not move for AABB generation");
+            } else {
+                // move the points by velocity * exposure time and grow the AABB again
+                // in the future, for non linear motion, 
+                // we would have to get the max and minimum of the movement function in the bounds 0 to motion end time
+                // here, the motion function is implicity a linear function [y = vel*time + initial_position]
                 final var offset = initialVelocity.multiply(motionEndTime.get());
                 final var velocityOffset = Translation.makeTranslationMatrix(offset.x, offset.y, offset.z);
                 for (var point : points) {
@@ -148,13 +155,10 @@ public class LinearMotionShape extends BaseShape implements Parent {
                         box = box.grow(pointAtEndOfMotion);
                     }
                 }
-                AABB = box;
             }
-        }
-        if (AABB != null) {
-            return this.AABB;
-        }
-        return this.shape.bounds(); 
+            AABB = box;
+        } 
+        return this.AABB;
     }
 
     @Override
@@ -175,5 +179,8 @@ public class LinearMotionShape extends BaseShape implements Parent {
 
     @Override
     protected Tuple localNormal(Tuple point) { throw new UnsupportedOperationException("Motion shape does not support local normal operation"); }
+
+    @Override
+    public void bakeExposureDuration(float duration) { this.setMotionEndTime(Optional.of(duration)); }
     
 }
