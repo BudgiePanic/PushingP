@@ -90,7 +90,7 @@ public class ShutterCamera implements Camera {
     /**
      * The recommended number of rays to cast per pixel over the course of the exposure.
      */
-    public static final int defaultRaysPerExposure = 5;
+    public static final int defaultRaysPerExposure = 20;
 
     /**
      * The internal camera
