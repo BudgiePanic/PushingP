@@ -684,4 +684,16 @@ public class WorldTest {
             assertEquals(expected, actual);
         }
     }
+
+    @Test
+    void testOcculusionByTime() {
+        // check that occulusion test results change by time when the world contains a motion shape
+        Tuple from = makePoint(0, 0, -5), to = makePoint(0, 0, 5);
+        World world = new World();
+        world.addShape(new LinearMotionShape(Matrix4.identity(), new Sphere(Matrix4.identity()), Directions.up));
+        var result = world.isOccluded(from, to, World.allShapes, 0f);
+        assertTrue(result);
+        result = world.isOccluded(from, to, World.allShapes, 3f);
+        assertFalse(result);
+    }
 }
