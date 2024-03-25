@@ -331,4 +331,21 @@ public class World {
     public Color shadeRefraction(ShadingInfo info) {
         return shadeRefraction(info, defaultRecursionDepth);
     }
+
+    /**
+     * Update's all movable shapes in the world with the supplied motion end time.
+     * Allows AABB optimization for ray-shape intersection tests on shapes that move.
+     * 
+     * @param time
+     *   The time of the final ray that will be intersected with the world.
+     */
+    public void bakeEndTime(final float time) {
+        // TODO this could be accomplished using the observer design pattern
+        // TODO where the world emits events, shapes listen, and the shapes can decide 
+        // TODO if they want to do anything with the time update information
+        System.out.println("INFO: baking duration time of " + time + " to shapes in world " + this.toString());
+        for (final var shape : this.getShapes()) {
+            shape.bakeExposureDuration(time);
+        }
+    }
 }

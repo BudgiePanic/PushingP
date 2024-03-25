@@ -50,6 +50,8 @@ public class MotionDemo extends BaseDemo {
         world.addShape(new LinearMotionShape(Transforms.identity().assemble(), new Sphere(Transforms.identity().assemble(), Material.color(new Color(0.949f,0.259f,0.259f))), Directions.right.multiply(100)));
         // light source
         world.addLight(new PointLight(makePoint(-5, 15, -8), Colors.white));
+        // bake scene
+        world.bakeEndTime(ShutterCamera.defaultExposureTime);
         return world;
     }
     

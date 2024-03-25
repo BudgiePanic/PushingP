@@ -84,6 +84,14 @@ public interface Shape {
     void setParent(Parent parent);
 
     /**
+     * Perform internal optimizations based on the exposure duration of the camera that generates rays to intersect with the shape.
+     * TODO see comment in world regarding architecture improvement...
+     * @param endTime
+     *   The end time of the exposure.
+     */
+    default void bakeExposureDuration(float endTime) {}
+
+    /**
      * Convert a world space point to object space.
      * @param point
      *   The point to convert
