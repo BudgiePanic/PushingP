@@ -9,16 +9,32 @@ import com.BudgiePanic.rendering.util.shape.Shape;
  * 
  * @author BudgiePanic
  */
-public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside, Tuple reflectVector, float n1, float n2) {
+public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside, Tuple reflectVector, float n1, float n2, float time) {
 
-    // a => the distance along the ray that intersected to reach point
-    // shape => the object that the ray hit
-    // point => the point in 3D space where the ray hit the shape
-    // eyeVector => a vector looking in the opposite direction as the ray
-    // normalVector => the surface normal on the shape at the point where the ray hit the shape
-    // reflectVector => the direction the light ray bounced to after hitting this shape.
-    // n1 => refractive index of material that was exited during refraction
-    // n2 => refractive index of material that was entered during refraction
+    /**
+     * Canonical constructor. Information needed by the lighting model to determine the color of a point in space.
+     * @param a
+     *   the distance along the ray that intersected to reach 'point'
+     * @param shape
+     *   the object that the ray hit
+     * @param point
+     *   the point in 3D space where the ray hit the shape
+     * @param eyeVector
+     *   a vector looking in the opposite direction as the ray
+     * @param normalVector
+     *   the surface normal on the shape at the point where the ray hit the shape
+     * @param intersectInside
+     *   flag indicating that the ray-shape intersection occured inside of the shape
+     * @param reflectVector
+     *   the direction the light ray bounced to after hitting this shape.
+     * @param n1
+     *   refractive index of material that was exited during refraction
+     * @param n2
+     *   refractive index of material that was entered during refraction
+     * @param time
+     *   the time during image exposure that this shading info was generated
+     */
+    public ShadingInfo {}
 
     /**
      * Calculate a point slightly above the surface that is being shaded, to avoid floating point precision errors.

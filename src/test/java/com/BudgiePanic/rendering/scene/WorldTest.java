@@ -7,6 +7,7 @@ import static com.BudgiePanic.rendering.util.matrix.Matrix4.identity;
 import static com.BudgiePanic.rendering.util.shape.composite.CompoundOperation.difference;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import com.BudgiePanic.rendering.objects.TestCompound;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
+import com.BudgiePanic.rendering.util.Directions;
 import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.Pair;
@@ -31,6 +33,7 @@ import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.pattern.PatternTest;
 import com.BudgiePanic.rendering.util.shape.Cube;
+import com.BudgiePanic.rendering.util.shape.LinearMotionShape;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.shape.Sphere;
@@ -220,7 +223,7 @@ public class WorldTest {
                 // ask if the ray is in shadow
                 // in this test set up, no intersection points should be in shadow
                 var hitInfo = hit.get().computeShadingInfo(ray);
-                var result = world.intensityAt(hitInfo.overPoint());
+                var result = world.intensityAt(hitInfo.overPoint(), 0);
                 var expected = 1f;
                 assertTrue(compareFloat(expected, result) == 0, String.format("ray at r:%d c:%d was in shadow", row, col));
             }
@@ -497,7 +500,7 @@ public class WorldTest {
         var info = intersection.computeShadingInfo(ray, result);
 
         var expected = 1f;
-        var output = world.intensityAt(info.overPoint());
+        var output = world.intensityAt(info.overPoint(), 0);
         assertTrue(compareFloat(expected, output) == 0);
     }
 
@@ -525,7 +528,7 @@ public class WorldTest {
         var info = intersection.computeShadingInfo(ray, result);
         
         var expected = 0f;
-        var output = world.intensityAt(info.overPoint());
+        var output = world.intensityAt(info.overPoint(), 0);
         assertTrue(compareFloat(expected, output) == 0);
     }
 
@@ -543,7 +546,7 @@ public class WorldTest {
         world.addLight(new PointLight(ray.origin().add(0, 0, 6), Colors.white));
         
         var expected = 0f;
-        var result = world.intensityAt(ray.origin());
+        var result = world.intensityAt(ray.origin(), 0);
         assertTrue(compareFloat(expected, result) == 0);
 
     }
@@ -555,7 +558,7 @@ public class WorldTest {
             World world = new World();
             world.addShape(shape);
             world.addLight(new PointLight(makePoint(2, 0, 0.1f), Colors.white));
-            var result = world.intensityAt(makePoint(0, 0, 0.001f));
+            var result = world.intensityAt(makePoint(0, 0, 0.001f), 0);
             var expected = 0f;
             assertTrue(compareFloat(expected, result) == 0);
     }
@@ -581,7 +584,7 @@ public class WorldTest {
         var hit = Intersection.Hit(intersections).get();
         var info = hit.computeShadingInfo(ray, cast);
         var point = info.overPoint();
-        var result = world.intensityAt(point);
+        var result = world.intensityAt(point, 0);
         var expected = 1f;
         assertTrue(compareFloat(expected, result) == 0);
     }
@@ -607,7 +610,7 @@ public class WorldTest {
         var hit = Intersection.Hit(intersections).get();
         var info = hit.computeShadingInfo(ray, cast);
         var point = info.overPoint();
-        var result = world.intensityAt(point);
+        var result = world.intensityAt(point, 0);
         var expected = 1f;
         assertTrue(compareFloat(expected, result) == 0);
     }
@@ -623,7 +626,7 @@ public class WorldTest {
         );
         for (var test: tests) {
             final var from = test.a();
-            var result = defaultTestWorld.isOccluded(from, to, World.allShapes);
+            var result = defaultTestWorld.isOccluded(from, to, World.allShapes, 0f);
             var expected = test.b();
             assertEquals(expected, result, "test: " + test.toString());
         }
@@ -644,7 +647,7 @@ public class WorldTest {
         for (var test : tests) {
             var point = test.a();
             var expected = test.b();
-            var result = light.intensityAt(point, defaultTestWorld);
+            var result = light.intensityAt(point, defaultTestWorld, 0);
             assertTrue(FloatHelp.compareFloat(expected, result) == 0, "expected:" + expected + " result:" + result);
         }
     }

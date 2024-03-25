@@ -70,7 +70,7 @@ public class AreaLightTest {
         for (var test : tests) {
             var point = test.a();
             var expected = test.b();
-            var actual = light.intensityAt(point, world);
+            var actual = light.intensityAt(point, world, 0);
             assertEquals(0, FloatHelp.compareFloat(expected, actual), "test: [" + test + "] expected: [" + expected + "] actual: [" + actual + "]");
         }
     }
@@ -134,7 +134,7 @@ public class AreaLightTest {
         for (var test : tests) {
             var point = test.a();
             var expected = test.b();
-            var actual = light.intensityAt(point, world);
+            var actual = light.intensityAt(point, world, 0);
             assertEquals(0, FloatHelp.compareFloat(expected, actual), "test: [" + test + "] expected: [" + expected + "] actual: [" + actual + "]");
         }
     }

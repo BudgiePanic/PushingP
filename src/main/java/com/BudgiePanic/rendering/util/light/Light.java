@@ -34,10 +34,12 @@ public interface Light {
      *     The point being tested.
      * @param world
      *     The world the point is within.
+     * @param time
+     *     The time in the world when the intensity if calculated
      * @return
      *     The amount of light reaching the point.
      */
-    float intensityAt(Tuple point, World world);
+    float intensityAt(Tuple point, World world, float time);
 
     /**
      * An iterator that returns sample points that cover the entire light.

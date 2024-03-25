@@ -16,8 +16,8 @@ import com.BudgiePanic.rendering.util.Tuple;
 public record PointLight(Tuple position, Color color) implements Light {
 
     @Override
-    public float intensityAt(Tuple point, World world) {
-        final boolean inShadow = world.isOccluded(point, position, World.shadowCasters);
+    public float intensityAt(Tuple point, World world, float time) {
+        final boolean inShadow = world.isOccluded(point, position, World.shadowCasters, time);
         return inShadow ? 0f : 1f;
     }
 

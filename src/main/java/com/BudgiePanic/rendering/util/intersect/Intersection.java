@@ -20,8 +20,16 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
  */
 public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv) {
     
-    // u & v specify the point on the shape's surface where the intersection occured, relative to the shape's corners (unwrapped)
-    // not all intersections supply uv coordinates
+    /**
+     * Container storing the distance travelled along a ray and the shape that the ray intersected with.
+     * @param a
+     *   The distance travelled along the ray's direction vector to intersect with the shape.
+     * @param shape
+     *   The shape that the ray intersected with.
+     * @param uv
+     *   The point on the shape's surface where the intersection occured relative to the shape's unwrapped corners
+     */
+    public Intersection {}
 
     /**
      * Create a Ray intersection information container.
@@ -91,6 +99,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
      *   Precomputed lighting information about this intersection.
      */
     public ShadingInfo computeShadingInfo(Ray ray, Optional<List<Intersection>> intersections) {
+        var time = ray.time();
         var point = ray.position(this.a);
         var eye = ray.direction().negate();
         var normal = this.shape.normal(point, this);
@@ -132,7 +141,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
                 }
             }
         }
-        return new ShadingInfo(this.a, this.shape, point, eye, normal, inside, reflection, n1, n2);
+        return new ShadingInfo(this.a, this.shape, point, eye, normal, inside, reflection, n1, n2, time);
     }
 
     /**
