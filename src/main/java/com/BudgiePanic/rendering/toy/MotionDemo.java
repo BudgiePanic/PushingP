@@ -43,11 +43,11 @@ public class MotionDemo extends BaseDemo {
         // floor
         world.addShape(new Plane(Transforms.identity().assemble(), Material.pattern(new BiPattern(BiOperation.checker, new SolidColor(new Color(1, 0.624f, 0)), new SolidColor(new Color(1f,0.82f,0.518f))))));
         // reflective back mirror
-        world.addShape(new Cube(Transforms.identity().scale(3, 2, 0.1f).rotateY(AngleHelp.toRadians(-15f)).translate(0, 1f, 2f).assemble(), Material.defaultMaterial().setReflectivity(1f).setSpecular(0).setAmbient(0.001f).setDiffuse(0.5f)));
+        world.addShape(new Cube(Transforms.identity().scale(3, 3, 0.1f).rotateY(AngleHelp.toRadians(-15f)).translate(0, 1f, 2.5f).assemble(), Material.defaultMaterial().setReflectivity(1f).setSpecular(0).setAmbient(0.001f).setDiffuse(0.5f)));
         // stationary object
         world.addShape(new Cylinder(Transforms.identity().translate(-5, 0, -1).assemble(), Material.pattern(new BiPattern(BiOperation.checker, new SolidColor(new Color(1, 0, 0.592f)), new SolidColor(new Color(0.91f,0.573f,0.773f)))), 2.5f, 0, true));
         // moving object
-        world.addShape(new LinearMotionShape(Transforms.identity().assemble(), new Sphere(Transforms.identity().assemble(), Material.color(new Color(0.949f,0.259f,0.259f))), Directions.right.multiply(100)));
+        world.addShape(new LinearMotionShape(Transforms.identity().assemble(), new Sphere(Transforms.identity().translate(0, 1, 0).assemble(), Material.color(new Color(0.949f,0.259f,0.259f))), Directions.right.multiply(20)));
         // light source
         world.addLight(new PointLight(makePoint(-5, 15, -8), Colors.white));
         // bake scene
