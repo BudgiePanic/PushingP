@@ -7,6 +7,8 @@ import com.BudgiePanic.rendering.util.pattern.SolidColor;
  * Stores information needed to light an object in a scene.
  * Phong lighting model information container.
  * 
+ * @see https://en.wikipedia.org/wiki/Phong_reflection_model
+ * 
  * @author BudgiePanic
  */
 public record Material(Pattern pattern, float ambient, float diffuse, float specular, float shininess, float reflectivity, float transparency, float refractiveIndex, boolean shadow) {
@@ -74,17 +76,16 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
     /**
      * Convienience material constructor for raw color. Auto wraps the color in a solid color pattern. Sets shadow casting flag to true.
      * 
-     * TODO give these parameters better descriptions... what sorts of values are typical...
      * @param color
      *     The color of the material
      * @param ambient
-     *     The ambient illumination of the material
+     *     The ambient illumination of the material. keep small, 0.1 default.
      * @param diffuse
-     *     The material diffuse
+     *     The material diffuse. 0.9 by default. diffuse represents the portion of non-incident reflected light off the surface.
      * @param specular
-     *     The material specular
+     *     The material specular. 0.9 by default. specular represents the portion of incident reflected light off the surface.
      * @param shininess
-     *     The material shininess
+     *     The material shininess. 200 by default. high shininess causes smaller specular highlights, corresponds to smoother surfaces.
      * @param reflectivity
      *     The material reflectiveness 0 -> nonreflective | 1 -> mirror
      * @param transparency

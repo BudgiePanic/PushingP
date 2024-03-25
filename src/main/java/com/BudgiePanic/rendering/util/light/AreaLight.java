@@ -123,12 +123,12 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
     }
 
     @Override
-    public float intensityAt(Tuple point, World world) {
+    public float intensityAt(Tuple point, World world, float time) {
         float accumulator = 0f;
         for (int u = 0; u < uStep; u++) {
             for (int v = 0; v < vStep; v++) {
                 final var sample = sample(u, v);
-                final var isShadowed = world.isOccluded(point, sample, World.shadowCasters);
+                final var isShadowed = world.isOccluded(point, sample, World.shadowCasters, time);
                 accumulator += isShadowed ? 0f : 1f;
             }
         }

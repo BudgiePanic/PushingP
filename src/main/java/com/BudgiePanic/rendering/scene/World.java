@@ -160,7 +160,7 @@ public class World {
         final var hasReflectance = material.reflectivity() > 0 && material.transparency() > 0; // this expression could be extracted to Shading info 
         final Optional<Float> reflectance = hasReflectance ?  Optional.of(info.schlick()) : Optional.empty(); // this expression could be extracted to Shading info 
         return this.lights.stream().
-            map((light) -> Phong.compute(info, light, intensityAt(info.overPoint()))).
+            map((light) -> Phong.compute(info, light, light.intensityAt(info.point(), this, info.time()))).
             reduce(Color::add).
             map(color -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0f)))).
             map(color -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0f)))).
@@ -227,7 +227,7 @@ public class World {
         if (depth < 1 || reflectivity <= 0f) {
             return Colors.black;
         }
-        final var ray = new Ray(info.overPoint(), info.reflectVector());
+        final var ray = new Ray(info.overPoint(), info.reflectVector(), info.time());
         final var color = this.computeColor(ray, --depth);
         return color.multiply(reflectivity);
     }
@@ -251,13 +251,15 @@ public class World {
      *   The second point.
      * @param condition
      *   A predicate to decide if a shape should be used in the occulusion test.
+     * @param time
+     *   The time when the occlusion check occurs
      * @return
      *   True if any shapes block the line traced by 'from' to 'to'.
      */
-    public boolean isOccluded(Tuple from, Tuple to, Predicate<Shape> condition) {
+    public boolean isOccluded(Tuple from, Tuple to, Predicate<Shape> condition, final float time) {
         final var trace = to.subtract(from);
         final var distance = trace.magnitude();
-        final var ray = new Ray(from, trace.normalize());
+        final var ray = new Ray(from, trace.normalize(), time);
         final var intersections = this.intersect(ray, condition);
         if (intersections.isEmpty()) return false;
         var hit = Intersection.Hit(intersections.get());
@@ -271,17 +273,19 @@ public class World {
     }
 
     /**
-     * Check if a point in the world is in shadow from another object
+     * Calculate the average light intensity at a point in the world. 
      *
      * @param point
      *   The location to check for illumination.
+     * @param time
+     *   The time when the intensity is calculated
      * @return
-     *   Whether the point can see a light in the scene without intersecting a closer object.
+     *   The average light intensity at the point, collected from all lights in the world.
      */
-    public float intensityAt(Tuple point) {
+    public float averageIntensityAt(Tuple point, float time) {
         float accumulator = 0f;
         for (Light light : lights) {
-            accumulator += light.intensityAt(point, this);
+            accumulator += light.intensityAt(point, this, time);
         } 
         accumulator /= lights.size();
         return accumulator;
@@ -311,7 +315,7 @@ public class World {
         }
         final var cosT = (float) Math.sqrt(1.0 - sin2t); // via trig identity: cos(theta)^2 = 1 - sin(theta)^2
         final var refractionDirection = info.normalVector().multiply(ratio * cosI - cosT).subtract(info.eyeVector().multiply(ratio));
-        final var refractionRay = new Ray(info.underPoint(), refractionDirection);
+        final var refractionRay = new Ray(info.underPoint(), refractionDirection, info.time());
         // find the refraction color by casting the refraction ray back into the world
         final var refractedColor = this.computeColor(refractionRay, --depth);
         return refractedColor.multiply(transparency); // apply effect of transparency to the output
@@ -326,5 +330,22 @@ public class World {
      */
     public Color shadeRefraction(ShadingInfo info) {
         return shadeRefraction(info, defaultRecursionDepth);
+    }
+
+    /**
+     * Update's all movable shapes in the world with the supplied motion end time.
+     * Allows AABB optimization for ray-shape intersection tests on shapes that move.
+     * 
+     * @param time
+     *   The time of the final ray that will be intersected with the world.
+     */
+    public void bakeEndTime(final float time) {
+        // TODO this could be accomplished using the observer design pattern
+        // TODO where the world emits events, shapes listen, and the shapes can decide 
+        // TODO if they want to do anything with the time update information
+        System.out.println("INFO: baking duration time of " + time + " to shapes in world " + this.toString());
+        for (final var shape : this.getShapes()) {
+            shape.bakeExposureDuration(time);
+        }
     }
 }

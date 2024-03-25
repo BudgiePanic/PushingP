@@ -1,12 +1,9 @@
 package com.BudgiePanic.rendering.scene;
 
-import java.util.List;
 import java.util.function.Function;
 
-import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
-import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -112,7 +109,7 @@ public class NormalCamera implements Camera {
     public int height() { return cameraMonitoring.height; }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow) {
+    public Ray createRay(int pixelColumn, int pixelRow, float time) {
         // create pinhole camera rays so the normal map image is crisp and in-focus
         // TODO: code smell here, this method is 99% similar to PinHoleCamera::createRay, there can probably be an abstraction
         if (pixelColumn < 0 || pixelColumn > cameraMonitoring.width) throw new IllegalArgumentException("invalid pixel column for camera");
@@ -126,22 +123,15 @@ public class NormalCamera implements Camera {
         final var pixel = cameraInverse.multiply(Tuple.makePoint(worldX, worldY, worldZ));
         final var origin = cameraInverse.multiply(Tuple.makePoint());
         final var direction = pixel.subtract(origin).normalize();
-        return new Ray(origin, direction);
+        return new Ray(origin, direction, time);
     }
 
     @Override
-    public Canvas takePicture(World world, Canvas canvas) {
-        if (canvas == null || canvas.getHeight() < cameraMonitoring.height || canvas.getWidth() < cameraMonitoring.width) throw new IllegalArgumentException();
-        List<Pair<Integer, Integer>> jobs = cameraMonitoring.generateJobs();
-        // intersect each pixel-ray with the world and record the normal of the shape that was intersected with
-        jobs.parallelStream().forEach(pixel -> {
-            final int column = pixel.a();
-            final int row = pixel.b();
-            final var ray = createRay(column, row);
-            final var intersections = world.intersect(ray);
-            final Tuple normal = intersections.flatMap(Intersection::Hit).map(i -> i.computeNormal(ray)).map(mode).orElseGet(() -> Colors.black);
-            canvas.writePixel(column, row, new Color(normal.x, normal.y, normal.z));
-        }); 
-        return canvas;
+    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+        // intersect pixel-ray with the world and record the normal of the shape that was intersected with
+        final var ray = createRay(pixelColumn, pixelRow, time);
+        final var intersections = world.intersect(ray);
+        final Tuple normal = intersections.flatMap(Intersection::Hit).map(i -> i.computeNormal(ray)).map(mode).orElseGet(() -> Colors.black);
+        return new Color(normal.x, normal.y, normal.z);
     }
 }
