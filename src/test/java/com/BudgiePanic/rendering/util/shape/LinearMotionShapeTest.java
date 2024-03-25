@@ -118,4 +118,11 @@ public class LinearMotionShapeTest {
         var result = movingShape.intersect(ray);
         assertTrue(result.isPresent());
     }
+
+    @Test
+    void testMotionShapeParent() {
+        // make sure the motion shape sets itself as the parent of the child shape
+        var shape = new LinearMotionShape(Matrix4.identity(), new Sphere(Transforms.identity().assemble()), Directions.right);
+        assertEquals(shape, shape.shape.parent().get());
+    }
 }
