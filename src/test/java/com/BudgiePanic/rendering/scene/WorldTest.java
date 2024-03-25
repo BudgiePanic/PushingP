@@ -223,7 +223,7 @@ public class WorldTest {
                 // ask if the ray is in shadow
                 // in this test set up, no intersection points should be in shadow
                 var hitInfo = hit.get().computeShadingInfo(ray);
-                var result = world.intensityAt(hitInfo.overPoint(), 0);
+                var result = world.averageIntensityAt(hitInfo.overPoint(), 0);
                 var expected = 1f;
                 assertTrue(compareFloat(expected, result) == 0, String.format("ray at r:%d c:%d was in shadow", row, col));
             }
@@ -500,7 +500,7 @@ public class WorldTest {
         var info = intersection.computeShadingInfo(ray, result);
 
         var expected = 1f;
-        var output = world.intensityAt(info.overPoint(), 0);
+        var output = world.averageIntensityAt(info.overPoint(), 0);
         assertTrue(compareFloat(expected, output) == 0);
     }
 
@@ -528,7 +528,7 @@ public class WorldTest {
         var info = intersection.computeShadingInfo(ray, result);
         
         var expected = 0f;
-        var output = world.intensityAt(info.overPoint(), 0);
+        var output = world.averageIntensityAt(info.overPoint(), 0);
         assertTrue(compareFloat(expected, output) == 0);
     }
 
@@ -546,7 +546,7 @@ public class WorldTest {
         world.addLight(new PointLight(ray.origin().add(0, 0, 6), Colors.white));
         
         var expected = 0f;
-        var result = world.intensityAt(ray.origin(), 0);
+        var result = world.averageIntensityAt(ray.origin(), 0);
         assertTrue(compareFloat(expected, result) == 0);
 
     }
@@ -558,7 +558,7 @@ public class WorldTest {
             World world = new World();
             world.addShape(shape);
             world.addLight(new PointLight(makePoint(2, 0, 0.1f), Colors.white));
-            var result = world.intensityAt(makePoint(0, 0, 0.001f), 0);
+            var result = world.averageIntensityAt(makePoint(0, 0, 0.001f), 0);
             var expected = 0f;
             assertTrue(compareFloat(expected, result) == 0);
     }
@@ -584,7 +584,7 @@ public class WorldTest {
         var hit = Intersection.Hit(intersections).get();
         var info = hit.computeShadingInfo(ray, cast);
         var point = info.overPoint();
-        var result = world.intensityAt(point, 0);
+        var result = world.averageIntensityAt(point, 0);
         var expected = 1f;
         assertTrue(compareFloat(expected, result) == 0);
     }
@@ -610,7 +610,7 @@ public class WorldTest {
         var hit = Intersection.Hit(intersections).get();
         var info = hit.computeShadingInfo(ray, cast);
         var point = info.overPoint();
-        var result = world.intensityAt(point, 0);
+        var result = world.averageIntensityAt(point, 0);
         var expected = 1f;
         assertTrue(compareFloat(expected, result) == 0);
     }

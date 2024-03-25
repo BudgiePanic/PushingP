@@ -273,16 +273,16 @@ public class World {
     }
 
     /**
-     * Check if a point in the world is in shadow from another object
+     * Calculate the average light intensity at a point in the world. 
      *
      * @param point
      *   The location to check for illumination.
      * @param time
      *   The time when the intensity is calculated
      * @return
-     *   Whether the point can see a light in the scene without intersecting a closer object.
+     *   The average light intensity at the point, collected from all lights in the world.
      */
-    public float intensityAt(Tuple point, float time) {
+    public float averageIntensityAt(Tuple point, float time) {
         float accumulator = 0f;
         for (Light light : lights) {
             accumulator += light.intensityAt(point, this, time);
