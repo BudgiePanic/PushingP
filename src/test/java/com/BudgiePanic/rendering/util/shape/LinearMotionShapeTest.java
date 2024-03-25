@@ -1,9 +1,9 @@
 package com.BudgiePanic.rendering.util.shape;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,9 +72,28 @@ public class LinearMotionShapeTest {
         }
     }
 
-    @Test 
-    void testShadowsCastByMotionShape() {
-        fail("test not implemented yet");
+    @Test
+    void testLinearMotionShapeBounds() {
+        // check that the AABB returned by this LMS when the inner shape is transformed is correct.
+        var shape = new LinearMotionShape(Matrix4.identity(), new Sphere(Transforms.identity().translate(0, 1, 0).assemble()), Directions.right);
+        var result = shape.bounds();
+        var expected = new BoundingBox(makePoint(-1, 0, -1), makePoint(1, 2, 1));
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void testLinearMotionShapeBoundsA() {
+        // check that the AABB from the LMS is correct when the end time is set
+        var shape = new LinearMotionShape(Matrix4.identity(), new Sphere(Transforms.identity().translate(0, 1, 0).assemble()), Directions.right);
+        shape.setMotionEndTime(Optional.of(1f));
+        var result = shape.bounds();
+        var expected = new BoundingBox(makePoint(-1, 0, -1), makePoint(2, 2, 1));
+        assertEquals(expected, result);
+        
+        shape.setMotionEndTime(Optional.empty());
+        result = shape.bounds();
+        expected = new BoundingBox(makePoint(-1, 0, -1), makePoint(1, 2, 1));
+        assertEquals(expected, result);
     }
 
     @Test
@@ -85,5 +104,18 @@ public class LinearMotionShapeTest {
         var expected = new BoundingBox(makePoint(-1, -1, -1), makePoint(2, 1, 1));
         assertEquals(expected.minimum(), bounds.minimum());
         assertEquals(expected.maximum(), bounds.maximum());
+    }
+
+    @Test
+    void testMotionShapeIntersection() {
+        var ray = new Ray(makePoint(0, 10, -6), makeVector(-0.005778f, -0.789307f, 0.613971f), 0f);
+        
+        var concreteShape = new Sphere(Transforms.identity().translate(0, 1, 0).assemble());
+        var sanity = concreteShape.intersect(ray);
+        assertTrue(sanity.isPresent());
+
+        Shape movingShape = new LinearMotionShape(Matrix4.identity(), new Sphere(Transforms.identity().translate(0, 1, 0).assemble()), Directions.right.multiply(100));
+        var result = movingShape.intersect(ray);
+        assertTrue(result.isPresent());
     }
 }
