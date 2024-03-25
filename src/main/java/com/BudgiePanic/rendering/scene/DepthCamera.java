@@ -139,7 +139,7 @@ public class DepthCamera implements Camera {
         FloatBox(float initialValue) { this.x = initialValue; }
     }
 
-    private static final Pair<Float, Float> getMinMaxValues(Canvas canvas) {
+    protected static final Pair<Float, Float> getMinMaxValues(Canvas canvas) {
         final FloatBox minDistance = new FloatBox(Float.MAX_VALUE);
         final FloatBox maxDistance = new FloatBox(Float.MIN_VALUE);
         canvas.forEach(pixel -> {
