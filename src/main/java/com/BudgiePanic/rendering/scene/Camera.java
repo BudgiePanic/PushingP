@@ -97,7 +97,7 @@ public interface Camera {
      * @param pixelRow
      *   The y row of the pixel.
      * @param time
-     *   The time during the exposure the pixel value was sampled.
+     *   The time during the exposure when the pixel value was sampled.
      * @return
      *   The color at pixel [column, row]
      */
@@ -105,7 +105,7 @@ public interface Camera {
 
     /**
      * Get the color for pixel [column, row] taken by this camera for the entire exposure when imaging a world.
-     * Camera implementations may with to override this method with their own behaviour.
+     * Camera implementations may wish to override this method with their own behaviour.
      * By default the pixel value comes from an instantaneous exposure taken at time = zero.
      * 
      * @param pixelColumn
