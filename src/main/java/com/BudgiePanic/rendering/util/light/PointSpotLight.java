@@ -38,6 +38,7 @@ public record PointSpotLight(Tuple position, Color color, Tuple direction, float
         @Override
         public Tuple next() {
             if (!hasNext()) throw new NoSuchElementException();
+            count++;
             return position;
         }
     }
