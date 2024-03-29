@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.util.light;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -86,5 +87,14 @@ public class PointSpotLightTest {
         assertTrue(FloatHelp.compareFloat(expected, result) == 0, "expected " + expected + " result " + result);
         light.intensityAt(makePoint(0.55f, 0, 0), world, 0);
         light.intensityAt(makePoint(0.35f, 0, 0), world, 0);
+    }
+
+    @Test
+    void testLightIterator() {
+        var light = new PointSpotLight(makePoint(0, 1, 0), Colors.white, Directions.down, 0.7853982f, 0.3926991f);
+        var iterator = light.sampler();
+        assertTrue(iterator.hasNext());
+        iterator.next();
+        assertFalse(iterator.hasNext());
     }
 }
