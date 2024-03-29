@@ -19,7 +19,7 @@ public class PointSpotLightTest {
 
     @Test
     void testIntensityAt() {
-        var light = new PointSpotLight(makePoint(0, 1, 0), Colors.white, Directions.down, toRadians(90), toRadians(90));
+        var light = new PointSpotLight(makePoint(0, 1, 0), Colors.white, Directions.down, toRadians(45), toRadians(45));
         var world = new World();
         // when the inner angle == the outer angle, results should be either 1f or 0f
         // make several points inside and outside the cone and check their intensity
@@ -51,7 +51,7 @@ public class PointSpotLightTest {
         // close to the center should be in the inner cone and have 1f intensity
         // beyond the inner angle should have non 1f but greater than 0f intensity
         // put the light in pointlight mode
-        var light = new PointSpotLight(makePoint(0, 1, 0), Colors.white, Directions.down, toRadians(45), toRadians(90));
+        var light = new PointSpotLight(makePoint(0, 1, 0), Colors.white, Directions.down, toRadians(22.5f), toRadians(45));
         var world = new World();
         // when the inner angle == the outer angle, results should be either 1f or 0f
         // make several points inside and outside the cone and check their intensity
@@ -78,11 +78,13 @@ public class PointSpotLightTest {
     void testIntensityAtB() {
         // make the inner angle = 0
         // then all points within the cone should be LERP
-        var light = new PointSpotLight(makePoint(0, 1, 0), Colors.white, Directions.down, 0, toRadians(90));
+        var light = new PointSpotLight(makePoint(0, 1, 0), Colors.white, Directions.down, 0, toRadians(45));
         var world = new World();
         var point = makePoint(0.41421f, 0, 0);
         var expected = 0.5f;
         var result = light.intensityAt(point, world, 0);
         assertTrue(FloatHelp.compareFloat(expected, result) == 0, "expected " + expected + " result " + result);
+        light.intensityAt(makePoint(0.55f, 0, 0), world, 0);
+        light.intensityAt(makePoint(0.35f, 0, 0), world, 0);
     }
 }
