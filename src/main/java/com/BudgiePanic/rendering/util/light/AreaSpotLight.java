@@ -49,6 +49,27 @@ public class AreaSpotLight implements Light {
         return Tuple.makePoint(0, (float)-distance, 0);
     }
 
+    protected static Matrix4 lookAt(Tuple direction, Tuple position) {
+        final var angle = localDirection.angleBetween(direction);
+        if (FloatHelp.compareFloat(0, angle) == 0) {
+            return Transforms.identity().translate(position.x, position.y, position.z).assemble();
+        }
+        if (FloatHelp.compareFloat((float)Math.PI, angle) == 0) {
+            return Transforms.identity().rotateX((float)Math.PI).translate(position.x, position.y, position.z).assemble();
+        }
+        final var c = (float)Math.cos(angle);
+        final var s = (float)Math.sin(angle);
+        final var t = 1f - c;
+        final var axisOfRotation = direction.cross(localDirection).normalize();
+        final float x = axisOfRotation.x, y = axisOfRotation.y, z = axisOfRotation.z;
+        final var result = Matrix4.buildMatrix( // I think this is Rodrigues' rotation formula crammed into a 4 by 4 matrix
+            t*x*x + c, t*x*y - z*s, t*x*z + y*s, 0,
+            t*x*y + z*s, t*y*y + c, t*y*z - x*s, 0,
+            t*x*z - y*s, t*y*z + x*s, t*z*z + c, 0,
+            0, 0, 0, 1
+        );
+        return result.multiply(Translation.makeTranslationMatrix(position.x, position.y, position.z));
+    }
     /**
      * Get the light direction at a point on the light emitting surface.
      * @param sample
