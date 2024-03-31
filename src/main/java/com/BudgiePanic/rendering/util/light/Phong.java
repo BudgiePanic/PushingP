@@ -86,7 +86,7 @@ public final class Phong {
             final var directionToLight = sample.subtract(position).normalize();
             final var lightNormalAngle = directionToLight.dot(normal);
             if (FloatHelp.compareFloat(0, intensity) != -1 || lightNormalAngle < 0f) {
-                continue;
+                continue; // TODO only need to check the intensity being smaller or equal to zero once at the start
             }
             final Color diffuse = effective.multiply(material.diffuse()).multiply(lightNormalAngle);
             final var reflection = directionToLight.negate().reflect(normal);
