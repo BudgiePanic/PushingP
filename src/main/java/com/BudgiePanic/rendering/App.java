@@ -33,7 +33,8 @@ public class App
         entry("-soft_shadows", ()-> new AreaLightDemo()),
         entry("-donut", ()-> new TorusDemo()),
         entry("-focus", ()-> new FocusCameraDemo()),
-        entry("-motion_demo", ()-> new MotionDemo())
+        entry("-motion_demo", ()-> new MotionDemo()),
+        entry("-spotlight", ()-> new SpotLightDemo())
     );
 
     public static void main( String[] args )
