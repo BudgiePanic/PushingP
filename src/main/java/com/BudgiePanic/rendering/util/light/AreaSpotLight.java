@@ -1,13 +1,19 @@
 package com.BudgiePanic.rendering.util.light;
 
+import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+
 import java.util.Iterator;
 
 import com.BudgiePanic.rendering.scene.World;
+import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Directions;
+import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
-import com.BudgiePanic.rendering.util.transform.Shear;
+import com.BudgiePanic.rendering.util.transform.Transforms;
+import com.BudgiePanic.rendering.util.transform.Translation;
 
 /**
  * The area spot light has a circular flat light emitting surface.
@@ -25,14 +31,22 @@ public class AreaSpotLight implements Light {
     protected final float coneAngle;
     protected final float areaRadius;
     protected final int samples;
-
+    // TODO store a random source to make random samples?
 
     public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius, int samples) {
         this.position = position; this.color = color; this.innerAngle = innerAngle; this.coneAngle = coneAngle; 
         this.areaRadius = areaRadius; this.samples = samples;
         this.transform = lookAt(direction, position);
         this.localPosition = createLocalPosition(areaRadius, coneAngle);
-
+        // make the inverse matrix now so it is cached for later
+        // if the inverse fails, better to happen here to help track down the problem
+        this.transform.inverse();
+    }
+    
+    protected static Tuple createLocalPosition(float areaRadius, float coneAngle) {
+        final var tanAngle = Math.tan(coneAngle);
+        final var distance = areaRadius / tanAngle;
+        return Tuple.makePoint(0, (float)-distance, 0);
     }
 
     /**
@@ -44,49 +58,30 @@ public class AreaSpotLight implements Light {
      */
     protected Tuple localDirectionAtSample(Tuple sample) { return localPosition.subtract(sample); }
 
-    protected static Tuple createLocalPosition(float areaRadius, float coneAngle) {
-        final var tanAngle = Math.tan(coneAngle);
-        final var distance = areaRadius / tanAngle;
-        return Tuple.makePoint(0, (float)-distance, 0);
+    /**
+     * Sample a point on the light emission surface in local space.
+     *
+     * @param angle
+     *   The angular displacement of the point from [1,0,0]
+     * @param magnitude
+     *   The distance of the point from the centre of the light surface
+     * @return
+     */
+    protected Tuple localSample(float angle, float magnitude) {
+        final float x = (float) Math.cos(angle) * magnitude;
+        final float y = 0f;
+        final float z = (float) Math.sin(angle) * magnitude;
+        return makePoint(x, y, z);
     }
 
-    protected static Matrix4 lookAt(Tuple direction, Tuple position) {
-        final var angle = localDirection.angleBetween(direction);
-        final var rotationAxis = localDirection.normalize().cross(position.normalize()); // rotation axis
-        final var k = rotationAxis;
-        final var sinAngle = (float) Math.sin(angle);
-        final var oneMinusCosAngle = (float) (1.0 - Math.cos(angle));
-        final var skewSymmetric = Matrix4.buildMatrix(
-            0f, (-k.z), (k.y), 0f,
-            (k.z), 0f, (-k.x), 0f, 
-            (-k.y), (k.x), 0f, 0f,
-            0f, 0f, 0f, 0f
-        );
-        final var skewSymmetricSquared = skewSymmetric.multiply(skewSymmetric);
-        final var m = skewSymmetricSquared.matrix;
-        final var skewSymmetrixSquaredOneCosTheta = Matrix4.buildMatrix(
-            m[0][0] * oneMinusCosAngle, m[0][1] * oneMinusCosAngle, m[0][2] * oneMinusCosAngle, m[0][3] * oneMinusCosAngle,
-            m[1][0] * oneMinusCosAngle, m[1][1] * oneMinusCosAngle, m[1][2] * oneMinusCosAngle, m[1][3] * oneMinusCosAngle,
-            m[2][0] * oneMinusCosAngle, m[2][1] * oneMinusCosAngle, m[2][2] * oneMinusCosAngle, m[2][3] * oneMinusCosAngle,
-            m[3][0] * oneMinusCosAngle, m[3][1] * oneMinusCosAngle, m[3][2] * oneMinusCosAngle, m[3][3] * oneMinusCosAngle
-        );
-        final var sinK = Shear.buildShearMatrix(
-            (sinAngle * -k.z),
-            (sinAngle * k.y),
-            (sinAngle * k.z),
-            (sinAngle * -k.x),
-            (sinAngle * -k.y),
-            (sinAngle * k.x)
-        );
-        final var a = sinK.matrix;
-        final var b = skewSymmetrixSquaredOneCosTheta.matrix;
-        final var result = Matrix4.buildMatrix(
-            a[0][0] + b[0][0], a[0][1] + b[0][1], a[0][2] + b[0][2], a[0][3] + b[0][3],
-            a[1][0] + b[1][0], a[1][1] + b[1][1], a[1][2] + b[1][2], a[1][3] + b[1][3],
-            a[2][0] + b[2][0], a[2][1] + b[2][1], a[2][2] + b[2][2], a[2][3] + b[2][3],
-            a[3][0] + b[3][0], a[3][1] + b[3][1], a[3][2] + b[3][2], a[3][3] + b[3][3]
-        );
-        return result;
+    /**
+     * Convert a local sample point on the light emission surface to global space.
+     * @param localSample
+     *   The local light surface sample point
+     * @return
+     */
+    protected Tuple toGlobalSpace(Tuple localSample) {
+        return transform.inverse().multiply(localSample);
     }
 
     @Override
@@ -97,23 +92,80 @@ public class AreaSpotLight implements Light {
 
     @Override
     public float intensityAt(Tuple point, World world, float time) {
-        // convert the point to local space (localPoint)
-        // check angle between (localPosition to localPoint) and (localPosition)
-        // if angle is good, find the point on the light surface where (localPosition to localPoint) intersects
-        // check for obstruction between transform.inverse(lightSurfacePoint) and (point) within the world
-        // if no obstruction 
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'intensityAt'");
+        final var localPoint = transform.multiply(point);
+        if (!isInCone(localPoint)) {
+            return 0f;
+        }
+        // TODO try use point spot light for intensity at, the sampling is only needed for Phong which uses the sampler() => issue, if ray is occluded, how to reduce the intensity? maybe reduce intensity by fraction of point-sample rays that are blocked?, could weight the rays by how close they are to light surface centre.
+        // TODO try use point spot light anyway, maybe phong will hangle the soft shadows for us auto magically by virtue of the sampler???
+        float accumulator = 0f; 
+        for (int i = 0; i < samples; i++) {
+            final var magnitude = 0f; // TODO randomize the local sample points
+            final var sampleAngle = 0f;
+            final var localSample = localSample(sampleAngle, magnitude); 
+            final var globalSample = toGlobalSpace(localSample);
+            if (world.isOccluded(point, globalSample, World.shadowCasters, time)) {
+                continue;
+            }
+            // TODO if the sample lies within the circle defined by the innerCone then it contributes 1f illumation * 1 / angle_between_sample_direction_and_sample_to_point
+            final var maxIllumination = illumination(magnitude);
+            final var sampleDirection = localPosition.subtract(localSample); // TODO or is it localSample.subtract(localPosition)? check via debugger, should be a vector pointing away from local position
+            final var sampleToPoint = localPoint.subtract(localSample); // TODO should be a vector pointing away from the sample point towards the local point
+            final var angle = sampleDirection.angleBetween(sampleToPoint);
+            assert angle < Math.PI;
+            final var sampleIntensity = sampleIntensity(angle);
+            accumulator += maxIllumination * sampleIntensity;
+        }
+        return accumulator;
     }
 
+    /**
+     * remaps the distance of a point on the light emission surface to a value between 0 and 1
+     * if the point is close to the origin of the surface it has a value of 1
+     * if the point lies between inner magnitude and area radius it is LERPed between 0 and 1
+     * if the point lies beyond the areaRadius it should have been filtered out before this method was called
+     * @param magnitude
+     *   the sample point's distance form the light surface origin
+     * @return
+     */
+    protected float illumination(float magnitude) {
+        final var innerMag = (float) Math.tan(innerAngle) * -localPosition.y;
+        assert innerMag <= areaRadius;
+        if (compareFloat(innerMag, magnitude) == 1) {
+            return 1;
+        }
+        final float oldMin = innerMag, oldMax = areaRadius, newMin = 0f, newMax = 1f;
+        final float invIntensity = ((magnitude - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
+        return 1f - invIntensity;
+    }
 
-    protected float localIntensityAt(Tuple localPoint, World world, float time) {
-        return 0f;
+    /**
+     * remap the angle between a sample direction and sample to point vector to be between 0 and 1
+     * @param angle
+     * @return
+     */
+    protected float sampleIntensity(float angle) {
+        final float oldMin = 0, oldMax = AngleHelp.toRadians(90f), newMin = 0f, newMax = 1f;
+        final float remap = ((angle - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
+        return (1f - remap);
+    }
+    
+    /**
+     * checks if the angle between local position and position to local point is smaller than the cone angle
+     * @param localPoint
+     * @return
+     */
+    protected boolean isInCone(Tuple localPoint) {
+        final var lightToLocalPoint = localPosition.subtract(localPoint);
+        final var angle = localDirection.angleBetween(lightToLocalPoint);
+        return FloatHelp.compareFloat(coneAngle, angle) == 1;
     }
 
     @Override
     public Iterator<Tuple> sampler() {
         // TODO Auto-generated method stub
+        // generates N random points on the light surface converted to global space
+        // used by Phone to check if an object partially blocks the point's view to the light source
         throw new UnsupportedOperationException("Unimplemented method 'sampler'");
     }
 
