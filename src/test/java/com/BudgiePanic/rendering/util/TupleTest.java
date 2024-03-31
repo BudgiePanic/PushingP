@@ -2,6 +2,8 @@ package com.BudgiePanic.rendering.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -68,6 +70,19 @@ public class TupleTest {
         Tuple tupleA = Tuple.makeVector(0, 0, 0);
         Tuple tupleB = Tuple.makeVector(0.00000001f, 0.0f, 0.0f);
         assertTrue(tupleA.equals(tupleB));
+    }
+
+    @Test
+    void testAngleBetween() {
+        var tests = List.of(
+            new Pair<>(Directions.up.angleBetween(Directions.left), (float)(Math.PI / 2.0)),
+            new Pair<>(Directions.up.angleBetween(Directions.down), (float)(Math.PI))
+        );
+        for (final var test : tests) {
+            var expected = test.b();
+            var result = test.a();
+            assertTrue(FloatHelp.compareFloat(expected, result) == 0, "expected " + expected + " result " + result);
+        }
     }
 
 }

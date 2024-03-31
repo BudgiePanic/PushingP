@@ -370,6 +370,20 @@ public class Tuple {
         return this.subtract(normal.multiply(scalar));
     }
 
+    /**
+     * Get the angle between this vector and another vector.
+     *
+     * @param vector
+     *   The other vector.
+     * @return
+     *   The angle between 'this' vector and 'vector' in radians.
+     */
+    public float angleBetween(final Tuple vector) {
+        final var normDot = (this.dot(vector)) / (this.magnitude() * vector.magnitude());
+        final float angle = (float) Math.acos(normDot);
+        return angle;
+    }
+
     @Override
     public String toString(){
         return "[" + this.x + "," + this.y + "," + this.z + "," + this.w + "]";
