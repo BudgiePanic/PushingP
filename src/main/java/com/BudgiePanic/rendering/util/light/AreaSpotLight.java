@@ -4,12 +4,15 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Directions;
 import com.BudgiePanic.rendering.util.FloatHelp;
+import com.BudgiePanic.rendering.util.RandomSuppliers;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.transform.Transforms;
@@ -28,6 +31,9 @@ public class AreaSpotLight implements Light {
     protected final Matrix4 transform;
     protected final Color color;
     protected final float innerAngle;
+    /**
+     * The half angle of the cone defined by the area light
+     */
     protected final float coneAngle;
     protected final float areaRadius;
     protected final int samples;
@@ -130,14 +136,14 @@ public class AreaSpotLight implements Light {
             }
             // TODO if the sample lies within the circle defined by the innerCone then it contributes 1f illumation * 1 / angle_between_sample_direction_and_sample_to_point
             final var maxIllumination = illumination(magnitude);
-            final var sampleDirection = localPosition.subtract(localSample); // TODO or is it localSample.subtract(localPosition)? check via debugger, should be a vector pointing away from local position
-            final var sampleToPoint = localPoint.subtract(localSample); // TODO should be a vector pointing away from the sample point towards the local point
-            final var angle = sampleDirection.angleBetween(sampleToPoint);
+            final var localPositionToSample = localSample.subtract(localPosition); 
+            final var sampleToPoint = localPoint.subtract(localSample); 
+            final var angle = localPositionToSample.angleBetween(sampleToPoint);
             assert angle < Math.PI;
             final var sampleIntensity = sampleIntensity(angle);
             accumulator += maxIllumination * sampleIntensity;
         }
-        return accumulator;
+        return accumulator / (float)samples;
     }
 
     /**
@@ -177,18 +183,14 @@ public class AreaSpotLight implements Light {
      * @return
      */
     protected boolean isInCone(Tuple localPoint) {
-        final var lightToLocalPoint = localPosition.subtract(localPoint);
+        if (FloatHelp.compareFloat(0f, localPoint.y) == 1) { return false; } // point is behind light emitting surface
+        final var lightToLocalPoint = localPoint.subtract(localPosition);
         final var angle = localDirection.angleBetween(lightToLocalPoint);
         return FloatHelp.compareFloat(coneAngle, angle) == 1;
     }
 
     @Override
-    public Iterator<Tuple> sampler() {
-        // TODO Auto-generated method stub
-        // generates N random points on the light surface converted to global space
-        // used by Phone to check if an object partially blocks the point's view to the light source
-        throw new UnsupportedOperationException("Unimplemented method 'sampler'");
-    }
+    public Iterator<Tuple> sampler() { return new AreaSpotLightIterator(); }
 
     @Override
     public int resolution() { return this.samples; }
