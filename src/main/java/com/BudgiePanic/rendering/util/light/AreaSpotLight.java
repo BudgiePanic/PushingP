@@ -72,10 +72,10 @@ public class AreaSpotLight implements Light {
     protected static Matrix4 lookAt(Tuple direction, Tuple position) {
         final var angle = localDirection.angleBetween(direction);
         if (FloatHelp.compareFloat(0, angle) == 0) {
-            return Transforms.identity().translate(position.x, position.y, position.z).assemble();
+            return Transforms.identity().translate(-position.x, -position.y, -position.z).assemble();
         }
         if (FloatHelp.compareFloat((float)Math.PI, angle) == 0) {
-            return Transforms.identity().rotateX((float)Math.PI).translate(position.x, position.y, position.z).assemble();
+            return Transforms.identity().rotateX((float)Math.PI).translate(-position.x, -position.y, -position.z).assemble();
         }
         final var c = (float)Math.cos(angle);
         final var s = (float)Math.sin(angle);
