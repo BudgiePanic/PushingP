@@ -37,8 +37,20 @@ public class AreaSpotLight implements Light {
     protected final float coneAngle;
     protected final float areaRadius;
     protected final int samples;
-    // TODO store a random source to make random samples?
+    protected final Supplier<Float> randomSource;
+
+    public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius, int samples, Supplier<Float> randomSource) {
+        this.position = position; this.color = color; this.innerAngle = innerAngle; this.coneAngle = coneAngle; 
+        this.areaRadius = areaRadius; this.samples = samples; this.randomSource = randomSource;
+        this.transform = lookAt(direction, position);
+        this.localPosition = createLocalPosition(areaRadius, coneAngle);
+        // make the inverse matrix now so it is cached for later
+        // if the inverse fails, better to happen here to help track down the problem
+        this.transform.inverse();
+        if (coneAngle >= Math.PI || innerAngle >= Math.PI) {
             System.out.println("WARN: area spot light has excessively large cone angle " + coneAngle + " " + innerAngle);
+        }
+    }
 
     public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius, int samples) {
         this.position = position; this.color = color; this.innerAngle = innerAngle; this.coneAngle = coneAngle; 
