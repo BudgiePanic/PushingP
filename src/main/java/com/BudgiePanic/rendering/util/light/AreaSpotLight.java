@@ -36,6 +36,9 @@ public class AreaSpotLight implements Light {
      */
     protected final float coneAngle;
     protected final float areaRadius;
+    /**
+     * The maximum number of samples that can be taken of this area spot light.
+     */
     protected final int samples;
     protected final Supplier<Float> randomSource;
 
@@ -156,61 +159,39 @@ public class AreaSpotLight implements Light {
     @Override
     public float intensityAt(Tuple point, World world, float time) {
         final var localPoint = transform.multiply(point);
-        if (!isInCone(localPoint)) {
-            return 0f;
-        }
-        // TODO try use point spot light for intensity at, the sampling is only needed for Phong which uses the sampler() => issue, if ray is occluded, how to reduce the intensity? maybe reduce intensity by fraction of point-sample rays that are blocked?, could weight the rays by how close they are to light surface centre.
-        // TODO try use point spot light anyway, maybe phong will hangle the soft shadows for us auto magically by virtue of the sampler???
-        float accumulator = 0f; 
-        for (int i = 0; i < samples; i++) {
-            final var magnitude = areaRadius * randomSource.get();
-            final var sampleAngle = (float) Math.PI * 2 * randomSource.get();
-            final var localSample = localSample(sampleAngle, magnitude); 
-            final var globalSample = toGlobalSpace(localSample);
+        if (!isInCone(localPoint)) { return 0f; }
+        // get the illumination that would have been recieved by a point spot light = max_possible_illumination
+        // the intensity at the point will be [max_possible_illumination * (non_blocked_rays / samples_cast)]
+        final Tuple lightToPoint = localPoint.subtract(localPosition);
+        final var angle = localDirection.angleBetween(lightToPoint);
+        final var maxIntensity = illumination(angle);
+        final var sampler = sampler();
+        var samplesBlocked = 0;
+        while (sampler.hasNext()) {
+            final var globalSample = sampler.next();
             if (world.isOccluded(point, globalSample, World.shadowCasters, time)) {
-                continue;
+                samplesBlocked++;
             }
-            // TODO if the sample lies within the circle defined by the innerCone then it contributes 1f illumation * 1 / angle_between_sample_direction_and_sample_to_point
-            final var maxIllumination = illumination(magnitude);
-            final var localPositionToSample = localSample.subtract(localPosition); 
-            final var sampleToPoint = localPoint.subtract(localSample); 
-            final var angle = localPositionToSample.angleBetween(sampleToPoint);
-            assert angle < Math.PI;
-            final var sampleIntensity = sampleIntensity(angle);
-            accumulator += maxIllumination * sampleIntensity;
         }
-        return accumulator / (float)samples;
+        final float proportion = ((float)(samples - samplesBlocked)) / ((float)samples);
+        return maxIntensity * proportion;
     }
 
     /**
-     * remaps the distance of a point on the light emission surface to a value between 0 and 1
-     * if the point is close to the origin of the surface it has a value of 1
-     * if the point lies between inner magnitude and area radius it is LERPed between 0 and 1
-     * if the point lies beyond the areaRadius it should have been filtered out before this method was called
-     * @param magnitude
-     *   the sample point's distance form the light surface origin
-     * @return
-     */
-    protected float illumination(float magnitude) {
-        final var innerMag = (float) Math.tan(innerAngle) * -localPosition.y;
-        assert innerMag <= areaRadius;
-        if (compareFloat(innerMag, magnitude) == 1) {
-            return 1;
-        }
-        final float oldMin = innerMag, oldMax = areaRadius, newMin = 0f, newMax = 1f;
-        final float invIntensity = ((magnitude - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
-        return 1f - invIntensity;
-    }
-
-    /**
-     * remap the angle between a sample direction and sample to point vector to be between 0 and 1
+     * remaps the angle between the light direction and the vector to the illuminated point to an illumination intensity value.
      * @param angle
+     *   the angle between the light direction and the vector to the point being illuminated
      * @return
      */
-    protected float sampleIntensity(float angle) {
-        final float oldMin = 0, oldMax = AngleHelp.toRadians(90f), newMin = 0f, newMax = 1f;
-        final float remap = ((angle - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
-        return (1f - remap);
+    protected float illumination(float angle) {
+        if (FloatHelp.compareFloat(angle, innerAngle) != 1) { return 1f; } // angle <= innerAngle
+        // NOTE: this should never happen because points outside the cone should have been filtered before this method was called
+        if (FloatHelp.compareFloat(angle, coneAngle) == 1) { return 0f; } // angle > coneAngle 
+        // angle must be between inner angle and cone angle
+        // need to LERP between 1 and zero based on how close the angle is to innerAngle
+        final float oldMin = innerAngle, oldMax = coneAngle, newMin = 0f, newMax = 1f;
+        final float invIntensity = ((angle - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
+        return 1f - invIntensity;
     }
     
     /**
