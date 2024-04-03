@@ -2,7 +2,6 @@ package com.BudgiePanic.rendering.toy;
 
 import static com.BudgiePanic.rendering.util.AngleHelp.toRadians;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
-import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
@@ -10,8 +9,7 @@ import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Directions;
 import com.BudgiePanic.rendering.util.Material;
-import com.BudgiePanic.rendering.util.light.AreaLight;
-import com.BudgiePanic.rendering.util.light.DirectionLight;
+import com.BudgiePanic.rendering.util.light.AreaSpotLight;
 import com.BudgiePanic.rendering.util.light.Light;
 import com.BudgiePanic.rendering.util.light.PointSpotLight;
 import com.BudgiePanic.rendering.util.pattern.BiOperation;
@@ -37,9 +35,9 @@ public class SpotLightDemo extends BaseDemo {
         World world = new World();
         var lightPosition = makePoint(10, 8, 0);
         Light light = new PointSpotLight(lightPosition, Colors.white, makePoint().subtract(lightPosition), toRadians(10f), toRadians(45f));
-        // light = new DirectionLight(new AreaLight(Colors.white, lightPosition, Directions.forward, Directions.right, 3, 3, AreaLight.randomSamples), toRadians(45), true);
+        light = new AreaSpotLight(lightPosition, makePoint().subtract(lightPosition), Colors.white, toRadians(10f), toRadians(45f), 1f);
         world.addLight(light);
-        world.addShape(new Cube(Transforms.identity().translate(-6, 1.4f, 5f).assemble(), Material.color(Colors.red)));
+        world.addShape(new Cube(Transforms.identity().translate(-6, 1f, 5f).assemble(), Material.color(Colors.red)));
         world.addShape(new Sphere(Transforms.identity().translate(0, 1f, 0f).assemble(), Material.color(Colors.red).setReflectivity(0.4f)));
         world.addShape(new Plane(Transforms.identity().assemble(), Material.pattern(new BiPattern(BiOperation.checker, new SolidColor(Colors.green), new SolidColor(Colors.white)))));
         return world;
