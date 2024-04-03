@@ -23,23 +23,76 @@ import com.BudgiePanic.rendering.util.transform.Translation;
  */
 public class AreaSpotLight implements Light {
 
+    /**
+     * The recommended default number of samples.
+     */
+    public static final int defaultSamples = 20;
+    /**
+     * The default source of randomness.
+     */
+    public static final Supplier<Float> defaultRandomSource = RandomSuppliers.threadSafeRandomSupplier;
+    /**
+     * The position of the center of the light emitting surface in global space.
+     */
     protected final Tuple position;
+    /**
+     * The position of the point of the cone in local space (will be behind the light emitting surface)
+     */
     protected final Tuple localPosition;
+    /**
+     * The direction of the light in local space.
+     */
     protected static final Tuple localDirection = Directions.up;
+    /**
+     * A transform to convert points and vectors from global space to local space.
+     */
     protected final Matrix4 transform;
+    /**
+     * The color of the light
+     */
     protected final Color color;
+    /**
+     * The half angle of the inner cone. Points within this cone recieve full illumination.
+     */
     protected final float innerAngle;
     /**
      * The half angle of the cone defined by the area light
      */
     protected final float coneAngle;
+    /**
+     * Half the length of the light emitting surface.
+     */
     protected final float areaRadius;
     /**
      * The maximum number of samples that can be taken of this area spot light.
      */
     protected final int samples;
+    /**
+     * Supplier of randomness for random sampling.
+     * Provides uniform random floats between 0 and 1.
+     */
     protected final Supplier<Float> randomSource;
 
+    /**
+     * Create a new area spot light. Canonincal constructor.
+     * 
+     * @param position
+     *   The location of the spotlight.
+     * @param direction
+     *   The direction the spot light faces.
+     * @param color
+     *   The color and intensity of the spotlight.
+     * @param innerAngle
+     *   The half inner angle of the cone where the light provides full intensity in radians.
+     * @param coneAngle
+     *   The half inner angle of the cone where the light provides partial intensity in radians.
+     * @param areaRadius
+     *   The radius of the light emitting surface circle.
+     * @param samples
+     *   The number of times the light surface should be sampled when calculating a point's illumation.
+     * @param randomSource
+     *   Randomness source for the sample points.
+     */
     public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius, int samples, Supplier<Float> randomSource) {
         this.position = position; this.color = color; this.innerAngle = innerAngle; this.coneAngle = coneAngle; 
         this.areaRadius = areaRadius; this.samples = samples; this.randomSource = randomSource;
@@ -53,22 +106,74 @@ public class AreaSpotLight implements Light {
         }
     }
 
+    /**
+     * Create a new area spot light. Uses the default randomness source.
+     * 
+     * @param position
+     *   The location of the spotlight.
+     * @param direction
+     *   The direction the spot light faces.
+     * @param color
+     *   The color and intensity of the spotlight.
+     * @param innerAngle
+     *   The half inner angle of the cone where the light provides full intensity in radians.
+     * @param coneAngle
+     *   The half inner angle of the cone where the light provides partial intensity in radians.
+     * @param areaRadius
+     *   The radius of the light emitting surface circle.
+     * @param samples
+     *   The number of times the light surface should be sampled when calculating a point's illumation.
+     */
     public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius, int samples) {
-        this.position = position; this.color = color; this.innerAngle = innerAngle; this.coneAngle = coneAngle; 
-        this.areaRadius = areaRadius; this.samples = samples; this.randomSource = RandomSuppliers.threadSafeRandomSupplier;
-        this.transform = lookAt(direction, position);
-        this.localPosition = createLocalPosition(areaRadius, coneAngle);
-        // make the inverse matrix now so it is cached for later
-        // if the inverse fails, better to happen here to help track down the problem
-        this.transform.inverse();
+        this(position, direction, color, innerAngle, coneAngle, areaRadius, samples, AreaSpotLight.defaultRandomSource);
     }
-    
+
+    /**
+     * Create a new area spot light. Uses the default randomness source and the default number of samples.
+     * 
+     * @param position
+     *   The location of the spotlight.
+     * @param direction
+     *   The direction the spot light faces.
+     * @param color
+     *   The color and intensity of the spotlight.
+     * @param innerAngle
+     *   The half inner angle of the cone where the light provides full intensity in radians.
+     * @param coneAngle
+     *   The half inner angle of the cone where the light provides partial intensity in radians.
+     * @param areaRadius
+     *   The radius of the light emitting surface circle.
+     */
+    public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius) {
+        this(position, direction, color, innerAngle, coneAngle, areaRadius, AreaSpotLight.defaultSamples);
+    }
+    /**
+     * Derives the local space position of the tip of the spot light cone.
+     *
+     * @param areaRadius
+     *   The radius of the light emitting surface circle.
+     * @param coneAngle
+     *   The half angle of the cone.
+     * @return
+     *   The position of the tip of the spot light cone in local space.
+     */
     protected static Tuple createLocalPosition(float areaRadius, float coneAngle) {
         final var tanAngle = Math.tan(coneAngle);
         final var distance = areaRadius / tanAngle;
         return Tuple.makePoint(0, (float)-distance, 0);
     }
-
+    /**
+     * Derives the area spot light transform.
+     * The transform maps tuples in global space to local space.
+     * For example the global direction will be mapped to [0,1,0,0] and the global position will be mapped to [0,0,0,1].
+     *
+     * @param direction
+     *   The direction vector the spot light points in global space.
+     * @param position
+     *   The global space position of the spot light.
+     * @return
+     *   A transform to go from global space to local space.
+     */
     protected static Matrix4 lookAt(Tuple direction, Tuple position) {
         final var angle = localDirection.angleBetween(direction);
         if (FloatHelp.compareFloat(0, angle) == 0) {
@@ -115,22 +220,14 @@ public class AreaSpotLight implements Light {
     }
 
     /**
-     * Get the light direction at a point on the light emitting surface.
-     * @param sample
-     *   The point on the light emitting surface in local space
-     * @return
-     *   The direction on the light emissiont at the point on the emission surface.
-     */
-    protected Tuple localDirectionAtSample(Tuple sample) { return localPosition.subtract(sample); }
-
-    /**
-     * Sample a point on the light emission surface in local space.
+     * Create a sample on the light emission surface in local space.
      *
      * @param angle
-     *   The angular displacement of the point from [1,0,0]
+     *   The angular displacement of the point from [1,0,0].
      * @param magnitude
-     *   The distance of the point from the centre of the light surface
+     *   The distance of the point from the centre of the light surface.
      * @return
+     *   A point on the light emitting surface in local space.
      */
     protected Tuple localSample(float angle, float magnitude) {
         final float x = (float) Math.cos(angle) * magnitude;
@@ -140,10 +237,11 @@ public class AreaSpotLight implements Light {
     }
 
     /**
-     * Convert a local sample point on the light emission surface to global space.
+     * Convert a local space tuple to global space.
      * @param localSample
-     *   The local light surface sample point
+     *   The local space tuple.
      * @return
+     *   The tuple in global space.
      */
     protected Tuple toGlobalSpace(Tuple localSample) {
         return transform.inverse().multiply(localSample);
@@ -194,12 +292,16 @@ public class AreaSpotLight implements Light {
     }
     
     /**
-     * checks if the angle between local position and position to local point is smaller than the cone angle
+     * Checks if a point in local space lies within the area spot light's illumination cone.
      * @param localPoint
+     *   The point to check in local space.
      * @return
+     *   True if the point is within the spot light's illumination cone.
      */
     protected boolean isInCone(Tuple localPoint) {
-        if (FloatHelp.compareFloat(0f, localPoint.y) == 1) { return false; } // point is behind light emitting surface
+        // check if point is behind light emitting surface?
+        if (FloatHelp.compareFloat(0f, localPoint.y) == 1) { return false; } 
+        // is the angle between (local direction) and (position to local point) smaller than the cone angle?
         final var lightToLocalPoint = localPoint.subtract(localPosition);
         final var angle = localDirection.angleBetween(lightToLocalPoint);
         return FloatHelp.compareFloat(coneAngle, angle) == 1;
