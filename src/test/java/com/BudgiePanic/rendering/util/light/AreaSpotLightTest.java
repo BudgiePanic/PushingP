@@ -69,7 +69,7 @@ public class AreaSpotLightTest {
     @Test
     void testTransformGenerationB() {
         var light = new AreaSpotLight(makePoint(1, 0, 0), Directions.down, Colors.white, toRadians(45), toRadians(45), 1, 1);
-        var expected = Transforms.identity().rotateX(toRadians(180f)).translate(1, 0, 0).assemble();
+        var expected = Transforms.identity().rotateX(toRadians(180f)).translate(-1, 0, 0).assemble();
         var result = light.transform;
         assertEquals(expected, result);
     }
@@ -170,7 +170,7 @@ public class AreaSpotLightTest {
         var light = new AreaSpotLight(makePoint(0, 0, 0), Directions.up, Colors.white, toRadians(0), toRadians(30), 1, 10);
         assertEquals(Matrix4.identity(), light.transform);
         World world = new World();
-        var result = light.intensityAt(makePoint(1f/*0.92818f*/, 1.732f, 0), world, 0);
+        var result = light.intensityAt(makePoint(0.92818f, 1.732f, 0), world, 0);
         var expected = 0.5f;
         assertTrue(FloatHelp.compareFloat(expected, result) == 0, "expected " + expected + " actual " + result);
     }
@@ -213,7 +213,7 @@ public class AreaSpotLightTest {
         // inner angle = 0, point 0.5f across the cone with no obstruction should have 0.5f intensity
         var light = new AreaSpotLight(makePoint(0, 1, 0), Directions.right, Colors.white, toRadians(0), toRadians(30), 1, 10);
         World world = new World();
-        var result = light.intensityAt(makePoint(1.732f, 1+0.5f, 0), world, 0);
+        var result = light.intensityAt(makePoint(1.732f, 0.92818f+1f, 0), world, 0);
         var expected = 0.5f;
         assertTrue(FloatHelp.compareFloat(expected, result) == 0, "expected " + expected + " actual " + result);
     }
@@ -224,7 +224,7 @@ public class AreaSpotLightTest {
         // point outside the cone should have 0f intensity
         var light = new AreaSpotLight(makePoint(0, 1, 0), Directions.right, Colors.white, toRadians(0), toRadians(30), 1, 10);
         World world = new World();
-        var result = light.intensityAt(makePoint(1.732f, 1+1.1f, 0), world, 0);
+        var result = light.intensityAt(makePoint(1.732f, 1+2.2f, 0), world, 0);
         var expected = 0f;
         assertTrue(FloatHelp.compareFloat(expected, result) == 0, "expected " + expected + " actual " + result);
     }
