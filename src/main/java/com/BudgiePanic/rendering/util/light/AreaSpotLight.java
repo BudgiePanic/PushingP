@@ -87,7 +87,7 @@ public class AreaSpotLight implements Light {
             t*x*z - y*s, t*y*z + x*s, t*z*z + c, 0,
             0, 0, 0, 1
         );
-        return result.multiply(Translation.makeTranslationMatrix(position.x, position.y, position.z));
+        return result.multiply(Translation.makeTranslationMatrix(-position.x, -position.y, -position.z));
     }
 
     /**
@@ -163,8 +163,8 @@ public class AreaSpotLight implements Light {
         // TODO try use point spot light anyway, maybe phong will hangle the soft shadows for us auto magically by virtue of the sampler???
         float accumulator = 0f; 
         for (int i = 0; i < samples; i++) {
-            final var magnitude = 0f; // TODO randomize the local sample points
-            final var sampleAngle = 0f;
+            final var magnitude = areaRadius * randomSource.get();
+            final var sampleAngle = (float) Math.PI * 2 * randomSource.get();
             final var localSample = localSample(sampleAngle, magnitude); 
             final var globalSample = toGlobalSpace(localSample);
             if (world.isOccluded(point, globalSample, World.shadowCasters, time)) {
