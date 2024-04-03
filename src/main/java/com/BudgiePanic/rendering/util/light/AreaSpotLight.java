@@ -1,6 +1,5 @@
 package com.BudgiePanic.rendering.util.light;
 
-import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import java.util.Iterator;
@@ -8,7 +7,6 @@ import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 import com.BudgiePanic.rendering.scene.World;
-import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Directions;
 import com.BudgiePanic.rendering.util.FloatHelp;
@@ -108,8 +106,9 @@ public class AreaSpotLight implements Light {
             if (!hasNext()) throw new NoSuchElementException();
             samples++;
             final var angle = Math.PI * 2 * AreaSpotLight.this.randomSource.get();
-            final var radius = areaRadius * AreaSpotLight.this.randomSource.get();
-            final var localSample = AreaSpotLight.this.localSample((float) angle, radius);
+            // @see: https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly/50746409#50746409
+            final var radius = areaRadius * Math.sqrt(AreaSpotLight.this.randomSource.get());
+            final var localSample = AreaSpotLight.this.localSample((float) angle, (float)radius);
             final var sample = AreaSpotLight.this.transform.inverse().multiply(localSample);
             return sample;
         }
