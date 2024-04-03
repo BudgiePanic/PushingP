@@ -79,13 +79,16 @@ public final class Phong {
         assert color != null;
         final var effective = color.colorMul(light.color());
         final var ambient = effective.multiply(material.ambient());
+        if (FloatHelp.compareFloat(0, intensity) != -1) {
+            return ambient;
+        }   
         final var sampler = light.sampler();
         var accumulator = new Color();
         while (sampler.hasNext()) {
             final var sample = sampler.next();
             final var directionToLight = sample.subtract(position).normalize();
             final var lightNormalAngle = directionToLight.dot(normal);
-            if (FloatHelp.compareFloat(0, intensity) != -1 || lightNormalAngle < 0f) {
+            if (lightNormalAngle < 0f) {
                 continue;
             }
             final Color diffuse = effective.multiply(material.diffuse()).multiply(lightNormalAngle);

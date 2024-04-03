@@ -138,8 +138,7 @@ public class ShutterCamera implements Camera {
         final Color[] samples = new Color[raysPerExposure];
         for (int i = 0; i < raysPerExposure; i++) {
             final var time = (exposureDuration / raysPerExposure) * i;
-            final var ray = createRay(pixelColumn, pixelRow, time);
-            final var color = world.computeColor(ray);
+            final var color = pixelAt(world, pixelColumn, pixelRow, time);
             samples[i] = color;
         }
         final Color color = this.mode.process(samples, raysPerExposure);
