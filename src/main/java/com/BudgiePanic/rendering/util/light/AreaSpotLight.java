@@ -38,10 +38,11 @@ public class AreaSpotLight implements Light {
     protected final float areaRadius;
     protected final int samples;
     // TODO store a random source to make random samples?
+            System.out.println("WARN: area spot light has excessively large cone angle " + coneAngle + " " + innerAngle);
 
     public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius, int samples) {
         this.position = position; this.color = color; this.innerAngle = innerAngle; this.coneAngle = coneAngle; 
-        this.areaRadius = areaRadius; this.samples = samples;
+        this.areaRadius = areaRadius; this.samples = samples; this.randomSource = RandomSuppliers.threadSafeRandomSupplier;
         this.transform = lookAt(direction, position);
         this.localPosition = createLocalPosition(areaRadius, coneAngle);
         // make the inverse matrix now so it is cached for later
@@ -76,6 +77,29 @@ public class AreaSpotLight implements Light {
         );
         return result.multiply(Translation.makeTranslationMatrix(position.x, position.y, position.z));
     }
+
+    /**
+     * Produces samples on the light emitting surface in global space.
+     */
+    private class AreaSpotLightIterator implements Iterator<Tuple> {
+
+        int samples = 0;
+
+        @Override
+        public boolean hasNext() { return samples < AreaSpotLight.this.samples; }
+
+        @Override
+        public Tuple next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            samples++;
+            final var angle = Math.PI * 2 * AreaSpotLight.this.randomSource.get();
+            final var radius = areaRadius * AreaSpotLight.this.randomSource.get();
+            final var localSample = AreaSpotLight.this.localSample((float) angle, radius);
+            final var sample = AreaSpotLight.this.transform.inverse().multiply(localSample);
+            return sample;
+        }
+    }
+
     /**
      * Get the light direction at a point on the light emitting surface.
      * @param sample
