@@ -92,6 +92,8 @@ public interface Camera {
     /**
      * Get the color for pixel [column, row] taken by this camera when imaging a world.
      *
+     * @param world
+     *   The world that should be imaged by the camera.
      * @param pixelColumn
      *   The x column of the pixel.
      * @param pixelRow
