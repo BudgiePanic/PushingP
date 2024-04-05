@@ -32,6 +32,7 @@ public class TorusDemo extends BaseDemo {
 
     @Override
     protected World createWorld() {
+        System.out.println("INFO: running torus demo scene");
         World world = new World();
 
         world.addLight(new AreaLight(Colors.white, makePoint(-10, 10, -5), Directions.forward, Directions.up, 6, 6, AreaLight.randomSamples));
