@@ -42,19 +42,7 @@ public interface Camera {
      * @return
      *    A ray with time 'time' that passes through (col, row) pixel of the camera from the camera origin.
      */
-    Ray createRay(int pixelColumn, int pixelRow, float time);
-
-    /**
-     * Create a ray that goes through the specified pixel of the camera at time zero.
-     *
-     * @param pixelColumn
-     *   The x column of the pixel.
-     * @param pixelRow
-     *   The y row of the pixel.
-     * @return
-     *   A ray that passes through (col, row) pixel of the camera from the camera origin. 
-     */
-    default Ray createRay(int pixelColumn, int pixelRow) { return createRay(pixelColumn, pixelRow, 0f); }
+    Ray createRay(float pixelColumn, float pixelRow, float time);
 
     /**
      * Creates a list of pixels that can be used as indices in a stream.
@@ -85,7 +73,7 @@ public interface Camera {
         // pre condition check: is the canvas big enough for the camera?
         if (canvas == null || canvas.getHeight() < this.height() || canvas.getWidth() < this.width()) throw new IllegalArgumentException();
         List<Pair<Integer, Integer>> jobs = generateJobs();
-        jobs.parallelStream().forEach(pixel -> canvas.writePixel(pixel.a(), pixel.b(), pixelAt(world, pixel.a(), pixel.b())));
+        jobs.parallelStream().forEach(pixel -> canvas.writePixel(pixel.a(), pixel.b(), pixelExposureAt(world, pixel.a(), pixel.b())));
         return canvas;
     }
 
@@ -103,13 +91,15 @@ public interface Camera {
      * @return
      *   The color at pixel [column, row]
      */
-    Color pixelAt(World world, int pixelColumn, int pixelRow, float time);
+    Color pixelAt(World world, float pixelColumn, float pixelRow, float time);
 
     /**
      * Get the color for pixel [column, row] taken by this camera for the entire exposure when imaging a world.
      * Camera implementations may wish to override this method with their own behaviour.
      * By default the pixel value comes from an instantaneous exposure taken at time = zero.
      * 
+     * @param world 
+     *   The world being images by the camera.
      * @param pixelColumn
      *   The x column of the pixel.
      * @param pixelRow
@@ -117,7 +107,16 @@ public interface Camera {
      * @return
      *   The sampled color at pixel [column, row] from the image exposure.
      */
-    default Color pixelAt(World world, int pixelColumn, int pixelRow) { return pixelAt(world, pixelColumn, pixelRow, 0f); }
+    default Color pixelExposureAt(World world, float pixelColumn, float pixelRow) { return pixelAt(world, pixelColumn, pixelRow, 0f); }
+
+    /**
+     * 
+     * @param world
+     * @param pixelColumn
+     * @param pixelRow
+     * @return 
+     */
+    default Color pixelExposureAt(World world, int pixelColumn, int pixelRow) { return pixelAt(world, pixelColumn + 0.5f, pixelRow + 0.5f, 0f); }
     
     /**
      * Cast rays out of the camera into the scene. Fills a new canvas with colors from the rays.

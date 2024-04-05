@@ -46,7 +46,7 @@ public class ShutterCameraTest {
             new PinHoleCamera(
             768, 768, AngleHelp.toRadians(40f), View.makeViewMatrix(makePoint(0, 10, -6), makePoint(0, 0, 1), Directions.up)),
         ShutterCamera.defaultExposureTime, 1, ShutterCamera.defaultExposureMode);
-        var result = camera.pixelAt(world, 380, 353);
+        var result = camera.pixelAt(world, 380 + 0.5f, 353 + 0.5f, 0f);
         assertNotEquals(Colors.black, result);
     }
 

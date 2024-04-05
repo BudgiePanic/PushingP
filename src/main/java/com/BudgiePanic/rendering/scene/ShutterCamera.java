@@ -128,10 +128,10 @@ public class ShutterCamera implements Camera {
     public int height() { return this.camera.height; }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow, float time) { return camera.createRay(pixelColumn, pixelRow, time); }
+    public Ray createRay(float pixelColumn, float pixelRow, float time) { return camera.createRay(pixelColumn, pixelRow, time); }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow) {
+    public Color pixelExposureAt(World world, float pixelColumn, float pixelRow) {
         // overriding base camera pixelAt behaviour feels a bit ugly, but it least it works.
         // find the times of each ray cast
         // the times need to be evenly distributed from 0s to exposureDuration
@@ -146,7 +146,7 @@ public class ShutterCamera implements Camera {
     }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
         return camera.pixelAt(world, pixelColumn, pixelRow, time);
     }
     

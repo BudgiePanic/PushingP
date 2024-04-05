@@ -122,13 +122,13 @@ public class FocusCamera extends BasePerspectiveCamera {
     }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow, float time) {
+    public Ray createRay(float pixelColumn, float pixelRow, float time) {
         // pre condition checks
         if (pixelColumn < 0 || pixelColumn > this.width) throw new IllegalArgumentException("invalid pixel column for camera");
         if (pixelRow < 0 || pixelRow > this.height) throw new IllegalArgumentException("invalid pixel row for camera");
         // compute the offset from the edge of the canvas to the center of the pixel
-        final var xOffset = (pixelColumn + 0.5f) * this.pixelSize;
-        final var yOffset = (pixelRow + 0.5f) * this.pixelSize;
+        final var xOffset = (pixelColumn) * this.pixelSize;
+        final var yOffset = (pixelRow) * this.pixelSize;
 
         final var worldX = this.halfWidth - xOffset;
         final var worldY = this.halfHeight - yOffset;
@@ -159,7 +159,7 @@ public class FocusCamera extends BasePerspectiveCamera {
     }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
         float red = 0;
         float green = 0;
         float blue = 0;

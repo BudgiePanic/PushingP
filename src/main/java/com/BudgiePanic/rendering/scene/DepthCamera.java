@@ -113,13 +113,13 @@ public class DepthCamera implements Camera {
     public int height() { return cameraMonitoring.height; }
 
     @Override
-    public Ray createRay(final int pixelColumn, final int pixelRow, final float time) {
+    public Ray createRay(final float pixelColumn, final float pixelRow, final float time) {
         // create pinhole camera rays so the depth image is crisp and in-focus
         // TODO: code smell here, this method is 99% similar to PinHoleCamera::createRay, there can probably be an abstraction
         if (pixelColumn < 0 || pixelColumn > cameraMonitoring.width) throw new IllegalArgumentException("invalid pixel column for camera");
         if (pixelRow < 0 || pixelRow > cameraMonitoring.height) throw new IllegalArgumentException("invalid pixel row for camera");
-        final var xOffset = (pixelColumn + 0.5f) * cameraMonitoring.pixelSize;
-        final var yOffset = (pixelRow + 0.5f) * cameraMonitoring.pixelSize;
+        final var xOffset = (pixelColumn) * cameraMonitoring.pixelSize;
+        final var yOffset = (pixelRow) * cameraMonitoring.pixelSize;
         final var worldX = cameraMonitoring.halfWidth - xOffset;
         final var worldY = cameraMonitoring.halfHeight - yOffset;
         final float worldZ = -cameraMonitoring.focalDistance;
@@ -158,14 +158,14 @@ public class DepthCamera implements Camera {
 
     @Override
     public Canvas takePicture(final World world, final Canvas canvas) {
-        final var rawImage = Camera.super.takePicture(world, canvas);
+        final var rawImage = Camera.super.takePicture(world, canvas); // TODO if a wrapper camera is storing this depth camera as its internal camera, will they call this method?
         final var depthInfo = getMinMaxValues(rawImage);
         rawImage.writeAll(mode.apply(depthInfo));
         return rawImage;
     }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
         final var ray = createRay(pixelColumn, pixelRow, time);
         final var intersections = world.intersect(ray);
         final var distance = intersections.flatMap(Intersection::Hit).map(Intersection::a).orElse(Float.POSITIVE_INFINITY);
