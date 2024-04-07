@@ -66,7 +66,7 @@ public class CanvasResampler {
         float red = 0, green = 0, blue = 0;
         for (int r = row; r < row + factor; r++) {
             for (int c = col; c < col + factor; c++) {
-                final var color = getColorAt(row, col);
+                final var color = getColorAt(r, c);
                 red += color.getRed();
                 green += color.getGreen();
                 blue += color.getBlue();
