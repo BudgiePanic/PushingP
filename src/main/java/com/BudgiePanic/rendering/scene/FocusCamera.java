@@ -38,7 +38,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * Using a consistent fov eliminates one variable that affects the FOV of the final image.
      * (The other variable is the focal distance).
      */
-    public static final float defaultFOV = 70f;
+    public static final float defaultFOV = 70f; // TODO possible bug here, this is probably supposed to be in radians
     
     /**
      * The size of the hole that light enters the camera through.
