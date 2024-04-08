@@ -1,0 +1,52 @@
+package com.BudgiePanic.rendering.scene;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+public class SuperSamplingCameraTest {
+    @Test
+    void gridOutput() {
+        assertDoesNotThrow(()->{
+            var pattern = new SuperSamplingCamera.RotatedGrid(6);
+            // print pattern result to test output file for manual inspection of results
+            // pattern.cachedPoints.forEach(p -> System.out.println(p.a()));
+            // System.out.println();
+            // pattern.cachedPoints.forEach(p -> System.out.println(p.b()));
+        });
+    }
+
+    @Test
+    void testRotateGridRawPointsB() {
+        var result = SuperSamplingCamera.RotatedGrid.rawPoints(4);
+        result.forEach(p -> {
+            assertTrue(p.a() >= 0, p.toString());
+            assertTrue(p.a() <= 1, p.toString());
+            assertTrue(p.b() >= 0, p.toString());
+            assertTrue(p.b() <= 1, p.toString());
+        });
+    }
+
+    @Test
+    void testRotateGridRawPointsA() {
+        var result = SuperSamplingCamera.RotatedGrid.rawPoints(16);
+        result.forEach(p -> {
+            assertTrue(p.a() >= 0, p.toString());
+            assertTrue(p.a() <= 1, p.toString());
+            assertTrue(p.b() >= 0, p.toString());
+            assertTrue(p.b() <= 1, p.toString());
+        });
+    }
+
+    @Test
+    void testRotateGridRawPoints() {
+        var result = SuperSamplingCamera.RotatedGrid.rawPoints(64);
+        result.forEach(p -> {
+            assertTrue(p.a() >= 0, p.toString());
+            assertTrue(p.a() <= 1, p.toString());
+            assertTrue(p.b() >= 0, p.toString());
+            assertTrue(p.b() <= 1, p.toString());
+        });
+    }
+}
