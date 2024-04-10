@@ -33,9 +33,18 @@ public class CanvasResamplerTest {
         result = resampler.downSample();
         assertEquals(4, result.getWidth());
         assertEquals(5, result.getHeight());
-        result.forEach(c -> {
-            assertEquals(Colors.red, c);
-        });
+        // not all pixels will be red due to kernel overflow falling back to default pixel (black)
+        // NOTE: if resampler implements nearest neighbor color on overflow, then this test will become invalid.
+        int maxR = result.getHeight() - 1;
+        for (int c = 0; c < result.getWidth(); c++) {
+            var color = result.getPixel(c, maxR);
+            assertEquals(Colors.red.multiply(0.75f), color);
+        }
+        for (int r = 0; r < maxR; r++) {
+            for (int c = 0; c < 4; c++) {
+                assertEquals(Colors.red, result.getPixel(c, r));
+            }
+        }
     }
 
     @Test
