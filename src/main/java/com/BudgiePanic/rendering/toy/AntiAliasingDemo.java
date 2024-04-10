@@ -12,7 +12,6 @@ import com.BudgiePanic.rendering.util.Directions;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.light.AreaLight;
 import com.BudgiePanic.rendering.util.light.Light;
-import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.pattern.BiOperation;
 import com.BudgiePanic.rendering.util.pattern.BiPattern;
