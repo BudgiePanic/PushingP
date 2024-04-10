@@ -35,8 +35,8 @@ public class PinHoleCamera extends BasePerspectiveCamera {
     @Override
     public Ray createRay(float pixelColumn, float pixelRow, float time) {
         // pre condition checks
-        if (pixelColumn < 0 || pixelColumn > this.width) throw new IllegalArgumentException("invalid pixel column for camera");
-        if (pixelRow < 0 || pixelRow > this.height) throw new IllegalArgumentException("invalid pixel row for camera");
+        if (pixelColumn < 0 || pixelColumn > this.width) throw new IllegalArgumentException("invalid pixel column for camera " + pixelColumn);
+        if (pixelRow < 0 || pixelRow > this.height) throw new IllegalArgumentException("invalid pixel row for camera" + pixelRow);
         // compute the offset from the edge of the canvas to the center of the pixel
         final var xOffset = (pixelColumn) * this.pixelSize;
         final var yOffset = (pixelRow) * this.pixelSize;
