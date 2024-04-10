@@ -116,7 +116,7 @@ public interface Camera {
      * @param pixelRow
      * @return 
      */
-    default Color pixelExposureAt(World world, int pixelColumn, int pixelRow) { return pixelAt(world, pixelColumn + 0.5f, pixelRow + 0.5f, 0f); }
+    default Color pixelExposureAt(World world, int pixelColumn, int pixelRow) { return pixelAt(world, pixelColumn + 0.5f, pixelRow + 0.5f, 0f); } // TODO bug here, not calling pixelExposure at...
     
     /**
      * Cast rays out of the camera into the scene. Fills a new canvas with colors from the rays.
