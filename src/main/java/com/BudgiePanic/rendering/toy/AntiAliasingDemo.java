@@ -4,9 +4,6 @@ import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.AngleHelp.toRadians;
 
 import com.BudgiePanic.rendering.scene.Camera;
-import com.BudgiePanic.rendering.scene.DepthCamera;
-import com.BudgiePanic.rendering.scene.FocusCamera;
-import com.BudgiePanic.rendering.scene.NormalCamera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.SuperSamplingCamera;
 import com.BudgiePanic.rendering.scene.World;
@@ -21,7 +18,6 @@ import com.BudgiePanic.rendering.util.pattern.BiOperation;
 import com.BudgiePanic.rendering.util.pattern.BiPattern;
 import com.BudgiePanic.rendering.util.pattern.Perturb;
 import com.BudgiePanic.rendering.util.pattern.SolidColor;
-import com.BudgiePanic.rendering.util.shape.Cone;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.shape.Torus;
@@ -37,8 +33,7 @@ public class AntiAliasingDemo extends BaseDemo {
     protected Camera getCamera() {
         return new SuperSamplingCamera(
             new PinHoleCamera(1000, 1000, toRadians(70f), View.makeViewMatrix(makePoint(0, 5, -5), makePoint(0, 0, 1), Directions.up)), 
-        SuperSamplingCamera.grid);
-        // return new PinHoleCamera(1000, 1000, toRadians(70f), View.makeViewMatrix(makePoint(0, 5, -3), makePoint(0, 0, 1), Directions.up));
+        SuperSamplingCamera.defaultMode);
     }
 
     @Override
@@ -46,7 +41,7 @@ public class AntiAliasingDemo extends BaseDemo {
         System.out.println("INFO: running anti aliasing demo scene");
         World world = new World();
         Light light = new AreaLight(Colors.white, makePoint(-10, 10, -2), Directions.forward, Directions.up, 4, 4, AreaLight.randomSamples);
-        light = new PointLight(makePoint(-10, 10, -2), Colors.white);
+        // light = new PointLight(makePoint(-10, 10, -2), Colors.white); // enable this to speed up render at cost of worse looking shadows
         world.addLight(light);
         var floor = new Plane(Matrix4.identity(), Material.pattern(new BiPattern(BiOperation.checker, new SolidColor(Colors.white), new SolidColor(Colors.white.multiply(0.44f)))));
         world.addShape(floor);
