@@ -81,7 +81,26 @@ public class SuperSamplingCamera implements Camera {
      */
     public static final SampleMode rotatedGrid = new RotatedGrid(6);
 
-    public static final SampleMode dynamicCornerGrid = new DynamicSampler(0.05f);
+    /**
+     * Dynamically takes more samples in each pixel if the color variance within the pixel is high.
+     */
+    public static final SampleMode dynamicCornerGrid = new DynamicSampler(0.00015f, 4);
+
+    /**
+     * The recommended default sampling mode.
+     */
+    public static final SampleMode defaultMode = rotatedGrid;
+
+    /**
+     * No anti aliasing pattern is applied.
+     */
+    public static final SampleMode none = new None();
+
+    private final static class None implements FixedPattern {
+        final static List<Pair<Float, Float>> pattern = List.of(new Pair<>(0f, 0f));
+        @Override
+        public List<Pair<Float, Float>> subPixelLocations() { return pattern; }
+    }
 
     private final static class Grid implements FixedPattern {
         final static List<Pair<Float, Float>> pattern = List.of(
@@ -211,7 +230,10 @@ public class SuperSamplingCamera implements Camera {
          * @param threshold
          *   The maximum euclidean distance between two sample point colors before a pixel quadrant is subsampled.
          */
-        DynamicSampler(float threshold) { this.thresholdSquared = threshold * threshold; }
+        DynamicSampler(float threshold, int recusrionLimit) { 
+            this.thresholdSquared = threshold * threshold; 
+            this.recursionLimit = recusrionLimit;
+        }
 
         /**
          * Accumulator indexing keys.
@@ -230,10 +252,10 @@ public class SuperSamplingCamera implements Camera {
         /**
          * How deep the recursion should go.
          */
-        protected static final int recursionLimit = 4;
+        protected final int recursionLimit;
         /**
          * The euclidean distance threshold used to determine if a pixel's subquadrant should be sampled with more points.
-         * value will likely need tinkering. 
+         * value will likely need tinkering. The threshold should be small enough such that a human would not percieve the difference between two colors that are within the threshold.
          * If the ray tracer used a proper color space, this value would become the 'threshold' and would become a function of the middle pixel color (dynamically calculated).
          * See: https://en.wikipedia.org/wiki/Color_difference
          */
