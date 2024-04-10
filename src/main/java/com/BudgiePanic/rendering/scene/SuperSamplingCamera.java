@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.BudgiePanic.rendering.util.Color;
-import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
@@ -81,6 +80,8 @@ public class SuperSamplingCamera implements Camera {
      * A four by four grid rotated by 30 degrees. Rotated grid can perform better than grid in some circumstances.
      */
     public static final SampleMode rotatedGrid = new RotatedGrid(6);
+
+    public static final SampleMode dynamicCornerGrid = new DynamicSampler(0.05f);
 
     private final static class Grid implements FixedPattern {
         final static List<Pair<Float, Float>> pattern = List.of(
@@ -197,6 +198,192 @@ public class SuperSamplingCamera implements Camera {
         }
         @Override
         public List<Pair<Float, Float>> subPixelLocations() { return cachedPoints; }
+    }
+
+    /**
+     * Dynamic sampler starts by sampling the center of the pixel and the four corners.
+     * If the color difference between the center of the pixel and the corner is large, that quarter of the pixel is sampled again
+     */
+    protected final static class DynamicSampler implements SampleMode {
+
+        /**
+         * Create a new dynamic sampler.
+         * @param threshold
+         *   The maximum euclidean distance between two sample point colors before a pixel quadrant is subsampled.
+         */
+        DynamicSampler(float threshold) { this.thresholdSquared = threshold * threshold; }
+
+        /**
+         * Accumulator indexing keys.
+         */
+        private static final int red = 0, green = 1, blue = 2;
+        /**
+         * Recursion bean courier to carry common elements between recursion calls.
+         */
+        protected static record PixelArgs(World world, Camera camera, float time, float[] accumulator) {
+            void add(Color color) {
+                this.accumulator[red] += color.getRed();
+                this.accumulator[green] += color.getGreen();
+                this.accumulator[blue] += color.getBlue();
+            }
+        }
+        /**
+         * How deep the recursion should go.
+         */
+        protected static final int recursionLimit = 4;
+        /**
+         * The euclidean distance threshold used to determine if a pixel's subquadrant should be sampled with more points.
+         * value will likely need tinkering. 
+         * If the ray tracer used a proper color space, this value would become the 'threshold' and would become a function of the middle pixel color (dynamically calculated).
+         * See: https://en.wikipedia.org/wiki/Color_difference
+         */
+        protected final float thresholdSquared;
+
+        // TODO replace with sealed interface?
+        protected static enum Corner {
+            none,
+            topLeft,
+            topRight,
+            bottomRight,
+            bottomLeft;
+        }
+
+        protected int pixelAt(final PixelArgs args, final float pixelColumn, final float pixelRow, final int depth, final Corner corner, final Color prevMiddle, final Color prevCorner) {
+            if (depth == recursionLimit) { return 0; }
+            // determine the color in each corner and the middle of this pixel sub quadrant
+            final float offset = offset(depth);
+            final float down = pixelRow - offset;
+            final float up = pixelRow + offset;
+            final float left = pixelColumn - offset;
+            final float right = pixelColumn + offset;
+            // get the 5 sample colors
+            Color middle = args.camera.pixelAt(args.world, pixelColumn, pixelRow, args.time);
+            args.add(middle);
+            Color topRight = null; 
+            Color topLeft = null;
+            Color bottomLeft = null; 
+            Color bottomRight = null;
+            switch (corner) {
+              case none:
+                topLeft = args.camera.pixelAt(args.world, left, up, args.time);
+                args.add(topLeft);
+                topRight = args.camera.pixelAt(args.world, right, up, args.time);
+                args.add(topRight);
+                bottomLeft = args.camera.pixelAt(args.world, left, down, args.time);
+                args.add(bottomLeft);
+                bottomRight = args.camera.pixelAt(args.world, right, down, args.time);
+                args.add(bottomRight);
+                break;
+              case topLeft:
+                topRight = args.camera.pixelAt(args.world, right, up, args.time);
+                args.add(topRight);
+                topLeft = prevCorner;
+                bottomLeft = args.camera.pixelAt(args.world, left, down, args.time);
+                args.add(bottomLeft);
+                bottomRight = prevMiddle;
+                break;
+              case topRight:
+                topLeft = args.camera.pixelAt(args.world, left, up, args.time);
+                args.add(topLeft);
+                topRight = prevCorner;
+                bottomLeft = prevMiddle;
+                bottomRight = args.camera.pixelAt(args.world, right, down, args.time);
+                args.add(bottomRight);
+                break;
+              case bottomLeft:
+                topLeft = args.camera.pixelAt(args.world, left, up, args.time);
+                args.add(topLeft);
+                topRight = prevMiddle;
+                bottomLeft = prevCorner;
+                bottomRight = args.camera.pixelAt(args.world, right, down, args.time);
+                args.add(bottomRight);
+                break;
+              case bottomRight:
+                topLeft = prevMiddle;
+                topRight = args.camera.pixelAt(args.world, right, up, args.time);
+                args.add(topRight);
+                bottomLeft = args.camera.pixelAt(args.world, left, down, args.time);
+                args.add(bottomLeft);
+                bottomRight = prevCorner;
+                break;
+            }
+            // now that we know what the 5 sample colors are, and we have added them to the accumulator,
+            // we need to get the distance betwen the middle color and the corner colors
+            float tl = squaredDistance(middle, topLeft);
+            float tr = squaredDistance(middle, topRight);
+            float bl = squaredDistance(middle, bottomLeft);
+            float br = squaredDistance(middle, bottomRight);
+            int subSamples = 0;
+            final float nextDown = pixelRow - (0.5f * offset);
+            final float nextUp = pixelRow + (0.5f * offset);
+            final float nextLeft = pixelColumn - (0.5f * offset);
+            final float nextRight = pixelColumn + (0.5f * offset);
+            if (tl > thresholdSquared) {
+                subSamples += pixelAt(args, nextLeft, nextUp, depth + 1, Corner.topLeft, middle, topLeft);
+            }
+            if (tr > thresholdSquared) {
+                subSamples += pixelAt(args, nextRight, nextUp, depth + 1, Corner.topRight, middle, topRight);
+            }
+            if (bl > thresholdSquared) {
+                subSamples += pixelAt(args, nextLeft, nextDown, depth + 1, Corner.bottomLeft, middle, bottomLeft);
+            }
+            if (br > thresholdSquared) {
+                subSamples += pixelAt(args, nextRight, nextDown, depth + 1, Corner.bottomRight, middle, bottomRight);
+            }
+            return samplesAddedBy(corner) + subSamples;
+        }
+
+        /**
+         * Get the squared euclidean distance between two colors.
+         * @param a
+         *   The first color.
+         * @param b
+         *   The second color.
+         * @return
+         *   The squared euclidean distance between a and b.
+         */
+        protected static float squaredDistance(Color a, Color b) {
+            final float red = b.getRed() - a.getRed();
+            final float green = b.getGreen() - a.getGreen();
+            final float blue = b.getBlue() - a.getBlue();
+            return (red * red) + (green * green) + (blue * blue);
+        }
+
+        protected static int samplesAddedBy(Corner corner) {
+            return switch (corner) {
+                case none -> 5; 
+                default -> 3; // corners re-use 2 samples from the last calculation
+            };
+        }
+
+        /**
+         * Get the point offset from the center of the pixel for a given depth.
+         *
+         * @param depth
+         * @return
+         */
+        protected static float offset(int depth) {
+            if (depth < 1) { throw new IllegalArgumentException("invalid depth! " + depth); }
+            float answer = 0.5f;
+            for (int i = 1; i < depth; i++) {
+                answer *= 0.5f;
+            }
+            return answer;
+        }
+
+        protected static final int initalDepth = 1;
+
+        @Override
+        public Color pixelAt(World world, Camera camera, float pixelColumn, float pixelRow, float time) {
+            final float[] accumulator = new float[3];
+            final PixelArgs args = new PixelArgs(world, camera, time, accumulator);
+            final int numbSamples = pixelAt(args, pixelColumn, pixelRow, initalDepth, Corner.none, null, null);
+            return new Color(
+                accumulator[red] / numbSamples,
+                accumulator[green] / numbSamples,
+                accumulator[blue] / numbSamples
+            );
+        }
     }
 
     /**
