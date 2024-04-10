@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
+import com.BudgiePanic.rendering.reporting.ProceduralCameraWrapper;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
@@ -29,9 +30,9 @@ public class ShutterCameraTest {
         World world = new World();
         world.addLight(new PointLight(makePoint(0, 0, 0), Colors.white));
         world.addShape(new LinearMotionShape(Matrix4.identity(), new Cube(Transforms.identity().scale(0.25f).assemble(), Material.defaultMaterial().setAmbient(1).setDiffuse(0).setSpecular(0)), Directions.left));
-        Camera camera = new ShutterCamera(
+        Camera camera = new ProceduralCameraWrapper(new ShutterCamera(
             new PinHoleCamera(1, 1, 10f, View.makeViewMatrix(makePoint(0, 0, -5), makePoint(0, 0, 1), Directions.up)),
-            1, 2, ShutterCamera.averaged);
+            1, 2, ShutterCamera.averaged));
         var canvas = camera.takePicture(world);
         assertEquals(new Color(0.707106f,0.707106f,0.707106f), canvas.getPixel(0, 0));
     }
