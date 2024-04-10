@@ -79,13 +79,13 @@ public class VelocityCamera implements Camera {
     public int height() { return internal.height; }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow, float time) {
+    public Ray createRay(float pixelColumn, float pixelRow, float time) {
         // create pinhole camera rays so the velocity map image is crisp and in-focus
         // TODO: code smell here, this method is 99% similar to PinHoleCamera::createRay, there can probably be an abstraction
         if (pixelColumn < 0 || pixelColumn > internal.width) throw new IllegalArgumentException("invalid pixel column for camera");
         if (pixelRow < 0 || pixelRow > internal.height) throw new IllegalArgumentException("invalid pixel row for camera");
-        final var xOffset = (pixelColumn + 0.5f) * internal.pixelSize;
-        final var yOffset = (pixelRow + 0.5f) * internal.pixelSize;
+        final var xOffset = (pixelColumn) * internal.pixelSize;
+        final var yOffset = (pixelRow) * internal.pixelSize;
         final var worldX = internal.halfWidth - xOffset;
         final var worldY = internal.halfHeight - yOffset;
         final float worldZ = -internal.focalDistance;
@@ -97,12 +97,12 @@ public class VelocityCamera implements Camera {
     }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow) {
+    public Color pixelExposureAt(World world, float pixelColumn, float pixelRow) {
         return pixelAt(world, pixelColumn, pixelRow, this.time);
     }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
         final var zero = Tuple.makePoint();
         final var ray = createRay(pixelColumn, pixelRow, time);
         final var intersections = world.intersect(ray);

@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.scene;
 
+import static com.BudgiePanic.rendering.util.AngleHelp.toRadians;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import java.util.function.Supplier;
@@ -38,7 +39,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * Using a consistent fov eliminates one variable that affects the FOV of the final image.
      * (The other variable is the focal distance).
      */
-    public static final float defaultFOV = 70f;
+    public static final float defaultFOV = toRadians(70f);
     
     /**
      * The size of the hole that light enters the camera through.
@@ -65,7 +66,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * @param height
      *   The number of rows on the camera's imaging plane.
      * @param fov
-     *   The field of view of the imaging plane. Affects the FOV of the final image.
+     *   The field of view of the imaging plane in radians. Affects the FOV of the final image.
      * @param aperture
      *   The size of the hole that light enters the camera through. Smaller values cause a deeper depth of field. Larger values cause a narrow depth of field. The aperture value may need to be smaller than you think to pull focus.
      * @param focalDistance
@@ -91,7 +92,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * @param height
      *   The number of rows on the camera's imaging plane.
      * @param fov
-     *   The field of view of the imaging plane. Affects the FOV of the final image.
+     *   The field of view of the imaging plane in radians. Affects the FOV of the final image.
      * @param aperture
      *   The size of the hole that light enters the camera through. Try starting at 0.1f.
      *   Smaller values cause a larger depth of field. Larger values cause a narrow depth of field.
@@ -122,13 +123,13 @@ public class FocusCamera extends BasePerspectiveCamera {
     }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow, float time) {
+    public Ray createRay(float pixelColumn, float pixelRow, float time) {
         // pre condition checks
         if (pixelColumn < 0 || pixelColumn > this.width) throw new IllegalArgumentException("invalid pixel column for camera");
         if (pixelRow < 0 || pixelRow > this.height) throw new IllegalArgumentException("invalid pixel row for camera");
         // compute the offset from the edge of the canvas to the center of the pixel
-        final var xOffset = (pixelColumn + 0.5f) * this.pixelSize;
-        final var yOffset = (pixelRow + 0.5f) * this.pixelSize;
+        final var xOffset = (pixelColumn) * this.pixelSize;
+        final var yOffset = (pixelRow) * this.pixelSize;
 
         final var worldX = this.halfWidth - xOffset;
         final var worldY = this.halfHeight - yOffset;
@@ -159,7 +160,7 @@ public class FocusCamera extends BasePerspectiveCamera {
     }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
         float red = 0;
         float green = 0;
         float blue = 0;

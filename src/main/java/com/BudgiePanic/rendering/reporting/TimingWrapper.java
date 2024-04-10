@@ -41,10 +41,10 @@ public class TimingWrapper implements Camera {
     public int height() { return internal.height(); }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow, float time) { return internal.createRay(pixelColumn, pixelRow, time); }
+    public Ray createRay(float pixelColumn, float pixelRow, float time) { return internal.createRay(pixelColumn, pixelRow, time); }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
         return internal.pixelAt(world, pixelColumn, pixelRow, time);
     }
     

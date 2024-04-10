@@ -46,7 +46,7 @@ public class PinHoleCameraTest {
     @Test
     void testCameraRay() {
         var camera = new PinHoleCamera(201, 101, AngleHelp.toRadians(90), Transforms.identity().assemble());
-        var result = camera.createRay(100, 50);
+        var result = camera.createRay(100 + 0.5f, 50 + 0.5f, 0f);
         assertEquals(Tuple.makePoint(), result.origin());
         assertEquals(Tuple.makeVector(0, 0, -1), result.direction());
     }
@@ -54,7 +54,7 @@ public class PinHoleCameraTest {
     @Test
     void testCameraRayA() {
         var camera = new PinHoleCamera(201, 101, AngleHelp.toRadians(90), Transforms.identity().assemble());
-        var result = camera.createRay(0, 0);
+        var result = camera.createRay(0 + 0.5f, 0 + 0.5f, 0);
         assertEquals(Tuple.makePoint(), result.origin());
         assertEquals(Tuple.makeVector(0.66519f, 0.33259f, -0.66851f), result.direction());
     }
@@ -69,7 +69,7 @@ public class PinHoleCameraTest {
                 rotateY(AngleHelp.toRadians(45)).
                 assemble()
         );
-        var result = camera.createRay(100, 50);
+        var result = camera.createRay(100 + 0.5f, 50 + 0.5f, 0);
         assertEquals(Tuple.makePoint(0, 2, -5), result.origin());
         float sqrt2Over2 = (float) (Math.sqrt(2.0) / 2.0);
         assertEquals(Tuple.makeVector(sqrt2Over2, 0, -sqrt2Over2), result.direction());

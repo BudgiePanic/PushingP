@@ -109,13 +109,13 @@ public class NormalCamera implements Camera {
     public int height() { return cameraMonitoring.height; }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow, float time) {
+    public Ray createRay(float pixelColumn, float pixelRow, float time) {
         // create pinhole camera rays so the normal map image is crisp and in-focus
         // TODO: code smell here, this method is 99% similar to PinHoleCamera::createRay, there can probably be an abstraction
         if (pixelColumn < 0 || pixelColumn > cameraMonitoring.width) throw new IllegalArgumentException("invalid pixel column for camera");
         if (pixelRow < 0 || pixelRow > cameraMonitoring.height) throw new IllegalArgumentException("invalid pixel row for camera");
-        final var xOffset = (pixelColumn + 0.5f) * cameraMonitoring.pixelSize;
-        final var yOffset = (pixelRow + 0.5f) * cameraMonitoring.pixelSize;
+        final var xOffset = (pixelColumn) * cameraMonitoring.pixelSize;
+        final var yOffset = (pixelRow) * cameraMonitoring.pixelSize;
         final var worldX = cameraMonitoring.halfWidth - xOffset;
         final var worldY = cameraMonitoring.halfHeight - yOffset;
         final float worldZ = -cameraMonitoring.focalDistance;
@@ -127,7 +127,7 @@ public class NormalCamera implements Camera {
     }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) {
+    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
         // intersect pixel-ray with the world and record the normal of the shape that was intersected with
         final var ray = createRay(pixelColumn, pixelRow, time);
         final var intersections = world.intersect(ray);

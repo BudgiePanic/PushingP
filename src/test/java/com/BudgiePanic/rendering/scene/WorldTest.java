@@ -214,7 +214,7 @@ public class WorldTest {
                 Tuple.makeVector(0, 1, 0)));
         for (int row = 0; row < camera.height; row++) {
             for (int col = 0; col < camera.width; col++) {
-                var ray = camera.createRay(col, row);
+                var ray = camera.createRay(col + 0.5f, row + 0.5f, 0);
                 // get shading info from every ray
                 var intersections = world.intersect(ray);
                 assertTrue(intersections.isPresent(), String.format("ray for pixel r:%d c:%d did not intersect with any objects in the scene", row, col));
@@ -577,7 +577,7 @@ public class WorldTest {
         world.addShape(shape);
         final var camera = new PinHoleCamera(cameraWidth, cameraHeight, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
         int col = 810, row = 536;
-        var ray = camera.createRay(col, row);
+        var ray = camera.createRay(col + 0.5f, row + 0.5f, 0);
         var cast = world.intersect(ray);
         assertTrue(cast.isPresent());
         var intersections = cast.get();
@@ -603,7 +603,7 @@ public class WorldTest {
         world.addShape(shape);
         final var camera = new PinHoleCamera(cameraWidth, cameraHeight, fov, View.makeViewMatrix(cameraPostion, cameraTarget, makeVector(0, 1, 0)));
         int col = 770, row = 610;
-        var ray = camera.createRay(col, row);
+        var ray = camera.createRay(col + 0.5f, row + 0.5f, 0);
         var cast = world.intersect(ray);
         assertTrue(cast.isPresent());
         var intersections = cast.get();

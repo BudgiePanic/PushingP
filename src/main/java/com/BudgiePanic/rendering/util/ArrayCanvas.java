@@ -98,7 +98,7 @@ public final class ArrayCanvas implements Canvas {
      *     The row to check
      */
     private void boundsCheck(int column, int row) {
-        if (column >= getWidth() || column < 0) throw new IllegalArgumentException("Invalid column for canvas of width " + getWidth() + " ->" + column);
+        if (column >= getWidth() || column < 0) throw new IllegalArgumentException("Invalid column for canvas of width " + getWidth() + " ->" + column); // TODO Bug here? allows invalid high index
         if (row >= getHeight() || row < 0) throw new IllegalArgumentException("Invalid row for canvas of height " + getHeight() + " ->" + row);
     } 
 

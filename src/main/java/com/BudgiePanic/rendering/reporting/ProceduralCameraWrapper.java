@@ -29,13 +29,13 @@ public class ProceduralCameraWrapper implements Camera {
     public int height() { return camera.height(); }
 
     @Override
-    public Ray createRay(int pixelColumn, int pixelRow, float time) { return camera.createRay(pixelColumn, pixelRow, time); }
+    public Ray createRay(float pixelColumn, float pixelRow, float time) { return camera.createRay(pixelColumn, pixelRow, time); }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow, float time) { return camera.pixelAt(world, pixelColumn, pixelRow, time); }
+    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) { return camera.pixelAt(world, pixelColumn, pixelRow, time); }
 
     @Override
-    public Color pixelAt(World world, int pixelColumn, int pixelRow) { return camera.pixelAt(world, pixelColumn, pixelRow); }
+    public Color pixelExposureAt(World world, float pixelColumn, float pixelRow) { return camera.pixelExposureAt(world, pixelColumn, pixelRow); }
 
     @Override 
     public Canvas takePicture(World world, Canvas canvas) {
@@ -44,7 +44,7 @@ public class ProceduralCameraWrapper implements Camera {
         for (final var pixel : jobs) {
             final int column = pixel.a();
             final int row = pixel.b();
-            final var color = pixelAt(world, column, row);
+            final var color = pixelExposureAt(world, column, row);
             canvas.writePixel(column, row, color);
         }
         return canvas;
