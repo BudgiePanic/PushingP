@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.scene;
 
+import static com.BudgiePanic.rendering.util.AngleHelp.toRadians;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import java.util.function.Supplier;
@@ -38,7 +39,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * Using a consistent fov eliminates one variable that affects the FOV of the final image.
      * (The other variable is the focal distance).
      */
-    public static final float defaultFOV = 70f; // TODO possible bug here, this is probably supposed to be in radians
+    public static final float defaultFOV = toRadians(70f);
     
     /**
      * The size of the hole that light enters the camera through.
@@ -65,7 +66,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * @param height
      *   The number of rows on the camera's imaging plane.
      * @param fov
-     *   The field of view of the imaging plane. Affects the FOV of the final image.
+     *   The field of view of the imaging plane in radians. Affects the FOV of the final image.
      * @param aperture
      *   The size of the hole that light enters the camera through. Smaller values cause a deeper depth of field. Larger values cause a narrow depth of field. The aperture value may need to be smaller than you think to pull focus.
      * @param focalDistance
@@ -91,7 +92,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * @param height
      *   The number of rows on the camera's imaging plane.
      * @param fov
-     *   The field of view of the imaging plane. Affects the FOV of the final image.
+     *   The field of view of the imaging plane in radians. Affects the FOV of the final image.
      * @param aperture
      *   The size of the hole that light enters the camera through. Try starting at 0.1f.
      *   Smaller values cause a larger depth of field. Larger values cause a narrow depth of field.
