@@ -110,11 +110,18 @@ public interface Camera {
     default Color pixelExposureAt(World world, float pixelColumn, float pixelRow) { return pixelAt(world, pixelColumn, pixelRow, 0f); }
 
     /**
+     * Get the color for pixel [column, row] taken by this camera for the entire exposure when imaging a world.
+     * 
+     * Convenience method, automatically adds offset to center the sample point within the pixel.
      * 
      * @param world
+     *   The world being images by the camera.
      * @param pixelColumn
+     *   The discrete column of the pixel.
      * @param pixelRow
+     *   The y row of the pixel.
      * @return 
+     *   The sampled color at pixel [column, row] from the image exposure.
      */
     default Color pixelExposureAt(World world, int pixelColumn, int pixelRow) { return pixelExposureAt(world, pixelColumn + 0.5f, pixelRow + 0.5f); }
     
