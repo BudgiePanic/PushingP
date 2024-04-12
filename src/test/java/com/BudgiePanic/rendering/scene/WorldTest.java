@@ -230,6 +230,27 @@ public class WorldTest {
         }
     }
 
+
+    @Test
+    void testIntensityAt() {
+        World world = defaultTestWorld;
+        var result = world.averageIntensityAt(Tuple.makePoint(0,10,0), 0);
+        var expected = 1f;
+        assertTrue(FloatHelp.compareFloat(expected, result) == 0, "result " + result);
+
+        result = world.averageIntensityAt(Tuple.makePoint(10, -10, 10), 0);
+        expected = 0f;
+        assertTrue(FloatHelp.compareFloat(expected, result) == 0, "result " + result);
+
+        result = world.averageIntensityAt(Tuple.makePoint(-20, 20, -20), 0);
+        expected = 1f;
+        assertTrue(FloatHelp.compareFloat(expected, result) == 0, "result " + result);
+
+        result = world.averageIntensityAt(Tuple.makePoint(-2, 2, -2), 0);
+        expected = 1f;
+        assertTrue(FloatHelp.compareFloat(expected, result) == 0, "result " + result);
+    }
+
     @Test
     void testNonReflectiveSurface() {
         var ray = new Ray(Tuple.makePoint(), Tuple.makeVector(0, 0, 1));
