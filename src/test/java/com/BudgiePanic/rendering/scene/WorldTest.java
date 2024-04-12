@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.scene;
 
+import static com.BudgiePanic.rendering.util.AngleHelp.toRadians;
 import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.objects.TestCompound;
+import com.BudgiePanic.rendering.reporting.ProceduralCameraWrapper;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
@@ -37,6 +39,7 @@ import com.BudgiePanic.rendering.util.shape.LinearMotionShape;
 import com.BudgiePanic.rendering.util.shape.Plane;
 import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.shape.Torus;
 import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
@@ -715,5 +718,28 @@ public class WorldTest {
         assertTrue(result);
         result = world.isOccluded(from, to, World.allShapes, 3f);
         assertFalse(result);
+    }
+
+    @Test
+    void testTorusIntensity() {
+        World world = new World();
+        Camera cam = new ProceduralCameraWrapper(new PinHoleCamera(100, 100, toRadians(90f), View.makeViewMatrix(makePoint(0, 5, -5), makePoint(0, 0, 1), Directions.up)));
+        world.addLight(new PointLight(makePoint(-5, 5, -1), Colors.white));
+        var donut = new Torus(Transforms.identity().rotateX(toRadians(90f)).assemble(), Material.defaultMaterial().setSpecular(0), 0.75f, 0.25f);
+        world.addShape(donut);
+        world.addShape(new Plane(Transforms.identity().rotateX(toRadians(90f)).translate(0, 0, 1).assemble()));
+        var tests = List.of(
+            new Pair<>(45, 53),
+            new Pair<>(46, 54),
+            new Pair<>(47, 55),
+            new Pair<>(81, 86)
+        );
+        for (final var test : tests) {
+            final var expected = 1f;
+            final var ray = cam.createRay(test.a(), test.b(), 0);
+            final var point = ray.position(Intersection.Hit(world.intersect(ray).get()).get().a());
+            final var result = world.averageIntensityAt(point, 0);
+            assertTrue(FloatHelp.compareFloat(expected, result) == 0, "test " + test + "result " + result);
+        }
     }
 }
