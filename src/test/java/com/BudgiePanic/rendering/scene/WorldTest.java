@@ -232,6 +232,47 @@ public class WorldTest {
         }
     }
 
+        var targetPosition = Tuple.makePoint(-10, 10, -10);
+        World world = new World();
+        Sphere shape = new Sphere(
+            Transforms.identity().
+                scale(10, 0.1f, 10).
+                rotateX(AngleHelp.toRadians(90)).
+                rotateY(AngleHelp.toRadians(-45)).
+                translate(0, 0, 5).assemble()
+        );
+        var camera = new PinHoleCamera(75, 75, 
+            AngleHelp.toRadians(90), 
+            View.makeViewMatrix(
+                Tuple.makePoint(0, 1.5f, -5f),
+                Tuple.makePoint(0, 1, 0),
+                Tuple.makeVector(0, 1, 0))
+        );
+        world.addShape(shape);
+        // current system
+        var ray = camera.createRay(10.5f, 0.5f, 0);
+        float dirMag = ray.direction().magnitude(), oriMag = ray.origin().magnitude();
+        var intersections = world.intersect(ray).get();
+        var hit = Intersection.Hit(intersections).get();
+        var info = hit.computeShadingInfo(ray);
+
+        // working in local space
+        /*
+        var localPoint = shape.toObjectSpace(info.point());
+        var localTarget = shape.toObjectSpace(targetPosition);
+        var localNormal = shape.localNormal(localPoint);
+        var delta = localNormal.multiply(FloatHelp.epsilon);
+        var localOverPoint = localPoint.add(delta);
+        // localOverPoint = shape.toObjectSpace(info.overPoint());
+        var localDirection = localTarget.subtract(localOverPoint); //.normalize();  // very interesting, then this vector is not normalized, the test would pass.
+        var localRay = new Ray(localOverPoint, localDirection);
+        var resultTwo = shape.localIntersect(localRay);
+        */
+
+        // result should be false, but its true... somehow the sphere occuldes itself...
+        var result = world.isOccluded(info.overPoint(), targetPosition, World.allShapes, 0);
+        assertFalse(result);
+    }
 
     @Test
     void testIntensityAt() {
