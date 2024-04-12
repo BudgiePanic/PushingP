@@ -257,6 +257,7 @@ public class World {
      *   True if any shapes block the line traced by 'from' to 'to'.
      */
     public boolean isOccluded(Tuple from, Tuple to, Predicate<Shape> condition, final float time) {
+        // book chapter 8: section: testing for shadows
         final var trace = to.subtract(from);
         final var distance = trace.magnitude();
         final var ray = new Ray(from, trace.normalize(), time);

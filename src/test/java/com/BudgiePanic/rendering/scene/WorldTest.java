@@ -178,7 +178,6 @@ public class WorldTest {
         assertEquals(expected, result);
     }
 
-    @Disabled("this test will always fail until issue #53 is resolved")
     @Test
     void testShadingThinObject() {
         // there should be no acne effect, all intersection points should NOT be in shadow
