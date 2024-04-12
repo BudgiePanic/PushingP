@@ -619,7 +619,7 @@ public class WorldTest {
     void testWorldOcclusion() {
         final var to = makePoint(-10, -10, -10);
         final var tests = List.of(
-            new Pair<>(makePoint(-10, -10, -10), false),
+            new Pair<>(makePoint(-10, -10, 10), false),
             new Pair<>(makePoint(10, 10, 10), true),
             new Pair<>(makePoint(-20, -20, -20), false),
             new Pair<>(makePoint(-5, -5, -5), false)
