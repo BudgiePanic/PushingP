@@ -49,7 +49,7 @@ public class Cube extends BaseShape {
      * @param direction
      * @return
      */
-    private Pair<Float, Float> checkAxis(float origin, float direction) {
+    private Pair<Double, Double> checkAxis(double origin, double direction) {
         // the first plane is originated at -1
         // the second plane is originated at +1
         final var closePlane = (-1 - origin);
@@ -66,7 +66,7 @@ public class Cube extends BaseShape {
     @Override
     protected Tuple localNormal(Tuple point) {
         // the face of the cube that the point lies on can be determined by finding which component of the point is the largest
-        final float x = Math.abs(point.x), y = Math.abs(point.y), z = Math.abs(point.z);
+        final double x = Math.abs(point.x), y = Math.abs(point.y), z = Math.abs(point.z);
         final var max = Math.max(x, Math.max(y, z));
         final var isX = max == x; // points on cube corner will map to normals on the x faces of the cube
         final var isY = max == y; // points on the cube edges will map to normals on the y faces of the cube

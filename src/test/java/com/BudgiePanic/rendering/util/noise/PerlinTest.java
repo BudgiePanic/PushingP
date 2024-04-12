@@ -47,7 +47,7 @@ public class PerlinTest {
         assertEquals(inputs.length, outputs.length); // sanity check
         for (int i = 0; i < inputs.length; i++) {
             float[] input = inputs[i];
-            float actual = Perlin.noise(input[0], input[1], input[2]);
+            float actual = (float) Perlin.noise(input[0], input[1], input[2]);
             float expected = outputs[i];
             var outcome = FloatHelp.compareFloat(actual, expected) == 0;
             assertTrue(outcome, Arrays.toString(input) + " produced wrong output expected[" + expected + "]  actual[" + actual + "] difference:" + (expected - actual));

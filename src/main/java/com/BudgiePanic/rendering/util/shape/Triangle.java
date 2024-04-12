@@ -119,7 +119,7 @@ public class Triangle extends BaseShape {
             // miss by parrallel ray
             return Optional.empty();
         }
-        final var f = 1.0f / determinant;
+        final var f = 1.0 / determinant;
         final var p1ToOrigin = ray.origin().subtract(p1);
         final var u = f * p1ToOrigin.dot(dirCrossE2); 
         if (FloatHelp.compareFloat(u, 0) == -1 || FloatHelp.compareFloat(u, 1) == 1) {

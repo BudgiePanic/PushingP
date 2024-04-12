@@ -29,7 +29,7 @@ public final class Shear {
      * @return
      *   A shear matrix
      */
-    public static final Matrix4 buildShearMatrix(float xy, float xz, float yx, float yz, float zx, float zy) {
+    public static final Matrix4 buildShearMatrix(double xy, double xz, double yx, double yz, double zx, double zy) {
         return Matrix4.buildMatrix(
             1f, xy, xz, 0f,
             yx, 1f, yz, 0f, 

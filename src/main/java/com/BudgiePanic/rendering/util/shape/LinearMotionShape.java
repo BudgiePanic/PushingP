@@ -25,12 +25,12 @@ public class LinearMotionShape extends BaseShape implements Parent {
     /**
      * The time at which the object's motion starts.
      */
-    protected static final float motionStartTime = 0f;
+    protected static final double motionStartTime = 0.0;
 
     /**
      * If no motion end time is provided, this supplier is used to get the default end time.
      */
-    protected static final Supplier<Float> noEndTime = () -> 0f;
+    protected static final Supplier<Double> noEndTime = () -> 0.0;
 
     /**
      * Internal shape that is moved around by the motion shape
@@ -50,7 +50,7 @@ public class LinearMotionShape extends BaseShape implements Parent {
     /**
      * The time at which the motion ends.
      */
-    protected Optional<Float> motionEndTime;
+    protected Optional<Double> motionEndTime;
 
     /**
      * Canonical constructor.
@@ -91,7 +91,7 @@ public class LinearMotionShape extends BaseShape implements Parent {
         if (!inclusionCondition.test(shape)) { return Optional.empty(); }
         // create a new ray that was moved by the offset amount, this is logically equivalent to moving the shape in the direction of the motion
         // we do this instead of transforming the shape because our shape's are immutable. 
-        final float time = ray.time();
+        final double time = ray.time();
         final Tuple offset = this.initialVelocity.multiply(time); 
         final Ray transformedRay = new Ray(ray.origin().add(offset.negate()), ray.direction()); 
         // intersect the transformed ray against the child shape.
@@ -108,7 +108,7 @@ public class LinearMotionShape extends BaseShape implements Parent {
      * @param motionEndTime
      *   The time at which the object stops moving.
      */
-    public void setMotionEndTime(Optional<Float> motionEndTime) {
+    public void setMotionEndTime(Optional<Double> motionEndTime) {
         if (motionEndTime == null) { throw new IllegalArgumentException("motion end time cannot be null"); }
         this.motionEndTime = motionEndTime;
         this.AABB = null; // force AABB regeneration on next bounds() call
@@ -182,7 +182,7 @@ public class LinearMotionShape extends BaseShape implements Parent {
     protected Tuple localNormal(Tuple point) { throw new UnsupportedOperationException("Motion shape does not support local normal operation"); }
 
     @Override
-    public void bakeExposureDuration(float duration) { this.setMotionEndTime(Optional.of(duration)); }
+    public void bakeExposureDuration(double duration) { this.setMotionEndTime(Optional.of(duration)); }
 
     /**
      * Get the velocity of this shape.
@@ -191,7 +191,7 @@ public class LinearMotionShape extends BaseShape implements Parent {
      * @return
      *   The velocity of the shape when sampled at time 'time'.
      */
-    public Tuple velocity(float time) {
+    public Tuple velocity(double time) {
         // linear motion shape with no forces acting upon it
         // NOTE: if more types of motion shapes are added, this method should become part of the interface
         return this.initialVelocity;

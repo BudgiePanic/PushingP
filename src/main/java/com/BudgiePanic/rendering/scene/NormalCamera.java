@@ -55,8 +55,8 @@ public class NormalCamera implements Camera {
          * @return
          *   the interpolated value
          */
-        private final static float map(float value) {
-            final float oldMin = -1, oldMax = 1, newMin = 0f, newMax = oldMax;
+        private final static double map(double value) {
+            final double oldMin = -1, oldMax = 1, newMin = 0f, newMax = oldMax;
             return ((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
         } 
     }
@@ -109,7 +109,7 @@ public class NormalCamera implements Camera {
     public int height() { return cameraMonitoring.height; }
 
     @Override
-    public Ray createRay(float pixelColumn, float pixelRow, float time) {
+    public Ray createRay(double pixelColumn, double pixelRow, double time) {
         // create pinhole camera rays so the normal map image is crisp and in-focus
         // TODO: code smell here, this method is 99% similar to PinHoleCamera::createRay, there can probably be an abstraction
         if (pixelColumn < 0 || pixelColumn > cameraMonitoring.width) throw new IllegalArgumentException("invalid pixel column for camera");
@@ -118,7 +118,7 @@ public class NormalCamera implements Camera {
         final var yOffset = (pixelRow) * cameraMonitoring.pixelSize;
         final var worldX = cameraMonitoring.halfWidth - xOffset;
         final var worldY = cameraMonitoring.halfHeight - yOffset;
-        final float worldZ = -cameraMonitoring.focalDistance;
+        final var worldZ = -cameraMonitoring.focalDistance;
         final var cameraInverse = cameraMonitoring.transform.inverse();
         final var pixel = cameraInverse.multiply(Tuple.makePoint(worldX, worldY, worldZ));
         final var origin = cameraInverse.multiply(Tuple.makePoint());
@@ -127,7 +127,7 @@ public class NormalCamera implements Camera {
     }
 
     @Override
-    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
+    public Color pixelAt(World world, double pixelColumn, double pixelRow, double time) {
         // intersect pixel-ray with the world and record the normal of the shape that was intersected with
         final var ray = createRay(pixelColumn, pixelRow, time);
         final var intersections = world.intersect(ray);

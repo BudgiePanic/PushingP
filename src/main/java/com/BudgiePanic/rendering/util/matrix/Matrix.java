@@ -23,9 +23,9 @@ public abstract class Matrix {
      * wrapper methods or defensive cloning.
      * For now (and for performance reasons) we will just have to trust that none of the other code will be tamporing with our matrices :)
      */
-    public final float[][] matrix;
+    public final double[][] matrix;
 
-    protected Matrix(final float[][] matrix){
+    protected Matrix(final double[][] matrix){
         this.matrix = matrix;
     }
 
@@ -51,7 +51,7 @@ public abstract class Matrix {
      * @return
      *   The determinant of the matrix.
      */
-    public abstract float getDeterminant();
+    public abstract double getDeterminant();
 
     /**
      * A copy of this matrix with 'row' and 'column' removed.
@@ -73,7 +73,7 @@ public abstract class Matrix {
      * @return
      *   The determinant of the submatrix
      */
-    public float getMinor(int row, int column) {
+    public double getMinor(int row, int column) {
         return getSubMatrix(row, column).getDeterminant();
     };
 
@@ -87,7 +87,7 @@ public abstract class Matrix {
      * @return
      *   The cofactor of the matrix.
      */
-    public float getCofactor(int row, int column) {
+    public double getCofactor(int row, int column) {
         var minor = getMinor(row, column);
         if ((row + column) % 2 != 0) {
             minor *= -1f;

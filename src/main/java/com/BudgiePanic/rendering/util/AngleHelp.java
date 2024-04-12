@@ -17,9 +17,9 @@ public final class AngleHelp {
      * @return
      *   The angle in radians.
      */
-    public final static float toRadians(float degrees) {
+    public final static double toRadians(double degrees) {
         // return (float) Math.toRadians(degrees);
-        return (degrees / 180.0f) * (float) Math.PI;
+        return (degrees / 180.0) * Math.PI;
     }
 
     /**
@@ -30,8 +30,8 @@ public final class AngleHelp {
      * @return
      *   The angle in degrees.
      */
-    public final static float toDegrees(float radians) {
+    public final static double toDegrees(double radians) {
         // return Math.toDegrees(radians);
-        return radians * (float)(180.0 / Math.PI);
+        return radians * (180.0 / Math.PI);
     }
 }

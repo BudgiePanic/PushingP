@@ -158,12 +158,12 @@ public class World {
         if (info == null) throw new IllegalArgumentException("shading info should not be null");
         final var material = info.shape().material();
         final var hasReflectance = material.reflectivity() > 0 && material.transparency() > 0; // this expression could be extracted to Shading info 
-        final Optional<Float> reflectance = hasReflectance ?  Optional.of(info.schlick()) : Optional.empty(); // this expression could be extracted to Shading info 
+        final Optional<Double> reflectance = hasReflectance ?  Optional.of(info.schlick()) : Optional.empty(); // this expression could be extracted to Shading info 
         return this.lights.stream().
             map((light) -> Phong.compute(info, light, light.intensityAt(info.overPoint(), this, info.time()))).
             reduce(Color::add).
-            map(color -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0f)))).
-            map(color -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0f)))).
+            map(color -> color.add(this.shadeReflection(info, depth).multiply(reflectance.orElse(1.0)))).
+            map(color -> color.add(this.shadeRefraction(info, depth).multiply(1f - reflectance.orElse(0.0)))).
             orElse(Colors.black);
     }
 
@@ -223,8 +223,8 @@ public class World {
      *   The color that lies along the shading info's reflection vector
      */
     public Color shadeReflection(ShadingInfo info, int depth) {
-        final float reflectivity = info.shape().material().reflectivity();
-        if (depth < 1 || reflectivity <= 0f) {
+        final double reflectivity = info.shape().material().reflectivity();
+        if (depth < 1 || reflectivity <= 0.0) {
             return Colors.black;
         }
         final var ray = new Ray(info.overPoint(), info.reflectVector(), info.time());
@@ -256,7 +256,7 @@ public class World {
      * @return
      *   True if any shapes block the line traced by 'from' to 'to'.
      */
-    public boolean isOccluded(Tuple from, Tuple to, Predicate<Shape> condition, final float time) {
+    public boolean isOccluded(Tuple from, Tuple to, Predicate<Shape> condition, final double time) {
         // book chapter 8: section: testing for shadows
         final var trace = to.subtract(from);
         final var distance = trace.magnitude();
@@ -283,8 +283,8 @@ public class World {
      * @return
      *   The average light intensity at the point, collected from all lights in the world.
      */
-    public float averageIntensityAt(Tuple point, float time) {
-        float accumulator = 0f;
+    public double averageIntensityAt(Tuple point, double time) {
+        double accumulator = 0.0;
         for (Light light : lights) {
             accumulator += light.intensityAt(point, this, time);
         } 
@@ -302,19 +302,19 @@ public class World {
      *   the color produced by refracting a ray through the world
      */
     public Color shadeRefraction(ShadingInfo info, int depth) {
-        final float transparency = info.shape().material().transparency();
-        if (depth < 1 || transparency <= 0f) {
+        final double transparency = info.shape().material().transparency();
+        if (depth < 1 || transparency <= 0.0) {
             return Colors.black;
         }
         // use snell's law to determine if total internal reflection has occured | t ~ theta
         // (sin(theta_i) / sin(theta_t)) = (n2 / n1)
         final var ratio = info.n1() / info.n2();
         final var cosI = info.eyeVector().dot(info.normalVector());
-        final var sin2t = (ratio * ratio) * (1.0f - (cosI * cosI)); // via trig identity: sin(theta)^2 = 1 - cos(theta)^2
-        if (sin2t > 1f) {
+        final var sin2t = (ratio * ratio) * (1.0 - (cosI * cosI)); // via trig identity: sin(theta)^2 = 1 - cos(theta)^2
+        if (sin2t > 1.0) {
             return Colors.black;
         }
-        final var cosT = (float) Math.sqrt(1.0 - sin2t); // via trig identity: cos(theta)^2 = 1 - sin(theta)^2
+        final var cosT = Math.sqrt(1.0 - sin2t); // via trig identity: cos(theta)^2 = 1 - sin(theta)^2
         final var refractionDirection = info.normalVector().multiply(ratio * cosI - cosT).subtract(info.eyeVector().multiply(ratio));
         final var refractionRay = new Ray(info.underPoint(), refractionDirection, info.time());
         // find the refraction color by casting the refraction ray back into the world
@@ -340,7 +340,7 @@ public class World {
      * @param time
      *   The time of the final ray that will be intersected with the world.
      */
-    public void bakeEndTime(final float time) {
+    public void bakeEndTime(final double time) {
         // TODO this could be accomplished using the observer design pattern
         // TODO where the world emits events, shapes listen, and the shapes can decide 
         // TODO if they want to do anything with the time update information

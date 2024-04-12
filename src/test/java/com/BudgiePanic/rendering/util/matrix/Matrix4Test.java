@@ -30,10 +30,10 @@ public class Matrix4Test {
     @Test
     void testRowConstructor() {
         var mat = Matrix4.buildMatrixRow(
-            new float[] {1f, 2f, 3f, 4f},
-            new float[] {5.5f, 6.5f, 7.5f, 8.5f},
-            new float[] {9f, 10f, 11f, 12f},
-            new float[] {13.5f, 14.5f, 15.5f, 16.5f});
+            new double[] {1f, 2f, 3f, 4f},
+            new double[] {5.5f, 6.5f, 7.5f, 8.5f},
+            new double[] {9f, 10f, 11f, 12f},
+            new double[] {13.5f, 14.5f, 15.5f, 16.5f});
         assertTrue(compareFloat(mat.matrix[0][0], 1f) == 0, "[0,0] matrix element was not 1");
         assertTrue(compareFloat(mat.matrix[0][3], 4f) == 0, "[0,3] matrix element was not 4");
         assertTrue(compareFloat(mat.matrix[1][0], 5.5f) == 0, "[1,0] matrix element was not 5.5");
@@ -46,10 +46,10 @@ public class Matrix4Test {
     @Test
     void testColumnConstructor() {
         var mat = Matrix4.buildMatrixColumn(
-            new float[] {1f, 5.5f, 9f, 13.5f},
-            new float[] {2f, 6.5f, 10f, 14.5f},
-            new float[] {3f, 7.5f, 11f, 15.5f},
-            new float[] {4f, 8.5f, 12f, 16.5f});
+            new double[] {1f, 5.5f, 9f, 13.5f},
+            new double[] {2f, 6.5f, 10f, 14.5f},
+            new double[] {3f, 7.5f, 11f, 15.5f},
+            new double[] {4f, 8.5f, 12f, 16.5f});
         assertTrue(compareFloat(mat.matrix[0][0], 1f) == 0, "[0,0] matrix element was not 1");
         assertTrue(compareFloat(mat.matrix[0][3], 4f) == 0, "[0,3] matrix element was not 4");
         assertTrue(compareFloat(mat.matrix[1][0], 5.5f) == 0, "[1,0] matrix element was not 5.5");

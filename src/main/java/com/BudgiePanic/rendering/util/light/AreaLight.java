@@ -14,17 +14,17 @@ import com.BudgiePanic.rendering.util.Tuple;
  * 
  * @author BudgiePanic
  */
-public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Tuple vUnit, Tuple uUnit, Tuple position, Supplier<Float> generator) implements Light {
+public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Tuple vUnit, Tuple uUnit, Tuple position, Supplier<Double> generator) implements Light {
 
     /**
      * Constantly sample the area light segments.
      */
-    public static final Supplier<Float> constantSamples = () -> { return 0.5f; };
+    public static final Supplier<Double> constantSamples = () -> { return 0.5; };
 
     /**
      * Randomly sample the area light segments with a thread safe random number generator.
      */
-    public static final Supplier<Float> randomSamples = RandomSuppliers.threadSafeRandomSupplier;
+    public static final Supplier<Double> randomSamples = RandomSuppliers.threadSafeRandomSupplier;
 
     private final class AreaLightIterator implements Iterator<Tuple> {
         protected int u = 0, v = 0;
@@ -65,9 +65,9 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
      * @param generator
      *   Supplier of sample point offsets. Supplied floats between 0 and 1.
      */
-    public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Supplier<Float> generator) {
+    public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Supplier<Double> generator) {
         this(color, corner, uVector, vVector, uStep, vStep, vVector.divide(vStep), uVector.divide(uStep), 
-          corner.add(vVector.multiply((0.5f)).add(uVector.multiply(0.5f))), generator
+          corner.add(vVector.multiply((0.5)).add(uVector.multiply(0.5))), generator
         );
     }
 
@@ -94,7 +94,7 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
      * @param generator
      *   Supplier of sample point offsets. Supplied floats between 0 and 1.
      */
-    public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Tuple vUnit, Tuple uUnit, Tuple position, Supplier<Float> generator) {
+    public AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector, int uStep, int vStep, Tuple vUnit, Tuple uUnit, Tuple position, Supplier<Double> generator) {
         if (uStep == 0) throw new IllegalArgumentException("area light cannot contain 0 u segments");
         if (vStep == 0) throw new IllegalArgumentException("area light cannot contain 0 v segments");
         this.color = color; this.corner = corner; this.uVector = uVector; this.vVector = vVector;
@@ -118,12 +118,12 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
      * @return
      *   The world space position of the point located at uv on the light surface.
      */
-    public Tuple sample(float u, float v) {
+    public Tuple sample(double u, double v) {
         return corner.add(uUnit.multiply(generator.get() + u)).add(vUnit.multiply(generator.get() + v));
     }
 
     @Override
-    public float intensityAt(Tuple point, World world, float time) {
+    public double intensityAt(Tuple point, World world, double time) {
         float accumulator = 0f;
         for (int u = 0; u < uStep; u++) {
             for (int v = 0; v < vStep; v++) {
@@ -132,7 +132,7 @@ public record AreaLight(Color color, Tuple corner, Tuple uVector, Tuple vVector,
                 accumulator += isShadowed ? 0f : 1f;
             }
         }
-        return accumulator / (float) resolution();
+        return accumulator / (double) resolution();
     }
     
 }

@@ -43,27 +43,27 @@ public class Sphere extends BaseShape {
     }
 
     @Override
-    protected Optional<List<Intersection>> localIntersect(Ray ray) {
+    public Optional<List<Intersection>> localIntersect(Ray ray) {
         // Compute discriminant, if 0, then there is no intersection
           // A vector going from the sphere origin to the ray origin
         var sphereToRay = ray.origin().subtract(origin); 
           // some dot products
         var dotA = ray.direction().dot(ray.direction());
-        var dotB = 2.0f * ray.direction().dot(sphereToRay);
-        var dotC = sphereToRay.dot(sphereToRay) - 1.0f;
+        var dotB = 2.0 * ray.direction().dot(sphereToRay);
+        var dotC = sphereToRay.dot(sphereToRay) - 1.0;
           // This looks like the discriminant from the quadratic equation solution forumla
-        var discriminant = (dotB * dotB) - 4.0f * dotA * dotC; 
-        if (discriminant < 0f) {
+        var discriminant = (dotB * dotB) - 4.0 * dotA * dotC; 
+        if (discriminant < 0.0) {
             return Optional.empty();
         }
-        var sqrtDiscriminant = (float) Math.sqrt(discriminant);
-        var intersectA = (-dotB - sqrtDiscriminant) / (2f * dotA);
-        var intersectB = (-dotB + sqrtDiscriminant) / (2f * dotA);
+        var sqrtDiscriminant = Math.sqrt(discriminant);
+        var intersectA = (-dotB - sqrtDiscriminant) / (2.0 * dotA);
+        var intersectB = (-dotB + sqrtDiscriminant) / (2.0 * dotA);
 
         return Optional.of(
                   List.of(
-                    new Intersection(Float.valueOf(intersectA), this),
-                    new Intersection(Float.valueOf(intersectB), this)
+                    new Intersection(Double.valueOf(intersectA), this),
+                    new Intersection(Double.valueOf(intersectB), this)
                   )
                 ); 
     }
@@ -77,7 +77,7 @@ public class Sphere extends BaseShape {
      *   A new vector representing the normal of the sphere at the given point.
      */
     @Override
-    protected Tuple localNormal(Tuple point) {
+    public Tuple localNormal(Tuple point) {
       return point.subtract(origin).normalize(); // the normal in object space
     }
 

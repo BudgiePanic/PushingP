@@ -89,7 +89,7 @@ public interface Shape {
      * @param endTime
      *   The end time of the exposure.
      */
-    default void bakeExposureDuration(float endTime) {}
+    default void bakeExposureDuration(double endTime) {}
 
     /**
      * Convert a world space point to object space.

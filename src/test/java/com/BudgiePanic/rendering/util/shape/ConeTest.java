@@ -34,8 +34,8 @@ public class ConeTest {
             var expectedB = test.b().b();
             var actualA = intersections.get(0).a();
             var actualB = intersections.get(1).a();
-            assertTrue(FloatHelp.compareFloat(expectedA, actualA) == 0, Float.toString(expectedA - actualA));
-            assertTrue(FloatHelp.compareFloat(expectedB, actualB) == 0, Float.toString(expectedB - actualB));
+            assertTrue(FloatHelp.compareFloat(expectedA, actualA) == 0, Double.toString(expectedA - actualA));
+            assertTrue(FloatHelp.compareFloat(expectedB, actualB) == 0, Double.toString(expectedB - actualB));
         }
     }
 

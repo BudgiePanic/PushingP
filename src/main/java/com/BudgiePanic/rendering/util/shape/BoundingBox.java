@@ -61,7 +61,7 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
      * @param axisMax
      * @return
      */
-    private Pair<Float, Float> checkAxis(float origin, float direction, float axisMin, float axisMax) {
+    private Pair<Double, Double> checkAxis(double origin, double direction, double axisMin, double axisMax) {
         final var closePlane = (axisMin - origin);
         final var farPlane = (axisMax - origin);
         final var min = closePlane / direction;

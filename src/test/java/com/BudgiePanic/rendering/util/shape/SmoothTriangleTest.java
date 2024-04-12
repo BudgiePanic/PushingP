@@ -35,7 +35,7 @@ public class SmoothTriangleTest {
     @Test
     void testLocalNormal() {
         // use intersection UVs to interpolate the normal
-        var intersection = new Intersection(1f, testTriangle, new Pair<>(0.45f, 0.25f));
+        var intersection = new Intersection(1.0, testTriangle, new Pair<>(0.45, 0.25));
         var normal = testTriangle.normal(makePoint(), intersection);
         var expected = makeVector(-0.5547f, 0.83205f, 0);
         assertEquals(expected, normal);

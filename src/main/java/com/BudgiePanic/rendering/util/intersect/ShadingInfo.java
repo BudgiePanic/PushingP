@@ -9,7 +9,7 @@ import com.BudgiePanic.rendering.util.shape.Shape;
  * 
  * @author BudgiePanic
  */
-public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside, Tuple reflectVector, float n1, float n2, float time) {
+public record ShadingInfo(double a, Shape shape, Tuple point, Tuple eyeVector, Tuple normalVector, boolean intersectInside, Tuple reflectVector, double n1, double n2, double time) {
 
     /**
      * Canonical constructor. Information needed by the lighting model to determine the color of a point in space.
@@ -62,26 +62,26 @@ public record ShadingInfo(float a, Shape shape, Tuple point, Tuple eyeVector, Tu
      * @return
      *   The reflectance of this point given the shading information. A value between 0 and 1.
      */
-    public float schlick() {
+    public double schlick() {
         // when theta eye:surface is large -> reflected light is small  _|
         // when theta eye:surface is small -> reflected light is larger _\
         var cos = this.eyeVector.dot(this.normalVector);
         if (this.n1 > this.n2) {
             final var n = this.n1 / this.n2; // snell's law, this has been repeated twice (world.java), could refactor out into snells helper class?
-            final var sinThetaSquared = (n*n) * (1.0f-(cos*cos));
+            final var sinThetaSquared = (n*n) * (1.0-(cos*cos));
             if (sinThetaSquared > 1) {
                 // total internal reflection occured, return maximum reflectance.
                 return 1.0f;
             }
-            final var cosTheta = (float) Math.sqrt(1.0 - sinThetaSquared);
+            final var cosTheta = Math.sqrt(1.0 - sinThetaSquared);
             cos = cosTheta;
         }
         // book author doesn't explain the math here: refers to 
         // (https://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf)
         // which explains the maths behind schilck approximation for reflectance
-        final var x = 1.0f - cos; 
+        final var x = 1.0 - cos; 
         var r0 = ((this.n1 - this.n2) / (this.n1 + this.n2));
         r0 *= r0;
-        return r0 + (1.0f - r0) * (x * x * x * x * x); 
+        return r0 + (1.0 - r0) * (x * x * x * x * x); 
     }
 }

@@ -23,7 +23,7 @@ public final class Translation {
      * @return
      *   a new translation matrix
      */
-    public final static Matrix4 makeTranslationMatrix(float x, float y, float z) {
+    public final static Matrix4 makeTranslationMatrix(double x, double y, double z) {
         var identity = Matrix4.identity();
         identity.matrix[0][3] = x;
         identity.matrix[1][3] = y;

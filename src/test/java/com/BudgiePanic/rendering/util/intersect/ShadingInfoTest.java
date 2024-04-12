@@ -19,7 +19,7 @@ public class ShadingInfoTest {
     void testIntersectionPrecompute() {
         var ray = new Ray(Tuple.makePoint(0, 0, -5), Tuple.makeVector(0, 0, 1));
         var shape = Sphere.defaultSphere();
-        var intersection = new Intersection(4f, shape);
+        var intersection = new Intersection(4.0, shape);
         var result = intersection.computeShadingInfo(ray);
 
         assertEquals(intersection.a(), result.a());
@@ -33,7 +33,7 @@ public class ShadingInfoTest {
     void testIntersectionOutsideShape() {
         var ray = new Ray(Tuple.makePoint(0, 0, -5), Tuple.makeVector(0, 0, 1));
         var shape = Sphere.defaultSphere();
-        var intersection = new Intersection(4f, shape);
+        var intersection = new Intersection(4.0, shape);
         var result = intersection.computeShadingInfo(ray);
         assertFalse(result.intersectInside());
     }
@@ -42,7 +42,7 @@ public class ShadingInfoTest {
     void testIntersectionInsideShape() {
         var ray = new Ray(Tuple.makePoint(), Tuple.makeVector(0, 0, 1));
         var shape = Sphere.defaultSphere();
-        var intersection = new Intersection(1f, shape);
+        var intersection = new Intersection(1.0, shape);
         var result = intersection.computeShadingInfo(ray);
         assertTrue(result.intersectInside());
         assertEquals(Tuple.makePoint(0, 0, 1), result.point());
@@ -55,7 +55,7 @@ public class ShadingInfoTest {
         var testTriangle = new SmoothTriangle(
         makePoint(0, 1, 0), makePoint(-1, 0, 0), makePoint(1, 0, 0),
         makeVector(0, 1, 0), makeVector(-1, 0, 0), makeVector(1, 0, 0));
-        var intersection = new Intersection(1f, testTriangle, new Pair<Float, Float>(0.45f, 0.25f));
+        var intersection = new Intersection(1.0, testTriangle, new Pair<Double, Double>(0.45, 0.25));
         var ray = new Ray(makePoint(-0.2f, 0.3f, -2), makeVector(0, 0, 1));
         var info = intersection.computeShadingInfo(ray);
         var expected = makeVector(-0.5547f, 0.83205f, 0);

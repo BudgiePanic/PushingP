@@ -39,7 +39,7 @@ public interface Light {
      * @return
      *     The amount of light reaching the point.
      */
-    float intensityAt(Tuple point, World world, float time);
+    double intensityAt(Tuple point, World world, double time);
 
     /**
      * An iterator that returns sample points that cover the entire light.

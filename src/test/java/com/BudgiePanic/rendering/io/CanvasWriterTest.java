@@ -26,9 +26,9 @@ public class CanvasWriterTest {
     @Test 
     void testPPMPixelWrite() {
         var canvas = new ArrayCanvas(5, 3);
-        canvas.writePixel(0, 0, new Color(1.5f, 0f, 0f));
-        canvas.writePixel(2, 1, new Color(0f, 0.5f, 0f));
-        canvas.writePixel(4, 2, new Color(-0.5f, 0f, 1f));
+        canvas.writePixel(0, 0, new Color(1.5, 0.0, 0.0));
+        canvas.writePixel(2, 1, new Color(0.0, 0.5, 0.0));
+        canvas.writePixel(4, 2, new Color(-0.5, 0.0, 1.0));
         var outputString = CanvasWriter.canvasToPPMString(canvas);
         assertEquals("255 0 0 0 0 0 0 0 0 0 0 0 0 0 0", outputString.get(3));
         assertEquals("0 0 0 0 0 0 0 128 0 0 0 0 0 0 0", outputString.get(4));
@@ -38,7 +38,7 @@ public class CanvasWriterTest {
     @Test
     void testPPMPixelWriteTwo() {
         var canvas = new ArrayCanvas(10, 2);
-        final Color c = new Color(1f, 0.8f, 0.6f);
+        final Color c = new Color(1.0, 0.8, 0.6);
         canvas.writeAll((oldColor) -> {
             return c;
         });

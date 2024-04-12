@@ -11,27 +11,27 @@ import com.BudgiePanic.rendering.util.pattern.SolidColor;
  * 
  * @author BudgiePanic
  */
-public record Material(Pattern pattern, float ambient, float diffuse, float specular, float shininess, float reflectivity, float transparency, float refractiveIndex, boolean shadow) {
+public record Material(Pattern pattern, double ambient, double diffuse, double specular, double shininess, double reflectivity, double transparency, double refractiveIndex, boolean shadow) {
 
     /**
      * Default ambient value.
      */
-    public static final float defaultAmbient = 0.1f;
+    public static final double defaultAmbient = 0.1;
 
     /**
      * Default diffuse value.
      */
-    public static final float defaultDiffuse = 0.9f;
+    public static final double defaultDiffuse = 0.9;
 
     /**
      * Default specular value.
      */
-    public static final float defaultSpecular = 0.9f;
+    public static final double defaultSpecular = 0.9;
 
     /**
      * Default shininess value.
      */
-    public static final float defaultShininess = 200f;
+    public static final double defaultShininess = 200;
 
     /**
      * Default pattern value.
@@ -41,17 +41,17 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
     /**
      * Default reflectivity amount.
      */
-    public static final float defaultReflectivity = 0f;
+    public static final double defaultReflectivity = 0;
 
     /**
      * Default amount of transparency.
      */
-    public static final float defaultTransparency = 0f;
+    public static final double defaultTransparency = 0;
 
     /**
      * The degree to which light bends when entering a transparent material.
      */
-    public static final float defaultRefractiveIndex = 1f;
+    public static final double defaultRefractiveIndex = 1;
 
     /**
      * Whether shapes with the material cast shadows or not.
@@ -69,7 +69,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @param transparency
      * @param refractiveIndex
      */
-    public Material(Pattern pattern, float ambient, float diffuse, float specular, float shininess, float reflectivity, float transparency, float refractiveIndex) {
+    public Material(Pattern pattern, double ambient, double diffuse, double specular, double shininess, double reflectivity, double transparency, double refractiveIndex) {
         this(pattern, ambient, diffuse, specular, shininess, reflectivity, transparency, refractiveIndex, defaultShadowCast);
     }
 
@@ -93,7 +93,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @param refractiveIndex
      *     How light bends as it enters/exits the material 1 -> vacuum | 1.52 -> glass 
      */
-    public Material(Color color, float ambient, float diffuse, float specular, float shininess, float reflectivity, float transparency, float refractiveIndex) {
+    public Material(Color color, double ambient, double diffuse, double specular, double shininess, double reflectivity, double transparency, double refractiveIndex) {
         this(color, ambient, diffuse, specular, shininess, reflectivity, transparency, refractiveIndex, defaultShadowCast);
     } 
 
@@ -119,7 +119,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @param castsShadows
      *     Whether the shape using this material can cast shadows on other shapes.
      */
-    public Material(Color color, float ambient, float diffuse, float specular, float shininess, float reflectivity, float transparency, float refractiveIndex, boolean castsShadows) {
+    public Material(Color color, double ambient, double diffuse, double specular, double shininess, double reflectivity, double transparency, double refractiveIndex, boolean castsShadows) {
         this(new SolidColor(color), ambient, diffuse, specular, shininess, reflectivity, transparency, refractiveIndex, defaultShadowCast);
     }
 
@@ -164,7 +164,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @return
      *   A copy of this material with the ambient valued set to ambient.
      */
-    public Material setAmbient(float ambient) {
+    public Material setAmbient(double ambient) {
         return new Material(this.pattern(), ambient, this.diffuse(), this.specular(), this.shininess(), this.reflectivity(), this.transparency(), this.refractiveIndex(), this.shadow());
     }
 
@@ -176,7 +176,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @return
      *   A copy of this material with the diffuse valued set to diffuse.
      */
-    public Material setDiffuse(float diffuse) {
+    public Material setDiffuse(double diffuse) {
         return new Material(this.pattern(), this.ambient(), diffuse, this.specular(), this.shininess(), this.reflectivity(), this.transparency(), this.refractiveIndex(), this.shadow());
     }
 
@@ -188,7 +188,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @return
      *   A copy of this material with the specular valued set to specular.
      */
-    public Material setSpecular(float specular) {
+    public Material setSpecular(double specular) {
         return new Material(this.pattern(), this.ambient(), this.diffuse(), specular, this.shininess(), this.reflectivity(), this.transparency(), this.refractiveIndex(), this.shadow());
     }
 
@@ -200,7 +200,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @return
      *   A copy of this material with the shininess valued set to shininess.
      */
-    public Material setShininess(float shininess) {
+    public Material setShininess(double shininess) {
         return new Material(this.pattern(), this.ambient(), this.diffuse(), this.specular(), shininess, this.reflectivity(), this.transparency(), this.refractiveIndex(), this.shadow());
     }
 
@@ -236,7 +236,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @return
      *   A copy of the material with the reflectivity changed
      */
-    public Material setReflectivity(float reflectivity) {
+    public Material setReflectivity(double reflectivity) {
         return new Material(this.pattern(), this.ambient(), this.diffuse(), this.specular(), this.shininess(), reflectivity, this.transparency(), this.refractiveIndex(), this.shadow());
     }
 
@@ -248,7 +248,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @return
      *   A copy of the material with the transparency changed.
      */
-    public Material setTransparency(float transparency) {
+    public Material setTransparency(double transparency) {
         return new Material(this.pattern(), this.ambient(), this.diffuse(), this.specular(), this.shininess(), this.reflectivity(), transparency, this.refractiveIndex(), this.shadow());
     }
 
@@ -260,7 +260,7 @@ public record Material(Pattern pattern, float ambient, float diffuse, float spec
      * @return
      *   A copy of the material with the refractive index changed.
      */
-    public Material setRefractiveIndex(float refractiveIndex) {
+    public Material setRefractiveIndex(double refractiveIndex) {
         return new Material(this.pattern(), this.ambient(), this.diffuse(), this.specular(), this.shininess(), this.reflectivity(), this.transparency(), refractiveIndex, this.shadow());
     }
 

@@ -94,7 +94,7 @@ public class WorldTest {
         var ray = new Ray(Tuple.makePoint(0, 0, -5), Tuple.makeVector(0,0,1));
         final var first = 0;
         var shape = defaultTestWorld.getShapes().get(first);
-        var intersection = new Intersection(4f, shape);
+        var intersection = new Intersection(4.0, shape);
         var info = intersection.computeShadingInfo(ray);
         var result = defaultTestWorld.shadeHit(info);
         assertEquals(new Color(0.38066f, 0.47583f, 0.2855f), result);
@@ -118,7 +118,7 @@ public class WorldTest {
 
         var ray = new Ray(Tuple.makePoint(), Tuple.makeVector(0, 0, 1));
         var shape = world.shapes.get(1);
-        var intersection = new Intersection(0.5f, shape);
+        var intersection = new Intersection(0.5, shape);
         var info = intersection.computeShadingInfo(ray);
         var result = world.shadeHit(info);
         assertEquals(new Color(0.90498f, 0.90498f, 0.90498f), result);
@@ -174,7 +174,7 @@ public class WorldTest {
         world.addShape(Sphere.defaultSphere());
         world.addShape(new Sphere(Transforms.identity().translate(0, 0, 10).assemble()));
         var ray = new Ray(Tuple.makePoint(0, 0, 5), Tuple.makeVector(0, 0, 1));
-        var intersection = new Intersection(4f, world.getShapes().get(1));
+        var intersection = new Intersection(4.0, world.getShapes().get(1));
         var info = intersection.computeShadingInfo(ray);
         var result = world.shadeHit(info);
         var expected = new Color(0.1f, 0.1f, 0.1f);
@@ -253,23 +253,23 @@ public class WorldTest {
         world.addShape(shape);
         // current system
         var ray = camera.createRay(10.5f, 0.5f, 0);
-        float dirMag = ray.direction().magnitude(), oriMag = ray.origin().magnitude();
         var intersections = world.intersect(ray).get();
         var hit = Intersection.Hit(intersections).get();
         var info = hit.computeShadingInfo(ray);
 
         // working in local space
-        /*
+        
         var localPoint = shape.toObjectSpace(info.point());
         var localTarget = shape.toObjectSpace(targetPosition);
         var localNormal = shape.localNormal(localPoint);
         var delta = localNormal.multiply(FloatHelp.epsilon);
         var localOverPoint = localPoint.add(delta);
-        // localOverPoint = shape.toObjectSpace(info.overPoint());
-        var localDirection = localTarget.subtract(localOverPoint); //.normalize();  // very interesting, then this vector is not normalized, the test would pass.
+        var localDirection = localTarget.subtract(localOverPoint).normalize();
         var localRay = new Ray(localOverPoint, localDirection);
-        var resultTwo = shape.localIntersect(localRay);
-        */
+        var resultTwo = Intersection.Hit(shape.localIntersect(localRay).get());
+        assertTrue(resultTwo.isEmpty());
+        
+        world.isOccluded(info.point(), targetPosition, World.allShapes, 0);
 
         // result should be false, but its true... somehow the sphere occuldes itself...
         var result = world.isOccluded(info.overPoint(), targetPosition, World.allShapes, 0);
@@ -305,7 +305,7 @@ public class WorldTest {
         defaultTestWorld.getShapes().remove(1);
         defaultTestWorld.getShapes().add(shape);
 
-        var intersection = new Intersection(1f, shape);
+        var intersection = new Intersection(1.0, shape);
 
         var info = intersection.computeShadingInfo(ray);
         var output = defaultTestWorld.shadeReflection(info);
@@ -317,8 +317,8 @@ public class WorldTest {
     void testReflectiveSurface() {
         var plane = new Plane( Transforms.identity().translate(0, -1, 0).assemble(), Material.defaultMaterial().setReflectivity(0.5f));
         defaultTestWorld.addShape(plane);
-        float sqrt2 = (float)(Math.sqrt(2));
-        float sqrt2over2 = (float)(Math.sqrt(2)/2.0);
+        var sqrt2 = (Math.sqrt(2));
+        var sqrt2over2 = (Math.sqrt(2)/2.0);
         var ray = new Ray(makePoint(0, 0, -3), makeVector(0, -sqrt2over2, sqrt2over2));
         var intersection = new Intersection(sqrt2, plane);
         var info = intersection.computeShadingInfo(ray);
@@ -334,8 +334,8 @@ public class WorldTest {
     void testReflectPlusShade() {
         var plane = new Plane( Transforms.identity().translate(0, -1, 0).assemble(), Material.defaultMaterial().setReflectivity(0.5f));
         defaultTestWorld.addShape(plane);
-        float sqrt2 = (float)(Math.sqrt(2));
-        float sqrt2over2 = (float)(Math.sqrt(2)/2.0);
+        double sqrt2 = (Math.sqrt(2));
+        double sqrt2over2 = (Math.sqrt(2)/2.0);
         var ray = new Ray(makePoint(0, 0, -3), makeVector(0, -sqrt2over2, sqrt2over2));
         var intersection = new Intersection(sqrt2, plane);
         var info = intersection.computeShadingInfo(ray);
@@ -367,8 +367,8 @@ public class WorldTest {
     void testReflectionRecursionLimit() {
         var plane = new Plane( Transforms.identity().translate(0, -1, 0).assemble(), Material.defaultMaterial().setReflectivity(0.5f));
         defaultTestWorld.addShape(plane);
-        float sqrt2 = (float)(Math.sqrt(2));
-        float sqrt2over2 = (float)(Math.sqrt(2)/2.0);
+        double sqrt2 = (Math.sqrt(2));
+        double sqrt2over2 = (Math.sqrt(2)/2.0);
         var ray = new Ray(makePoint(0, 0, -3), makeVector(0, -sqrt2over2, sqrt2over2));
         var intersection = new Intersection(sqrt2, plane);
         var info = intersection.computeShadingInfo(ray);
@@ -386,8 +386,8 @@ public class WorldTest {
         var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
         var intersections = Optional.of(
             List.of(
-                new Intersection(4f, shape),
-                new Intersection(6f, shape)
+                new Intersection(4.0, shape),
+                new Intersection(6.0, shape)
             ) 
         );
         var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
@@ -405,8 +405,8 @@ public class WorldTest {
         var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
         var intersections = Optional.of(
             List.of(
-                new Intersection(4f, shape),
-                new Intersection(6f, shape)
+                new Intersection(4.0, shape),
+                new Intersection(6.0, shape)
             ) 
         );
         var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
@@ -426,7 +426,7 @@ public class WorldTest {
         defaultTestWorld.shapes.removeFirst();
         defaultTestWorld.shapes.add(0, replacement);
 
-        float sqrt2Over2 = (float) (Math.sqrt(2.0) / 2.0);
+        double sqrt2Over2 = (Math.sqrt(2.0) / 2.0);
         var ray = new Ray(makePoint(0, 0, sqrt2Over2), makeVector(0, 1, 0));
         var intersections = Optional.of(
             List.of(
@@ -462,10 +462,10 @@ public class WorldTest {
         var ray = new Ray(makePoint(0, 0, 0.1f), makeVector(0, 1, 0));
         var intersections = Optional.of(
             List.of(
-                new Intersection(-0.9899f, sphereA),
-                new Intersection(-0.4899f, sphereB),
-                new Intersection(0.4899f, sphereB),
-                new Intersection(0.9899f, sphereA)
+                new Intersection(-0.9899, sphereA),
+                new Intersection(-0.4899, sphereB),
+                new Intersection(0.4899, sphereB),
+                new Intersection(0.9899, sphereA)
             ) 
         );
         var info = intersections.get().get(2).computeShadingInfo(ray, intersections);
@@ -489,8 +489,8 @@ public class WorldTest {
         world.addLight(light);
         world.addShape(floor);
         world.addShape(orb);
-        float sqrt2 = (float) Math.sqrt(2.0);
-        float sqrt2Over2 = (float) (Math.sqrt(2.0)/2.0);
+        double sqrt2 = Math.sqrt(2.0);
+        double sqrt2Over2 = (Math.sqrt(2.0)/2.0);
         var ray = new Ray(makePoint(0, 0, -3), makeVector(0, -sqrt2Over2, sqrt2Over2));
         var intersections = Optional.of(
             List.of(
@@ -501,7 +501,7 @@ public class WorldTest {
         var result = world.shadeHit(info);
         var expected = new Color(0.93642f, 0.68642f, 0.68642f);
         // extra info in case of test failure
-        float x = result.x - expected.x, y = result.y - expected.y, z = result.z - expected.z;
+        double x = result.x - expected.x, y = result.y - expected.y, z = result.z - expected.z;
         assertEquals(expected, result, x + " " + y + " " + z);
     }
 
@@ -528,8 +528,8 @@ public class WorldTest {
         world.addShape(floor);
         world.addShape(orb);
         world.addShape(sphereA);
-        float sqrt2 = (float) Math.sqrt(2.0);
-        float sqrt2Over2 = (float) (Math.sqrt(2.0)/2.0);
+        double sqrt2 = Math.sqrt(2.0);
+        double sqrt2Over2 = (Math.sqrt(2.0)/2.0);
         var ray = new Ray(makePoint(0, 0, -3), makeVector(0, -sqrt2Over2, sqrt2Over2));
         var intersections = Optional.of(
             List.of(

@@ -23,11 +23,11 @@ public class Cylinder extends BaseShape {
     /**
      * The lower y bounds distance that causes the cylinder to be truncated.
      */
-    protected final float minimum;
+    protected final double minimum;
     /**
      * The upper y bounds distance that causes the cylinder to be truncated.
      */
-    protected final float maximum;
+    protected final double maximum;
 
     /**
      * Whether the cylinder has end caps or not.
@@ -52,7 +52,7 @@ public class Cylinder extends BaseShape {
      * @param minimum
      * @param closed
      */
-    public Cylinder(Matrix4 transform, Material material, float maximum, float minimum, boolean closed) {
+    public Cylinder(Matrix4 transform, Material material, double maximum, double minimum, boolean closed) {
         super(transform, material); this.maximum = maximum; this.minimum = minimum; this.closed = closed;
     }
 
@@ -63,7 +63,7 @@ public class Cylinder extends BaseShape {
      * @param maximum
      * @param minimum
      */
-    public Cylinder(Matrix4 transform, Material material, float maximum, float minimum) { this(transform, material, maximum, minimum, false); }
+    public Cylinder(Matrix4 transform, Material material, double maximum, double minimum) { this(transform, material, maximum, minimum, false); }
 
     
     /**
@@ -71,7 +71,7 @@ public class Cylinder extends BaseShape {
      * @param transform
      * @param material
      */
-    public Cylinder(Matrix4 transform, Material material) { this(transform, material, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY); }
+    public Cylinder(Matrix4 transform, Material material) { this(transform, material, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY); }
     
     /**
      * 
@@ -80,7 +80,7 @@ public class Cylinder extends BaseShape {
      * @param minimum
      * @param closed
      */
-    public Cylinder(Matrix4 transform, float maximum, float minimum, boolean closed) {
+    public Cylinder(Matrix4 transform, double maximum, double minimum, boolean closed) {
         super(transform); this.maximum = maximum; this.minimum = minimum; this.closed = closed;
     } 
 
@@ -90,13 +90,13 @@ public class Cylinder extends BaseShape {
      * @param maximum
      * @param minimum
      */
-    public Cylinder(Matrix4 transform, float maximum, float minimum) { this(transform, maximum, minimum, false); }
+    public Cylinder(Matrix4 transform, double maximum, double minimum) { this(transform, maximum, minimum, false); }
 
     /**
      * 
      * @param transform
      */
-    public Cylinder(Matrix4 transform) { this(transform, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY); }
+    public Cylinder(Matrix4 transform) { this(transform, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY); }
 
     /**
      * Check if a ray intersects a plane that caps off the cylinder.
@@ -104,7 +104,7 @@ public class Cylinder extends BaseShape {
      * @param t
      * @return
      */
-    private static boolean capRayIntersect(Ray ray, float t) {
+    private static boolean capRayIntersect(Ray ray, double t) {
         final var x = ray.origin().x + t * ray.direction().x;
         final var z = ray.origin().z + t * ray.direction().z;
         return FloatHelp.compareFloat((x*x) + (z*z), 1) != 1; // (x^2 + z^2 <= 1)
@@ -153,7 +153,7 @@ public class Cylinder extends BaseShape {
         if (discriminant < 0) {
             return Optional.empty();
         }
-        final float sqrtDisc = (float) Math.sqrt(discriminant);
+        final double sqrtDisc = Math.sqrt(discriminant);
         var t0 = (-b - sqrtDisc) / (2*a);
         var t1 = (-b + sqrtDisc) / (2*a);
         if (t0 > t1) {

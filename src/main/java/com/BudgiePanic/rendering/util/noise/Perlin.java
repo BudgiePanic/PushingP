@@ -34,7 +34,7 @@ public final class Perlin {
      * These vectors are chosen over randomly generated vectors because they reduce directional artifacts in the noise output.
      * Each point in the integer lattice [x,y,z] will be pseudo randomly assigned one of these gradients via the hashing function.
      */
-    protected static final float[][] gradients = {
+    protected static final double[][] gradients = {
         {1,1,0}, {-1,1,0}, {-1,-1,0}, {1,-1,0}, 
         {0,1,-1}, {0,1,1}, {0,-1,-1}, {0,-1,1}, 
         {-1,0,1}, {1,0,1}, {-1,0,-1}, {1,0,-1}, 
@@ -63,7 +63,7 @@ public final class Perlin {
      * @return
      *   Perlin noise at the point (xyz).
      */
-    public final static float noise(float x, float y, float z) {
+    public final static double noise(double x, double y, double z) {
         // first step of the algorithm is to determine which unit cube within the integer lattice the point (xyz) is located inside of.
         /* this operation can be sped up by replacing Math.floor(x) with [ (x) => (x>0) ? (int)x : (int)x - 1; ] */
         int unitCube000x = (int) Math.floor(x); 
@@ -95,39 +95,39 @@ public final class Perlin {
         final int gIndex101 = hash(unitCube000x + 1, unitCube000y, unitCube000z + 1);
         final int gIndex111 = hash(unitCube000x + 1, unitCube000y + 1, unitCube000z + 1);
               // index into the gradient array for each Q point, getting their gradients
-        final float[] g000 = gradients[gIndex000];  
-        final float[] g001 = gradients[gIndex001];
-        final float[] g010 = gradients[gIndex010];
-        final float[] g100 = gradients[gIndex100];
-        final float[] g110 = gradients[gIndex110];
-        final float[] g011 = gradients[gIndex011];
-        final float[] g101 = gradients[gIndex101];
-        final float[] g111 = gradients[gIndex111];
+        final double[] g000 = gradients[gIndex000];  
+        final double[] g001 = gradients[gIndex001];
+        final double[] g010 = gradients[gIndex010];
+        final double[] g100 = gradients[gIndex100];
+        final double[] g110 = gradients[gIndex110];
+        final double[] g011 = gradients[gIndex011];
+        final double[] g101 = gradients[gIndex101];
+        final double[] g111 = gradients[gIndex111];
           // compute dot product between G and (P-Q)
-        final float dot000 = dot(g000, x,y,z); /*(P-Q000) => cube point Q to point P, in this specific case point [0,0,0], it is implicitly (x-0,y-0,z-0). use minus operator because its P+[-Q]*/
-        final float dot001 = dot(g001, x,y,z-1); /*P-Q001 etc. etc. SEE: page 3/17 in the simplex noise reference*/
-        final float dot010 = dot(g010, x,y-1,z); 
-        final float dot100 = dot(g100, x-1,y,z); 
-        final float dot110 = dot(g110, x-1,y-1,z); 
-        final float dot011 = dot(g011, x,y-1,z-1); 
-        final float dot101 = dot(g101, x-1,y,z-1); 
-        final float dot111 = dot(g111, x-1,y-1,z-1); 
+        final double dot000 = dot(g000, x,y,z); /*(P-Q000) => cube point Q to point P, in this specific case point [0,0,0], it is implicitly (x-0,y-0,z-0). use minus operator because its P+[-Q]*/
+        final double dot001 = dot(g001, x,y,z-1); /*P-Q001 etc. etc. SEE: page 3/17 in the simplex noise reference*/
+        final double dot010 = dot(g010, x,y-1,z); 
+        final double dot100 = dot(g100, x-1,y,z); 
+        final double dot110 = dot(g110, x-1,y-1,z); 
+        final double dot011 = dot(g011, x,y-1,z-1); 
+        final double dot101 = dot(g101, x-1,y,z-1); 
+        final double dot111 = dot(g111, x-1,y-1,z-1); 
         
         // interpolation factors between the calculated values via an "s shape" cross fade curve (Perlin asserts this produces nicer results than simple lerp) 
-        final float u = fade(x);
-        final float v = fade(y);
-        final float w = fade(z);
+        final double u = fade(x);
+        final double v = fade(y);
+        final double w = fade(z);
         // combine dot productes via trilinear interpolation 
           // combine values along x axis
-        final float x00 = lerp(dot000, dot100, u);
-        final float x01 = lerp(dot001, dot101, u);
-        final float x10 = lerp(dot010, dot110, u);
-        final float x11 = lerp(dot011, dot111, u);
+        final double x00 = lerp(dot000, dot100, u);
+        final double x01 = lerp(dot001, dot101, u);
+        final double x10 = lerp(dot010, dot110, u);
+        final double x11 = lerp(dot011, dot111, u);
           // combine combinations along y axis
-        final float y0 = lerp(x00,x10,v);
-        final float y1 = lerp(x01, x11, v);
+        final double y0 = lerp(x00,x10,v);
+        final double y1 = lerp(x01, x11, v);
           // combine final 2 combinations along z axis
-        final float z0 = lerp(y0,y1,w);
+        final double z0 = lerp(y0,y1,w);
         return z0;
     }
     
@@ -162,7 +162,7 @@ public final class Perlin {
      * @return
      *   the dot product between vector a and vector b.
      */
-    private static float dot(float[] g, float x, float y, float z){
+    private static double dot(double[] g, double x, double y, double z){
         assert g != null && g.length == 3;
         return (g[0] * x) + (g[1] * y) + (g[2] * z);
     }
@@ -213,7 +213,7 @@ public final class Perlin {
      * @return
      *   fade = (6t^5) - (15t^4) + (10t^3)
      */
-    private static float fade(float t) {
+    private static double fade(double t) {
         // (6t^5) - (15t^4) + (10t^3) => (6*(t*t*t*t*t)) - (15*(t*t*t*t)) + (10*(t*t*t));
         // t^4(6t - 15) + 10t^3             // pull out t^4 
         // t^3 * (t(6t - 15) + 10)          // pull out t^3
@@ -233,7 +233,7 @@ public final class Perlin {
      * @return
      *   a quantity between a and b
      */
-    private static float lerp(float a, float b, float amount) {
+    private static double lerp(double a, double b, double amount) {
         return ((1-amount) * a) + (amount * b);
     }
 }

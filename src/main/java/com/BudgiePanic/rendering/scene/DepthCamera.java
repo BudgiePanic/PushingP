@@ -21,20 +21,20 @@ public class DepthCamera implements Camera {
      * Function to process a single depth value.
      * TODO make this interface sealed, only permit normalized, raw, clamped
      */
-    public static interface DepthMode extends Function<Pair<Float, Float>, Function<Color, Color>> {}
+    public static interface DepthMode extends Function<Pair<Double, Double>, Function<Color, Color>> {}
     
     /**
      * Creates normalized depth values (0 for closest intersection distance, 1 for furtherest intersection distance).
      */
     public static final DepthMode normalizedDepthValues = (depthInfo) -> (pixel) -> {
-        final float distance = pixel.x;
-        final float minDistance = depthInfo.a();
-        final float maxDistance = depthInfo.b();
+        final double distance = pixel.x;
+        final double minDistance = depthInfo.a();
+        final double maxDistance = depthInfo.b();
         // infinity is a special case, means the ray didn't actually hit anything.
         // we need to remap infinity so as to not mess up the normalization.
         // in rasterization graphics this isn't an issue because max distance can only be as large as the far clipping plane. but since rays can miss, we can get infinities.
-        final boolean isInfinity = Float.compare(distance, Float.POSITIVE_INFINITY) == 0;
-        final float normalizedDistance = isInfinity ? 1f : (distance - minDistance) / (maxDistance - minDistance);
+        final boolean isInfinity = Double.compare(distance, Double.POSITIVE_INFINITY) == 0;
+        final double normalizedDistance = isInfinity ? 1.0 : (distance - minDistance) / (maxDistance - minDistance);
         return new Color(normalizedDistance, normalizedDistance, normalizedDistance);
     };
     
@@ -46,10 +46,10 @@ public class DepthCamera implements Camera {
      *       This is expected behaviour.
      */
     public static final DepthMode rawDepthValues = (depthInfo) -> (pixel) -> {
-        final float distance = pixel.x;
-        final float maxDistance = depthInfo.b();
-        final boolean isInfinity = Float.compare(distance, Float.POSITIVE_INFINITY) == 0;
-        final float clampedDistance = isInfinity ? maxDistance : distance;
+        final double distance = pixel.x;
+        final double maxDistance = depthInfo.b();
+        final boolean isInfinity = Double.compare(distance, Double.POSITIVE_INFINITY) == 0;
+        final double clampedDistance = isInfinity ? maxDistance : distance;
         return new Color(clampedDistance, clampedDistance, clampedDistance);
     };
 
@@ -60,7 +60,7 @@ public class DepthCamera implements Camera {
      *       This is expected behaviour.
      */
     public static final DepthMode rawUnclampedDepthValues = (depthInfo) -> (pixel) -> {
-        final float distance = pixel.x;
+        final double distance = pixel.x;
         return new Color(distance, distance, distance);
     };
     
@@ -68,10 +68,10 @@ public class DepthCamera implements Camera {
      * Creates clamped depth values. (depth values will be between 0 and max depth).
      */
     public static final DepthMode clampedDepthValues = (depthInfo) -> (pixel) -> {
-        final float distance = pixel.x;
-        final float maxDistance = depthInfo.b();
-        final boolean isInfinity = Float.compare(distance, Float.POSITIVE_INFINITY) == 0;
-        final float clampedDistance = isInfinity ? maxDistance : (distance) / (maxDistance);
+        final double distance = pixel.x;
+        final double maxDistance = depthInfo.b();
+        final boolean isInfinity = Double.compare(distance, Double.POSITIVE_INFINITY) == 0;
+        final double clampedDistance = isInfinity ? maxDistance : (distance) / (maxDistance);
         return new Color(clampedDistance, clampedDistance, clampedDistance);
     };
     
@@ -113,7 +113,7 @@ public class DepthCamera implements Camera {
     public int height() { return cameraMonitoring.height; }
 
     @Override
-    public Ray createRay(final float pixelColumn, final float pixelRow, final float time) {
+    public Ray createRay(final double pixelColumn, final double pixelRow, final double time) {
         // create pinhole camera rays so the depth image is crisp and in-focus
         // TODO: code smell here, this method is 99% similar to PinHoleCamera::createRay, there can probably be an abstraction
         if (pixelColumn < 0 || pixelColumn > cameraMonitoring.width) throw new IllegalArgumentException("invalid pixel column for camera");
@@ -122,7 +122,7 @@ public class DepthCamera implements Camera {
         final var yOffset = (pixelRow) * cameraMonitoring.pixelSize;
         final var worldX = cameraMonitoring.halfWidth - xOffset;
         final var worldY = cameraMonitoring.halfHeight - yOffset;
-        final float worldZ = -cameraMonitoring.focalDistance;
+        final double worldZ = -cameraMonitoring.focalDistance;
         final var cameraInverse = cameraMonitoring.transform.inverse();
         final var pixel = cameraInverse.multiply(Tuple.makePoint(worldX, worldY, worldZ));
         final var origin = cameraInverse.multiply(Tuple.makePoint());
@@ -131,19 +131,19 @@ public class DepthCamera implements Camera {
     }
 
     /**
-     * An object that contains a float.
+     * An object that contains a double.
      * Used so the canvas for each lambda can write out its min max values in 'getMinMaxValues'
      */
     private static final class FloatBox { 
-        public float x; 
-        FloatBox(float initialValue) { this.x = initialValue; }
+        public double x; 
+        FloatBox(double initialValue) { this.x = initialValue; }
     }
 
-    protected static final Pair<Float, Float> getMinMaxValues(Canvas canvas) {
-        final FloatBox minDistance = new FloatBox(Float.MAX_VALUE);
-        final FloatBox maxDistance = new FloatBox(Float.MIN_VALUE);
+    protected static final Pair<Double, Double> getMinMaxValues(Canvas canvas) {
+        final FloatBox minDistance = new FloatBox(Double.MAX_VALUE);
+        final FloatBox maxDistance = new FloatBox(Double.MIN_VALUE);
         canvas.forEach(pixel -> {
-            final boolean isInfinity = Float.compare(pixel.x, Float.POSITIVE_INFINITY) == 0;
+            final boolean isInfinity = Double.compare(pixel.x, Double.POSITIVE_INFINITY) == 0;
             // don't write infinity to max distance
             if (pixel.x > maxDistance.x && !isInfinity) {
                 maxDistance.x = pixel.x;
@@ -165,10 +165,10 @@ public class DepthCamera implements Camera {
     }
 
     @Override
-    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
+    public Color pixelAt(World world, double pixelColumn, double pixelRow, double time) {
         final var ray = createRay(pixelColumn, pixelRow, time);
         final var intersections = world.intersect(ray);
-        final var distance = intersections.flatMap(Intersection::Hit).map(Intersection::a).orElse(Float.POSITIVE_INFINITY);
+        final var distance = intersections.flatMap(Intersection::Hit).map(Intersection::a).orElse(Double.POSITIVE_INFINITY);
         return new Color(distance, distance, distance);
     }
 }

@@ -27,17 +27,17 @@ public final class Matrix3 extends Matrix {
      *   A three by three matrix
      */
     public static Matrix3 buildMatrix(
-        float _00,
-        float _01,
-        float _02,
-        float _10,
-        float _11,
-        float _12,
-        float _20,
-        float _21,
-        float _22
+        double _00,
+        double _01,
+        double _02,
+        double _10,
+        double _11,
+        double _12,
+        double _20,
+        double _21,
+        double _22
     ){
-        final float[][] matrix = new float[dimension][dimension];
+        final double[][] matrix = new double[dimension][dimension];
 
         matrix[0][0] = _00; matrix[1][0] = _10; matrix[2][0] = _20;
         matrix[0][1] = _01; matrix[1][1] = _11; matrix[2][1] = _21;
@@ -47,11 +47,11 @@ public final class Matrix3 extends Matrix {
     }
 
     /**
-     * Help method. Check internal float arrays are the correct dimension and non null.
+     * Help method. Check internal double arrays are the correct dimension and non null.
      * @param item
      *   The internal array to check.
      */
-    private static void checkSize(float[] item){
+    private static void checkSize(double[] item){
         if (item == null || item.length != dimension) throw new IllegalArgumentException("matrix elements must be length 3 and not be null.");
     }
 
@@ -62,9 +62,9 @@ public final class Matrix3 extends Matrix {
      * @param row2
      * @return
      */
-    public static Matrix3 buildMatrixRow(final float[] row0, final float[] row1, final float[] row2) {
+    public static Matrix3 buildMatrixRow(final double[] row0, final double[] row1, final double[] row2) {
         checkSize(row0); checkSize(row1); checkSize(row2);
-        float[][] matrix = new float[dimension][];
+        double[][] matrix = new double[dimension][];
         matrix[0] = row0;
         matrix[1] = row1;
         matrix[2] = row2;
@@ -78,9 +78,9 @@ public final class Matrix3 extends Matrix {
      * @param column2
      * @return
      */
-    public static Matrix3 buildMatrixColumn(final float[] column0, final float[] column1, final float[] column2){
+    public static Matrix3 buildMatrixColumn(final double[] column0, final double[] column1, final double[] column2){
         checkSize(column0); checkSize(column1); checkSize(column2);
-        float[][] matrix = new float[dimension][dimension];
+        double[][] matrix = new double[dimension][dimension];
 
         for(int i = 0; i < dimension; i++){
             matrix[i][0] = column0[i];
@@ -91,7 +91,7 @@ public final class Matrix3 extends Matrix {
         return new Matrix3(matrix);
     }
 
-    protected Matrix3(float[][] matrix) {
+    protected Matrix3(double[][] matrix) {
         super(matrix);
     }
 
@@ -138,7 +138,7 @@ public final class Matrix3 extends Matrix {
     public Matrix getSubMatrix(int row, int column) {
         if (row < 0 || column < 0 || row > dimension - 1 || column > dimension - 1)
             throw new IllegalArgumentException(String.format("row %d column %d is out of bounds for %d by %d matrix", row, column, dimension, dimension));
-        float[][] rows = new float[dimension - 1][dimension - 1];
+        double[][] rows = new double[dimension - 1][dimension - 1];
         int _row = 0, _col = 0;
         for (int r = 0; r < dimension; r++) {
             if (r == row) continue;
@@ -157,9 +157,9 @@ public final class Matrix3 extends Matrix {
     }
 
     @Override
-    public float getDeterminant() {
+    public double getDeterminant() {
         // cofactor expansion technique
-        float det = 0.0f;
+        double det = 0.0f;
         det += matrix[0][0] * getCofactor(0, 0);
         det += matrix[0][1] * getCofactor(0, 1);
         det += matrix[0][2] * getCofactor(0, 2);

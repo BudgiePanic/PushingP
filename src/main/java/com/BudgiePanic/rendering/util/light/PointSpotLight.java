@@ -13,7 +13,7 @@ import com.BudgiePanic.rendering.util.Tuple;
  *
  * @author BudgiePanic
  */
-public record PointSpotLight(Tuple position, Color color, Tuple direction, float innerAngle, float coneAngle) implements Light {
+public record PointSpotLight(Tuple position, Color color, Tuple direction, double innerAngle, double coneAngle) implements Light {
 
     /**
      * Create a new point spotlight. casts hard shadows.
@@ -44,19 +44,19 @@ public record PointSpotLight(Tuple position, Color color, Tuple direction, float
     }
 
     @Override
-    public float intensityAt(Tuple point, World world, float time) {
+    public double intensityAt(Tuple point, World world, double time) {
         final var isShadowed = world.isOccluded(point, position, World.shadowCasters, time);
-        if (isShadowed) { return 0f; }
+        if (isShadowed) { return 0.0; }
         final Tuple lightToPoint = point.subtract(position);
         final var normDot = (direction.dot(lightToPoint)) / (direction.magnitude() * lightToPoint.magnitude());
-        final float angle = (float) Math.acos(normDot);
-        if (FloatHelp.compareFloat(angle, innerAngle) != 1) { return 1f; } // angle <= innerAngle
-        if (FloatHelp.compareFloat(angle, coneAngle) == 1) { return 0f; } // angle > coneAngle
+        final double angle = Math.acos(normDot);
+        if (FloatHelp.compareFloat(angle, innerAngle) != 1) { return 1.0; } // angle <= innerAngle
+        if (FloatHelp.compareFloat(angle, coneAngle) == 1) { return 0.0; } // angle > coneAngle
         // angle must be between inner angle and cone angle
         // need to LERP between 1 and zero based on how close the angle is to innerAngle
-        final float oldMin = innerAngle, oldMax = coneAngle, newMin = 0f, newMax = 1f;
-        final float invIntensity = ((angle - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
-        return 1f - invIntensity;
+        final double oldMin = innerAngle, oldMax = coneAngle, newMin = 0.0, newMax = 1.0;
+        final double invIntensity = ((angle - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
+        return 1.0 - invIntensity;
     }
 
     @Override

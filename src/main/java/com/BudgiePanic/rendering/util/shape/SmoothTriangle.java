@@ -91,7 +91,7 @@ public class SmoothTriangle extends Triangle {
     @Override 
     protected Tuple localNormal(Tuple point, Intersection intersection) {
         return intersection.uv().map(uv -> {
-            final float u = uv.a(), v = uv.b();
+            final double u = uv.a(), v = uv.b();
             return normal2.multiply(u).
                    add(normal3.multiply(v)).
                    add(normal1.multiply(1f - u - v));
