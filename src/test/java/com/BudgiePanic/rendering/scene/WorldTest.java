@@ -232,6 +232,8 @@ public class WorldTest {
         }
     }
 
+    @Test
+    void testWorldOcculdeThinObject() {
         var targetPosition = Tuple.makePoint(-10, 10, -10);
         World world = new World();
         Sphere shape = new Sphere(
