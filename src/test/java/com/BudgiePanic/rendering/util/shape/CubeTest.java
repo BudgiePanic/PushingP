@@ -138,5 +138,20 @@ public class CubeTest {
         var ray = new Ray(makePoint(1.1, 0, 0), makeVector(1, 0, 0));
         var result = cube.intersect(ray).get();
         assertTrue(Intersection.Hit(result).isEmpty());
+        
+        result = cube.intersect(new Ray(makePoint(-1.1, 0, 0), makeVector(-1, 0, 0))).get();
+        assertTrue(Intersection.Hit(result).isEmpty());
+
+        result = cube.intersect(new Ray(makePoint(0, 1.1, 0), makeVector(0, 1, 0))).get();
+        assertTrue(Intersection.Hit(result).isEmpty());
+
+        result = cube.intersect(new Ray(makePoint(0, -1.1, 0), makeVector(0, -1, 0))).get();
+        assertTrue(Intersection.Hit(result).isEmpty());
+
+        result = cube.intersect(new Ray(makePoint(0, 0, 1.1), makeVector(0, 0, 1))).get();
+        assertTrue(Intersection.Hit(result).isEmpty());
+
+        result = cube.intersect(new Ray(makePoint(0, 0, -1.1), makeVector(0, 0, -1))).get();
+        assertTrue(Intersection.Hit(result).isEmpty());
     }
 }
