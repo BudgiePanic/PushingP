@@ -233,7 +233,7 @@ public class Cone extends BaseShape {
                 }
             }
         }
-        var y = (double) Math.sqrt((point.x * point.x) + (point.z * point.z));
+        var y = Math.sqrt((point.x * point.x) + (point.z * point.z));
         y = FloatHelp.compareFloat(point.y, 0) == 1 ? -y : y;
         return makeVector(point.x, y, point.z);
     }
