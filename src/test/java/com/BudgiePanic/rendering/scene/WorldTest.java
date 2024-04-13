@@ -777,7 +777,7 @@ public class WorldTest {
         var cameraPosition = makePoint(1.1, 0, 0);
         world.addShape(new Cube(Matrix4.identity(), Material.defaultMaterial().setAmbient(1)));
         world.addLight(new PointLight(cameraPosition, Colors.white));
-        var camera = new PinHoleCamera(50, 50, Math.PI, View.makeViewMatrix(cameraPosition, makePoint(2, 0, 0), Directions.up));
+        var camera = new PinHoleCamera(50, 50, Math.PI/2.0, View.makeViewMatrix(cameraPosition, makePoint(2, 0, 0), Directions.up));
         var result = camera.takePicture(world);
         result.forEach(c -> assertEquals(Colors.black, c));
     }
