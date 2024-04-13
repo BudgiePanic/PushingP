@@ -251,27 +251,12 @@ public class WorldTest {
                 Tuple.makeVector(0, 1, 0))
         );
         world.addShape(shape);
-        // current system
+
         var ray = camera.createRay(10.5f, 0.5f, 0);
         var intersections = world.intersect(ray).get();
         var hit = Intersection.Hit(intersections).get();
         var info = hit.computeShadingInfo(ray);
-
-        // working in local space
-        
-        var localPoint = shape.toObjectSpace(info.point());
-        var localTarget = shape.toObjectSpace(targetPosition);
-        var localNormal = shape.localNormal(localPoint);
-        var delta = localNormal.multiply(FloatHelp.epsilon);
-        var localOverPoint = localPoint.add(delta);
-        var localDirection = localTarget.subtract(localOverPoint).normalize();
-        var localRay = new Ray(localOverPoint, localDirection);
-        var resultTwo = Intersection.Hit(shape.localIntersect(localRay).get());
-        assertTrue(resultTwo.isEmpty());
-        
-        world.isOccluded(info.point(), targetPosition, World.allShapes, 0);
-
-        // result should be false, but its true... somehow the sphere occuldes itself...
+        // result should be false, the sphere can't occulde itself...
         var result = world.isOccluded(info.overPoint(), targetPosition, World.allShapes, 0);
         assertFalse(result);
     }

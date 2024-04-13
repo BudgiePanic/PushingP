@@ -43,7 +43,7 @@ public class Sphere extends BaseShape {
     }
 
     @Override
-    public Optional<List<Intersection>> localIntersect(Ray ray) {
+    protected Optional<List<Intersection>> localIntersect(Ray ray) {
         // Compute discriminant, if 0, then there is no intersection
           // A vector going from the sphere origin to the ray origin
         var sphereToRay = ray.origin().subtract(origin); 
@@ -77,7 +77,7 @@ public class Sphere extends BaseShape {
      *   A new vector representing the normal of the sphere at the given point.
      */
     @Override
-    public Tuple localNormal(Tuple point) {
+    protected Tuple localNormal(Tuple point) {
       return point.subtract(origin).normalize(); // the normal in object space
     }
 
