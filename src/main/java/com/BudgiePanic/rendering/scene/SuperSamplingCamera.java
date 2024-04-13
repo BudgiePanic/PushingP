@@ -336,10 +336,10 @@ public class SuperSamplingCamera implements Camera {
             double bl = squaredDistance(middle, bottomLeft);
             double br = squaredDistance(middle, bottomRight);
             int subSamples = 0;
-            final double nextDown = pixelRow - (0.5f * offset);
-            final double nextUp = pixelRow + (0.5f * offset);
-            final double nextLeft = pixelColumn - (0.5f * offset);
-            final double nextRight = pixelColumn + (0.5f * offset);
+            final double nextDown = pixelRow - (0.5 * offset);
+            final double nextUp = pixelRow + (0.5 * offset);
+            final double nextLeft = pixelColumn - (0.5 * offset);
+            final double nextRight = pixelColumn + (0.5 * offset);
             if (tl > thresholdSquared) {
                 subSamples += pixelAt(args, nextLeft, nextUp, depth + 1, Corner.topLeft, middle, topLeft);
             }
