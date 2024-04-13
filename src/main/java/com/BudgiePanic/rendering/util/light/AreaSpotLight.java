@@ -179,8 +179,8 @@ public class AreaSpotLight implements Light {
         if (FloatHelp.compareFloat(0, angle) == 0) {
             return Transforms.identity().translate(-position.x, -position.y, -position.z).assemble();
         }
-        if (FloatHelp.compareFloat((double)Math.PI, angle) == 0) {
-            return Transforms.identity().rotateX((double)Math.PI).translate(-position.x, -position.y, -position.z).assemble();
+        if (FloatHelp.compareFloat(Math.PI, angle) == 0) {
+            return Transforms.identity().rotateX(Math.PI).translate(-position.x, -position.y, -position.z).assemble();
         }
         final var c = Math.cos(angle);
         final var s = Math.sin(angle);
