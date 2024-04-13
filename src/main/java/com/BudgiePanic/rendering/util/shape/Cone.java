@@ -193,7 +193,7 @@ public class Cone extends BaseShape {
         if (FloatHelp.compareFloat(discriminant, 0) == -1) {
             return Optional.empty();
         }
-        final double sqrtDisc = FloatHelp.compareFloat(discriminant, 0) == 0 ? 0 : (double) Math.sqrt(discriminant);
+        final double sqrtDisc = FloatHelp.compareFloat(discriminant, 0) == 0 ? 0 : Math.sqrt(discriminant);
         var t0 = (-b - sqrtDisc) / (2*a);
         var t1 = (-b + sqrtDisc) / (2*a);
         if (t0 > t1) {
