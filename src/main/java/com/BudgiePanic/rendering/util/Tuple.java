@@ -20,7 +20,7 @@ public class Tuple {
      * @return
      *   A new vector Tuple.
      */
-    public static Tuple makeVector(float x, float y, float z) {
+    public static Tuple makeVector(double x, double y, double z) {
         return new Tuple(x, y, z, 0.0f);
     }
 
@@ -49,7 +49,7 @@ public class Tuple {
      * @return
      *   A new point Tuple.
      */
-    public static Tuple makePoint(float x, float y, float z) {
+    public static Tuple makePoint(double x, double y, double z) {
         return new Tuple(x, y, z);
     }
 
@@ -59,13 +59,13 @@ public class Tuple {
      *   A new Zeroed point.
      */
     public static Tuple makePoint(){
-        return makePoint(0.0f, 0.0f, 0.0f);
+        return makePoint(0.0, 0.0, 0.0);
     }
 
     /**
      * The horizontal component.
      */
-    public final float x, 
+    public final double x, 
     /**
      * The vertical component
      */
@@ -83,16 +83,16 @@ public class Tuple {
      * Default Tuple. All values are zeroed.
      */
     public Tuple() {
-        this.x = 0.0f;
-        this.y = 0.0f;
-        this.z = 0.0f;
-        this.w = 0.0f;
+        this.x = 0.0;
+        this.y = 0.0;
+        this.z = 0.0;
+        this.w = 0.0;
     }
 
     /**
      * Custom Tuple, specify the values.
      */
-    public Tuple(float x, float y, float z, float w){
+    public Tuple(double x, double y, double z, double w){
         this.x = x;
         this.y = y;
         this.z = z;
@@ -102,11 +102,11 @@ public class Tuple {
     /**
      * Shortcut position tuple, sets w component to 1 automatically.
      */
-    public Tuple(float x, float y, float z) {
+    public Tuple(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.w = 1.0f;
+        this.w = 1.0;
     }
 
     /**
@@ -124,14 +124,14 @@ public class Tuple {
      *  Checks if this tuple represents a vector (direction).
      */
     public boolean isVector(){
-        return compareFloat(this.w, 0f) == 0;
+        return compareFloat(this.w, 0.0) == 0;
     }
 
     /**
      * Checks if this tuple represents a point in space (position).
      */
     public boolean isPoint(){
-        return compareFloat(this.w, 1f) == 0;
+        return compareFloat(this.w, 1.0) == 0;
     }
 
     /**
@@ -165,7 +165,7 @@ public class Tuple {
      * @return
      *     A new tuple displaced by [x,y,z] from 'this'.
      */
-    public Tuple add(float x, float y, float z) {
+    public Tuple add(double x, double y, double z) {
         return new Tuple(
             this.x + x,
             this.y + y,
@@ -182,7 +182,7 @@ public class Tuple {
      * @param w
      * @return
      */
-    public Tuple add(float x, float y, float z, float w) {
+    public Tuple add(double x, double y, double z, double w) {
         return new Tuple(
             this.x + x,
             this.y + y,
@@ -219,7 +219,7 @@ public class Tuple {
      * @param z
      * @return
      */
-    public Tuple subtract(float x, float y, float z) {
+    public Tuple subtract(double x, double y, double z) {
         return new Tuple(
             this.x - x,
             this.y - y,
@@ -236,7 +236,7 @@ public class Tuple {
      * @param w
      * @return
      */
-    public Tuple subtract(float x, float y, float z, float w) {
+    public Tuple subtract(double x, double y, double z, double w) {
         return new Tuple(
             this.x - x,
             this.y - y,
@@ -268,7 +268,7 @@ public class Tuple {
      * @return
      *     A new tuple scaled by the value.
      */
-    public Tuple multiply(float value) {
+    public Tuple multiply(double value) {
         return new Tuple(
             value * this.x,
             value * this.y,
@@ -285,7 +285,7 @@ public class Tuple {
      * @return
      *     A new tuple scaled by the value.
      */
-    public Tuple divide(float value) {
+    public Tuple divide(double value) {
         return new Tuple(
             this.x / value,
             this.y / value,
@@ -300,8 +300,8 @@ public class Tuple {
      * @return
      *     The size of this tuple.
      */
-    public float magnitude() {
-        return (float)Math.sqrt(
+    public double magnitude() {
+        return Math.sqrt(
             (this.x * this.x) +
             (this.y * this.y) +
             (this.z * this.z) +
@@ -317,7 +317,7 @@ public class Tuple {
      */
     public Tuple normalize() {
         // if performance becomes an issue, you would use the fast inverse square root algorithm here
-        float mag = magnitude();
+        double mag = magnitude();
         return new Tuple(
             this.x / mag,
             this.y / mag,
@@ -334,7 +334,7 @@ public class Tuple {
      * @return
      *     The dot product of 'this' and 'other'.
      */
-    public float dot(Tuple other) {
+    public double dot(Tuple other) {
         if (other == null) throw nullArgument;
         return (this.x * other.x) +
                (this.y * other.y) +
@@ -366,7 +366,7 @@ public class Tuple {
      *     A new vector reflected about the normal
      */
     public Tuple reflect(Tuple normal) {
-        var scalar = 2.0f * this.dot(normal);
+        var scalar = 2.0 * this.dot(normal);
         return this.subtract(normal.multiply(scalar));
     }
 
@@ -378,9 +378,9 @@ public class Tuple {
      * @return
      *   The angle between 'this' vector and 'vector' in radians.
      */
-    public float angleBetween(final Tuple vector) {
+    public double angleBetween(final Tuple vector) {
         final var normDot = (this.dot(vector)) / (this.magnitude() * vector.magnitude());
-        final float angle = (float) Math.acos(normDot);
+        final double angle = Math.acos(normDot);
         return angle;
     }
 

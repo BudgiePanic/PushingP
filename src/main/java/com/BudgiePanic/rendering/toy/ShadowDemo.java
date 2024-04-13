@@ -24,7 +24,7 @@ public class ShadowDemo implements Runnable {
 
     private static final int width = 256;
     private static final int height = 128;
-    private static final float fov = toRadians(90f);
+    private static final double fov = toRadians(90f);
     private final PinHoleCamera cameraA = new PinHoleCamera(width, height, fov, makeViewMatrix(makePoint(0f, 0.1f, -9), makePoint(0f, 0f, 1f), makeVector(0, 1, 0)));
     private final PinHoleCamera cameraB = new PinHoleCamera(width, height, fov, makeViewMatrix(makePoint(3, 2.2f, 0), makePoint(3.5f, 0, 0), makeVector(0, 1, 0)));
     private static final String cameraAImageName = "front_shadow_demo.ppm";

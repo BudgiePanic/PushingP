@@ -13,7 +13,7 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  */
 public class PinHoleCamera extends BasePerspectiveCamera {
     
-    protected static final float focalDistance = 1f;
+    protected static final double focalDistance = 1.0;
 
     /**
      * Create a new perspective camera. 
@@ -28,12 +28,12 @@ public class PinHoleCamera extends BasePerspectiveCamera {
      * @param transform
      *   The camera transform.
      */
-    public PinHoleCamera(int width, int height, float fov, Matrix4 transform) {
+    public PinHoleCamera(int width, int height, double fov, Matrix4 transform) {
         super(width, height, fov, focalDistance,transform);
     }
 
     @Override
-    public Ray createRay(float pixelColumn, float pixelRow, float time) {
+    public Ray createRay(double pixelColumn, double pixelRow, double time) {
         // pre condition checks
         if (pixelColumn < 0 || pixelColumn > this.width) throw new IllegalArgumentException("invalid pixel column for camera " + pixelColumn);
         if (pixelRow < 0 || pixelRow > this.height) throw new IllegalArgumentException("invalid pixel row for camera" + pixelRow);
@@ -46,7 +46,7 @@ public class PinHoleCamera extends BasePerspectiveCamera {
         // assuming the camera view plane is normalized, the far plane is at z = -1 and there is no near plane (camera view is a pyramid shape)
         final var worldX = this.halfWidth - xOffset;
         final var worldY = this.halfHeight - yOffset;
-        final float worldZ = -focalDistance;
+        final var worldZ = -focalDistance;
         // move this 'camera space' ray into world space
         final var cameraInverse = this.transform.inverse();
         final var pixel = cameraInverse.multiply(Tuple.makePoint(worldX, worldY, worldZ));
@@ -56,7 +56,7 @@ public class PinHoleCamera extends BasePerspectiveCamera {
     }
 
     @Override
-    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
+    public Color pixelAt(World world, double pixelColumn, double pixelRow, double time) {
         return world.computeColor(createRay(pixelColumn, pixelRow, time));
     }
 

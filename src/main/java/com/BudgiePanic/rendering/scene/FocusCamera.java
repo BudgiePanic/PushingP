@@ -22,12 +22,12 @@ public class FocusCamera extends BasePerspectiveCamera {
     /**
      * Default randomness source for focus camera. Non-deterministic, varies output each run, thread safe.
      */
-    public static final Supplier<Float> defaultRandomness = RandomSuppliers.threadSafeRandomSupplier; 
+    public static final Supplier<Double> defaultRandomness = RandomSuppliers.threadSafeRandomSupplier; 
 
     /**
      * Constant value 'randomness' for testing
      */
-    public static final Supplier<Float> constantOutput = RandomSuppliers.noRandom;
+    public static final Supplier<Double> constantOutput = RandomSuppliers.noRandom;
 
     /**
      * The suggested value of rays to cast per pixel.
@@ -39,7 +39,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * Using a consistent fov eliminates one variable that affects the FOV of the final image.
      * (The other variable is the focal distance).
      */
-    public static final float defaultFOV = toRadians(70f);
+    public static final double defaultFOV = toRadians(70.0);
     
     /**
      * The size of the hole that light enters the camera through.
@@ -47,7 +47,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * A deep depth of field means everything in the image appears in focus.
      * A narrow depth of field means only the subject at the focal distance is in focus, other elements are blurred.
      */
-    protected final float aperture;
+    protected final double aperture;
     /**
      * The number of rays to cast per pixel through the aperture.
      * The color from each ray is averaged together to form the final pixel color.
@@ -56,7 +56,7 @@ public class FocusCamera extends BasePerspectiveCamera {
     /**
      * Supplier of ray direction randomness.
      */
-    protected final Supplier<Float> randomnessSource;
+    protected final Supplier<Double> randomnessSource;
 
     /**
      * Canonical constructor. Use a convience constructor instead.
@@ -78,7 +78,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * @param randomnessSource
      *   Source of randomness of ray directions.
      */
-    public FocusCamera(int width, int height, float fov, float aperture, float focalDistance, Matrix4 transform, int raysPerPixel, Supplier<Float> randomnessSource) {
+    public FocusCamera(int width, int height, double fov, double aperture, double focalDistance, Matrix4 transform, int raysPerPixel, Supplier<Double> randomnessSource) {
         super(width, height, fov, focalDistance, transform);
         this.aperture = aperture;
         this.raysPerPixel = raysPerPixel;
@@ -101,7 +101,7 @@ public class FocusCamera extends BasePerspectiveCamera {
      * @param transform
      *   Transform to move into camera orientation space.
      */
-    public FocusCamera(int width, int height, float fov, float aperture, float focalDistance, Matrix4 transform) {
+    public FocusCamera(int width, int height, double fov, double aperture, double focalDistance, Matrix4 transform) {
         this(width, height, fov, aperture, focalDistance, transform, defaultRaysPerPixel, defaultRandomness);
     }
 
@@ -118,12 +118,12 @@ public class FocusCamera extends BasePerspectiveCamera {
      * @param transform
      *   Transform to move into camera orientation space.
      */
-    public FocusCamera(int width, int height, float aperture, float focalDistance, Matrix4 transform) {
+    public FocusCamera(int width, int height, double aperture, double focalDistance, Matrix4 transform) {
         this(width, height, defaultFOV, aperture, focalDistance, transform, defaultRaysPerPixel, defaultRandomness);
     }
 
     @Override
-    public Ray createRay(float pixelColumn, float pixelRow, float time) {
+    public Ray createRay(double pixelColumn, double pixelRow, double time) {
         // pre condition checks
         if (pixelColumn < 0 || pixelColumn > this.width) throw new IllegalArgumentException("invalid pixel column for camera");
         if (pixelRow < 0 || pixelRow > this.height) throw new IllegalArgumentException("invalid pixel row for camera");
@@ -133,7 +133,7 @@ public class FocusCamera extends BasePerspectiveCamera {
 
         final var worldX = this.halfWidth - xOffset;
         final var worldY = this.halfHeight - yOffset;
-        final float worldZ = -focalDistance;
+        final double worldZ = -focalDistance;
         
         final var cameraInverse = this.transform.inverse();
         final var pixel = cameraInverse.multiply(makePoint(worldX, worldY, worldZ));
@@ -156,14 +156,14 @@ public class FocusCamera extends BasePerspectiveCamera {
         final var angle = randomnessSource.get() * 2 * Math.PI;
         final var xOffset = radius * Math.cos(angle);
         final var yOffset = radius * Math.sin(angle);
-        return makePoint((float) xOffset, (float) yOffset, 0f);
+        return makePoint(xOffset, yOffset, 0.0);
     }
 
     @Override
-    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
-        float red = 0;
-        float green = 0;
-        float blue = 0;
+    public Color pixelAt(World world, double pixelColumn, double pixelRow, double time) {
+        double red = 0;
+        double green = 0;
+        double blue = 0;
         // cast n rays into the scene for this pixel 
         // and then average the colors from the rays together
         for (int i = 0; i < this.raysPerPixel; i++) {
@@ -175,9 +175,9 @@ public class FocusCamera extends BasePerspectiveCamera {
             blue += color.getBlue() * color.getBlue(); // blue += color.getBlue();
         }
         // average the squared colors
-        red = (float) Math.sqrt(red / raysPerPixel); // red /= raysPerPixel;
-        green = (float) Math.sqrt(green / raysPerPixel); // green /= raysPerPixel; 
-        blue = (float) Math.sqrt(blue / raysPerPixel); // blue /= raysPerPixel;
+        red = Math.sqrt(red / raysPerPixel); // red /= raysPerPixel;
+        green = Math.sqrt(green / raysPerPixel); // green /= raysPerPixel; 
+        blue = Math.sqrt(blue / raysPerPixel); // blue /= raysPerPixel;
         return new Color(red, green, blue);
     }
 }

@@ -60,10 +60,10 @@ public final class CanvasWriter {
      *     Builder, if the row has room for more colors.
      *     If the row has reached maximum length, the string builder is written to lines and a new SB is returned. 
      */
-    private static StringBuilder writeColor(StringBuilder builder, float color, List<String> lines) {
-        final float min = 0f;
-        final float max = 1f;
-        final float scale = 255f;
+    private static StringBuilder writeColor(StringBuilder builder, double color, List<String> lines) {
+        final double min = 0.0;
+        final double max = 1.0;
+        final double scale = 255.0;
         final int maxLineLength = 70;
         int colorDiscrete = (int) Math.ceil((scale * Math.clamp(color, min, max)));
         var strColor = String.format(" %d", colorDiscrete);

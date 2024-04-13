@@ -22,7 +22,7 @@ public class IntersectTest {
     @Test
     void testIntersect() {
         var sphere = Sphere.defaultSphere();
-        var intersection = new Intersection(3.5f, sphere);
+        var intersection = new Intersection(3.5, sphere);
         assertEquals(3.5f, intersection.a());
         assertTrue(sphere == intersection.shape());
     }
@@ -34,8 +34,8 @@ public class IntersectTest {
     @Test
     void testIntersectHitA() {
         var sphere = Sphere.defaultSphere();
-        var intersectA = new Intersection(1f, sphere);
-        var intersectB = new Intersection(2f, sphere);
+        var intersectA = new Intersection(1.0, sphere);
+        var intersectB = new Intersection(2.0, sphere);
         var result = Intersection.Hit(List.of(intersectA, intersectB));
         assertTrue(result.isPresent(), "no hit intersection was returned");
         assertEquals(intersectA, result.get(), "first intersect did not equal the returned hit intersect");
@@ -45,8 +45,8 @@ public class IntersectTest {
     @Test
     void testIntersectHitB() {
         var sphere = Sphere.defaultSphere();
-        var intersectA = new Intersection(-1f, sphere);
-        var intersectB = new Intersection(1f, sphere);
+        var intersectA = new Intersection(-1.0, sphere);
+        var intersectB = new Intersection(1.0, sphere);
         var result = Intersection.Hit(List.of(intersectA, intersectB));
         assertTrue(result.isPresent(), "no hit intersection was returned");
         assertEquals(intersectB, result.get());
@@ -55,8 +55,8 @@ public class IntersectTest {
     @Test
     void testIntesectHitC() {
         var sphere = Sphere.defaultSphere();
-        var intersectA = new Intersection(-2f, sphere);
-        var intersectB = new Intersection(-1f, sphere);
+        var intersectA = new Intersection(-2.0, sphere);
+        var intersectB = new Intersection(-1.0, sphere);
         var result = Intersection.Hit(List.of(intersectA, intersectB));
         assertTrue(result.isEmpty(), "A hit intersection was returned when all distances were negative");
     }
@@ -64,10 +64,10 @@ public class IntersectTest {
     @Test
     void testIntersectHitD() {
         var sphere = Sphere.defaultSphere();
-        var intersectA = new Intersection(5f, sphere);
-        var intersectB = new Intersection(7f, sphere);
-        var intersectC = new Intersection(-3f, sphere);
-        var intersectD = new Intersection(2f, sphere);
+        var intersectA = new Intersection(5.0, sphere);
+        var intersectB = new Intersection(7.0, sphere);
+        var intersectC = new Intersection(-3.0, sphere);
+        var intersectD = new Intersection(2.0, sphere);
         var result = Intersection.Hit(List.of(intersectA, intersectB, intersectC, intersectD));
         assertTrue(result.isPresent(), "no hit intersection was returned");
         assertEquals(intersectD, result.get());
@@ -80,17 +80,17 @@ public class IntersectTest {
         // ray hit a point in shadow, caused by floating point imprecision
         var ray = new Ray(Tuple.makePoint(0, 0, -5), Tuple.makeVector(0, 0, 1));
         var shape = new Sphere(Transforms.identity().translate(0, 0, 1).assemble());
-        var intersect = new Intersection(5f, shape);
+        var intersect = new Intersection(5.0, shape);
         var info = intersect.computeShadingInfo(ray);
         Tuple result = info.overPoint();
-        assertTrue(result.z < -(FloatHelp.epsilon / 2f)); 
+        assertTrue(result.z < -(FloatHelp.epsilon / 2.0)); 
         assertTrue(result.z < info.point().z); // the point moved along the normal should be closer to 0 (smaller) because the ray came from -ve z direction
         assertEquals(-1, FloatHelp.compareFloat(result.z, info.point().z));
     }
 
     @Test
     void testIntersectionPrecomputeReflectVector() {
-        float sqrt2 = (float)(Math.sqrt(2));
+        double sqrt2 = (Math.sqrt(2));
         var shape = new Plane(Transforms.identity().assemble());
         var ray = new Ray(Tuple.makePoint(0, 1, -1), Tuple.makeVector(0, -sqrt2/2f, sqrt2/2f));
         var intersection = new Intersection(sqrt2, shape);
@@ -108,28 +108,28 @@ public class IntersectTest {
         var c = new Sphere(Transforms.identity().translate(0, 0, 0.25f).assemble(), material.setRefractiveIndex(2.5f));
         var ray = new Ray(makePoint(0, 0, -4), makeVector(0, 0, 1));
         var intersections = List.of(
-            new Intersection(2f, a),
-            new Intersection(2.75f, b),
-            new Intersection(3.25f, c),
-            new Intersection(4.75f, b),
-            new Intersection(5.25f, c),
-            new Intersection(6f, a)
+            new Intersection(2.0, a),
+            new Intersection(2.75, b),
+            new Intersection(3.25, c),
+            new Intersection(4.75, b),
+            new Intersection(5.25, c),
+            new Intersection(6.0, a)
         );
         var expectedN1 = List.of(
-            1.0f,
-            1.5f,
-            2.0f,
-            2.5f,
-            2.5f,
-            1.5f
+            1.0,
+            1.5,
+            2.0,
+            2.5,
+            2.5,
+            1.5
         );
         var expectedN2 = List.of(
-            1.5f,
-            2.0f,
-            2.5f,
-            2.5f,
-            1.5f,
-            1.0f
+            1.5,
+            2.0,
+            2.5,
+            2.5,
+            1.5,
+            1.0
         );
         for (int i = 0; i < intersections.size(); i++) {
             var expectedn1 = expectedN1.get(i);
@@ -148,16 +148,16 @@ public class IntersectTest {
         // under point lies slightly beneath the ray-object point of intersection, used to avoid acne caused by floating point errors
         var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
         var shape = new Sphere(Transforms.identity().translate(0, 0, 1).assemble(), Sphere.defaultGlassSphere().material());
-        var intersection = new Intersection(5f, shape);
+        var intersection = new Intersection(5.0, shape);
         var info = intersection.computeShadingInfo(ray);
         var result = info.underPoint();
-        assertTrue(result.z > (FloatHelp.epsilon * 0.5f));
+        assertTrue(result.z > (FloatHelp.epsilon * 0.5));
         assertTrue(info.point().z < result.z);
     }
 
     @Test
     void testSchlickUnderTotalInternalReflection() {
-        var sqrt2Over2 = (float) (Math.sqrt(2.0)/2.0);
+        var sqrt2Over2 = (Math.sqrt(2.0)/2.0);
         var shape = Sphere.defaultGlassSphere();
         var ray = new Ray(makePoint(0, 0, sqrt2Over2), makeVector(0, 1, 0));
         var intersections = Optional.of(List.of(
@@ -166,7 +166,7 @@ public class IntersectTest {
         ));
         var info = intersections.get().getLast().computeShadingInfo(ray, intersections);
         var result = info.schlick();
-        var expectedReflectance = 1f;
+        var expectedReflectance = 1.0;
         assertEquals(expectedReflectance, result);
     }
 
@@ -175,12 +175,12 @@ public class IntersectTest {
         var shape = Sphere.defaultGlassSphere();
         var ray = new Ray(makePoint(), makeVector(0, 1, 0));
         var intersections = Optional.of(List.of(
-            new Intersection(-1f, shape),
-            new Intersection(1f, shape)
+            new Intersection(-1.0, shape),
+            new Intersection(1.0, shape)
         ));
         var info = intersections.get().getLast().computeShadingInfo(ray, intersections);
         var result = info.schlick();
-        var expectedReflectance = 0.04f;
+        var expectedReflectance = 0.04;
         assertEquals(0, FloatHelp.compareFloat(expectedReflectance, result));
     }
 
@@ -189,7 +189,7 @@ public class IntersectTest {
         var shape = Sphere.defaultGlassSphere();
         var ray = new Ray(makePoint(0, 0.99f, -2f), makeVector(0, 0, 1));
         var intersections = Optional.of(List.of(
-            new Intersection(1.8589f, shape)
+            new Intersection(1.8589, shape)
         ));
         var info = intersections.get().getFirst().computeShadingInfo(ray, intersections);
         var result = info.schlick();

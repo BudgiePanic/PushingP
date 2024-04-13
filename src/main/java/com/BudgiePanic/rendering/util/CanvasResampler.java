@@ -63,7 +63,7 @@ public class CanvasResampler {
      * @return
      */
     protected Color averageColorAt(int col, int row) {
-        float red = 0, green = 0, blue = 0;
+        double red = 0, green = 0, blue = 0;
         for (int r = row; r < row + factor; r++) {
             for (int c = col; c < col + factor; c++) {
                 final var color = getColorAt(r, c);
@@ -72,7 +72,7 @@ public class CanvasResampler {
                 blue += color.getBlue();
             }
         }
-        final float numbColor = (factor * factor); 
+        final double numbColor = (factor * factor); 
         return new Color(red / numbColor, green / numbColor, blue / numbColor);
     }
 

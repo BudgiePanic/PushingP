@@ -28,7 +28,7 @@ public class Color extends Tuple {
      * @param alpha
      *     The amount of alpha. Should be between 0 and 1.
      */
-    public Color(float red, float green, float blue, float alpha) {
+    public Color(double red, double green, double blue, double alpha) {
         super(red, green, blue, alpha);
     }
 
@@ -42,7 +42,7 @@ public class Color extends Tuple {
      * @param blue
      *     The amount of blue. Should be between 0 and 1.
      */
-    public Color(float red, float green, float blue) {
+    public Color(double red, double green, double blue) {
         super(red, green, blue, 0f);
     }
 
@@ -61,7 +61,7 @@ public class Color extends Tuple {
      * @return
      *     The amount of red.
      */
-    public float getRed() {
+    public double getRed() {
         return this.x;
     }
 
@@ -70,7 +70,7 @@ public class Color extends Tuple {
      * @return
      *     The amount of green.
      */
-    public float getGreen() {
+    public double getGreen() {
         return this.y;
     }
 
@@ -79,7 +79,7 @@ public class Color extends Tuple {
      * @return
      *     The amount of blue.
      */
-    public float getBlue() {
+    public double getBlue() {
         return this.z;
     }
 
@@ -88,7 +88,7 @@ public class Color extends Tuple {
      * @return
      *     The amount of alpha.
      */
-    public float getAlpha() {
+    public double getAlpha() {
         return this.w;
     }
 
@@ -104,23 +104,23 @@ public class Color extends Tuple {
         return new Color(super.subtract(other));
     }
 
-    public Color multiply(float value) {
+    public Color multiply(double value) {
         return new Color(super.multiply(value));
     }
 
-    public Color add(float red, float green, float blue) {
+    public Color add(double red, double green, double blue) {
         return new Color(super.add(red, green, blue));
     }
 
-    public Color add(float red, float green, float blue, float alpha) {
+    public Color add(double red, double green, double blue, double alpha) {
         return new Color(super.add(red, green, blue, alpha));
     }
 
-    public Color subtract(float red, float green, float blue) {
+    public Color subtract(double red, double green, double blue) {
         return new Color(super.subtract(red, green, blue));
     }
 
-    public Color subtract(float red, float green, float blue, float alpha) {
+    public Color subtract(double red, double green, double blue, double alpha) {
         return new Color(super.subtract(red, green, blue, alpha));
     }
 
@@ -152,7 +152,7 @@ public class Color extends Tuple {
         return compareFloat(this.getRed(), otherColor.getRed()) == 0 &&
                compareFloat(this.getGreen(), otherColor.getGreen()) == 0 &&
                compareFloat(this.getBlue(), otherColor.getBlue()) == 0; // &&
-               // compareFloat(this.getAlpha(), otherColor.getAlpha()); // Currently ignoring alpha at this stage.
+               // comparedouble(this.getAlpha(), otherColor.getAlpha()); // Currently ignoring alpha at this stage.
     }
 
 }

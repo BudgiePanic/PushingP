@@ -35,7 +35,7 @@ public final class QuarticHelp {
      * @return
      *         The real roots of the equation. may be empty if no roots were found.
      */
-    public static final List<Float> solveQuartic(float a, float b, float c, float d, float e) {
+    public static final List<Double> solveQuartic(double a, double b, double c, double d, double e) {
         // see: http://ejml.org/wiki/index.php?title=Example_Polynomial_Roots
         // TODO use a root finding algorithm that is for the specific case N=4
         // TODO the method used here is meant for N >= 5, there should be faster-more efficient algorithms for N=4 polynomials
@@ -58,11 +58,11 @@ public final class QuarticHelp {
             real_roots[i] = root.getReal();
             imag_roots[i] = root.getImaginary();
         }
-        List<Float> realRoots = new ArrayList<>(4);
+        List<Double> realRoots = new ArrayList<>(4);
         
         for (int i = 0; i < N; i++) {
             if (compareFloat(0f, (float)imag_roots[i]) == 0) {
-                realRoots.add((float)real_roots[i]);
+                realRoots.add(real_roots[i]);
             }
         }
 

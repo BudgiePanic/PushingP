@@ -14,7 +14,7 @@ public final class Scale {
      * @param z
      * @return
      */
-    public static final Matrix4 makeScaleMatrix(float x, float y, float z) {
+    public static final Matrix4 makeScaleMatrix(double x, double y, double z) {
         var identity = Matrix4.identity();
         identity.matrix[0][0] = x;
         identity.matrix[1][1] = y;

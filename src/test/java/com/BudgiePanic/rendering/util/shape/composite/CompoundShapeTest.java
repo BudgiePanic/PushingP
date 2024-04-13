@@ -48,10 +48,10 @@ public class CompoundShapeTest {
             new Pair<>(CompoundOperation.difference, new Pair<>(0, 1))
         );
         var dummyIntersections = List.of(
-            new Intersection(1f, shape1),
-            new Intersection(2f, shape2),
-            new Intersection(3f, shape1),
-            new Intersection(4f, shape2)
+            new Intersection(1.0, shape1),
+            new Intersection(2.0, shape2),
+            new Intersection(3.0, shape1),
+            new Intersection(4.0, shape2)
         );
         for (var test: tests) {
             var cShape = new CompoundShape(test.a(), shape1, shape2, Matrix4.identity());
@@ -134,7 +134,7 @@ public class CompoundShapeTest {
         assertEquals(compound.right, intersections.get(0).shape());
         var expected = -0.707107f;
         var actual = intersections.get(0).a();
-        assertEquals(0, FloatHelp.compareFloat(expected, actual), "expected " + Float.toString(expected) + " actual " + Float.toString(actual));
+        assertEquals(0, FloatHelp.compareFloat(expected, actual), "expected " + Float.toString(expected) + " actual " + Double.toString(actual));
     }
 
     @Test

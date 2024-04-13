@@ -24,8 +24,8 @@ public record Perturb(Pattern pattern, float scale) implements Pattern {
 
     @Override
     public Color colorAt(Tuple point) {
-        final float noise = Perlin.noise(point.x, point.y, point.z);
-        final float scaledNoise = noise * scale;
+        final double noise = Perlin.noise(point.x, point.y, point.z);
+        final double scaledNoise = noise * scale;
         final var perturbedPoint = point.add((point.x * scaledNoise), (point.y * scaledNoise), (point.z * scaledNoise));
         return pattern.colorAt(perturbedPoint);
     }

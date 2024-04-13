@@ -35,17 +35,17 @@ public class SuperSamplingCamera implements Camera {
          * @return
          *   The color of the pixel, whose center is at position [pixelColumn, pixelRow]
          */
-        Color pixelAt(World world, Camera camera, float pixelColumn, float pixelRow, float time);
+        Color pixelAt(World world, Camera camera, double pixelColumn, double pixelRow, double time);
     }
 
     /**
      * Fixed anti-aliasing pattern samples every pixel the same number of times, with the same sample points.
      */
     protected static interface FixedPattern extends SampleMode {
-        default Color pixelAt(World world, Camera camera, float pixelColumn, float pixelRow, float time) {
+        default Color pixelAt(World world, Camera camera, double pixelColumn, double pixelRow, double time) {
             final var sampleLocations = subPixelLocations();
             final int numbSubPixels = sampleLocations.size();
-            float red = 0, green = 0, blue = 0;
+            double red = 0, green = 0, blue = 0;
             for (final var point : sampleLocations) {
                 Color color = camera.pixelAt(world, pixelColumn + point.a(), pixelRow + point.b(), time);
                 red += color.getRed(); 
@@ -58,7 +58,7 @@ public class SuperSamplingCamera implements Camera {
          * Get the ray origins for a pixel, offset from [0.5, 0.5]
          * @return
          */
-        List<Pair<Float, Float>> subPixelLocations();
+        List<Pair<Double, Double>> subPixelLocations();
     }
 
     /**
@@ -84,7 +84,7 @@ public class SuperSamplingCamera implements Camera {
     /**
      * Dynamically takes more samples in each pixel if the color variance within the pixel is high.
      */
-    public static final SampleMode dynamicCornerGrid = new DynamicSampler(0.00015f, 4);
+    public static final SampleMode dynamicCornerGrid = new DynamicSampler(0.00015, 4);
 
     /**
      * The recommended default sampling mode.
@@ -97,20 +97,20 @@ public class SuperSamplingCamera implements Camera {
     public static final SampleMode none = new None();
 
     private final static class None implements FixedPattern {
-        final static List<Pair<Float, Float>> pattern = List.of(new Pair<>(0f, 0f));
+        final static List<Pair<Double, Double>> pattern = List.of(new Pair<>(0.0, 0.0));
         @Override
-        public List<Pair<Float, Float>> subPixelLocations() { return pattern; }
+        public List<Pair<Double, Double>> subPixelLocations() { return pattern; }
     }
 
     private final static class Grid implements FixedPattern {
-        final static List<Pair<Float, Float>> pattern = List.of(
-            new Pair<>(-0.25f, -0.25f),
-            new Pair<>(0.25f, 0.25f),
-            new Pair<>(-0.25f, 0.25f),
-            new Pair<>(0.25f, -0.25f)
+        final static List<Pair<Double, Double>> pattern = List.of(
+            new Pair<>(-0.25, -0.25),
+            new Pair<>(0.25, 0.25),
+            new Pair<>(-0.25, 0.25),
+            new Pair<>(0.25, -0.25)
         );
         @Override
-        public List<Pair<Float, Float>> subPixelLocations() { return pattern; }
+        public List<Pair<Double, Double>> subPixelLocations() { return pattern; }
     }
 
     private final static class Quincunx implements FixedPattern {
@@ -120,52 +120,52 @@ public class SuperSamplingCamera implements Camera {
         // x   x   x 
         //   x   x
         // x   x   x
-        final static List<Pair<Float, Float>> pattern = List.of(
-            new Pair<>(0f, 0f),
+        final static List<Pair<Double, Double>> pattern = List.of(
+            new Pair<>(0.0, 0.0),
 
-            new Pair<>(-0.25f, -0.25f),
-            new Pair<>(0.25f, 0.25f),
-            new Pair<>(-0.25f, 0.25f),
-            new Pair<>(0.25f, -0.25f),
+            new Pair<>(-0.25, -0.25),
+            new Pair<>(0.25, 0.25),
+            new Pair<>(-0.25, 0.25),
+            new Pair<>(0.25, -0.25),
 
-            new Pair<>(-0.5f, -0.5f),
-            new Pair<>(0.5f, 0.5f),
-            new Pair<>(-0.5f, 0.5f),
-            new Pair<>(0.5f, -0.5f),
+            new Pair<>(-0.5, -0.5),
+            new Pair<>(0.5, 0.5),
+            new Pair<>(-0.5, 0.5),
+            new Pair<>(0.5, -0.5),
 
-            new Pair<>(0f, -0.5f),
-            new Pair<>(0f, 0.5f),
-            new Pair<>(-0.5f, 0f),
-            new Pair<>(0.5f, 0f)
+            new Pair<>(0.0, -0.5),
+            new Pair<>(0.0, 0.5),
+            new Pair<>(-0.5, 0.0),
+            new Pair<>(0.5, 0.0)
         );
         @Override
-        public List<Pair<Float, Float>> subPixelLocations() { return pattern; }
+        public List<Pair<Double, Double>> subPixelLocations() { return pattern; }
     }
 
     private final static class DenseGrid implements FixedPattern {
-        final static List<Pair<Float, Float>> pattern = List.of(
-            new Pair<>(0.125f - 0.5f, 0.125f - 0.5f),
-            new Pair<>(0.375f - 0.5f, 0.125f - 0.5f),
-            new Pair<>(0.625f - 0.5f, 0.125f - 0.5f),
-            new Pair<>(0.875f - 0.5f, 0.125f - 0.5f),
+        final static List<Pair<Double, Double>> pattern = List.of(
+            new Pair<>(0.125 - 0.5, 0.125 - 0.5),
+            new Pair<>(0.375 - 0.5, 0.125 - 0.5),
+            new Pair<>(0.625 - 0.5, 0.125 - 0.5),
+            new Pair<>(0.875 - 0.5, 0.125 - 0.5),
 
-            new Pair<>(0.125f - 0.5f, 0.375f - 0.5f),
-            new Pair<>(0.375f - 0.5f, 0.375f - 0.5f),
-            new Pair<>(0.625f - 0.5f, 0.375f - 0.5f),
-            new Pair<>(0.875f - 0.5f, 0.375f - 0.5f),
+            new Pair<>(0.125 - 0.5, 0.375 - 0.5),
+            new Pair<>(0.375 - 0.5, 0.375 - 0.5),
+            new Pair<>(0.625 - 0.5, 0.375 - 0.5),
+            new Pair<>(0.875 - 0.5, 0.375 - 0.5),
 
-            new Pair<>(0.125f - 0.5f, 0.625f - 0.5f),
-            new Pair<>(0.375f - 0.5f, 0.625f - 0.5f),
-            new Pair<>(0.625f - 0.5f, 0.625f - 0.5f),
-            new Pair<>(0.875f - 0.5f, 0.625f - 0.5f),
+            new Pair<>(0.125 - 0.5, 0.625 - 0.5),
+            new Pair<>(0.375 - 0.5, 0.625 - 0.5),
+            new Pair<>(0.625 - 0.5, 0.625 - 0.5),
+            new Pair<>(0.875 - 0.5, 0.625 - 0.5),
 
-            new Pair<>(0.125f - 0.5f, 0.875f - 0.5f),
-            new Pair<>(0.375f - 0.5f, 0.875f - 0.5f),
-            new Pair<>(0.625f - 0.5f, 0.875f - 0.5f),
-            new Pair<>(0.875f - 0.5f, 0.875f - 0.5f)
+            new Pair<>(0.125 - 0.5, 0.875 - 0.5),
+            new Pair<>(0.375 - 0.5, 0.875 - 0.5),
+            new Pair<>(0.625 - 0.5, 0.875 - 0.5),
+            new Pair<>(0.875 - 0.5, 0.875 - 0.5)
         );
         @Override
-        public List<Pair<Float, Float>> subPixelLocations() { return pattern; }
+        public List<Pair<Double, Double>> subPixelLocations() { return pattern; }
     }
 
     protected final static class RotatedGrid implements FixedPattern {
@@ -180,15 +180,15 @@ public class SuperSamplingCamera implements Camera {
          * @return
          *   Unrotated points distributed across a unit square in a grid pattern.
          */
-        protected static List<Pair<Float, Float>> rawPoints(int numbPoints) {
+        protected static List<Pair<Double, Double>> rawPoints(int numbPoints) {
             final int pointsPerRow = (int) Math.sqrt(numbPoints);
-            final float pointSpacing = (float) (1 / Math.sqrt(numbPoints));
-            final List<Pair<Float, Float>> answer = new ArrayList<>(numbPoints);
+            final double pointSpacing = (1.0 / Math.sqrt(numbPoints));
+            final List<Pair<Double, Double>> answer = new ArrayList<>(numbPoints);
             for (int x = 0; x < pointsPerRow; x++) {
                 for (int y = 0; y < pointsPerRow; y++) {
                     answer.add(new Pair<>(
-                        (x + 0.5f) * pointSpacing, 
-                        (y + 0.5f) * pointSpacing)
+                        (x + 0.5) * pointSpacing, 
+                        (y + 0.5) * pointSpacing)
                     );
                 }
             }
@@ -197,7 +197,7 @@ public class SuperSamplingCamera implements Camera {
         /**
          * Only calculate the points once at object initialization.
          */
-        protected final List<Pair<Float, Float>> cachedPoints;
+        protected final List<Pair<Double, Double>> cachedPoints;
         /**
          * Create a new rotated grid. translates raw points to be centered at [0,0] instead of [0.5,0.5], scales 2x and then rotates by -30 degrees.
          * Filters any points that lie outside the unit square after the transformation.
@@ -206,17 +206,17 @@ public class SuperSamplingCamera implements Camera {
          */
         protected RotatedGrid(int power) {
             final int numbPoins = 1 << power;
-            final var translateRotateScale = Transforms.identity().translate(-0.5f, -0.5f, 0).scale(2).rotateZ(toRadians(-30f)).assemble(); // -26.6
+            final var translateRotateScale = Transforms.identity().translate(-0.5, -0.5, 0.0).scale(2.0).rotateZ(toRadians(-30.0)).assemble(); // -26.6
             var temp = rawPoints(numbPoins).stream().
                 map(p -> new Tuple(p.a(), p.b(), 0)).
                 map(translateRotateScale::multiply).
                 map(t -> new Pair<>(t.x, t.y)).
-                filter(p -> p.a() >= -0.5f && p.a() <= 0.5f && p.b() >= -0.5f && p.b() <= 0.5f).
+                filter(p -> p.a() >= -0.5 && p.a() <= 0.5 && p.b() >= -0.5 && p.b() <= 0.5).
                 collect(Collectors.toList());
             this.cachedPoints = temp;
         }
         @Override
-        public List<Pair<Float, Float>> subPixelLocations() { return cachedPoints; }
+        public List<Pair<Double, Double>> subPixelLocations() { return cachedPoints; }
     }
 
     /**
@@ -230,7 +230,7 @@ public class SuperSamplingCamera implements Camera {
          * @param threshold
          *   The maximum euclidean distance between two sample point colors before a pixel quadrant is subsampled.
          */
-        DynamicSampler(float threshold, int recusrionLimit) { 
+        DynamicSampler(double threshold, int recusrionLimit) { 
             this.thresholdSquared = threshold * threshold; 
             this.recursionLimit = recusrionLimit;
         }
@@ -242,7 +242,7 @@ public class SuperSamplingCamera implements Camera {
         /**
          * Recursion bean courier to carry common elements between recursion calls.
          */
-        protected static record PixelArgs(World world, Camera camera, float time, float[] accumulator) {
+        protected static record PixelArgs(World world, Camera camera, double time, double[] accumulator) {
             void add(Color color) {
                 this.accumulator[red] += color.getRed();
                 this.accumulator[green] += color.getGreen();
@@ -259,7 +259,7 @@ public class SuperSamplingCamera implements Camera {
          * If the ray tracer used a proper color space, this value would become the 'threshold' and would become a function of the middle pixel color (dynamically calculated).
          * See: https://en.wikipedia.org/wiki/Color_difference
          */
-        protected final float thresholdSquared;
+        protected final double thresholdSquared;
 
         // TODO replace with sealed interface?
         protected static enum Corner {
@@ -270,14 +270,14 @@ public class SuperSamplingCamera implements Camera {
             bottomLeft;
         }
 
-        protected int pixelAt(final PixelArgs args, final float pixelColumn, final float pixelRow, final int depth, final Corner corner, final Color prevMiddle, final Color prevCorner) {
+        protected int pixelAt(final PixelArgs args, final double pixelColumn, final double pixelRow, final int depth, final Corner corner, final Color prevMiddle, final Color prevCorner) {
             if (depth == recursionLimit) { return 0; }
             // determine the color in each corner and the middle of this pixel sub quadrant
-            final float offset = offset(depth);
-            final float down = pixelRow - offset;
-            final float up = pixelRow + offset;
-            final float left = pixelColumn - offset;
-            final float right = pixelColumn + offset;
+            final double offset = offset(depth);
+            final double down = pixelRow - offset;
+            final double up = pixelRow + offset;
+            final double left = pixelColumn - offset;
+            final double right = pixelColumn + offset;
             // get the 5 sample colors
             Color middle = args.camera.pixelAt(args.world, pixelColumn, pixelRow, args.time);
             args.add(middle);
@@ -331,15 +331,15 @@ public class SuperSamplingCamera implements Camera {
             }
             // now that we know what the 5 sample colors are, and we have added them to the accumulator,
             // we need to get the distance betwen the middle color and the corner colors
-            float tl = squaredDistance(middle, topLeft);
-            float tr = squaredDistance(middle, topRight);
-            float bl = squaredDistance(middle, bottomLeft);
-            float br = squaredDistance(middle, bottomRight);
+            double tl = squaredDistance(middle, topLeft);
+            double tr = squaredDistance(middle, topRight);
+            double bl = squaredDistance(middle, bottomLeft);
+            double br = squaredDistance(middle, bottomRight);
             int subSamples = 0;
-            final float nextDown = pixelRow - (0.5f * offset);
-            final float nextUp = pixelRow + (0.5f * offset);
-            final float nextLeft = pixelColumn - (0.5f * offset);
-            final float nextRight = pixelColumn + (0.5f * offset);
+            final double nextDown = pixelRow - (0.5 * offset);
+            final double nextUp = pixelRow + (0.5 * offset);
+            final double nextLeft = pixelColumn - (0.5 * offset);
+            final double nextRight = pixelColumn + (0.5 * offset);
             if (tl > thresholdSquared) {
                 subSamples += pixelAt(args, nextLeft, nextUp, depth + 1, Corner.topLeft, middle, topLeft);
             }
@@ -364,10 +364,10 @@ public class SuperSamplingCamera implements Camera {
          * @return
          *   The squared euclidean distance between a and b.
          */
-        protected static float squaredDistance(Color a, Color b) {
-            final float red = b.getRed() - a.getRed();
-            final float green = b.getGreen() - a.getGreen();
-            final float blue = b.getBlue() - a.getBlue();
+        protected static double squaredDistance(Color a, Color b) {
+            final double red = b.getRed() - a.getRed();
+            final double green = b.getGreen() - a.getGreen();
+            final double blue = b.getBlue() - a.getBlue();
             return (red * red) + (green * green) + (blue * blue);
         }
 
@@ -384,11 +384,11 @@ public class SuperSamplingCamera implements Camera {
          * @param depth
          * @return
          */
-        protected static float offset(int depth) {
+        protected static double offset(int depth) {
             if (depth < 1) { throw new IllegalArgumentException("invalid depth! " + depth); }
-            float answer = 0.5f;
+            double answer = 0.5;
             for (int i = 1; i < depth; i++) {
-                answer *= 0.5f;
+                answer *= 0.5;
             }
             return answer;
         }
@@ -396,8 +396,8 @@ public class SuperSamplingCamera implements Camera {
         protected static final int initalDepth = 1;
 
         @Override
-        public Color pixelAt(World world, Camera camera, float pixelColumn, float pixelRow, float time) {
-            final float[] accumulator = new float[3];
+        public Color pixelAt(World world, Camera camera, double pixelColumn, double pixelRow, double time) {
+            final double[] accumulator = new double[3];
             final PixelArgs args = new PixelArgs(world, camera, time, accumulator);
             final int numbSamples = pixelAt(args, pixelColumn, pixelRow, initalDepth, Corner.none, null, null);
             return new Color(
@@ -430,12 +430,12 @@ public class SuperSamplingCamera implements Camera {
     public int height() { return camera.height(); }
 
     @Override
-    public Ray createRay(float pixelColumn, float pixelRow, float time) {
+    public Ray createRay(double pixelColumn, double pixelRow, double time) {
         return camera.createRay(pixelColumn, pixelRow, time);
     }
 
     @Override
-    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
+    public Color pixelAt(World world, double pixelColumn, double pixelRow, double time) {
         return mode.pixelAt(world, this.camera, pixelColumn, pixelRow, time);
     }
 }

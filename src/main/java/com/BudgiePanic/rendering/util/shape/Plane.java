@@ -53,7 +53,7 @@ public final class Plane extends BaseShape {
             return Optional.empty();
         }
         // this algorithm assumes an xz plane with normal = [0,1,0]
-        float distanceToIntersection = -ray.origin().y / ray.direction().y;
+        var distanceToIntersection = -ray.origin().y / ray.direction().y;
         return Optional.of(List.of(new Intersection(distanceToIntersection, this)));
     }
 
@@ -80,8 +80,8 @@ public final class Plane extends BaseShape {
      * The infinite plane has a constant AABB.
      */
     protected static final BoundingBox AABB = new BoundingBox(
-        Tuple.makePoint(Float.NEGATIVE_INFINITY, 0, Float.NEGATIVE_INFINITY), 
-        Tuple.makePoint(Float.POSITIVE_INFINITY, 0, Float.POSITIVE_INFINITY)
+        Tuple.makePoint(Double.NEGATIVE_INFINITY, 0, Double.NEGATIVE_INFINITY), 
+        Tuple.makePoint(Double.POSITIVE_INFINITY, 0, Double.POSITIVE_INFINITY)
     );
 
     @Override

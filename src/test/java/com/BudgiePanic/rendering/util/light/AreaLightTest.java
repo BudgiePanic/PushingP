@@ -77,12 +77,12 @@ public class AreaLightTest {
 
     @Test
     void testAreaLightSamplingWithGenerator() {
-        var generator = new Supplier<Float>() {
+        var generator = new Supplier<Double>() {
             // can only be called 10 times
-            final List<Float> sequence = List.of(0.3f, 0.7f, 0.3f, 0.7f, 0.3f, 0.7f,0.3f,0.7f,0.3f,0.7f);
-            final Iterator<Float> getter = sequence.iterator();
+            final List<Double> sequence = List.of(0.3, 0.7, 0.3, 0.7, 0.3, 0.7,0.3,0.7,0.3,0.7);
+            final Iterator<Double> getter = sequence.iterator();
             @Override
-            public Float get() { return getter.next(); }
+            public Double get() { return getter.next(); }
         };
         var light = new AreaLight(Colors.white, makePoint(), makeVector(2, 0, 0), makeVector(0, 0, 1), 4, 2, generator);
         var tests = List.of(
@@ -103,13 +103,13 @@ public class AreaLightTest {
 
     @Test
     void testIntensityAtWithSamples() {
-        var generator = new Supplier<Float>() {
-            final List<Float> sequence = List.of(
-                0.7f, 0.3f, 0.9f, 0.1f, 0.5f
+        var generator = new Supplier<Double>() {
+            final List<Double> sequence = List.of(
+                0.7, 0.3, 0.9, 0.1, 0.5
             );
-            Iterator<Float> getter = sequence.iterator();
+            Iterator<Double> getter = sequence.iterator();
             @Override
-            public Float get() { 
+            public Double get() { 
                 if (!getter.hasNext()) {
                     getter = sequence.iterator();
                 }
@@ -117,7 +117,7 @@ public class AreaLightTest {
             }
         };
         var world = new World();
-        var light = new AreaLight(Colors.white, makePoint(-0.5f, -0.5f, -5), makeVector(1, 0, 0), makeVector(0, 1, 0), 2, 2, generator);
+        var light = new AreaLight(Colors.white, makePoint(-0.5, -0.5, -5), makeVector(1, 0, 0), makeVector(0, 1, 0), 2, 2, generator);
         var sphereA = new Sphere(Transforms.identity().assemble());
         var sphereB = new Sphere(Transforms.identity().scale(0.5f, 0.5f, 0.5f).assemble());
         world = new World();

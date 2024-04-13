@@ -24,9 +24,9 @@ public class ShutterCamera implements Camera {
         static final Averaged instance = new Averaged();
         @Override
         public Color process(Color[] colors, int raysPerExposure) {
-            float red = 0;
-            float green = 0;
-            float blue = 0;
+            double red = 0;
+            double green = 0;
+            double blue = 0;
             // cast n rays into the scene for this pixel 
             // and then average the colors from the rays together
             for (final var color : colors) {
@@ -35,9 +35,9 @@ public class ShutterCamera implements Camera {
                 blue += color.getBlue() * color.getBlue(); 
             }
             // average the squared colors
-            red = (float) Math.sqrt(red / raysPerExposure); 
-            green = (float) Math.sqrt(green / raysPerExposure); 
-            blue = (float) Math.sqrt(blue / raysPerExposure); 
+            red = Math.sqrt(red / raysPerExposure); 
+            green = Math.sqrt(green / raysPerExposure); 
+            blue = Math.sqrt(blue / raysPerExposure); 
             return new Color(red, green, blue);
         }
     }
@@ -46,9 +46,9 @@ public class ShutterCamera implements Camera {
         static final Summed instance = new Summed();
         @Override
         public Color process(Color[] colors, int raysPerExposure) {
-            float red = 0;
-            float green = 0;
-            float blue = 0;
+            double red = 0;
+            double green = 0;
+            double blue = 0;
             for (var color : colors) {
                 red += color.getRed();
                 green += color.getGreen();
@@ -75,17 +75,17 @@ public class ShutterCamera implements Camera {
     /**
      * The recommended default standard exposure time.
      */
-    public static final float defaultExposureTime = 1f/60f;
+    public static final double defaultExposureTime = 1.0/60.0;
 
     /**
      * The recommended default long exposure time.
      */
-    public static final float defaultLongExposureTime = 1f/2f;
+    public static final double defaultLongExposureTime = 1.0/2.0;
 
     /**
      * The recommended default short exposure time.
      */
-    public static final float defaultShortExposureTIme = 1f/500f;
+    public static final double defaultShortExposureTIme = 1.0/500.0;
 
     /**
      * The recommended number of rays to cast per pixel over the course of the exposure.
@@ -100,7 +100,7 @@ public class ShutterCamera implements Camera {
     /**
      * How long the image exposure is.
      */
-    protected final float exposureDuration;
+    protected final double exposureDuration;
 
     /**
      * How many rays to cast per pixel over the course of the exposure.
@@ -114,7 +114,7 @@ public class ShutterCamera implements Camera {
     protected final ExposureMode mode;
 
 
-    public ShutterCamera(BasePerspectiveCamera camera, float exposureDuration, int raysPerExposure, ExposureMode mode) {
+    public ShutterCamera(BasePerspectiveCamera camera, double exposureDuration, int raysPerExposure, ExposureMode mode) {
         this.camera = camera;
         this.exposureDuration = exposureDuration;
         this.raysPerExposure = raysPerExposure;
@@ -128,10 +128,10 @@ public class ShutterCamera implements Camera {
     public int height() { return this.camera.height; }
 
     @Override
-    public Ray createRay(float pixelColumn, float pixelRow, float time) { return camera.createRay(pixelColumn, pixelRow, time); }
+    public Ray createRay(double pixelColumn, double pixelRow, double time) { return camera.createRay(pixelColumn, pixelRow, time); }
 
     @Override
-    public Color pixelExposureAt(World world, float pixelColumn, float pixelRow) {
+    public Color pixelExposureAt(World world, double pixelColumn, double pixelRow) {
         // overriding base camera pixelAt behaviour feels a bit ugly, but it least it works.
         // find the times of each ray cast
         // the times need to be evenly distributed from 0s to exposureDuration
@@ -146,7 +146,7 @@ public class ShutterCamera implements Camera {
     }
 
     @Override
-    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
+    public Color pixelAt(World world, double pixelColumn, double pixelRow, double time) {
         return camera.pixelAt(world, pixelColumn, pixelRow, time);
     }
     

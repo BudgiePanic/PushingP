@@ -86,7 +86,7 @@ public class PhongTest {
     @Test
     void testDefaultMaterialProperties() {
         var material = Material.defaultMaterial();
-        var expected = new Material(Colors.white, 0.1f, 0.9f, 0.9f, 200f, 0,0,1);
+        var expected = new Material(Colors.white, 0.1, 0.9, 0.9, 200, 0,0,1);
         assertEquals(expected, material);
     }
 

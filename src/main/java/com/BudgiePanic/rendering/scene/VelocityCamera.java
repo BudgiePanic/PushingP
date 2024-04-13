@@ -39,7 +39,7 @@ public class VelocityCamera implements Camera {
     /**
      * The time the image should be taken.
      */
-    protected final float time;
+    protected final double time;
 
     /**
      * The internal camera to copy orientation from.
@@ -56,7 +56,7 @@ public class VelocityCamera implements Camera {
      * @param time
      *   The time the image should be taken at.
      */
-    public VelocityCamera(BasePerspectiveCamera camera, DepthMode mode, float time) {
+    public VelocityCamera(BasePerspectiveCamera camera, DepthMode mode, double time) {
         this.internal = camera;
         this.mode = mode;
         this.time = time;
@@ -69,7 +69,7 @@ public class VelocityCamera implements Camera {
      *   The internal camera to copy orientation from.
      */
     public VelocityCamera(BasePerspectiveCamera camera) {
-        this(camera, VelocityCamera.defaultMode, 0f);
+        this(camera, VelocityCamera.defaultMode, 0.0);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class VelocityCamera implements Camera {
     public int height() { return internal.height; }
 
     @Override
-    public Ray createRay(float pixelColumn, float pixelRow, float time) {
+    public Ray createRay(double pixelColumn, double pixelRow, double time) {
         // create pinhole camera rays so the velocity map image is crisp and in-focus
         // TODO: code smell here, this method is 99% similar to PinHoleCamera::createRay, there can probably be an abstraction
         if (pixelColumn < 0 || pixelColumn > internal.width) throw new IllegalArgumentException("invalid pixel column for camera");
@@ -88,7 +88,7 @@ public class VelocityCamera implements Camera {
         final var yOffset = (pixelRow) * internal.pixelSize;
         final var worldX = internal.halfWidth - xOffset;
         final var worldY = internal.halfHeight - yOffset;
-        final float worldZ = -internal.focalDistance;
+        final double worldZ = -internal.focalDistance;
         final var cameraInverse = internal.transform.inverse();
         final var pixel = cameraInverse.multiply(Tuple.makePoint(worldX, worldY, worldZ));
         final var origin = cameraInverse.multiply(Tuple.makePoint());
@@ -97,12 +97,12 @@ public class VelocityCamera implements Camera {
     }
 
     @Override
-    public Color pixelExposureAt(World world, float pixelColumn, float pixelRow) {
+    public Color pixelExposureAt(World world, double pixelColumn, double pixelRow) {
         return pixelAt(world, pixelColumn, pixelRow, this.time);
     }
 
     @Override
-    public Color pixelAt(World world, float pixelColumn, float pixelRow, float time) {
+    public Color pixelAt(World world, double pixelColumn, double pixelRow, double time) {
         final var zero = Tuple.makePoint();
         final var ray = createRay(pixelColumn, pixelRow, time);
         final var intersections = world.intersect(ray);

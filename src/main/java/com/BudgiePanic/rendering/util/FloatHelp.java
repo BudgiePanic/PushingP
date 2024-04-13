@@ -12,7 +12,7 @@ public final class FloatHelp {
     /**
      * The maximum difference in floats for them to be considered the same.
      */
-    public final static float epsilon = 0.0001f;
+    public final static double epsilon = 0.0001;
     
     /**
      * checks if two floating point numbers are similar enough to each other.
@@ -26,9 +26,9 @@ public final class FloatHelp {
      *    1 if a is larger than b.
      *   -1 if b is larger than a.
      */
-    public static int compareFloat(float a, float b){
+    public static int compareFloat(double a, double b){
 
-        final boolean aIsInfinite = Float.isInfinite(a), bIsInfinite = Float.isInfinite(b);
+        final boolean aIsInfinite = Double.isInfinite(a), bIsInfinite = Double.isInfinite(b);
         if (aIsInfinite || bIsInfinite) {
             if (a < b) {
                 return -1;
@@ -39,7 +39,7 @@ public final class FloatHelp {
             }
         }
 
-        float delta = (float) Math.abs(a - b);
+        double delta = Math.abs(a - b);
         if (delta < epsilon) return 0;
         if (a < b) return -1;
         return 1;

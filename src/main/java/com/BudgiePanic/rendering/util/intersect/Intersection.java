@@ -18,7 +18,7 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
  * 
  * @author BudgiePanic
  */
-public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv) {
+public record Intersection(Double a, Shape shape, Optional<Pair<Double, Double>> uv) {
     
     /**
      * Container storing the distance travelled along a ray and the shape that the ray intersected with.
@@ -40,7 +40,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
      * @param uv
      *   The uv coordinates of the intersection
      */
-    public Intersection(Float a, Shape shape, Pair<Float, Float> uv) { this(a, shape, Optional.ofNullable(uv)); }
+    public Intersection(Double a, Shape shape, Pair<Double, Double> uv) { this(a, shape, Optional.ofNullable(uv)); }
 
     /**
      * Create a Ray intersection information container.
@@ -49,7 +49,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
      * @param shape
      *   The shape that was intersected with
      */
-    public Intersection(Float a, Shape shape) { this(a, shape, Optional.empty()); }
+    public Intersection(Double a, Shape shape) { this(a, shape, Optional.empty()); }
 
     /**
      * Helper method to find hits among collections of intersections.
@@ -61,7 +61,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
      *   The first visible intersection point, as viewed from the Ray's origin, if any.
      */
     public static Optional<Intersection> Hit(Collection<Intersection> intersections) {
-        final var zero = Float.valueOf(0f);
+        final var zero = Double.valueOf(0);
         var result = intersections.stream().
         filter((intersect)->{
             return compareFloat(intersect.a(), zero) > 0; // !(intersect.a() <= zero);
@@ -82,7 +82,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
         final var point = ray.position(this.a);
         final var eye = ray.direction().negate();
         final var normal = this.shape.normal(point, this);
-        if (normal.dot(eye) < 0f) {
+        if (normal.dot(eye) < 0.0) {
            return normal.negate();
         }
         return normal;
@@ -104,14 +104,14 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
         var eye = ray.direction().negate();
         var normal = this.shape.normal(point, this);
         var inside = false;
-        if (normal.dot(eye) < 0f) {
+        if (normal.dot(eye) < 0.0) {
             inside = true;
             normal = normal.negate();
         }
         
         var reflection = ray.direction().reflect(normal);
-        var n1 = 1.0f;
-        var n2 = 1.0f;
+        var n1 = 1.0;
+        var n2 = 1.0;
         if (intersections.isPresent()) { 
             // naive algorithm implementation, could be optimized later.
             // determines the incoming and outgoing refractive index at the point the ray intersected with the object as defined in 'this' intersection by traversing the ray's sorted intersections
@@ -121,7 +121,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
             for(Intersection intersection : intersections.get()) {
                 if (intersection.equals(hit)) {
                     if (shapes.isEmpty()) {
-                        n1 = 1.0f;
+                        n1 = 1.0;
                     } else {
                         n1 = shapes.getLast().material().refractiveIndex();
                     }
@@ -133,7 +133,7 @@ public record Intersection(Float a, Shape shape, Optional<Pair<Float, Float>> uv
                 }
                 if (intersection.equals(hit)) {
                     if (shapes.isEmpty()) {
-                        n2 = 1.0f;
+                        n2 = 1.0;
                     } else {
                         n2 = shapes.getLast().material().refractiveIndex();
                     }

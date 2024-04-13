@@ -22,12 +22,12 @@ public final class Matrix2 extends Matrix {
      *   A two by two matrix
      */
     public static Matrix2 buildMatrix(
-        float _00,
-        float _01,
-        float _10,
-        float _11
+        double _00,
+        double _01,
+        double _10,
+        double _11
     ){
-        final float[][] matrix = new float[dimension][dimension];
+        final double[][] matrix = new double[dimension][dimension];
 
         matrix[0][0] = _00; matrix[1][0] = _10;
         matrix[0][1] = _01; matrix[1][1] = _11;
@@ -36,11 +36,11 @@ public final class Matrix2 extends Matrix {
     }
 
     /**
-     * Help method. Check internal float arrays are the correct dimension and non null.
+     * Help method. Check internal double arrays are the correct dimension and non null.
      * @param item
      *   The internal array to check.
      */
-    private static void checkSize(float[] item){
+    private static void checkSize(double[] item){
         if (item == null || item.length != dimension) throw new IllegalArgumentException("matrix elements must be length 2 and not be null.");
     }
 
@@ -51,9 +51,9 @@ public final class Matrix2 extends Matrix {
      * @param row2
      * @return
      */
-    public static Matrix2 buildMatrixRow(final float[] row0, final float[] row1) {
+    public static Matrix2 buildMatrixRow(final double[] row0, final double[] row1) {
         checkSize(row0); checkSize(row1);
-        float[][] matrix = new float[dimension][];
+        double[][] matrix = new double[dimension][];
         matrix[0] = row0;
         matrix[1] = row1;
         return new Matrix2(matrix);
@@ -66,9 +66,9 @@ public final class Matrix2 extends Matrix {
      * @param column2
      * @return
      */
-    public static Matrix2 buildMatrixColumn(final float[] column0, final float[] column1){
+    public static Matrix2 buildMatrixColumn(final double[] column0, final double[] column1){
         checkSize(column0); checkSize(column1);
-        float[][] matrix = new float[dimension][dimension];
+        double[][] matrix = new double[dimension][dimension];
 
         for(int i = 0; i < dimension; i++){
             matrix[i][0] = column0[i];
@@ -78,7 +78,7 @@ public final class Matrix2 extends Matrix {
         return new Matrix2(matrix);
     }
 
-    protected Matrix2(float[][] matrix) {
+    protected Matrix2(double[][] matrix) {
         super(matrix);
     }
 
@@ -120,7 +120,7 @@ public final class Matrix2 extends Matrix {
     }
 
     @Override
-    public float getDeterminant() {
+    public double getDeterminant() {
         return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0]);
     }
 
@@ -130,12 +130,12 @@ public final class Matrix2 extends Matrix {
     }
 
     @Override
-    public float getMinor(int row, int column) {
+    public double getMinor(int row, int column) {
         throw new UnsupportedOperationException("Cannot calculate minor with 2 by 2 matrix.");
     }
 
     @Override
-    public float getCofactor(int row, int column) {
+    public double getCofactor(int row, int column) {
         throw new UnsupportedOperationException("Matrix2 does not support cofactor operation");
     }
 

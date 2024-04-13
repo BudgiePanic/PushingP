@@ -19,7 +19,7 @@ public abstract class BasePerspectiveCamera implements Camera {
     /**
      * The field of view of the camera in radians.
      */
-    protected final float fov;
+    protected final double fov;
 
     /**
      * Transform to go to camera space.
@@ -31,15 +31,15 @@ public abstract class BasePerspectiveCamera implements Camera {
      * The world space size of the pixel. 
      * Pixel width == pixel height because pixels are square.
      */
-    protected final float pixelSize;
-    protected final float halfHeight;
-    protected final float halfWidth;
+    protected final double pixelSize;
+    protected final double halfHeight;
+    protected final double halfWidth;
 
     /**
      * The distance of the camera's imaging plane to the aperture. 
      * Affects the final image FOV as more distance constrains which rays can fit through the apeture, narrowing the image.
      */
-    protected final float focalDistance;
+    protected final double focalDistance;
 
     /**
      * Create a new Base perspective camera.
@@ -52,19 +52,19 @@ public abstract class BasePerspectiveCamera implements Camera {
      * @param transform
      *   The camera transform.
      */
-    public BasePerspectiveCamera(int width, int height, float fov, float focalDistance, Matrix4 transform) {
+    public BasePerspectiveCamera(int width, int height, double fov, double focalDistance, Matrix4 transform) {
         this.width = width;
         this.height = height;
         this.fov = fov;
         this.focalDistance = focalDistance;
         this.transform = transform;
         // determine pixel size
-        float halfView = (float) Math.tan(fov/2.0);
-        float aspect = ((float) width / (float) height);
+        double halfView = Math.tan(fov/2.0);
+        double aspect = ((double)width / (double)height);
         // assuming square pixels, so pixel width == pixel height
-        this.halfWidth = (aspect >= 1f) ? halfView : halfView * aspect; 
-        this.halfHeight = (aspect >= 1f) ? halfView / aspect : halfView;
-        this.pixelSize = (halfWidth * 2.0f) / width;
+        this.halfWidth = (aspect >= 1.0) ? halfView : halfView * aspect; 
+        this.halfHeight = (aspect >= 1.0) ? halfView / aspect : halfView;
+        this.pixelSize = (halfWidth * 2.0) / width;
     }
 
     @Override

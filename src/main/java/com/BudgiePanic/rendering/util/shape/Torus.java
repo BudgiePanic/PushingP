@@ -77,18 +77,18 @@ public class Torus extends BaseShape {
         final var A = radius;
         final var B = thickness;
 
-        final float g = 4 * (A * A) * ((E.x * E.x) + (E.y * E.y));
-        final float h = 8 * (A * A) * (D.x * E.x + D.y * E.y);
-        final float i = 4 * (A * A) * ((D.x * D.x) + (D.y * D.y));
-        final float j = (E.x * E.x) + (E.y * E.y) + (E.z * E.z);
-        final float k = 2 * ((D.x * E.x)+(D.y * E.y)+(D.z * E.z));
-        final float l = ((D.x * D.x)+(D.y * D.y)+(D.z * D.z)) + ((A * A) - (B * B));
+        final double g = 4 * (A * A) * ((E.x * E.x) + (E.y * E.y));
+        final double h = 8 * (A * A) * (D.x * E.x + D.y * E.y);
+        final double i = 4 * (A * A) * ((D.x * D.x) + (D.y * D.y));
+        final double j = (E.x * E.x) + (E.y * E.y) + (E.z * E.z);
+        final double k = 2 * ((D.x * E.x)+(D.y * E.y)+(D.z * E.z));
+        final double l = ((D.x * D.x)+(D.y * D.y)+(D.z * D.z)) + ((A * A) - (B * B));
         // ax^4 + bx^3 + cx^2 + dx + e = 0
-        final float a = j*j;
-        final float b = 2*j*k;
-        final float c = ((2*j*l)+(k*k)+(-g));
-        final float d = ((2*k*l)-(h));
-        final float e = (l*l) - i;
+        final double a = j*j;
+        final double b = 2*j*k;
+        final double c = ((2*j*l)+(k*k)+(-g));
+        final double d = ((2*k*l)-(h));
+        final double e = (l*l) - i;
 
         final var roots = QuarticHelp.solveQuartic(a,b,c,d,e);
 
@@ -105,7 +105,7 @@ public class Torus extends BaseShape {
     @Override
     protected Tuple localNormal(Tuple point) {
         // see: http://cosinekitty.com/raytrace/chapter13_torus.html
-        float denominator = (float) Math.sqrt((point.x * point.x) + (point.y * point.y));
+        double denominator = Math.sqrt((point.x * point.x) + (point.y * point.y));
         if (FloatHelp.compareFloat(0, denominator) == 0) {
             // the point is not on the torus surface
             System.out.println("WARN: point " + point + " is not on the torus surface, adding small offset to avoid divide by zero");

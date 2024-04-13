@@ -19,9 +19,9 @@ public final class Rotation {
      * @return
      *   A new rotation matrix.
      */
-    public final static Matrix4 buildXRotationMatrix(float radians) {
-        var cos = (float) Math.cos(radians);
-        var sin = (float) Math.sin(radians);
+    public final static Matrix4 buildXRotationMatrix(double radians) {
+        var cos = Math.cos(radians);
+        var sin = Math.sin(radians);
         return Matrix4.buildMatrix(
             1f, 0f, 0f, 0f, 
             0f, cos, -sin, 0f, 
@@ -38,9 +38,9 @@ public final class Rotation {
      * @return
      *   A new rotation matrix.
      */
-    public final static Matrix4 buildYRotationMatrix(float radians) {
-        var cos = (float) Math.cos(radians);
-        var sin = (float) Math.sin(radians);
+    public final static Matrix4 buildYRotationMatrix(double radians) {
+        var cos = Math.cos(radians);
+        var sin = Math.sin(radians);
         return Matrix4.buildMatrix(
             cos, 0f, sin, 0f, 
             0f, 1f, 0f, 0f, 
@@ -57,9 +57,9 @@ public final class Rotation {
      * @return
      *   A new rotation matrix.
      */
-    public final static Matrix4 buildZRotationMatrix(float radians) {
-        var cos = (float) Math.cos(radians);
-        var sin = (float) Math.sin(radians);
+    public final static Matrix4 buildZRotationMatrix(double radians) {
+        var cos = Math.cos(radians);
+        var sin = Math.sin(radians);
         return Matrix4.buildMatrix(
             cos, -sin, 0f, 0f, 
             sin, cos, 0f, 0f, 

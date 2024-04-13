@@ -15,7 +15,7 @@ public final class RandomSuppliers {
     /**
      * Generator of pseudorandom floats between 0 and 1 without lock contention.
      */
-    public static final Supplier<Float> threadSafeRandomSupplier = () -> { return ThreadLocalRandom.current().nextFloat(); };
+    public static final Supplier<Double> threadSafeRandomSupplier = () -> { return ThreadLocalRandom.current().nextDouble(); };
 
     private static final long seed = 8545785207L;
 
@@ -25,10 +25,10 @@ public final class RandomSuppliers {
      * Generates pseudorandom floats with a random object. Uses the same seed everytime. 
      * Will cause lock contention in a threaded environment. Consistent between runs of the program.
      */
-    public static final Supplier<Float> consistentRandomSupplier = () -> { return random.nextFloat(); };
+    public static final Supplier<Double> consistentRandomSupplier = () -> { return random.nextDouble(); };
 
     /**
      * Generates the same value all the time. Useful for testing. Generates 0.
      */
-    public static final Supplier<Float> noRandom = () -> 0f;
+    public static final Supplier<Double> noRandom = () -> 0.0;
 }

@@ -30,7 +30,7 @@ public class AreaSpotLight implements Light {
     /**
      * The default source of randomness.
      */
-    public static final Supplier<Float> defaultRandomSource = RandomSuppliers.threadSafeRandomSupplier;
+    public static final Supplier<Double> defaultRandomSource = RandomSuppliers.threadSafeRandomSupplier;
     /**
      * The position of the center of the light emitting surface in global space.
      */
@@ -54,15 +54,15 @@ public class AreaSpotLight implements Light {
     /**
      * The half angle of the inner cone. Points within this cone recieve full illumination.
      */
-    protected final float innerAngle;
+    protected final double innerAngle;
     /**
      * The half angle of the cone defined by the area light
      */
-    protected final float coneAngle;
+    protected final double coneAngle;
     /**
      * Half the length of the light emitting surface.
      */
-    protected final float areaRadius;
+    protected final double areaRadius;
     /**
      * The maximum number of samples that can be taken of this area spot light.
      */
@@ -71,7 +71,7 @@ public class AreaSpotLight implements Light {
      * Supplier of randomness for random sampling.
      * Provides uniform random floats between 0 and 1.
      */
-    protected final Supplier<Float> randomSource;
+    protected final Supplier<Double> randomSource;
 
     /**
      * Create a new area spot light. Canonincal constructor.
@@ -93,7 +93,7 @@ public class AreaSpotLight implements Light {
      * @param randomSource
      *   Randomness source for the sample points.
      */
-    public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius, int samples, Supplier<Float> randomSource) {
+    public AreaSpotLight(Tuple position, Tuple direction, Color color, double innerAngle, double coneAngle, double areaRadius, int samples, Supplier<Double> randomSource) {
         this.position = position; this.color = color; this.innerAngle = innerAngle; this.coneAngle = coneAngle; 
         this.areaRadius = areaRadius; this.samples = samples; this.randomSource = randomSource;
         this.transform = lookAt(direction, position);
@@ -124,7 +124,7 @@ public class AreaSpotLight implements Light {
      * @param samples
      *   The number of times the light surface should be sampled when calculating a point's illumation.
      */
-    public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius, int samples) {
+    public AreaSpotLight(Tuple position, Tuple direction, Color color, double innerAngle, double coneAngle, double areaRadius, int samples) {
         this(position, direction, color, innerAngle, coneAngle, areaRadius, samples, AreaSpotLight.defaultRandomSource);
     }
 
@@ -144,7 +144,7 @@ public class AreaSpotLight implements Light {
      * @param areaRadius
      *   The radius of the light emitting surface circle.
      */
-    public AreaSpotLight(Tuple position, Tuple direction, Color color, float innerAngle, float coneAngle, float areaRadius) {
+    public AreaSpotLight(Tuple position, Tuple direction, Color color, double innerAngle, double coneAngle, double areaRadius) {
         this(position, direction, color, innerAngle, coneAngle, areaRadius, AreaSpotLight.defaultSamples);
     }
     /**
@@ -157,10 +157,10 @@ public class AreaSpotLight implements Light {
      * @return
      *   The position of the tip of the spot light cone in local space.
      */
-    protected static Tuple createLocalPosition(float areaRadius, float coneAngle) {
+    protected static Tuple createLocalPosition(double areaRadius, double coneAngle) {
         final var tanAngle = Math.tan(coneAngle);
         final var distance = areaRadius / tanAngle;
-        return Tuple.makePoint(0, (float)-distance, 0);
+        return Tuple.makePoint(0, -distance, 0);
     }
     /**
      * Derives the area spot light transform.
@@ -179,14 +179,14 @@ public class AreaSpotLight implements Light {
         if (FloatHelp.compareFloat(0, angle) == 0) {
             return Transforms.identity().translate(-position.x, -position.y, -position.z).assemble();
         }
-        if (FloatHelp.compareFloat((float)Math.PI, angle) == 0) {
-            return Transforms.identity().rotateX((float)Math.PI).translate(-position.x, -position.y, -position.z).assemble();
+        if (FloatHelp.compareFloat(Math.PI, angle) == 0) {
+            return Transforms.identity().rotateX(Math.PI).translate(-position.x, -position.y, -position.z).assemble();
         }
-        final var c = (float)Math.cos(angle);
-        final var s = (float)Math.sin(angle);
-        final var t = 1f - c;
+        final var c = Math.cos(angle);
+        final var s = Math.sin(angle);
+        final var t = 1.0 - c;
         final var axisOfRotation = direction.cross(localDirection).normalize();
-        final float x = axisOfRotation.x, y = axisOfRotation.y, z = axisOfRotation.z;
+        final double x = axisOfRotation.x, y = axisOfRotation.y, z = axisOfRotation.z;
         final var result = Matrix4.buildMatrix( // I think this is Rodrigues' rotation formula crammed into a 4 by 4 matrix
             t*x*x + c, t*x*y - z*s, t*x*z + y*s, 0,
             t*x*y + z*s, t*y*y + c, t*y*z - x*s, 0,
@@ -213,7 +213,7 @@ public class AreaSpotLight implements Light {
             final var angle = Math.PI * 2 * AreaSpotLight.this.randomSource.get();
             // @see: https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly/50746409#50746409
             final var radius = areaRadius * Math.sqrt(AreaSpotLight.this.randomSource.get());
-            final var localSample = AreaSpotLight.this.localSample((float) angle, (float)radius);
+            final var localSample = AreaSpotLight.this.localSample(angle, radius);
             final var sample = AreaSpotLight.this.transform.inverse().multiply(localSample);
             return sample;
         }
@@ -229,10 +229,10 @@ public class AreaSpotLight implements Light {
      * @return
      *   A point on the light emitting surface in local space.
      */
-    protected Tuple localSample(float angle, float magnitude) {
-        final float x = (float) Math.cos(angle) * magnitude;
-        final float y = 0f;
-        final float z = (float) Math.sin(angle) * magnitude;
+    protected Tuple localSample(double angle, double magnitude) {
+        final double x = Math.cos(angle) * magnitude;
+        final double y = 0.0;
+        final double z = Math.sin(angle) * magnitude;
         return makePoint(x, y, z);
     }
 
@@ -254,9 +254,9 @@ public class AreaSpotLight implements Light {
     public Color color() { return this.color; }
 
     @Override
-    public float intensityAt(Tuple point, World world, float time) {
+    public double intensityAt(Tuple point, World world, double time) {
         final var localPoint = transform.multiply(point);
-        if (!isInCone(localPoint)) { return 0f; }
+        if (!isInCone(localPoint)) { return 0.0; }
         // get the illumination that would have been recieved by a point spot light = max_possible_illumination
         // the intensity at the point will be [max_possible_illumination * (non_blocked_rays / samples_cast)]
         final Tuple lightToPoint = localPoint.subtract(localPosition);
@@ -270,7 +270,7 @@ public class AreaSpotLight implements Light {
                 samplesBlocked++;
             }
         }
-        final float proportion = ((float)(samples - samplesBlocked)) / ((float)samples);
+        final double proportion = ((samples - samplesBlocked)) / (samples);
         return maxIntensity * proportion;
     }
 
@@ -280,15 +280,15 @@ public class AreaSpotLight implements Light {
      *   the angle between the light direction and the vector to the point being illuminated
      * @return
      */
-    protected float illumination(float angle) {
-        if (FloatHelp.compareFloat(angle, innerAngle) != 1) { return 1f; } // angle <= innerAngle
+    protected double illumination(double angle) {
+        if (FloatHelp.compareFloat(angle, innerAngle) != 1) { return 1.0; } // angle <= innerAngle
         // NOTE: this should never happen because points outside the cone should have been filtered before this method was called
-        if (FloatHelp.compareFloat(angle, coneAngle) == 1) { return 0f; } // angle > coneAngle 
+        if (FloatHelp.compareFloat(angle, coneAngle) == 1) { return 0.0; } // angle > coneAngle 
         // angle must be between inner angle and cone angle
         // need to LERP between 1 and zero based on how close the angle is to innerAngle
-        final float oldMin = innerAngle, oldMax = coneAngle, newMin = 0f, newMax = 1f;
-        final float invIntensity = ((angle - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
-        return 1f - invIntensity;
+        final double oldMin = innerAngle, oldMax = coneAngle, newMin = 0.0, newMax = 1.0;
+        final double invIntensity = ((angle - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
+        return 1.0 - invIntensity;
     }
     
     /**

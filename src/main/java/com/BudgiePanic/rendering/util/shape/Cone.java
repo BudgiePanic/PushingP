@@ -35,11 +35,11 @@ public class Cone extends BaseShape {
     /**
      * The lower bound of the cone height.
      */
-    protected final float minimum;
+    protected final double minimum;
     /**
      * The upper bound of the cone height.
      */
-    protected final float maximum;
+    protected final double maximum;
     /**
      * Does the cone have end caps?
      */
@@ -60,7 +60,7 @@ public class Cone extends BaseShape {
      * @param minimum
      * @param closed
      */
-    public Cone(Matrix4 transform, float maximum, float minimum, boolean closed) {
+    public Cone(Matrix4 transform, double maximum, double minimum, boolean closed) {
         super(transform); this.closed = closed; this.maximum = maximum; this.minimum = minimum;
     }
 
@@ -70,7 +70,7 @@ public class Cone extends BaseShape {
      * @param maximum
      * @param minimum
      */
-    public Cone(Matrix4 transform, float maximum, float minimum) {
+    public Cone(Matrix4 transform, double maximum, double minimum) {
         this(transform, maximum, minimum, false);
     }
 
@@ -90,7 +90,7 @@ public class Cone extends BaseShape {
      * @param minimum
      * @param closed
      */
-    public Cone(Matrix4 transform, Material material, float maximum, float minimum, boolean closed) {
+    public Cone(Matrix4 transform, Material material, double maximum, double minimum, boolean closed) {
         super(transform, material); this.closed = closed; this.maximum = maximum; this.minimum = minimum;
     }
 
@@ -101,7 +101,7 @@ public class Cone extends BaseShape {
      * @param maximum
      * @param minimum
      */
-    public Cone(Matrix4 transform, Material material, float maximum, float minimum) {
+    public Cone(Matrix4 transform, Material material, double maximum, double minimum) {
         this(transform, material, maximum, minimum, false);
     }
 
@@ -122,7 +122,7 @@ public class Cone extends BaseShape {
      *   The y coordinate of the plane which is being intersection tested against
      * @return
      */
-    private static boolean capRayIntersect(Ray ray, float t, float y) {
+    private static boolean capRayIntersect(Ray ray, double t, double y) {
         final var radius = Math.abs(y);
         final var x = ray.origin().x + t * ray.direction().x;
         final var z = ray.origin().z + t * ray.direction().z;
@@ -193,7 +193,7 @@ public class Cone extends BaseShape {
         if (FloatHelp.compareFloat(discriminant, 0) == -1) {
             return Optional.empty();
         }
-        final float sqrtDisc = FloatHelp.compareFloat(discriminant, 0) == 0 ? 0 : (float) Math.sqrt(discriminant);
+        final double sqrtDisc = FloatHelp.compareFloat(discriminant, 0) == 0 ? 0 : Math.sqrt(discriminant);
         var t0 = (-b - sqrtDisc) / (2*a);
         var t1 = (-b + sqrtDisc) / (2*a);
         if (t0 > t1) {
@@ -233,14 +233,14 @@ public class Cone extends BaseShape {
                 }
             }
         }
-        var y = (float) Math.sqrt((point.x * point.x) + (point.z * point.z));
+        var y = Math.sqrt((point.x * point.x) + (point.z * point.z));
         y = FloatHelp.compareFloat(point.y, 0) == 1 ? -y : y;
         return makeVector(point.x, y, point.z);
     }
 
     @Override
     public BoundingBox bounds() {
-        final float max = Math.abs(maximum) > Math.abs(minimum) ? Math.abs(maximum) : Math.abs(minimum);
+        final double max = Math.abs(maximum) > Math.abs(minimum) ? Math.abs(maximum) : Math.abs(minimum);
         return new BoundingBox(
             Tuple.makePoint(-max, minimum, -max), 
             Tuple.makePoint(max, maximum, max));

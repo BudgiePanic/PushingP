@@ -64,7 +64,7 @@ public class Transforms {
      * @return
      *   Transforms assembler chain.
      */
-    public Transforms rotateX(float radians) {
+    public Transforms rotateX(double radians) {
         var matrix = Rotation.buildXRotationMatrix(radians);
         return new Transforms(this, matrix);
     }
@@ -78,7 +78,7 @@ public class Transforms {
      * @return
      *   Transforms assembler chain.
      */
-    public Transforms rotateY(float radians) {
+    public Transforms rotateY(double radians) {
         var matrix = Rotation.buildYRotationMatrix(radians);
         return new Transforms(this, matrix);
     }
@@ -92,7 +92,7 @@ public class Transforms {
      * @return
      *   Transforms assembler chain.
      */
-    public Transforms rotateZ(float radians) {
+    public Transforms rotateZ(double radians) {
         var matrix = Rotation.buildZRotationMatrix(radians);
         return new Transforms(this, matrix);
     }
@@ -109,7 +109,7 @@ public class Transforms {
      * @return
      *   Transforms assembler chain.
      */
-    public Transforms scale(float x, float y, float z) {
+    public Transforms scale(double x, double y, double z) {
         var matrix = Scale.makeScaleMatrix(x, y, z);
         return new Transforms(this, matrix);
     }
@@ -122,7 +122,7 @@ public class Transforms {
      * @return
      *   Transforms assembler chain.
      */
-    public Transforms scale(float scale) {
+    public Transforms scale(double scale) {
         var matrix = Scale.makeScaleMatrix(scale, scale, scale);
         return new Transforms(this, matrix);
     }
@@ -162,7 +162,7 @@ public class Transforms {
      * @return
      *   Transforms assembler chain.
      */
-    public Transforms shear(float xy, float xz, float yx, float yz, float zx, float zy) {
+    public Transforms shear(double xy, double xz, double yx, double yz, double zx, double zy) {
         var matrix = Shear.buildShearMatrix(xy, xz, yx, yz, zx, zy);
         return new Transforms(this, matrix);
     }
@@ -179,7 +179,7 @@ public class Transforms {
      * @return
      *   Transforms assembler chain.
      */
-    public Transforms translate(float x, float y, float z) {
+    public Transforms translate(double x, double y, double z) {
         var matrix = Translation.makeTranslationMatrix(x, y, z);
         return new Transforms(this, matrix);
     }

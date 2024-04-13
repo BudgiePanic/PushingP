@@ -42,7 +42,7 @@ public interface Camera {
      * @return
      *    A ray with time 'time' that passes through (col, row) pixel of the camera from the camera origin.
      */
-    Ray createRay(float pixelColumn, float pixelRow, float time);
+    Ray createRay(double pixelColumn, double pixelRow, double time);
 
     /**
      * Creates a list of pixels that can be used as indices in a stream.
@@ -91,7 +91,7 @@ public interface Camera {
      * @return
      *   The color at pixel [column, row]
      */
-    Color pixelAt(World world, float pixelColumn, float pixelRow, float time);
+    Color pixelAt(World world, double pixelColumn, double pixelRow, double time);
 
     /**
      * Get the color for pixel [column, row] taken by this camera for the entire exposure when imaging a world.
@@ -107,7 +107,7 @@ public interface Camera {
      * @return
      *   The sampled color at pixel [column, row] from the image exposure.
      */
-    default Color pixelExposureAt(World world, float pixelColumn, float pixelRow) { return pixelAt(world, pixelColumn, pixelRow, 0f); }
+    default Color pixelExposureAt(World world, double pixelColumn, double pixelRow) { return pixelAt(world, pixelColumn, pixelRow, 0.0); }
 
     /**
      * Get the color for pixel [column, row] taken by this camera for the entire exposure when imaging a world.
@@ -123,7 +123,7 @@ public interface Camera {
      * @return 
      *   The sampled color at pixel [column, row] from the image exposure.
      */
-    default Color pixelExposureAt(World world, int pixelColumn, int pixelRow) { return pixelExposureAt(world, pixelColumn + 0.5f, pixelRow + 0.5f); }
+    default Color pixelExposureAt(World world, int pixelColumn, int pixelRow) { return pixelExposureAt(world, pixelColumn + 0.5, pixelRow + 0.5); }
     
     /**
      * Cast rays out of the camera into the scene. Fills a new canvas with colors from the rays.

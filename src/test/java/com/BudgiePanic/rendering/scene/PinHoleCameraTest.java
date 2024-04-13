@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,56 +23,58 @@ public class PinHoleCameraTest {
     void testCameraConstructor() {
         var width = 160;
         var height = 120;
-        var camera = new PinHoleCamera(width, height, AngleHelp.toRadians(90), Transforms.identity().assemble());
+        var camera = new PinHoleCamera(width, height, AngleHelp.toRadians(90.0), Transforms.identity().assemble());
         assertEquals(width, camera.width);
         assertEquals(height, camera.height);
-        assertEquals(0, FloatHelp.compareFloat((float)(Math.PI / 2.0), camera.fov));
+        assertEquals(0, FloatHelp.compareFloat((Math.PI / 2.0), camera.fov));
         assertEquals(Matrix4.identity(), camera.transform);
     }
 
     @Test
     void testCameraPixelSize() {
         // width > height
-        var camera = new PinHoleCamera(200, 125, AngleHelp.toRadians(90), Transforms.identity().assemble());
-        assertEquals(0.01f, camera.pixelSize);
+        var camera = new PinHoleCamera(200, 125, AngleHelp.toRadians(90.0), Transforms.identity().assemble());
+        assertTrue(FloatHelp.compareFloat(0.01, camera.pixelSize) == 0, "expected 0.01 actual " + camera.pixelSize);
+        // assertEquals(0.01, camera.pixelSize);
     }
 
     @Test
     void testCameraPixelSizeA() {
         // height > width
-        var camera = new PinHoleCamera(125, 200, AngleHelp.toRadians(90), Transforms.identity().assemble());
-        assertEquals(0.01f, camera.pixelSize);
+        var camera = new PinHoleCamera(125, 200, AngleHelp.toRadians(90.0), Transforms.identity().assemble());
+        assertTrue(FloatHelp.compareFloat(0.01, camera.pixelSize) == 0, "expected 0.01 actual " + camera.pixelSize);
+        // assertEquals(0.01, camera.pixelSize);
     }
 
     @Test
     void testCameraRay() {
-        var camera = new PinHoleCamera(201, 101, AngleHelp.toRadians(90), Transforms.identity().assemble());
-        var result = camera.createRay(100 + 0.5f, 50 + 0.5f, 0f);
+        var camera = new PinHoleCamera(201, 101, AngleHelp.toRadians(90.0), Transforms.identity().assemble());
+        var result = camera.createRay(100 + 0.5, 50 + 0.5, 0);
         assertEquals(Tuple.makePoint(), result.origin());
         assertEquals(Tuple.makeVector(0, 0, -1), result.direction());
     }
 
     @Test
     void testCameraRayA() {
-        var camera = new PinHoleCamera(201, 101, AngleHelp.toRadians(90), Transforms.identity().assemble());
-        var result = camera.createRay(0 + 0.5f, 0 + 0.5f, 0);
+        var camera = new PinHoleCamera(201, 101, AngleHelp.toRadians(90.0), Transforms.identity().assemble());
+        var result = camera.createRay(0 + 0.5, 0 + 0.5, 0);
         assertEquals(Tuple.makePoint(), result.origin());
-        assertEquals(Tuple.makeVector(0.66519f, 0.33259f, -0.66851f), result.direction());
+        assertEquals(Tuple.makeVector(0.66519, 0.33259, -0.66851), result.direction());
     }
 
     @Test
     void testCameraRayB() {
         var camera = new PinHoleCamera(
             201, 101, 
-            AngleHelp.toRadians(90),
+            AngleHelp.toRadians(90.0),
             Transforms.identity().
                 translate(0, -2, 5).
-                rotateY(AngleHelp.toRadians(45)).
+                rotateY(AngleHelp.toRadians(45.0)).
                 assemble()
         );
-        var result = camera.createRay(100 + 0.5f, 50 + 0.5f, 0);
+        var result = camera.createRay(100 + 0.5, 50 + 0.5, 0);
         assertEquals(Tuple.makePoint(0, 2, -5), result.origin());
-        float sqrt2Over2 = (float) (Math.sqrt(2.0) / 2.0);
+        double sqrt2Over2 = (Math.sqrt(2.0) / 2.0);
         assertEquals(Tuple.makeVector(sqrt2Over2, 0, -sqrt2Over2), result.direction());
     }
 

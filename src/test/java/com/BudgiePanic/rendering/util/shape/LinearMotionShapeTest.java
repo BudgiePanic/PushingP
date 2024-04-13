@@ -32,10 +32,10 @@ public class LinearMotionShapeTest {
     void testLocalIntersect() {
         var shape = new LinearMotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.left);
         var tests = List.of(
-            new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 0f), 2),
-            new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 0.5f), 2),
-            new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 1f), 2),
-            new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 1.1f), 0)
+            new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 1.0), 2.0),
+            new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 0.5), 2.0),
+            new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 1.0), 2.0),
+            new Pair<>(new Ray(makePoint(0, 0, -2), Directions.forward, 1.1), 0.0)
         );
         for (var test : tests) {
             final var expectedIntersectionCount = test.b();
@@ -55,10 +55,10 @@ public class LinearMotionShapeTest {
     void testLocalIntersectA() {
         var shape = new LinearMotionShape(Matrix4.identity(), new Plane(Transforms.identity().rotateX(AngleHelp.toRadians(-90f)).assemble()), Directions.forward);
         var tests = List.of(
-            new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 0f), 1f),
-            new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 0.5f), 1.5f),
-            new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 1f), 2f),
-            new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 1.1f), 2.1f)
+            new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 0.0), 1.0),
+            new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 0.5), 1.5),
+            new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 1.0), 2.0),
+            new Pair<>(new Ray(makePoint(0, 0, -1), Directions.forward, 1.1), 2.1)
         );
         for (var test : tests) {
             final var expectedDistance = test.b();
@@ -85,7 +85,7 @@ public class LinearMotionShapeTest {
     void testLinearMotionShapeBoundsA() {
         // check that the AABB from the LMS is correct when the end time is set
         var shape = new LinearMotionShape(Matrix4.identity(), new Sphere(Transforms.identity().translate(0, 1, 0).assemble()), Directions.right);
-        shape.setMotionEndTime(Optional.of(1f));
+        shape.setMotionEndTime(Optional.of(1.0));
         var result = shape.bounds();
         var expected = new BoundingBox(makePoint(-1, 0, -1), makePoint(2, 2, 1));
         assertEquals(expected, result);
@@ -99,7 +99,7 @@ public class LinearMotionShapeTest {
     @Test
     void testSetMotionEndTime() {
         var shape = new LinearMotionShape(Matrix4.identity(), new Cube(Matrix4.identity()), Directions.right);
-        shape.setMotionEndTime(Optional.of(1f));
+        shape.setMotionEndTime(Optional.of(1.0));
         var bounds = shape.bounds();
         var expected = new BoundingBox(makePoint(-1, -1, -1), makePoint(2, 1, 1));
         assertEquals(expected.minimum(), bounds.minimum());
@@ -108,7 +108,7 @@ public class LinearMotionShapeTest {
 
     @Test
     void testMotionShapeIntersection() {
-        var ray = new Ray(makePoint(0, 10, -6), makeVector(-0.005778f, -0.789307f, 0.613971f), 0f);
+        var ray = new Ray(makePoint(0, 10, -6), makeVector(-0.005778f, -0.789307f, 0.613971f), 0.0);
         
         var concreteShape = new Sphere(Transforms.identity().translate(0, 1, 0).assemble());
         var sanity = concreteShape.intersect(ray);

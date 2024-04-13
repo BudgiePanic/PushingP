@@ -70,7 +70,7 @@ public interface BiOperation {
         final var colorA = a.colorAt(point, toLocalSpace(transform));
         final var colorB = b.colorAt(point, toLocalSpace(transform));
         final var spectrum = colorB.subtract(colorA);
-        final float amout = point.x - (float) Math.floor(point.x); 
+        final double amout = point.x - Math.floor(point.x); 
         return new Color(colorA.add(spectrum.multiply(amout)));
     };
 

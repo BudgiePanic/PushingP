@@ -8,12 +8,12 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
  * 
  * @author BudgiePanic
  */
-public record Ray (Tuple origin, Tuple direction, Float time) {
+public record Ray (Tuple origin, Tuple direction, Double time) {
 
     /**
      * The default time the ray is cast, used if the convenience constructor is called.
      */
-    protected static final Float defaultTime = Float.valueOf(0f);
+    protected static final Double defaultTime = Double.valueOf(0);
 
     /**
      * Canonical ray constructor. Create a new ray.
@@ -50,7 +50,7 @@ public record Ray (Tuple origin, Tuple direction, Float time) {
      * @return
      *   A point along the ray at distance delta.
      */
-    public Tuple position(float delta) {
+    public Tuple position(double delta) {
         return this.origin.add(this.direction.multiply(delta));
     }
 

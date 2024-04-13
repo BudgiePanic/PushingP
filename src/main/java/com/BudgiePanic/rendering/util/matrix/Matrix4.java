@@ -31,24 +31,24 @@ public final class Matrix4 extends Matrix {
      * @return
      */
     public static Matrix4 buildMatrix(
-        float _00,
-        float _01,
-        float _02,
-        float _03,
-        float _10,
-        float _11,
-        float _12,
-        float _13,
-        float _20,
-        float _21,
-        float _22,
-        float _23,
-        float _30,
-        float _31,
-        float _32,
-        float _33
+        double _00,
+        double _01,
+        double _02,
+        double _03,
+        double _10,
+        double _11,
+        double _12,
+        double _13,
+        double _20,
+        double _21,
+        double _22,
+        double _23,
+        double _30,
+        double _31,
+        double _32,
+        double _33
     ){
-        final float[][] matrix = new float[dimension][dimension];
+        final double[][] matrix = new double[dimension][dimension];
 
         matrix[0][0] = _00; matrix[1][0] = _10; matrix[2][0] = _20; matrix[3][0] = _30;
         matrix[0][1] = _01; matrix[1][1] = _11; matrix[2][1] = _21; matrix[3][1] = _31;
@@ -59,11 +59,11 @@ public final class Matrix4 extends Matrix {
     }
 
     /**
-     * Help method. Check internal float arrays are the correct dimension and non null.
+     * Help method. Check internal double arrays are the correct dimension and non null.
      * @param item
      *   The internal array to check.
      */
-    private static void checkSize(float[] item){
+    private static void checkSize(double[] item){
         if (item == null || item.length != dimension) throw new IllegalArgumentException("matrix elements must be length 4 and not be null.");
     }
 
@@ -75,9 +75,9 @@ public final class Matrix4 extends Matrix {
      * @param row3
      * @return
      */
-    public static Matrix4 buildMatrixRow(final float[] row0, final float[] row1, final float[] row2, final float[] row3) {
+    public static Matrix4 buildMatrixRow(final double[] row0, final double[] row1, final double[] row2, final double[] row3) {
         checkSize(row0); checkSize(row1); checkSize(row2); checkSize(row3);
-        float[][] matrix = new float[dimension][];
+        double[][] matrix = new double[dimension][];
         matrix[0] = row0;
         matrix[1] = row1;
         matrix[2] = row2;
@@ -93,9 +93,9 @@ public final class Matrix4 extends Matrix {
      * @param column3
      * @return
      */
-    public static Matrix4 buildMatrixColumn(final float[] column0, final float[] column1, final float[] column2, final float[] column3){
+    public static Matrix4 buildMatrixColumn(final double[] column0, final double[] column1, final double[] column2, final double[] column3){
         checkSize(column0); checkSize(column1); checkSize(column2); checkSize(column3);
-        float[][] matrix = new float[dimension][dimension];
+        double[][] matrix = new double[dimension][dimension];
 
         for(int i = 0; i < dimension; i++){
             matrix[i][0] = column0[i];
@@ -115,10 +115,10 @@ public final class Matrix4 extends Matrix {
      */
     public static Matrix4 identity() {
         return buildMatrixRow(
-            new float[] {1f, 0f, 0f, 0f},
-            new float[] {0f, 1f, 0f, 0f},
-            new float[] {0f, 0f, 1f, 0f},
-            new float[] {0f, 0f, 0f, 1f}
+            new double[] {1f, 0f, 0f, 0f},
+            new double[] {0f, 1f, 0f, 0f},
+            new double[] {0f, 0f, 1f, 0f},
+            new double[] {0f, 0f, 0f, 1f}
         );
     }
 
@@ -130,7 +130,7 @@ public final class Matrix4 extends Matrix {
      * @param matrix
      *     The internal matrix structure.
      */
-    private Matrix4(final float[][] matrix){
+    private Matrix4(final double[][] matrix){
         super(matrix);
         this.inverse = null;
     }
@@ -145,7 +145,7 @@ public final class Matrix4 extends Matrix {
      *   A new matrix 'this' * other.
      */
     public Matrix4 multiply(Matrix4 other) {
-        final float[][] matrix = new float[dimension][dimension];
+        final double[][] matrix = new double[dimension][dimension];
 
         for (int row = 0; row < dimension; row++) {
             for (int column = 0; column < dimension; column++) {
@@ -169,13 +169,13 @@ public final class Matrix4 extends Matrix {
      *   A new tuple: tuple * 'this'.
      */
     public Tuple multiply(Tuple tuple) {
-        if (Float.isInfinite(tuple.x) || Float.isInfinite(tuple.y) || Float.isInfinite(tuple.y) || Float.isInfinite(tuple.z)) {
+        if (Double.isInfinite(tuple.x) || Double.isInfinite(tuple.y) || Double.isInfinite(tuple.y) || Double.isInfinite(tuple.z)) {
             return multiplyInfinity(tuple);
         }
-        float a = (tuple.x * this.matrix[0][0]) + (tuple.y * this.matrix[0][1]) + (tuple.z * this.matrix[0][2]) + (tuple.w * this.matrix[0][3]);
-        float b = (tuple.x * this.matrix[1][0]) + (tuple.y * this.matrix[1][1]) + (tuple.z * this.matrix[1][2]) + (tuple.w * this.matrix[1][3]);
-        float c = (tuple.x * this.matrix[2][0]) + (tuple.y * this.matrix[2][1]) + (tuple.z * this.matrix[2][2]) + (tuple.w * this.matrix[2][3]);
-        float d = (tuple.x * this.matrix[3][0]) + (tuple.y * this.matrix[3][1]) + (tuple.z * this.matrix[3][2]) + (tuple.w * this.matrix[3][3]);
+        double a = (tuple.x * this.matrix[0][0]) + (tuple.y * this.matrix[0][1]) + (tuple.z * this.matrix[0][2]) + (tuple.w * this.matrix[0][3]);
+        double b = (tuple.x * this.matrix[1][0]) + (tuple.y * this.matrix[1][1]) + (tuple.z * this.matrix[1][2]) + (tuple.w * this.matrix[1][3]);
+        double c = (tuple.x * this.matrix[2][0]) + (tuple.y * this.matrix[2][1]) + (tuple.z * this.matrix[2][2]) + (tuple.w * this.matrix[2][3]);
+        double d = (tuple.x * this.matrix[3][0]) + (tuple.y * this.matrix[3][1]) + (tuple.z * this.matrix[3][2]) + (tuple.w * this.matrix[3][3]);
         return new Tuple(a, b, c, d);
     }
 
@@ -187,21 +187,21 @@ public final class Matrix4 extends Matrix {
      *   tuple * matrix output
      */
     protected Tuple multiplyInfinity(Tuple tuple) {
-        float a = infiniteFloatMul(tuple.x, this.matrix[0][0]) + infiniteFloatMul(tuple.y, this.matrix[0][1]) + infiniteFloatMul(tuple.z, this.matrix[0][2]) + infiniteFloatMul(tuple.w, this.matrix[0][3]);
-        float b = infiniteFloatMul(tuple.x, this.matrix[1][0]) + infiniteFloatMul(tuple.y, this.matrix[1][1]) + infiniteFloatMul(tuple.z, this.matrix[1][2]) + infiniteFloatMul(tuple.w, this.matrix[1][3]);
-        float c = infiniteFloatMul(tuple.x, this.matrix[2][0]) + infiniteFloatMul(tuple.y, this.matrix[2][1]) + infiniteFloatMul(tuple.z, this.matrix[2][2]) + infiniteFloatMul(tuple.w, this.matrix[2][3]);
-        float d = infiniteFloatMul(tuple.x, this.matrix[3][0]) + infiniteFloatMul(tuple.y, this.matrix[3][1]) + infiniteFloatMul(tuple.z, this.matrix[3][2]) + infiniteFloatMul(tuple.w, this.matrix[3][3]);
+        double a = infiniteDoubleMul(tuple.x, this.matrix[0][0]) + infiniteDoubleMul(tuple.y, this.matrix[0][1]) + infiniteDoubleMul(tuple.z, this.matrix[0][2]) + infiniteDoubleMul(tuple.w, this.matrix[0][3]);
+        double b = infiniteDoubleMul(tuple.x, this.matrix[1][0]) + infiniteDoubleMul(tuple.y, this.matrix[1][1]) + infiniteDoubleMul(tuple.z, this.matrix[1][2]) + infiniteDoubleMul(tuple.w, this.matrix[1][3]);
+        double c = infiniteDoubleMul(tuple.x, this.matrix[2][0]) + infiniteDoubleMul(tuple.y, this.matrix[2][1]) + infiniteDoubleMul(tuple.z, this.matrix[2][2]) + infiniteDoubleMul(tuple.w, this.matrix[2][3]);
+        double d = infiniteDoubleMul(tuple.x, this.matrix[3][0]) + infiniteDoubleMul(tuple.y, this.matrix[3][1]) + infiniteDoubleMul(tuple.z, this.matrix[3][2]) + infiniteDoubleMul(tuple.w, this.matrix[3][3]);
         return new Tuple(a, b, c, d);
     }
 
     /**
-     * Multiply two floats together. If one float is infinity, and the other is near zero, returns zero instead of typical behaviour: returning NaN.
+     * Multiply two doubles together. If one double is infinity, and the other is near zero, returns zero instead of typical behaviour: returning NaN.
      * @param a
      * @param b
      * @return
      */
-    private float infiniteFloatMul(float a, float b) {
-        if(Float.isInfinite(a) && FloatHelp.compareFloat(b, 0) == 0 || Float.isInfinite(b) && FloatHelp.compareFloat(a, 0) == 0) {
+    private double infiniteDoubleMul(double a, double b) {
+        if(Double.isInfinite(a) && FloatHelp.compareFloat(b, 0) == 0 || Double.isInfinite(b) && FloatHelp.compareFloat(a, 0) == 0) {
             return 0;
         }
         return a*b;
@@ -233,7 +233,7 @@ public final class Matrix4 extends Matrix {
             return this.inverse;
         }
         if (!isInvertible()) throw new RuntimeException("cannot invert matrix: " + this.toString());
-        var result = new float[dimension][dimension];
+        var result = new double[dimension][dimension];
         var det = getDeterminant();
         // Use optimized technique in Jamis Buck's book The Ray Tracer Challenge
         for (int row = 0; row < dimension; row++) {
@@ -292,7 +292,7 @@ public final class Matrix4 extends Matrix {
         // TODO the logic in the method is the exact same as in Matrix2, and it a prime candidate for refactorization, pulling up into the parent class.
         if (row < 0 || column < 0 || row > dimension - 1 || column > dimension - 1)
             throw new IllegalArgumentException(String.format("row %d column %d is out of bounds for %d by %d matrix", row, column, dimension, dimension));
-        float[][] rows = new float[dimension - 1][dimension - 1];
+        double[][] rows = new double[dimension - 1][dimension - 1];
         int _row = 0, _col = 0;
         for (int r = 0; r < dimension; r++) {
             if (r == row) continue;
@@ -312,9 +312,9 @@ public final class Matrix4 extends Matrix {
     }
 
     @Override
-    public float getDeterminant() {
+    public double getDeterminant() {
         // cofactor expansion technique
-        float det = 0.0f;
+        double det = 0.0f;
         det += matrix[0][0] * getCofactor(0, 0);
         det += matrix[0][1] * getCofactor(0, 1);
         det += matrix[0][2] * getCofactor(0, 2);
