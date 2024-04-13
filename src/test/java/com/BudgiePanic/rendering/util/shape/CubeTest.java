@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
+import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
@@ -129,5 +130,13 @@ public class CubeTest {
     void testCubeSolid() {
         var cube = new Cube(Matrix4.identity());
         assertTrue(cube.isSolid());
+    }
+
+    @Test
+    void testCubeHit() {
+        var cube = new Cube(Matrix4.identity());
+        var ray = new Ray(makePoint(1.1, 0, 0), makeVector(1, 0, 0));
+        var result = cube.intersect(ray).get();
+        assertTrue(Intersection.Hit(result).isEmpty());
     }
 }
