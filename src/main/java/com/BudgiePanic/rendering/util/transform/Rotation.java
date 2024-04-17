@@ -23,10 +23,10 @@ public final class Rotation {
         var cos = Math.cos(radians);
         var sin = Math.sin(radians);
         return Matrix4.buildMatrix(
-            1f, 0f, 0f, 0f, 
-            0f, cos, -sin, 0f, 
-            0f, sin, cos, 0f, 
-            0f, 0f, 0f, 1f
+            1.0, 0.0, 0.0, 0.0, 
+            0.0, cos, -sin, 0.0, 
+            0.0, sin, cos, 0.0, 
+            0.0, 0.0, 0.0, 1.0
         );
     }
 
@@ -42,10 +42,10 @@ public final class Rotation {
         var cos = Math.cos(radians);
         var sin = Math.sin(radians);
         return Matrix4.buildMatrix(
-            cos, 0f, sin, 0f, 
-            0f, 1f, 0f, 0f, 
-            -sin, 0f, cos, 0f, 
-            0f, 0f, 0f, 1f
+            cos, 0.0, sin, 0.0, 
+            0.0, 1.0, 0f, 0.0, 
+            -sin, 0.0, cos, 0.0, 
+            0.0, 0.0, 0.0, 1.0
         );
     }
 
@@ -61,10 +61,10 @@ public final class Rotation {
         var cos = Math.cos(radians);
         var sin = Math.sin(radians);
         return Matrix4.buildMatrix(
-            cos, -sin, 0f, 0f, 
-            sin, cos, 0f, 0f, 
-            0f, 0f, 1f, 0f, 
-            0f, 0f, 0f, 1f
+            cos, -sin, 0.0, 0.0, 
+            sin, cos, 0.0, 0.0, 
+            0.0, 0.0, 1.0, 0.0, 
+            0.0, 0.0, 0.0, 1.0
         );
     }
 }
