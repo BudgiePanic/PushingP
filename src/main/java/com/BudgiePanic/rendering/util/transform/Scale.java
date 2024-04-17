@@ -36,7 +36,7 @@ public final class Scale {
      *   A reflection scale matrix.
      */
     public static final Matrix4 makeReflectMatrix(boolean x, boolean y, boolean z) {
-        return makeScaleMatrix(x ? -1f : 1f, y ? -1f : 1f, z ? -1f : 1f);
+        return makeScaleMatrix(x ? -1.0 : 1.0, y ? -1.0 : 1.0, z ? -1.0 : 1.0);
     }
 
 }

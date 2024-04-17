@@ -33,7 +33,10 @@ import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.light.Phong;
 import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.pattern.BiOperation;
+import com.BudgiePanic.rendering.util.pattern.BiPattern;
 import com.BudgiePanic.rendering.util.pattern.PatternTest;
+import com.BudgiePanic.rendering.util.pattern.Perturb;
 import com.BudgiePanic.rendering.util.shape.Cube;
 import com.BudgiePanic.rendering.util.shape.LinearMotionShape;
 import com.BudgiePanic.rendering.util.shape.Plane;
@@ -780,5 +783,37 @@ public class WorldTest {
         var camera = new PinHoleCamera(50, 50, Math.PI/2.0, View.makeViewMatrix(cameraPosition, makePoint(2, 0, 0), Directions.up));
         var result = camera.takePicture(world);
         result.forEach(c -> assertEquals(Colors.black, c));
+    }
+
+    @Test
+    void testReflectionPerturbed() {
+        World world = new World();
+        var front = new Plane(Transforms.identity().rotateX(toRadians(-90)).translate(0, 0, 0.5).assemble(), Material.defaultMaterial().setReflectivity(1).setSpecular(0).setDiffuse(0).setAmbient(0));
+        var back = new Plane(Transforms.identity().rotateX(toRadians(-90)).translate(0, 0, -1).assemble(), Material.pattern(new Perturb(new BiPattern(BiOperation.checker, Colors.white, Colors.black))).setSpecular(0).setDiffuse(0).setAmbient(1));
+        var light = new PointLight(makePoint(0, 0, 0), Colors.white);
+        var camera = new PinHoleCamera(500, 500, toRadians(90), View.makeViewMatrix(makePoint(0, 0, 0), makePoint(0, 0, 1), Directions.up));
+        world.addLight(light);
+        world.addShape(front);
+        world.addShape(back);
+        var result = camera.pixelExposureAt(world, 127, 340);
+        // the color would be black if the checker pattern was not perturbed
+        assertEquals(Colors.white, result);
+    }
+    
+    @Test
+    void testRefractionPerturbed() {
+        World world = new World();
+        var transparent = new Sphere(Matrix4.identity(), Sphere.defaultGlassSphere().material().setDiffuse(0).setSpecular(0));
+        world.addShape(transparent);
+        var shape = new Plane(Transforms.identity().rotateX(toRadians(90.0)).translate(5, 2, 0).assemble(), Material.pattern(new Perturb(new BiPattern(BiOperation.checker, Colors.white, Colors.black))).setAmbient(1).setSpecular(0).setDiffuse(0));
+        var light = new PointLight(makePoint(0,2,-3), Colors.white);
+        world.addLight(light);
+        world.addShape(shape);
+        var camera = new PinHoleCamera(75, 75, toRadians(90.0), View.makeViewMatrix(makePoint(0, 0, -2), makePoint(0, 0, 2), Directions.up));
+        var result = camera.pixelExposureAt(world, 40, 37);
+        // expected = glass sphere shape ambient = 0.1 + black square behind the shape = 0.0
+        //          = 0.1 + 0.0 
+        // if the perturb is removed from the pattern, then the color will become white
+        assertEquals(new Color(0.1, 0.1, 0.1), result);
     }
 }

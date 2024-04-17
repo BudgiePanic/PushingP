@@ -81,7 +81,7 @@ public interface BiOperation {
      */
     static final BiOperation checker = (point, transform, a, b) -> {
         final var value = ((Math.floor(point.x) + Math.floor(point.y) + Math.floor(point.z)) % 2.0);
-        if (FloatHelp.compareFloat((float) value, 0) == 0) {
+        if (FloatHelp.compareFloat(value, 0) == 0) {
             return a.colorAt(point, toLocalSpace(transform));
         } else {
             return b.colorAt(point, toLocalSpace(transform));
@@ -96,7 +96,7 @@ public interface BiOperation {
         final var colorB = b.colorAt(point, toLocalSpace(transform));
         final var spectrum = colorB.subtract(colorA);
         final var distance = Math.sqrt((point.x * point.x) + (point.z * point.z));
-        final float amout = (float) distance - (float) Math.floor(distance); 
+        final double amout = distance - Math.floor(distance); 
         return new Color(colorA.add(spectrum.multiply(amout)));
     };
 
