@@ -5,9 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.AngleHelp;
+import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
@@ -94,6 +97,14 @@ public class BoundingBoxTest {
         var result = cone.bounds();
         var expected = new BoundingBox(makePoint(-5.5f, -1, -5.5f), makePoint(5.5f, 5.5f, 5.5f));
         assertEquals(expected, result);
+    }
+
+    @Test
+    void testConeBoundingBoxB() {
+        var cone = new Cone(Matrix4.identity(), 3, -5);
+        var result = cone.bounds();
+        assertEquals(makePoint(-5,-5,-5), result.minimum());
+        assertEquals(makePoint(5,3,5), result.maximum());
     }
 
     @Test
@@ -220,4 +231,48 @@ public class BoundingBoxTest {
         assertEquals(expected, result);
     }
 
+    //
+    // BOOK TESTS
+    // 
+    @Test 
+    void testBoundingBoxGrowA() {
+        BoundingBox box = new BoundingBox(makePoint(0, 0, 0), makePoint());
+        box = box.grow(makePoint(-5, 2, 0));
+        box = box.grow(makePoint(7, 0, -3));
+        assertEquals(makePoint(-5, 0, -3), box.minimum());
+        assertEquals(makePoint(7, 2, 0), box.maximum());
+    }
+
+    @Test
+    void testTriangleBoundingBox() {
+        var shape = new Triangle(makePoint(-3, 7, 2), makePoint(6, 2, -4), makePoint(2, -1, -1));
+        var result = shape.bounds();
+        assertEquals(makePoint(-3, -1, -4), result.minimum());
+        assertEquals(makePoint(6, 7, 2), result.maximum());
+    }
+
+    @Test
+    void testBoundingBoxMerge() {
+        var a = new BoundingBox(makePoint(-5,-2,0), makePoint(7,4,4));
+        var b = new BoundingBox(makePoint(8, -7, -2), makePoint(14, 2, 8));
+        var result = a.grow(b);
+        assertEquals(makePoint(-5,-7,-2), result.minimum());
+        assertEquals(makePoint(14,4,8), result.maximum());
+    }
+
+    @Test
+    void testBoundingBoxContainsA() {
+        var tests = List.of(
+            new Pair<>(new BoundingBox(makePoint(5,-2,0), makePoint(11,4,7)), true),
+            new Pair<>(new BoundingBox(makePoint(6,-1,1), makePoint(10,3,6)), true),
+            new Pair<>(new BoundingBox(makePoint(4,-3,-1), makePoint(10,3,6)), false),
+            new Pair<>(new BoundingBox(makePoint(6,-1,1), makePoint(12,5,8)), false)
+        );
+        final var box = new BoundingBox(makePoint(5,-2,0), makePoint(11, 4, 7));
+        for (final var test : tests) {
+            var testBox = test.a();
+            var exepcted = test.b();
+            assertEquals(exepcted, box.contains(testBox), test.toString() + " " + box);
+        }
+    }
 }
