@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.util.shape;
 
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,7 +40,7 @@ public class BaseShapeTest {
             return Tuple.makeVector(point.x, point.y, point.z); 
         }
         @Override
-        public BoundingBox bounds() { throw new UnsupportedOperationException(); }
+        public BoundingBox bounds() { return new BoundingBox(makePoint(-1, -1, -1), makePoint(1, 1, 1)); }
         @Override
         public boolean isSolid() { throw new UnsupportedOperationException(); }
     }
