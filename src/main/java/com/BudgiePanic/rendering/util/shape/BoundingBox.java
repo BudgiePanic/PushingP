@@ -27,6 +27,16 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
     }
 
     /**
+     * Check if another bounding box is fully contained within the extents of this bounding box.
+     * @param other
+     *   The bounding box to test.
+     * @return
+     *   True if the other bounding box fits inside of this bounding box.
+     */
+    public boolean contains(BoundingBox other) {
+        return contains(other.maximum) && contains(other.minimum);
+    }
+    /**
      * Calculate new AABB extents needed to contain the given point.
      * 
      * @param point
@@ -91,6 +101,21 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
             return false;
         }       
         return true;
+    }
+
+    /**
+     * Merge two bounding boxes.
+     *
+     * @param other
+     *   The other bounding box
+     * @return
+     *   A new bounding box with extents min(this.min, other.min), max(this.max, other.max)
+     */
+    protected BoundingBox grow(BoundingBox other) {
+        // instead of creating two intermediary bounding boxes, we could determine the min and max inline?
+        var a = this.grow(other.minimum);
+        a = a.grow(other.maximum);
+        return a;
     }
 
 }
