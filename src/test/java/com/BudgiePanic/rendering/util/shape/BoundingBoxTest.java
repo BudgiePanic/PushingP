@@ -404,4 +404,52 @@ public class BoundingBoxTest {
         }
     }
 
+    @Test
+    void testBoundingBoxSplit() {
+        var box = new BoundingBox(makePoint(-1, -4, -5), makePoint(9, 6, 5));
+        Pair<BoundingBox, BoundingBox> split = box.split();
+        var left = split.a();
+        var right = split.b();
+        assertEquals(makePoint(-1, -4, -5), left.minimum());
+        assertEquals(makePoint(4, 6, 5), left.maximum());
+        assertEquals(makePoint(4, -4, -5), right.minimum());
+        assertEquals(makePoint(9, 6, 5), right.maximum());
+    }
+
+    @Test
+    void testBoundingBoxSplitA() {
+        var box = new BoundingBox(makePoint(-1, -2, -3), makePoint(9, 5.5, 3));
+        Pair<BoundingBox, BoundingBox> split = box.split();
+        var left = split.a();
+        var right = split.b();
+        assertEquals(makePoint(-1, -2, -3), left.minimum());
+        assertEquals(makePoint(4, 5.5, 3), left.maximum());
+        assertEquals(makePoint(4, -2, -3), right.minimum());
+        assertEquals(makePoint(9, 5.5, 3), right.maximum());
+    }
+
+    @Test
+    void testBoundingBoxSplitB() {
+        var box = new BoundingBox(makePoint(-1, -2, -3), makePoint(5, 8, 3));
+        Pair<BoundingBox, BoundingBox> split = box.split();
+        var left = split.a();
+        var right = split.b();
+        assertEquals(makePoint(-1, -2, -3), left.minimum());
+        assertEquals(makePoint(5, 3, 3), left.maximum());
+        assertEquals(makePoint(-1, 3, -3), right.minimum());
+        assertEquals(makePoint(5, 8, 3), right.maximum());
+    }
+
+    @Test
+    void testBoundingBoxSplitC() {
+        var box = new BoundingBox(makePoint(-1, -2, -3), makePoint(5, 3, 7));
+        Pair<BoundingBox, BoundingBox> split = box.split();
+        var left = split.a();
+        var right = split.b();
+        assertEquals(makePoint(-1, -2, -3), left.minimum());
+        assertEquals(makePoint(5, 3, 2), left.maximum());
+        assertEquals(makePoint(-1, -2, 2), right.minimum());
+        assertEquals(makePoint(5, 3, 7), right.maximum());
+    }
+
 }
