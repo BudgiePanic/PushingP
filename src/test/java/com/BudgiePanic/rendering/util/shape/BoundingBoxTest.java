@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.util.shape;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,7 +12,10 @@ import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Pair;
+import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.composite.CompoundOperation;
+import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
 import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
@@ -340,6 +344,64 @@ public class BoundingBoxTest {
         assertEquals(makePoint(4, 7, -1), bounds.maximum());
     }
 
+    @Test
+    void testCSGShapeBounds() {
+        var left = new Sphere(Transforms.identity().assemble());
+        var right = new Sphere(Transforms.identity().translate(2, 3, 4).assemble());
+        var shape = new CompoundShape(CompoundOperation.difference, left, right, Transforms.identity().assemble());
+        var bounds = shape.bounds();
+        assertEquals(makePoint(-1, -1, -1), bounds.minimum());
+        assertEquals(makePoint(3, 4, 5), bounds.maximum());
+    }
 
+    @Test
+    void testRayAABBIntersection() {
+        var tests = List.of(
+            new Pair<>(new Ray(makePoint(5, 0, 0), makeVector(-1, 0, 0).normalize()), true),
+            new Pair<>(new Ray(makePoint(-5, 0, 0), makeVector(1, 0, 0).normalize()), true),
+            new Pair<>(new Ray(makePoint(0.5, 0, 0), makeVector(0, -1, 0).normalize()), true),
+            new Pair<>(new Ray(makePoint(0.5, 0, 0), makeVector(0, 1, 0).normalize()), true),
+            new Pair<>(new Ray(makePoint(0.5, 0, 0), makeVector(0, 0, -1).normalize()), true),
+            new Pair<>(new Ray(makePoint(0.5, 0, 0), makeVector(0, 0, 1).normalize()), true),
+            new Pair<>(new Ray(makePoint(0, 0, 0), makeVector(0, 0, 1).normalize()), true),
+            new Pair<>(new Ray(makePoint(-2, 0, 0), makeVector(2, 4, 6).normalize()), false),
+            new Pair<>(new Ray(makePoint(0, -2, 0), makeVector(6, 2, 4).normalize()), false),
+            new Pair<>(new Ray(makePoint(0, 0, -2), makeVector(4, 6, 2).normalize()), false),
+            new Pair<>(new Ray(makePoint(2, 0, 2), makeVector(0, 0, -1).normalize()), false),
+            new Pair<>(new Ray(makePoint(0, 2, 2), makeVector(0, -1, 0).normalize()), false),
+            new Pair<>(new Ray(makePoint(2, 2, 0), makeVector(-1, 0, 0).normalize()), false)
+        );
+        var box = new BoundingBox(makePoint(-1, -1, -1), makePoint(1, 1, 1));
+        for (var test : tests) {
+            var exepcted = test.b();
+            var result = box.intersect(test.a());
+            assertEquals(exepcted, result);
+        }
+    }
+
+    @Test
+    void testRayAABBIntersectionA() {
+        var tests = List.of(
+            new Pair<>(new Ray(makePoint(15, 1, 2), makeVector(-1, 0, 0).normalize()), true),
+            new Pair<>(new Ray(makePoint(-5, -1, 4), makeVector(1, 0, 0).normalize()), true),
+            new Pair<>(new Ray(makePoint(7, 6, 5), makeVector(0, -1, 0).normalize()), true),
+            new Pair<>(new Ray(makePoint(9, -5, 6), makeVector(0, 1, 0).normalize()), true),
+            new Pair<>(new Ray(makePoint(8, 2, 12), makeVector(0, 0, -1).normalize()), true),
+            new Pair<>(new Ray(makePoint(6, 0, -5), makeVector(0, 0, 1).normalize()), true),
+            new Pair<>(new Ray(makePoint(8, 1, 3.5), makeVector(0, 0, 1).normalize()), true),
+            new Pair<>(new Ray(makePoint(9, -1, -8), makeVector(2, 4, 6).normalize()), false),
+            new Pair<>(new Ray(makePoint(8, 3, -4), makeVector(6, 2, 4).normalize()), false),
+            new Pair<>(new Ray(makePoint(9, -1, -2), makeVector(4, 6, 2).normalize()), false),
+            new Pair<>(new Ray(makePoint(4, 0, 9), makeVector(0, 0, -1).normalize()), false),
+            new Pair<>(new Ray(makePoint(8, 6, -1), makeVector(0, -1, 0).normalize()), false),
+            new Pair<>(new Ray(makePoint(12, 5, 4), makeVector(-1, 0, 0).normalize()), false)
+        );
+        var box = new BoundingBox(makePoint(5, -2, 0), makePoint(11, 4, 7));
+        for (var test : tests) {
+            var exepcted = test.b();
+            var result = box.intersect(test.a());
+            assertEquals(exepcted, result);
+        }
+    }
 
 }
