@@ -131,4 +131,24 @@ public class GroupTest {
         assertFalse(group.isSolid());
     }
 
+    @Test
+    void testGroupUsesAABB() {
+        var shape = new Group(Transforms.identity().assemble());
+        var temp = new BaseShapeTest.TestShape(Transforms.identity().assemble());
+        shape.addShape(temp);
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        shape.intersect(ray);
+        assertTrue(temp.localIntersectRayResult != null);
+    }
+
+    @Test
+    void testGroupUsesAABBA() {
+        var shape = new Group(Transforms.identity().assemble());
+        var temp = new BaseShapeTest.TestShape(Transforms.identity().assemble());
+        shape.addShape(temp);
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 1, 0));
+        shape.intersect(ray);
+        assertTrue(temp.localIntersectRayResult == null);
+    }
+
 }

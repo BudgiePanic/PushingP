@@ -42,7 +42,7 @@ public class BaseShapeTest {
         @Override
         public BoundingBox bounds() { return new BoundingBox(makePoint(-1, -1, -1), makePoint(1, 1, 1)); }
         @Override
-        public boolean isSolid() { throw new UnsupportedOperationException(); }
+        public boolean isSolid() { return true; }
     }
 
     @Test

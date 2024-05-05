@@ -19,6 +19,7 @@ import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.BaseShapeTest;
 import com.BudgiePanic.rendering.util.shape.Cube;
 import com.BudgiePanic.rendering.util.shape.Cylinder;
 import com.BudgiePanic.rendering.util.shape.Sphere;
@@ -143,6 +144,28 @@ public class CompoundShapeTest {
         assertTrue(compound.isSolid());
         compound = new CompoundShape(union, new Cylinder(identity(), 0, 0, false), new Sphere(identity()), identity());
         assertFalse(compound.isSolid());
+    }
+
+    @Test
+    void testCompoundShapeUsesAABB() {
+        var left = new BaseShapeTest.TestShape(identity());
+        var right = new BaseShapeTest.TestShape(identity());
+        var shape = new CompoundShape(difference, left, right, identity());
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        shape.intersect(ray);
+        assertTrue(left.localIntersectRayResult != null);
+        assertTrue(right.localIntersectRayResult != null);
+    }
+
+    @Test
+    void testCompoundShapeUsesAABBA() {
+        var left = new BaseShapeTest.TestShape(identity());
+        var right = new BaseShapeTest.TestShape(identity());
+        var shape = new CompoundShape(difference, left, right, identity());
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 1, 0));
+        shape.intersect(ray);
+        assertTrue(left.localIntersectRayResult == null);
+        assertTrue(right.localIntersectRayResult == null);
     }
 
 }
