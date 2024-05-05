@@ -129,7 +129,7 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
      * @return
      *   A new bounding box
      */
-    protected BoundingBox transform(Matrix4 transform) {
+    public BoundingBox transform(Matrix4 transform) {
         Tuple _000 = transform.multiply(new Tuple(maximum.x, minimum.y, minimum.z)); // MAX MIN 
         Tuple _100 = transform.multiply(minimum); // MIN                                MIN MIN
         Tuple _001 = transform.multiply(new Tuple(maximum.x, minimum.y, maximum.z)); // MAX MAX
