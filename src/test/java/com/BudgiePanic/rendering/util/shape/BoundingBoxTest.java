@@ -316,5 +316,30 @@ public class BoundingBoxTest {
         assertEquals(makePoint(1.5, -1, 9), bounds.maximum());
     }
 
+    @Test
+    void testGroupBounds() {
+        var sphere = new Sphere(Transforms.identity().scale(2).translate(2, 5, -3).assemble());
+        var cylinder = new Cylinder(Transforms.identity().scale(0.5, 1, 0.5).translate(-4, -1, 4).assemble(), 2,-2);
+        var group = new Group(Transforms.identity().assemble());
+        group.addShape(sphere);
+        group.addShape(cylinder);
+        var bounds = group.bounds();
+        assertEquals(makePoint(-4.5, -3, -5), bounds.minimum());
+        assertEquals(makePoint(4, 7, 4.5), bounds.maximum());
+    }
+
+    @Test
+    void testGroupBoundsA() {
+        var sphere = new Sphere(Transforms.identity().scale(2).translate(2, 5, -3).assemble());
+        var cylinder = new Cylinder(Transforms.identity().scale(0.5, 1, 0.5).translate(-4, -1, -4).assemble(), 2,-2);
+        var group = new Group(Transforms.identity().assemble());
+        group.addShape(sphere);
+        group.addShape(cylinder);
+        var bounds = group.bounds();
+        assertEquals(makePoint(-4.5, -3, -5), bounds.minimum());
+        assertEquals(makePoint(4, 7, -1), bounds.maximum());
+    }
+
+
 
 }
