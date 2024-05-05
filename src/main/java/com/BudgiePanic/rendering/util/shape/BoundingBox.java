@@ -116,8 +116,13 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
      */
     protected BoundingBox grow(BoundingBox other) {
         // instead of creating two intermediary bounding boxes, we could determine the min and max inline?
-        var a = this.grow(other.minimum);
-        a = a.grow(other.maximum);
+        var a = this;
+        if (!a.contains(other.maximum)) {
+            a = a.grow(other.maximum);
+        }
+        if (!a.contains(other.minimum)) {
+            a = a.grow(other.minimum);
+        }
         return a;
     }
 
@@ -146,6 +151,32 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
         }
         return result;
     }
+
+    public Pair<BoundingBox, BoundingBox> split() {
+        double xLength = maximum.x - minimum.x;
+        double yLength = maximum.y - minimum.y;
+        double zLength = maximum.z - minimum.z;
+        double biggest = Math.max(zLength, Math.max(xLength, yLength));
+        Tuple min = minimum;
+        Tuple max = maximum;
+        if (xLength == biggest) {
+            double value = min.x + xLength / 2.0;
+            min = new Tuple(value, min.y, min.z, min.w);
+            max = new Tuple(value, max.y, max.z, max.w);
+        } else if (yLength == biggest) {
+            double value = min.y + yLength / 2.0;
+            min = new Tuple(min.x, value, min.z, min.w);
+            max = new Tuple(max.x, value, max.z, max.w);
+        } else {
+            double value = min.z + zLength / 2.0;
+            min = new Tuple(min.x, min.y, value, min.w);
+            max = new Tuple(max.x, max.y, value, max.w);
+        }
+        return new Pair<BoundingBox,BoundingBox>
+        (new BoundingBox(this.minimum, max), new BoundingBox(min, this.maximum));
+    }
+
+
 
 }
     
