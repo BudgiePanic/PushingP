@@ -69,9 +69,9 @@ public class Triangle extends BaseShape {
                 Math.min(Math.min(p1.y,p2.y),p3.y),
                 Math.min(Math.min(p1.z,p2.z),p3.z)), 
             Tuple.makePoint(
-                Math.max(Math.min(p1.x,p2.x),p3.x),
-                Math.max(Math.min(p1.y,p2.y),p3.y),
-                Math.max(Math.min(p1.z,p2.z),p3.z)));
+                Math.max(Math.max(p1.x,p2.x),p3.x),
+                Math.max(Math.max(p1.y,p2.y),p3.y),
+                Math.max(Math.max(p1.z,p2.z),p3.z)));
     }
     /**
      * Convienience constructor.
