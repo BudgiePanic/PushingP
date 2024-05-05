@@ -84,7 +84,7 @@ public abstract class CompositeShape extends BaseShape implements Parent {
     @Override
     public synchronized BoundingBox bounds() {
         if (AABB == null) {
-            BoundingBox box = new BoundingBox(makePoint(), makePoint());
+            BoundingBox box = new BoundingBox(makePoint(), makePoint()); // BUG HERE, fails when the MAX of the 8 points is a negative number
             final var children = children();
             // the cube has 8 points [000,100,001,101,010,110,011,111]
             for (var shape : children) {

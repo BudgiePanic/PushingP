@@ -67,6 +67,8 @@ public class BoundingBoxTest {
         assertEquals(makePoint(Float.NEGATIVE_INFINITY, 0, Float.NEGATIVE_INFINITY), box.minimum());
     }
 
+
+
     /*
      * LOCAL BOUNDING BOX TESTS
      */
@@ -296,4 +298,23 @@ public class BoundingBoxTest {
             assertEquals(expected, result, box.toString() + " " + test.a().toString());
         }
     }
+
+    @Test
+    void testBoundingBoxTransform() {
+        var box = new BoundingBox(makePoint(-1, -1, -1), makePoint(1, 1, 1));
+        var transform = Transforms.identity().rotateY(Math.PI / 4).rotateX(Math.PI / 4).assemble();
+        var result = box.transform(transform);
+        assertEquals(makePoint(-1.4142, -1.7071, -1.7071), result.minimum());
+        assertEquals(makePoint(1.4142, 1.7071, 1.7071), result.maximum());
+    }
+
+    @Test
+    void testTransformedShapePrimitiveBoundingBox() {
+        var shape = new Sphere(Transforms.identity().scale(0.5, 2, 4).translate(1, -3, 5).assemble());
+        var bounds = shape.bounds().transform(shape.transform());
+        assertEquals(makePoint(0.5, -5, 1), bounds.minimum());
+        assertEquals(makePoint(1.5, -1, 9), bounds.maximum());
+    }
+
+
 }

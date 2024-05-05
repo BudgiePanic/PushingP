@@ -1,8 +1,13 @@
 package com.BudgiePanic.rendering.util.shape;
 
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+
+import java.util.List;
+
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
+import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
 /**
  * The axis aligned bounding box is used to speed up ray intersection tests with shape groups.
@@ -116,6 +121,32 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
         var a = this.grow(other.minimum);
         a = a.grow(other.maximum);
         return a;
+    }
+
+    /**
+     * Passes the eight corners of the bounding box through the transform, creating a new bounding box.
+     * @param transform
+     * @return
+     *   A new bounding box
+     */
+    protected BoundingBox transform(Matrix4 transform) {
+        Tuple _000 = transform.multiply(new Tuple(maximum.x, minimum.y, minimum.z)); // MAX MIN 
+        Tuple _100 = transform.multiply(minimum); // MIN                                MIN MIN
+        Tuple _001 = transform.multiply(new Tuple(maximum.x, minimum.y, maximum.z)); // MAX MAX
+        Tuple _101 = transform.multiply(new Tuple(minimum.x, minimum.y, maximum.z)); // MIN MAX
+
+        Tuple _010 = transform.multiply(new Tuple(maximum.x, maximum.y, minimum.z)); // MAX MIN
+        Tuple _110 = transform.multiply(new Tuple(minimum.x, maximum.y, minimum.z)); // MIN MIN
+        Tuple _011 = transform.multiply(maximum); // MAX                                MAX MAX
+        Tuple _111 = transform.multiply(new Tuple(minimum.x, maximum.y, maximum.z)); // MIN MAX
+        var points = List.of(_000, _001, _010, _011, _100, _101, _110, _111);
+        var result = new BoundingBox(_000, _000);
+        for (var point : points) {
+            if (!result.contains(point)) {
+                result = result.grow(point);
+            }
+        }
+        return result;
     }
 
 }
