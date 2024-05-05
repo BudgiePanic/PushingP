@@ -275,4 +275,25 @@ public class BoundingBoxTest {
             assertEquals(exepcted, box.contains(testBox), test.toString() + " " + box);
         }
     }
+
+    @Test
+    void testBoundingBoxContainsB() {
+        var tests = List.of(
+            new Pair<>(makePoint(5, -2, 0), true),
+            new Pair<>(makePoint(11, 4, 7), true),
+            new Pair<>(makePoint(8, 1, 3), true),
+            new Pair<>(makePoint(3, 0, 3), false),
+            new Pair<>(makePoint(8, -4, 3), false),
+            new Pair<>(makePoint(8, 1, -1), false),
+            new Pair<>(makePoint(13, 1, 3), false),
+            new Pair<>(makePoint(8, 5, 3), false),
+            new Pair<>(makePoint(8, 1, 8), false)
+        );
+        var box = new BoundingBox(makePoint(5, -2, 0), makePoint(11, 4, 7));
+        for (var test : tests) {
+            var expected = test.b();
+            var result = box.contains(test.a());
+            assertEquals(expected, result, box.toString() + " " + test.a().toString());
+        }
+    }
 }
