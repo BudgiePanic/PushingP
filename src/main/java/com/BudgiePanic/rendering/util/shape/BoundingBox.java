@@ -1,7 +1,5 @@
 package com.BudgiePanic.rendering.util.shape;
 
-import static com.BudgiePanic.rendering.util.Tuple.makePoint;
-
 import java.util.List;
 
 import com.BudgiePanic.rendering.util.Pair;
