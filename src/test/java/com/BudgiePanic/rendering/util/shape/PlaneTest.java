@@ -71,4 +71,11 @@ public class PlaneTest {
         var plane = new Plane(Matrix4.identity());
         assertFalse(plane.isSolid());
     }
+
+    @Test
+    void testCylinderDivide() {
+        var shape = new Plane(Matrix4.identity());
+        var result = shape.divide(0);
+        assertEquals(shape, result);
+    } 
 }

@@ -139,4 +139,14 @@ public interface Shape {
      *   Returns true if the shape encloses a volume with no holes.
      */
     boolean isSolid();
+
+    /**
+     * Divide this shape into subgroups.
+     * Returns the shape itself when called on concrete shape implementations like Cube and Sphere.
+     * @param threshold
+     *   The minimum number of subshapes within this shape to trigger a subdivision.
+     * @return
+     *   The subdivision of this shape.
+     */
+    default Shape divide(int threshold) { return this; }
 }

@@ -203,4 +203,11 @@ public class SphereTest {
         var sphere = new Sphere(Matrix4.identity());
         assertTrue(sphere.isSolid());
     }
+
+    @Test
+    void testSphereDivide() {
+        var shape = new Sphere(Matrix4.identity());
+        var result = shape.divide(0);
+        assertEquals(shape, result);
+    }
 }

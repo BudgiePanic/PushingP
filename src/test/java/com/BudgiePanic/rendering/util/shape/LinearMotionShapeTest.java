@@ -16,6 +16,7 @@ import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class LinearMotionShapeTest {
@@ -125,4 +126,27 @@ public class LinearMotionShapeTest {
         var shape = new LinearMotionShape(Matrix4.identity(), new Sphere(Transforms.identity().assemble()), Directions.right);
         assertEquals(shape, shape.shape.parent().get());
     }
+
+    @Test
+    void testMotionShapeDivideA() {
+        var shape = new Sphere(Transforms.identity().assemble());
+        var motionShape = new LinearMotionShape(Matrix4.identity(), shape, Directions.right);
+        var result = motionShape.divide(1);
+        assertEquals(motionShape, result);
+        assertEquals(shape, motionShape.shape);
+    }
+
+    @Test
+    void testMotionShapeDivideB() {
+        // check that motion shape asks its child shape to also divide
+        var shape1 = new Sphere(Transforms.identity().assemble());
+        var shape2 = new Sphere(Transforms.identity().translate(1.1, 0, 0).assemble());
+        var group = new Group(Matrix4.identity());
+        var motionShape = new LinearMotionShape(Matrix4.identity(), group, Directions.right);
+        var result = motionShape.divide(1);
+        assertEquals(2, group.children().size());
+        assertTrue(group.children().get(0) instanceof Group);
+        assertTrue(group.children().get(1) instanceof Group);
+    }
+
 }

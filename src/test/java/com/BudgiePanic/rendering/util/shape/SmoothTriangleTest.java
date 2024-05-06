@@ -40,5 +40,12 @@ public class SmoothTriangleTest {
         var expected = makeVector(-0.5547f, 0.83205f, 0);
         assertEquals(expected, normal);
     }
+
+    @Test
+    void testSmoothTriangleDivide() {
+        var shape = new SmoothTriangle(makePoint(), makePoint(), makePoint(), makeVector(), makeVector(), makeVector());
+        var result = shape.divide(0);
+        assertEquals(shape, result);
+    }
     
 }

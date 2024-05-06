@@ -64,4 +64,11 @@ public class TorusTest {
             assertEquals(expected, actual);
         }
     }
+
+    @Test
+    void testTorusDivide() {
+        var shape = new Torus(Matrix4.identity(), Material.defaultMaterial(), 1, 1);
+        var result = shape.divide(0);
+        assertEquals(shape, result);
+    }
 }

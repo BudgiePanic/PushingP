@@ -154,4 +154,11 @@ public class CubeTest {
         result = cube.intersect(new Ray(makePoint(0, 0, -1.1), makeVector(0, 0, -1))).get();
         assertTrue(Intersection.Hit(result).isEmpty());
     }
+
+    @Test
+    void testCubeDivide() {
+        var shape = new Cube(Matrix4.identity());
+        var result = shape.divide(0);
+        assertEquals(shape, result);
+    }
 }
