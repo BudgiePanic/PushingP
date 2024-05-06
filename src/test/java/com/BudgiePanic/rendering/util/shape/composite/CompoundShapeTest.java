@@ -168,4 +168,36 @@ public class CompoundShapeTest {
         assertTrue(right.localIntersectRayResult == null);
     }
 
+    @Test
+    void testCompoundShapeDivide() {
+        var shape1 = new Sphere(Transforms.identity().translate(-1.5, 0, 0).assemble());
+        var shape2 = new Sphere(Transforms.identity().translate(1.5, 0, 0).assemble());
+        var shape3 = new Sphere(Transforms.identity().translate(0, 0, -1.5).assemble());
+        var shape4 = new Sphere(Transforms.identity().translate(0, 0, 1.5).assemble());
+        var groupA = new Group(identity());
+        var groupB = new Group(identity());
+        groupA.addShape(shape1);
+        groupA.addShape(shape2);
+        groupB.addShape(shape3);
+        groupB.addShape(shape4);
+        var compound = new CompoundShape(difference, groupA, groupB, identity());
+        @SuppressWarnings("unused")
+        var result = compound.divide(1);
+        assertEquals(2, groupA.children.size());
+        assertEquals(2, groupB.children.size());
+        assertTrue(groupA.children.get(0) instanceof Group);
+        assertTrue(groupA.children.get(1) instanceof Group);
+        assertTrue(groupB.children.get(0) instanceof Group);
+        assertTrue(groupB.children.get(1) instanceof Group);
+        assertEquals(1, ((Group) groupA.children.get(0)).children.size());
+        assertEquals(1, ((Group) groupA.children.get(1)).children.size());
+        assertEquals(1, ((Group) groupB.children.get(0)).children.size());
+        assertEquals(1, ((Group) groupB.children.get(1)).children.size());
+        
+        assertEquals(shape1, ((Group) groupA.children.get(0)).children.get(0));
+        assertEquals(shape2, ((Group) groupA.children.get(1)).children.get(0));
+        assertEquals(shape3, ((Group) groupB.children.get(0)).children.get(0));
+        assertEquals(shape4, ((Group) groupB.children.get(1)).children.get(0));
+    }
+
 }
