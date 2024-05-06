@@ -98,7 +98,7 @@ public class Group extends CompositeShape {
      *   The shapes that should go into the left and right bounding box splits for this BVH.
      */
     protected Pair<List<Shape>, List<Shape>> partition() {
-        final var subBounds = bounds().split(); // TODO promote this to composite shape parent class?
+        final var subBounds = bounds().split();
         final var left = subBounds.a();
         final var right = subBounds.b();
         List<Shape> lefts = null;
