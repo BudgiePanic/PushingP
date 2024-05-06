@@ -145,6 +145,7 @@ public class LinearMotionShapeTest {
         group.addShape(shape1);
         group.addShape(shape2);
         var motionShape = new LinearMotionShape(Matrix4.identity(), group, Directions.right);
+        @SuppressWarnings("unused")
         var result = motionShape.divide(1);
         assertEquals(2, group.children().size());
         assertTrue(group.children().get(0) instanceof Group);

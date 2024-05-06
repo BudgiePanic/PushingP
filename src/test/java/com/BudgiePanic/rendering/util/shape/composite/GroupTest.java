@@ -221,6 +221,7 @@ public class GroupTest {
         var bigGroup = new Group(Transforms.identity().assemble());
         bigGroup.addShape(group);
         bigGroup.addShape(shape4);
+        @SuppressWarnings("unused") // May update divide method later to return void...
         var result = bigGroup.divide(3);
         
         assertEquals(2, bigGroup.children.size());
