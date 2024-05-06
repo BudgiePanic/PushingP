@@ -92,4 +92,11 @@ public class CompoundShape extends CompositeShape {
     @Override
     protected Collection<Shape> children() { return children; }
 
+    @Override
+    public Shape divide(int threshold) {
+        this.left.divide(threshold);
+        this.right.divide(threshold);
+        return this;
+    }
+
 }
