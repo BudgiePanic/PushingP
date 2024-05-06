@@ -140,8 +140,10 @@ public class LinearMotionShapeTest {
     void testMotionShapeDivideB() {
         // check that motion shape asks its child shape to also divide
         var shape1 = new Sphere(Transforms.identity().assemble());
-        var shape2 = new Sphere(Transforms.identity().translate(1.1, 0, 0).assemble());
+        var shape2 = new Sphere(Transforms.identity().translate(2.1, 0, 0).assemble());
         var group = new Group(Matrix4.identity());
+        group.addShape(shape1);
+        group.addShape(shape2);
         var motionShape = new LinearMotionShape(Matrix4.identity(), group, Directions.right);
         var result = motionShape.divide(1);
         assertEquals(2, group.children().size());
