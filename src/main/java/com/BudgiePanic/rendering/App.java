@@ -35,7 +35,8 @@ public class App
         entry("-focus", ()-> new FocusCameraDemo()),
         entry("-motion_demo", ()-> new MotionDemo()),
         entry("-spotlight", ()-> new SpotLightDemo()),
-        entry("-anti_alias_demo", () -> new AntiAliasingDemo())
+        entry("-anti_alias_demo", ()-> new AntiAliasingDemo()),
+        entry("-bvh_test", ()-> new BoundingVolumeHierarchyTest())
     );
 
     public static void main( String[] args )
