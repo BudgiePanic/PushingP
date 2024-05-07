@@ -25,6 +25,8 @@ import com.BudgiePanic.rendering.util.transform.View;
 
 /**
  * Renders a scene with a high polygon model.
+ * 
+ * @author BudgiePanic
  */
 public class LargeModelDemo extends BaseDemo {
 
