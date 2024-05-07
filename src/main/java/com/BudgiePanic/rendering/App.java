@@ -37,7 +37,8 @@ public class App
         entry("-spotlight", ()-> new SpotLightDemo()),
         entry("-anti_alias_demo", ()-> new AntiAliasingDemo()),
         entry("-bvh_test", ()-> new BoundingVolumeHierarchyTest()),
-        entry("-dragon_demo", ()-> new LargeModelDemo())
+        entry("-dragon_demo", ()-> new LargeModelDemo()),
+        entry("-big_scene_demo", ()-> new BigSceneDemo())
     );
 
     public static void main( String[] args )
