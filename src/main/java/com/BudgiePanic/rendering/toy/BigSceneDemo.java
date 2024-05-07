@@ -31,6 +31,15 @@ import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
+/**
+ * A large scene that contains 6 Stanford dragons with over 140,000 triangles.
+ * 
+ * see: https://graphics.stanford.edu/data/3Dscanrep/
+ * see: http://www.jamis.jamisbuck.org/bonus/assets/dragon.zip
+ * see: http://www.jamis.jamisbuck.org/bonus/bounding-boxes.html
+ * 
+ * @author BudgiePanic
+ */
 public class BigSceneDemo extends BaseDemo {
 
     /**
