@@ -17,6 +17,8 @@ import com.BudgiePanic.rendering.util.transform.View;
 
 /**
  * Creates a 10*10*10 grid of spheres and measures the time taken to image it with and without the BVH optimization.
+ * 
+ * @author BudgiePanic
  */
 public class BoundingVolumeHierarchyTest extends BaseDemo {
 
