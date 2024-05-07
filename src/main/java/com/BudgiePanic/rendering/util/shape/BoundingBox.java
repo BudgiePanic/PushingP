@@ -152,6 +152,12 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
         return result;
     }
 
+    /**
+     * Create two smaller bounding boxes that divide the volume of this bounding box into two halves along the box's longest dimension.
+     *
+     * @return
+     *   Two bounding boxes that divide the volume of the bounding box into two halves
+     */
     public Pair<BoundingBox, BoundingBox> split() {
         double xLength = maximum.x - minimum.x;
         double yLength = maximum.y - minimum.y;
