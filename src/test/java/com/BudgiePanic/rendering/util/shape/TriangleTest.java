@@ -87,4 +87,11 @@ public class TriangleTest {
         assertFalse(triangle.isSolid());
     }
 
+    @Test
+    void testTriangleDivide() {
+        var shape = new Triangle(makePoint(1, 0, 0), makePoint(0, 1, 0), makePoint(0, 0, 1));
+        var result = shape.divide(0);
+        assertEquals(shape, result);
+    }
+
 }

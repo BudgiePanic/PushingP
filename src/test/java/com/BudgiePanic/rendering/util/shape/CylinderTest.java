@@ -160,4 +160,11 @@ public class CylinderTest {
         cylinder = new Cylinder(Matrix4.identity(), 1, 0, true);
         assertTrue(cylinder.isSolid());
     }
+
+    @Test
+    void testCylinderDivide() {
+        var shape = new Cylinder(Matrix4.identity());
+        var result = shape.divide(0);
+        assertEquals(shape, result);
+    }
 }

@@ -1,8 +1,11 @@
 package com.BudgiePanic.rendering.util.shape;
 
+import java.util.List;
+
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
+import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
 /**
  * The axis aligned bounding box is used to speed up ray intersection tests with shape groups.
@@ -26,6 +29,16 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
             point.z >= minimum.z && point.z <= maximum.z;
     }
 
+    /**
+     * Check if another bounding box is fully contained within the extents of this bounding box.
+     * @param other
+     *   The bounding box to test.
+     * @return
+     *   True if the other bounding box fits inside of this bounding box.
+     */
+    public boolean contains(BoundingBox other) {
+        return contains(other.maximum) && contains(other.minimum);
+    }
     /**
      * Calculate new AABB extents needed to contain the given point.
      * 
@@ -92,6 +105,84 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
         }       
         return true;
     }
+
+    /**
+     * Merge two bounding boxes.
+     *
+     * @param other
+     *   The other bounding box
+     * @return
+     *   A new bounding box with extents min(this.min, other.min), max(this.max, other.max)
+     */
+    protected BoundingBox grow(BoundingBox other) {
+        // instead of creating two intermediary bounding boxes, we could determine the min and max inline?
+        var a = this;
+        if (!a.contains(other.maximum)) {
+            a = a.grow(other.maximum);
+        }
+        if (!a.contains(other.minimum)) {
+            a = a.grow(other.minimum);
+        }
+        return a;
+    }
+
+    /**
+     * Passes the eight corners of the bounding box through the transform, creating a new bounding box.
+     * @param transform
+     * @return
+     *   A new bounding box
+     */
+    public BoundingBox transform(Matrix4 transform) {
+        Tuple _000 = transform.multiply(new Tuple(maximum.x, minimum.y, minimum.z)); // MAX MIN 
+        Tuple _100 = transform.multiply(minimum); // MIN                                MIN MIN
+        Tuple _001 = transform.multiply(new Tuple(maximum.x, minimum.y, maximum.z)); // MAX MAX
+        Tuple _101 = transform.multiply(new Tuple(minimum.x, minimum.y, maximum.z)); // MIN MAX
+
+        Tuple _010 = transform.multiply(new Tuple(maximum.x, maximum.y, minimum.z)); // MAX MIN
+        Tuple _110 = transform.multiply(new Tuple(minimum.x, maximum.y, minimum.z)); // MIN MIN
+        Tuple _011 = transform.multiply(maximum); // MAX                                MAX MAX
+        Tuple _111 = transform.multiply(new Tuple(minimum.x, maximum.y, maximum.z)); // MIN MAX
+        var points = List.of(_000, _001, _010, _011, _100, _101, _110, _111);
+        var result = new BoundingBox(_000, _000);
+        for (var point : points) {
+            if (!result.contains(point)) {
+                result = result.grow(point);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Create two smaller bounding boxes that divide the volume of this bounding box into two halves along the box's longest dimension.
+     *
+     * @return
+     *   Two bounding boxes that divide the volume of the bounding box into two halves
+     */
+    public Pair<BoundingBox, BoundingBox> split() {
+        double xLength = maximum.x - minimum.x;
+        double yLength = maximum.y - minimum.y;
+        double zLength = maximum.z - minimum.z;
+        double biggest = Math.max(zLength, Math.max(xLength, yLength));
+        Tuple min = minimum;
+        Tuple max = maximum;
+        if (xLength == biggest) {
+            double value = min.x + xLength / 2.0;
+            min = new Tuple(value, min.y, min.z, min.w);
+            max = new Tuple(value, max.y, max.z, max.w);
+        } else if (yLength == biggest) {
+            double value = min.y + yLength / 2.0;
+            min = new Tuple(min.x, value, min.z, min.w);
+            max = new Tuple(max.x, value, max.z, max.w);
+        } else {
+            double value = min.z + zLength / 2.0;
+            min = new Tuple(min.x, min.y, value, min.w);
+            max = new Tuple(max.x, max.y, value, max.w);
+        }
+        return new Pair<BoundingBox,BoundingBox>
+        (new BoundingBox(this.minimum, max), new BoundingBox(min, this.maximum));
+    }
+
+
 
 }
     

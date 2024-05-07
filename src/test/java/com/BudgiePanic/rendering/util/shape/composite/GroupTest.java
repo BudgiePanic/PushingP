@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import static com.BudgiePanic.rendering.util.Tuple.makeVector;
@@ -131,4 +133,113 @@ public class GroupTest {
         assertFalse(group.isSolid());
     }
 
+    @Test
+    void testGroupUsesAABB() {
+        var shape = new Group(Transforms.identity().assemble());
+        var temp = new BaseShapeTest.TestShape(Transforms.identity().assemble());
+        shape.addShape(temp);
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        shape.intersect(ray);
+        assertTrue(temp.localIntersectRayResult != null);
+    }
+
+    @Test
+    void testGroupUsesAABBA() {
+        var shape = new Group(Transforms.identity().assemble());
+        var temp = new BaseShapeTest.TestShape(Transforms.identity().assemble());
+        shape.addShape(temp);
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 1, 0));
+        shape.intersect(ray);
+        assertTrue(temp.localIntersectRayResult == null);
+    }
+
+    @Test
+    void testPartition() {
+        var shape1 = new Sphere(Transforms.identity().translate(-2, 0, 0).assemble());
+        var shape2 = new Sphere(Transforms.identity().translate(2, 0, 0).assemble());
+        var shape3 = new Sphere(Transforms.identity().assemble());
+        var bvh = new Group(Transforms.identity().assemble());
+        bvh.addShape(shape1);
+        bvh.addShape(shape2);
+        bvh.addShape(shape3);
+        var result = bvh.partition();
+        assertFalse(bvh.contains(shape1));
+        assertFalse(bvh.contains(shape2));
+        assertTrue(bvh.contains(shape3));
+        assertTrue(result.a().contains(shape1));
+        assertTrue(result.b().contains(shape2));
+        assertFalse(result.a().contains(shape3));
+        assertFalse(result.b().contains(shape3));
+    }
+
+    @Test
+    void testSubGroupDivision() {
+        var bvh = new Group(Transforms.identity().assemble());
+        var shape1 = new Sphere(Transforms.identity().assemble());
+        var shape2 = new Sphere(Transforms.identity().assemble());
+        bvh.addChildGroup(List.of(shape1, shape2));
+        assertEquals(1, bvh.children.size());
+        var result = bvh.children.get(0);
+        assertTrue(result instanceof Group);
+        assertTrue(result.contains(shape1));
+        assertTrue(result.contains(shape2));
+    }
+
+    @Test
+    void testGroupDivide() {
+        var shape1 = new Sphere(Transforms.identity().translate(-2, -2, 0).assemble());
+        var shape2 = new Sphere(Transforms.identity().translate(-2, 2, 0).assemble());
+        var shape3 = new Sphere(Transforms.identity().scale(4).assemble());
+        var group = new Group(Transforms.identity().assemble());
+        group.addShape(shape1);
+        group.addShape(shape2);
+        group.addShape(shape3);
+        var result = group.divide(1);
+        assertEquals(2, group.children.size(), result.toString());
+        assertEquals(shape3, group.children.get(0));
+        assertTrue(group.children.get(1) instanceof Group);
+        Group inner = (Group) group.children.get(1);
+        assertEquals(2, inner.children.size());
+        assertTrue(inner.children.get(0) instanceof Group);
+        assertTrue(inner.children.get(1) instanceof Group);
+        assertEquals(1, ((Group)inner.children.get(0)).children.size());
+        assertEquals(1, ((Group)inner.children.get(1)).children.size());
+        assertEquals(shape1, ((Group)inner.children.get(0)).children.get(0));
+        assertEquals(shape2, ((Group)inner.children.get(1)).children.get(0));
+    }
+
+    @Test
+    void testGroupRecursiveDivide() {
+        var shape1 = new Sphere(Transforms.identity().translate(-2, 0, 0).assemble());
+        var shape2 = new Sphere(Transforms.identity().translate(2, 1, 0).assemble());
+        var shape3 = new Sphere(Transforms.identity().translate(2, -1, 0).assemble());
+        var group = new Group(Transforms.identity().assemble());
+        group.addShape(shape1);
+        group.addShape(shape2);
+        group.addShape(shape3);
+        var shape4 = new Sphere(Transforms.identity().assemble());
+        var bigGroup = new Group(Transforms.identity().assemble());
+        bigGroup.addShape(group);
+        bigGroup.addShape(shape4);
+        @SuppressWarnings("unused") // May update divide method later to return void...
+        var result = bigGroup.divide(3);
+        
+        assertEquals(2, bigGroup.children.size());
+        assertEquals(group, bigGroup.children.get(0));
+        assertEquals(shape4, bigGroup.children.get(1));
+
+        assertEquals(2, group.children.size());
+        assertTrue(group.children.get(0) instanceof Group);
+        assertTrue(group.children.get(1) instanceof Group);
+
+        var left = (Group) group.children.get(0);
+        var right = (Group) group.children.get(1);
+
+        assertEquals(1, left.children.size());
+        assertEquals(shape1, left.children.get(0));
+
+        assertEquals(2, right.children.size());
+        assertEquals(shape2, right.children.get(0));
+        assertEquals(shape3, right.children.get(1));
+    }
 }

@@ -19,6 +19,7 @@ import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.BaseShapeTest;
 import com.BudgiePanic.rendering.util.shape.Cube;
 import com.BudgiePanic.rendering.util.shape.Cylinder;
 import com.BudgiePanic.rendering.util.shape.Sphere;
@@ -143,6 +144,60 @@ public class CompoundShapeTest {
         assertTrue(compound.isSolid());
         compound = new CompoundShape(union, new Cylinder(identity(), 0, 0, false), new Sphere(identity()), identity());
         assertFalse(compound.isSolid());
+    }
+
+    @Test
+    void testCompoundShapeUsesAABB() {
+        var left = new BaseShapeTest.TestShape(identity());
+        var right = new BaseShapeTest.TestShape(identity());
+        var shape = new CompoundShape(difference, left, right, identity());
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 0, 1));
+        shape.intersect(ray);
+        assertTrue(left.localIntersectRayResult != null);
+        assertTrue(right.localIntersectRayResult != null);
+    }
+
+    @Test
+    void testCompoundShapeUsesAABBA() {
+        var left = new BaseShapeTest.TestShape(identity());
+        var right = new BaseShapeTest.TestShape(identity());
+        var shape = new CompoundShape(difference, left, right, identity());
+        var ray = new Ray(makePoint(0, 0, -5), makeVector(0, 1, 0));
+        shape.intersect(ray);
+        assertTrue(left.localIntersectRayResult == null);
+        assertTrue(right.localIntersectRayResult == null);
+    }
+
+    @Test
+    void testCompoundShapeDivide() {
+        var shape1 = new Sphere(Transforms.identity().translate(-1.5, 0, 0).assemble());
+        var shape2 = new Sphere(Transforms.identity().translate(1.5, 0, 0).assemble());
+        var shape3 = new Sphere(Transforms.identity().translate(0, 0, -1.5).assemble());
+        var shape4 = new Sphere(Transforms.identity().translate(0, 0, 1.5).assemble());
+        var groupA = new Group(identity());
+        var groupB = new Group(identity());
+        groupA.addShape(shape1);
+        groupA.addShape(shape2);
+        groupB.addShape(shape3);
+        groupB.addShape(shape4);
+        var compound = new CompoundShape(difference, groupA, groupB, identity());
+        @SuppressWarnings("unused")
+        var result = compound.divide(1);
+        assertEquals(2, groupA.children.size());
+        assertEquals(2, groupB.children.size());
+        assertTrue(groupA.children.get(0) instanceof Group);
+        assertTrue(groupA.children.get(1) instanceof Group);
+        assertTrue(groupB.children.get(0) instanceof Group);
+        assertTrue(groupB.children.get(1) instanceof Group);
+        assertEquals(1, ((Group) groupA.children.get(0)).children.size());
+        assertEquals(1, ((Group) groupA.children.get(1)).children.size());
+        assertEquals(1, ((Group) groupB.children.get(0)).children.size());
+        assertEquals(1, ((Group) groupB.children.get(1)).children.size());
+        
+        assertEquals(shape1, ((Group) groupA.children.get(0)).children.get(0));
+        assertEquals(shape2, ((Group) groupA.children.get(1)).children.get(0));
+        assertEquals(shape3, ((Group) groupB.children.get(0)).children.get(0));
+        assertEquals(shape4, ((Group) groupB.children.get(1)).children.get(0));
     }
 
 }

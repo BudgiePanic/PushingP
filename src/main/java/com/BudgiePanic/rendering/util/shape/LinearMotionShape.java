@@ -1,6 +1,5 @@
 package com.BudgiePanic.rendering.util.shape;
 
-import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import java.util.List;
 import java.util.Optional;
@@ -117,7 +116,6 @@ public class LinearMotionShape extends BaseShape implements Parent {
     @Override
     public synchronized BoundingBox bounds() { 
         if (AABB == null) {
-            BoundingBox box = new BoundingBox(makePoint(), makePoint());
             // the cube has 8 points [000,100,001,101,010,110,011,111]
             final BoundingBox localAABB = shape.bounds();
             final var aabbMin = localAABB.minimum();
@@ -134,7 +132,8 @@ public class LinearMotionShape extends BaseShape implements Parent {
             Tuple _011 = transform.multiply(aabbMax); // MAX                                MAX MAX
             Tuple _111 = transform.multiply(new Tuple(aabbMin.x, aabbMax.y, aabbMax.z)); // MIN MAX
             var points = List.of(_000, _001, _010, _011, _100, _101, _110, _111);
-
+            
+            BoundingBox box = new BoundingBox(_000, _000);
             // check if we need to grow the AABB extents to contain the points
             for (var point : points) {
                 if (!box.contains(point)) {
@@ -195,6 +194,12 @@ public class LinearMotionShape extends BaseShape implements Parent {
         // linear motion shape with no forces acting upon it
         // NOTE: if more types of motion shapes are added, this method should become part of the interface
         return this.initialVelocity;
+    }
+
+    @Override
+    public Shape divide(int threshold) {
+        this.shape.divide(threshold);
+        return this;
     }
     
 }

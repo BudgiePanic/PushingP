@@ -95,4 +95,12 @@ public class ConeTest {
         cone = new Cone(Matrix4.identity(), 0, 0, true);
         assertTrue(cone.isSolid());
     }
+
+    @Test
+    void testConeDivide() {
+        var shape = new Cone(Matrix4.identity());
+        var result = shape.divide(0);
+        assertEquals(shape, result);
+    }
+
 }
