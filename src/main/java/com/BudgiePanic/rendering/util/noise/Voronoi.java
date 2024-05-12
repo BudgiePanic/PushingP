@@ -228,6 +228,100 @@ public class Voronoi {
         return Arrays.copyOf(distances, n);
     }
 
+    /**
+     * Pseudo random vector noise.
+     * @param x
+     *   The x component of the point being sampled.
+     * @param y
+     *   The y component of the point being sampled.
+     * @param z
+     *   The z component of the point being sampled.
+     * @param metric
+     *   The distance metric used to determine the distance between cell feature points and the sample point.
+     * @return
+     *   A pseudo random vector derived from the sample point (x,y,z).
+     */
+    public static final Tuple noiseVector(double x, double y, double z, Metric metric) {
+        final int cellX = (int) Math.floor(x);
+        final int cellY = (int) Math.floor(y);
+        final int cellZ = (int) Math.floor(z);     
+        Tuple vector = null;
+        double bestDistance = Double.MAX_VALUE;
+        for (final var offset : offsets) {
+            final int cellA = cellX + offset.x, cellB = cellY + offset.y, cellC = cellZ + offset.z;
+            final int seed = hash(cellA, cellB, cellC);
+            final var rng = new Random(seed); // We might need a more light weight random number generator
+            final double pointX = cellA + rng.nextDouble();
+            final double pointY = cellB + rng.nextDouble();
+            final double pointZ = cellC + rng.nextDouble();
+            final double distance = metric.distance(x, y, z, pointX, pointY, pointZ);
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                // vector pointing away from the feature point towards the sample location
+                // LHS coordinate system
+                vector = new Tuple(x - pointX, y - pointY, z - pointZ, 0.0);
+            }
+        }
+        return vector.normalize();
+    }
+
+    /**
+     * Pseudo random vector noise.
+     * @param x
+     *   The x component of the point being sampled.
+     * @param y
+     *   The y component of the point being sampled.
+     * @param z
+     *   The z component of the point being sampled.
+     * @param n
+     *   How many closest neighbor feature points to store.
+     * @param metric
+     *   The distance metric used to determine the distance between cell feature points and the sample point.
+     * @return
+     *   A list of pseudo random vectorss derived from the sample point (x,y,z).
+     */
+    public static final Tuple[] noiseVector(double x, double y, double z, int n, Metric metric) {
+        // super naive and memory/computationally inefficient implementation.
+        if (n < 2 || n > 4) {
+            System.out.println("WARN: voronoi noise called with invalid n: " + n);
+            if (n == 1) {
+                System.out.println("WARN: try call noise overload instead for n == 1");
+            }
+            if (n < 1) {
+                System.out.println("WARN: falling back to n = 2");
+                n = 2;
+            }
+            if (n > 27) {
+                System.out.println("WARN: falling back to n = 27");
+                n = 27;
+            }
+        }
+        final int cellX = (int) Math.floor(x);
+        final int cellY = (int) Math.floor(y);
+        final int cellZ = (int) Math.floor(z);
+        PriorityQueue<Pair<Double, Tuple>> vectors = new PriorityQueue<>(offsets.size(), (a,b) -> {return Double.compare(a.a(), b.a());});
+        for (final var offset : offsets) {
+            final int cellA = cellX + offset.x, cellB = cellY + offset.y, cellC = cellZ + offset.z;
+            final int seed = hash(cellA, cellB, cellC);
+            final var rng = new Random(seed); // We might need a more light weight random number generator
+            final double pointX = cellA + rng.nextDouble();
+            final double pointY = cellB + rng.nextDouble();
+            final double pointZ = cellC + rng.nextDouble();
+            final double distance = metric.distance(x, y, z, pointX, pointY, pointZ);
+            vectors.offer(new Pair<Double,Tuple>(distance, new Tuple(x - pointX, y - pointY, z - pointZ, 0.0).normalize()));
+        }
+        Tuple[] answer = new Tuple[n];
+        for (int i = 0; i < n; i++) {
+            // The closest one should be at the front
+            answer[i] = vectors.poll().b();
+        }
+        return answer;
+    }
+
+    /**
+     * Pseudo random voronoi noise with neighbor = 1.
+     * Most values will be between 0 and 1 but some values may exceed 1. 
+     * This overload does not allocate an array on the heap.
      *
      * @param x
      *   The x component of the location being sampled.
