@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.util.noise;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -91,39 +92,27 @@ public class Voronoi {
     public static final Metric euclideanSquared = new EuclideanSquared();
 
     /**
-     * Pseudo random voronoi noise with a garuanteed output range between zero and one.
-     * @param x
-     *   The x component of the location being sampled.
-     * @param y
-     *   The y component of the location being sampled.
-     * @param z
-     *   The z component of the location being sampled.
+     * Remap pseudo random voronoi noise value to be in the range zero to one.
+     * @param value
+     *   The noise value
      * @param metric
-     *   The distance metric
+     *   The distance metric used when generating the noise value.
      * @return
-     *   A pseudo random value between zero and one.
+     *   A remapped pseudo random value between zero and one.
      */
-    public static final double normNoise(double x, double y, double z, Metric metric) {
-        final var value = noise(x, y, z, metric);
+    public static final double normNoise(double value, Metric metric) {
         final double oldMin = 0.0, oldMax = metric.maxValue(), newMin = 0.0, newMax = 1.0;
         return ((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin;
     }
 
     /**
-     * Pseudo random voronoi noise with output values clamped between zero and one.
-     * @param x
-     *   The x component of the location being sampled.
-     * @param y
-     *   The y component of the location being sampled.
-     * @param z
-     *   The z component of the location being sampled.
-     * @param metric
-     *   The distance metric.
+     * Remap pseudo random voronoi noise to be clamped between zero and one.
+     * @param value
+     *   The noise value that was generated.
      * @return
      *   A pseudo random value between zero and one.
      */
-    public static final double clampNoise(double x, double y, double z, Metric metric) {
-        final var value = noise(x, y, z, metric);
+    public static final double clampNoise(double value) {
         return value > 1.0 ? 1.0 : value;
     }
 
