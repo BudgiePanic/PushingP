@@ -233,6 +233,7 @@ public final class Perlin {
      * @return
      *   a quantity between a and b
      */
+    protected static double lerp(double a, double b, double amount) {
         return ((1-amount) * a) + (amount * b);
     }
 }
