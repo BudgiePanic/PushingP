@@ -95,11 +95,12 @@ public class Voronoi {
         // TODO possible optimization: find the straight line distance to the neighboring cell
         // TODO if that distance is larger than the best distance to point already seen, we don't need to check that cell any further.
         for (final var offset : offsets) {
-            final int seed = hash(cellX + offset.x, cellY + offset.y, cellZ + offset.z);
+            final int cellA = cellX + offset.x, cellB = cellY + offset.y, cellC = cellZ + offset.z;
+            final int seed = hash(cellA, cellB, cellC);
             final var rng = new Random(seed); // We might need a more light weight random number generator
-            final double pointX = cellX + rng.nextDouble();
-            final double pointY = cellY + rng.nextDouble();
-            final double pointZ = cellZ + rng.nextDouble();
+            final double pointX = cellA + rng.nextDouble();
+            final double pointY = cellB + rng.nextDouble();
+            final double pointZ = cellC + rng.nextDouble();
             final double distance = distanceMetric.distance(x, y, z, pointX, pointY, pointZ);
             if (distance < bestDistance) {
                 bestDistance = distance;
