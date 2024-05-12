@@ -2,7 +2,11 @@ package com.BudgiePanic.rendering.util.noise;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Random;
+
+import com.BudgiePanic.rendering.util.Pair;
+import com.BudgiePanic.rendering.util.Tuple;
 
 /**
  * Worley noise implementation.
@@ -160,6 +164,70 @@ public class Voronoi {
     /**
      * Pseudo random voronoi noise.
      * Most values will be between 0 and 1 but some values may exceed 1. 
+     * Gets the noise value for 1 through to 'n' neighbor values.
+     *
+     * @param x
+     *   The x component of the location being sampled.
+     * @param y
+     *   The y component of the location being sampled.
+     * @param z
+     *   The z component of the location being sampled.
+     * @param n
+     *   The closest neighbor number. Should be between 1 and 4. Supports up to 27.
+     * @param power
+     *   The fractional power to calculate the noise with. Leave as zero for default results. Higher values makes noise features smaller and weaker.
+     * @param metric
+     *   The distance metric used to determine the distance between cell feature points and the sample point.
+     * @return
+     *   A pseudo random value between 0.0 and Metric::maxValue 
+     */
+    public static final double[] noise(double x, double y, double z, int n, double power, Metric metric) {
+        if (n < 2 || n > 4) {
+            System.out.println("WARN: voronoi noise called with invalid n: " + n);
+            if (n == 1) {
+                System.out.println("WARN: try call noise overload instead for n == 1");
+            }
+            if (n < 1) {
+                System.out.println("WARN: falling back to n = 2");
+                n = 2;
+            }
+            if (n > 27) {
+                System.out.println("WARN: falling back to n = 27");
+                n = 27;
+            }
+        }
+        // apply the power
+        x = Math.pow(2, power) * x;
+        y = Math.pow(2, power) * y;
+        z = Math.pow(2, power) * z;
+
+        final int cellX = (int) Math.floor(x);
+        final int cellY = (int) Math.floor(y);
+        final int cellZ = (int) Math.floor(z);
+
+        // A non-naive implementation would use a different data structure to track only the best n values seen so far.
+        final double[] distances = new double[offsets.size()];
+        int index = 0;
+        // TODO possible optimization: find the straight line distance to the neighboring cell
+        // TODO if that distance is larger than the best distance to point already seen, we don't need to check that cell any further.
+        for (final var offset : offsets) {
+            final int cellA = cellX + offset.x, cellB = cellY + offset.y, cellC = cellZ + offset.z;
+            final int seed = hash(cellA, cellB, cellC);
+            final var rng = new Random(seed); // We might need a more light weight random number generator
+            final double pointX = cellA + rng.nextDouble();
+            final double pointY = cellB + rng.nextDouble();
+            final double pointZ = cellC + rng.nextDouble();
+            final double distance = metric.distance(x, y, z, pointX, pointY, pointZ);
+            distances[index] = distance;
+            index++;
+        }
+        Arrays.sort(distances);
+        for (int i = 0; i < distances.length - 1; i++) { // scale the noise values down
+            distances[i] = Math.pow(2, -power) * distances[i];
+        }
+        return Arrays.copyOf(distances, n);
+    }
+
      *
      * @param x
      *   The x component of the location being sampled.
