@@ -33,9 +33,9 @@ public class VoronoiTest {
 
     @Test
     void testMetric() {
-        var result = Voronoi.distanceMetric.distance(0, 0, 0, 1, 0, 0);
+        var result = Voronoi.euclidean.distance(0, 0, 0, 1, 0, 0);
         assertEquals(1, result);
-        result = Voronoi.distanceMetric.distance(10, 10, 10, 10.1, 10.1, 10.1);
+        result = Voronoi.euclidean.distance(10, 10, 10, 10.1, 10.1, 10.1);
         assertEquals(0, FloatHelp.compareFloat(0.1732, result));
     }
 
