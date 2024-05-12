@@ -74,6 +74,8 @@ public class Voronoi {
 
     /**
      * Pseudo random voronoi noise.
+     * Most values will be between 0 and 1 but some values may exceed 1. 
+     * The theoractical maximum value this algorithm can produce is sqrt(3) but in testing 9,000,000 test values we found 6530 exceeded 1.0 and the largest we observered was 1.1188.
      *
      * @param x
      *   The x component of the location being sampled.
@@ -82,7 +84,7 @@ public class Voronoi {
      * @param z
      *   The z component of the location being sampled.
      * @return
-     *   A pseudo random value between 0.0 and 1.0.
+     *   A pseudo random value between 0.0 and sqrt(3.0) (1.732050) 
      */
     public static final double noise(double x, double y, double z) {
         final int cellX = (int) Math.floor(x);
@@ -115,7 +117,9 @@ public class Voronoi {
     /**
      * Hash an integer.
      * @param x
+     *   The value to hash.
      * @return
+     *   The hash of x.
      */
     protected static int hash(int x) {
         final int magic = 0x45d9f3b;
