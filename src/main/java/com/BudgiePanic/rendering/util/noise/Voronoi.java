@@ -126,15 +126,19 @@ public class Voronoi {
     }
 
     /**
-     * Arithmetic sum of hash values
+     * Combination of hash values
      * @param x
+     *   First value to hash
      * @param y
+     *   Second value to hash
      * @param z
+     *   Third value to hash
      * @return
+     *   Combines and hashes (x,y,z)
      */
     protected static int hash(int x, int y, int z) {
-        return hash(x) + hash(y) + hash(z);
+        // hash(x) + hash(y) + hash(z);
+        return hash(x + hash(y + hash(z)));
     }
-
 
 }
