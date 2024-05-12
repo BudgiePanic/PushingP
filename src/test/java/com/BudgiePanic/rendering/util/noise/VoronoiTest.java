@@ -2,6 +2,8 @@ package com.BudgiePanic.rendering.util.noise;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +27,7 @@ public class VoronoiTest {
         assertDoesNotThrow(() -> {
             var noise = Voronoi.noise(10.3, 4, 5.6);
             noise = Voronoi.noise(-10.3, -4, -5.6);
+            assertTrue(noise <= 1);
         });
     }
 
@@ -34,5 +37,15 @@ public class VoronoiTest {
         assertEquals(1, result);
         result = Voronoi.distanceMetric.distance(10, 10, 10, 10.1, 10.1, 10.1);
         assertEquals(0, FloatHelp.compareFloat(0.1732, result));
+    }
+
+    @Test
+    void testHash() {
+        var a = Voronoi.hash(1, 2, 3);
+        var b = Voronoi.hash(3, 2, 1);
+        assertNotEquals(a, b);
+        a = Voronoi.hash(0, 1, 0);
+        b = Voronoi.hash(0, 0, 1);
+        assertNotEquals(a, b);
     }
 }
