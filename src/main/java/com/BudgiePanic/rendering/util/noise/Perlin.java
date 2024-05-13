@@ -132,6 +132,33 @@ public final class Perlin {
     }
     
     /**
+     * Pseudo random gradient noise function with power scaling.
+     * Each power increase decreases the noise amplitude by a power of 2 [noise * (1, 0.5, 0.125, 0.0625, etc, etc)].
+     * Each power increase will increase the sample point power location by a power of 2 [1,2,4,8,16, etc, etc].
+     * 
+     * @param x
+     *   x component of a point
+     * @param y
+     *   y component of a point
+     * @param z
+     *   z component of a point
+     * @param power
+     *   The fractional power to calculate the noise with. Leave as zero for default results. Higher values makes noise features smaller and weaker. 
+     *   Noise values beyond 3 will be extremely small. 
+     * @return
+     *   A pseudo random value between 0.0 and 1.0
+     */
+    public final static double noise(double x, double y, double z, double power) {
+      // apply the power
+      x = Math.pow(2, power) * x;
+      y = Math.pow(2, power) * y;
+      z = Math.pow(2, power) * z;
+      final double noise = noise(x, y, z);
+      // scale the noise amplitude down
+      return Math.pow(2, -power) * noise; 
+    }
+
+    /**
      * A hashing function that outputs hash values between 0 and 12. Used to map a point to a gradient value array index.
      * @param x
      *   x component of the vector being hashed
@@ -233,7 +260,7 @@ public final class Perlin {
      * @return
      *   a quantity between a and b
      */
-    private static double lerp(double a, double b, double amount) {
+    protected static double lerp(double a, double b, double amount) {
         return ((1-amount) * a) + (amount * b);
     }
 }
