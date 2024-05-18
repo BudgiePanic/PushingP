@@ -38,7 +38,8 @@ public class App
         entry("-anti_alias_demo", ()-> new AntiAliasingDemo()),
         entry("-bvh_test", ()-> new BoundingVolumeHierarchyTest()),
         entry("-dragon_demo", ()-> new LargeModelDemo()),
-        entry("-big_scene_demo", ()-> new BigSceneDemo())
+        entry("-big_scene_demo", ()-> new BigSceneDemo()),
+        entry("-normal_bump_demo", ()-> new NormalBumpDemo())
     );
 
     public static void main( String[] args )
