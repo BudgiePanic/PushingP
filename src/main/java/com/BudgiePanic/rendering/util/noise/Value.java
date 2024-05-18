@@ -72,6 +72,8 @@ public class Value {
      *   The y component of the sample point.
      * @param z
      *   The z component of the sample point.
+     * @param lerper
+     *   The linear interpolation method between the cell noise values and the sample point.
      * @return
      *   A pseudorandom value between zero and one derived from the sample location.
      */
@@ -110,6 +112,8 @@ public class Value {
      *   The z component of the sample point.
      * @param power
      *   The power amount. Leave as zero for standard results. Higher power causes noise features to become smaller and less powerful.
+     * @param lerper
+     *   The linear interpolation method between the cell noise values and the sample point.
      * @return
      *   A pseudorandom value between zero and one derived from the sample location.
      */
