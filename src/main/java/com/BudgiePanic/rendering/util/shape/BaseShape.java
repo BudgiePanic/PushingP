@@ -87,14 +87,16 @@ public abstract class BaseShape implements Shape {
         if (point == null) throw new IllegalArgumentException("point is null");
         final var localPoint = toObjectSpace(point);
         final var localNormal = localNormal(localPoint);
-        return normalToWorldSpace(localNormal);
+        final var bumpedNormal = material.normalBump().apply(localNormal, point);
+        return normalToWorldSpace(bumpedNormal);
     }
 
     @Override
     public Tuple normal(Tuple point, Intersection intersection) {
         final var localPoint = toObjectSpace(point);
         final var localNormal = localNormal(localPoint, intersection);
-        return normalToWorldSpace(localNormal);
+        final var bumpedNormal = material.normalBump().apply(localNormal, point);
+        return normalToWorldSpace(bumpedNormal);
     }
     
     @Override
