@@ -20,7 +20,9 @@ public class Pattern2DTest {
             new Pair<>(new Pair<>(0.5, 0.5), Colors.black),
             new Pair<>(new Pair<>(1.0, 1.0), Colors.black),
             new Pair<>(new Pair<>(0.25, 0.25), Colors.black),
-            new Pair<>(new Pair<>(0.75, 0.75), Colors.white)
+            new Pair<>(new Pair<>(0.75, 0.75), Colors.black),
+            new Pair<>(new Pair<>(0.75, 0.25), Colors.white),
+            new Pair<>(new Pair<>(0.25, 0.75), Colors.white)
         );
         var pattern = Pattern2D.checker(2, 2, Pattern2D.solidColor(Colors.black), Pattern2D.solidColor(Colors.white));
         for (final var test : tests) {
@@ -28,7 +30,7 @@ public class Pattern2DTest {
             double v = test.a().b();
             var expected = test.b();
             var result = pattern.sample(u, v);
-            assertEquals(expected, result);
+            assertEquals(expected, result, test.toString());
         }
     }
 
