@@ -10,8 +10,9 @@ import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Directions;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.light.PointLight;
-import com.BudgiePanic.rendering.util.pattern.BiOperation;
-import com.BudgiePanic.rendering.util.pattern.BiPattern;
+import com.BudgiePanic.rendering.util.pattern.CoordinateMapper;
+import com.BudgiePanic.rendering.util.pattern.Pattern2D;
+import com.BudgiePanic.rendering.util.pattern.TextureMap;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
@@ -32,7 +33,12 @@ public class TextureMapDemo extends BaseDemo {
 
         world.addLight(new PointLight(makePoint(-3, 5, -10), Colors.white));
         world.addShape(new Sphere(Transforms.identity().rotateY(AngleHelp.toRadians(15)).assemble(), 
-            Material.pattern(new BiPattern(BiOperation.checker, Colors.white, Colors.green, Transforms.identity().scale(0.15).assemble()))
+            Material.pattern(
+                new TextureMap(
+                    Pattern2D.checker(30, 10, Pattern2D.solidColor(Colors.green), Pattern2D.solidColor(Colors.white)),
+                    CoordinateMapper.sphere, Transforms.identity().assemble() // translation can affect the resulting checker pattern
+                )
+            )
         ));
 
         return world;
