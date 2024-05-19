@@ -25,7 +25,7 @@ public class CoordinateMapperTest {
         );
         for (final var test : tests) {
             var expected = test.b();
-            var actual = CoordinateMapper.uSphereMap(test.a());
+            var actual = CoordinateMapper.sphere.uSphereMap(test.a());
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
         }
     }
@@ -43,7 +43,7 @@ public class CoordinateMapperTest {
         );
         for (final var test : tests) {
             var expected = test.b();
-            var actual = CoordinateMapper.vSphereMap(test.a());
+            var actual = CoordinateMapper.sphere.vSphereMap(test.a());
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
         }
     }
