@@ -47,4 +47,41 @@ public class CoordinateMapperTest {
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
         }
     }
+
+    @Test
+    void testUPlanarMap() {
+        var tests = List.of(
+            new Pair<>(makePoint(0.25, 0, 0.5), 0.25),
+            new Pair<>(makePoint(0.25, 0, -0.25), 0.25),
+            new Pair<>(makePoint(0.25, 0.5, -0.25), 0.25),
+            new Pair<>(makePoint(1.25, 0, 0.5), 0.25),
+            new Pair<>(makePoint(0.25, 0, -1.75), 0.25),
+            new Pair<>(makePoint(1, 0, -1), 0.0),
+            new Pair<>(makePoint(0, 0, 0), 0.0)
+        );
+        for (final var test : tests) {
+            var expected = test.b();
+            var actual = CoordinateMapper.planar.uSphereMap(test.a());
+            assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
+        }
+    }
+
+    @Test
+    void testVPlanarMap() {
+        var tests = List.of(
+            new Pair<>(makePoint(0.25, 0, 0.5), 0.5),
+            new Pair<>(makePoint(0.25, 0, -0.25), 0.75),
+            new Pair<>(makePoint(0.25, 0.5, -0.25), 0.75),
+            new Pair<>(makePoint(1.25, 0, 0.5), 0.5),
+            new Pair<>(makePoint(0.25, 0, -1.75), 0.25),
+            new Pair<>(makePoint(1, 0, -1), 0.0),
+            new Pair<>(makePoint(0, 0, 0), 0.0)
+        );
+        for (final var test : tests) {
+            var expected = test.b();
+            var actual = CoordinateMapper.planar.vSphereMap(test.a());
+            assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
+        }
+    }
+
 }
