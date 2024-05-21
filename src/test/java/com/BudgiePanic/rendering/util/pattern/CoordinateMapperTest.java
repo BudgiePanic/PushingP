@@ -84,4 +84,45 @@ public class CoordinateMapperTest {
         }
     }
 
+    @Test
+    void testUCylindricalMap() {
+        var tests = List.of(
+            new Pair<>(makePoint(0.0, 0.0, -1.0), 0.0),
+            new Pair<>(makePoint(0.0, 0.5, -1.0), 0.0),
+            new Pair<>(makePoint(0.0, 1.0, -1.0), 0.0),
+            new Pair<>(makePoint(0.70711, 0.5, -0.70711), 0.125),
+            new Pair<>(makePoint(1.0, 0.5, 0.0), 0.25),
+            new Pair<>(makePoint(0.70711, 0.5, 0.70711), 0.375),
+            new Pair<>(makePoint(0.0, -0.25, 1.0), 0.5),
+            new Pair<>(makePoint(-0.70711, 0.5, 0.70711), 0.625),
+            new Pair<>(makePoint(-1.0, 1.25, 0.0), 0.75),
+            new Pair<>(makePoint(-0.70711, 0.5, -0.70711), 0.875)
+        );
+        for (final var test : tests) {
+            var expected = test.b();
+            var actual = CoordinateMapper.cylindircal.uSphereMap(test.a());
+            assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
+        }
+    }
+
+    @Test
+    void testVCylindricalMap() {
+        var tests = List.of(
+            new Pair<>(makePoint(0.0, 0.0, -1.0), 0.0),
+            new Pair<>(makePoint(0.0, 0.5, -1.0), 0.5),
+            new Pair<>(makePoint(0.0, 1.0, -1.0), 0.0),
+            new Pair<>(makePoint(0.70711, 0.5, -0.70711), 0.5),
+            new Pair<>(makePoint(1.0, 0.5, 0.0), 0.5),
+            new Pair<>(makePoint(0.70711, 0.5, 0.70711), 0.5),
+            new Pair<>(makePoint(0.0, -0.25, 1.0), 0.75),
+            new Pair<>(makePoint(-0.70711, 0.5, 0.70711), 0.5),
+            new Pair<>(makePoint(-1.0, 1.25, 0.0), 0.25),
+            new Pair<>(makePoint(-0.70711, 0.5, -0.70711), 0.5)
+        );
+        for (final var test : tests) {
+            var expected = test.b();
+            var actual = CoordinateMapper.cylindircal.vSphereMap(test.a());
+            assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
+        }
+    }
 }
