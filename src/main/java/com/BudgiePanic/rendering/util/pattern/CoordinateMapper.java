@@ -9,7 +9,7 @@ import com.BudgiePanic.rendering.util.Tuple;
  * 
  * @author BudgiePanic
  */
-public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, CoordinateMapper.Planar, CoordinateMapper.Cylindircal {
+public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, CoordinateMapper.Planar, CoordinateMapper.Cylindircal, CoordinateMapper.Cube {
     private CoordinateMapper() {}
 
     /**
@@ -66,6 +66,55 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
     }
 
     /**
+     * Remaps points onto a cube surface.
+     */
+    protected static final class Cube extends CoordinateMapper {
+
+        /**
+         * The six cube faces
+         */
+        static enum Face {
+            Front,
+            Up,
+            Down,
+            Back,
+            Left,
+            Right
+        }
+
+
+
+        /**
+         * Determine which face of the unit cube the point lies on.
+         *
+         * @param point
+         *   A point in local space.
+         * @return
+         *   The cube face the point is on.
+         */
+        protected final static Face getFace(Tuple point) {
+            final double absX = Math.abs(point.x), absY = Math.abs(point.y), absZ = Math.abs(point.z);
+            final double maxCoord = Math.max(Math.max(absX, absY), absZ);
+            if (maxCoord == point.x) { return Face.Right; }
+            if (maxCoord == -point.x) { return Face.Left; }
+            if (maxCoord == point.y) { return Face.Up; }
+            if (maxCoord == -point.y) { return Face.Down; }
+            if (maxCoord == point.z) { return Face.Front; }
+            return Face.Back;
+        }
+
+        @Override
+        public double vSphereMap(Tuple point) {
+            return 0;
+        }
+
+        @Override
+        public double uSphereMap(Tuple point) {
+            return 0;
+        }
+    }
+
+    /**
      * Sphere surface remapping functions.
      */
     public static final CoordinateMapper sphere = new Sphere();
@@ -81,7 +130,12 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
     public static final CoordinateMapper cylindircal = new Cylindircal();
 
     /**
-     * Project a point on a sphere in 3D space onto a 2D plane.
+     * Cube surface remapping functions.
+     */
+    public static final CoordinateMapper cube = new Cube();
+
+    /**
+     * Project a point on a shape in 3D space onto a 2D plane.
      *
      * @param point
      *   The point in local space.
@@ -91,7 +145,7 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
     public abstract double vSphereMap(Tuple point);
 
     /**
-     * Project a point on a sphere in 3D space onto a 2D plane.
+     * Project a point on a shape in 3D space onto a 2D plane.
      *
      * @param point
      *   The point in local space.
