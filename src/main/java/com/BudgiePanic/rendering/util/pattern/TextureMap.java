@@ -35,8 +35,8 @@ public record TextureMap(Pattern2D pattern, CoordinateMapper mapper, Matrix4 tra
 
     @Override
     public Color colorAt(Tuple point) {
-        final double u = mapper.uSphereMap(point);
-        final double v = mapper.vSphereMap(point);
+        final double u = mapper.uMap(point);
+        final double v = mapper.vMap(point);
         return pattern.sample(u, v);
     }
 

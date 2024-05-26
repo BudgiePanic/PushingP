@@ -26,7 +26,7 @@ public class CoordinateMapperTest {
         );
         for (final var test : tests) {
             var expected = test.b();
-            var actual = CoordinateMapper.sphere.uSphereMap(test.a());
+            var actual = CoordinateMapper.sphere.uMap(test.a());
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
         }
     }
@@ -44,7 +44,7 @@ public class CoordinateMapperTest {
         );
         for (final var test : tests) {
             var expected = test.b();
-            var actual = CoordinateMapper.sphere.vSphereMap(test.a());
+            var actual = CoordinateMapper.sphere.vMap(test.a());
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
         }
     }
@@ -62,7 +62,7 @@ public class CoordinateMapperTest {
         );
         for (final var test : tests) {
             var expected = test.b();
-            var actual = CoordinateMapper.planar.uSphereMap(test.a());
+            var actual = CoordinateMapper.planar.uMap(test.a());
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
         }
     }
@@ -80,7 +80,7 @@ public class CoordinateMapperTest {
         );
         for (final var test : tests) {
             var expected = test.b();
-            var actual = CoordinateMapper.planar.vSphereMap(test.a());
+            var actual = CoordinateMapper.planar.vMap(test.a());
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
         }
     }
@@ -101,7 +101,7 @@ public class CoordinateMapperTest {
         );
         for (final var test : tests) {
             var expected = test.b();
-            var actual = CoordinateMapper.cylindircal.uSphereMap(test.a());
+            var actual = CoordinateMapper.cylindircal.uMap(test.a());
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
         }
     }
@@ -122,7 +122,7 @@ public class CoordinateMapperTest {
         );
         for (final var test : tests) {
             var expected = test.b();
-            var actual = CoordinateMapper.cylindircal.vSphereMap(test.a());
+            var actual = CoordinateMapper.cylindircal.vMap(test.a());
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
         }
     }
@@ -142,5 +142,10 @@ public class CoordinateMapperTest {
             var actual = CoordinateMapper.Cube.getFace(test.a());
             assertEquals(expected, actual);
         }
+    }
+
+    @Test
+    void testCubeUVFront() {
+
     }
 }

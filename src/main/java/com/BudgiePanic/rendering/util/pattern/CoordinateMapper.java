@@ -17,14 +17,14 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
      */
     protected static final class Sphere extends CoordinateMapper {
         @Override
-        public final double vSphereMap(final Tuple point) {
+        public final double vMap(final Tuple point) {
             final Tuple vector = makeVector(point.x, point.y, point.z);
             final double radius = vector.magnitude();
             final double phi = Math.acos(point.y / radius); // polar angle
             return 1.0 - phi / Math.PI;
         }
         @Override
-        public final double uSphereMap(final Tuple point) {
+        public final double uMap(final Tuple point) {
             final double theta = Math.atan2(point.x, point.z); // azimuth
             final double u = theta / (2 * Math.PI); // remap from [-pi to pi] to [-0.5 to 0.5]
             return 1.0 - (u + 0.5); // remap to be in range [0 to 1] and flip direction
@@ -36,9 +36,9 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
      */
     protected static final class Planar extends CoordinateMapper {
         @Override
-        public double vSphereMap(Tuple point) { return modulo(point.z); }
+        public double vMap(Tuple point) { return modulo(point.z); }
         @Override
-        public double uSphereMap(Tuple point) { return modulo(point.x); }
+        public double uMap(Tuple point) { return modulo(point.x); }
     }
 
     /**
@@ -56,9 +56,9 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
      */
     protected static final class Cylindircal extends CoordinateMapper {
         @Override
-        public double vSphereMap(Tuple point) { return modulo(point.y); }
+        public double vMap(Tuple point) { return modulo(point.y); }
         @Override
-        public double uSphereMap(Tuple point) {
+        public double uMap(Tuple point) {
             final double theta = Math.atan2(point.x, point.z);
             final double u = theta / (2.0 * Math.PI);
             return 1.0 - (u + 0.5);
@@ -104,12 +104,12 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
         }
 
         @Override
-        public double vSphereMap(Tuple point) {
+        public double vMap(Tuple point) {
             return 0;
         }
 
         @Override
-        public double uSphereMap(Tuple point) {
+        public double uMap(Tuple point) {
             return 0;
         }
     }
@@ -142,7 +142,7 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
      * @return
      *   The v coordinate of the point projected onto a flat surface.
      */
-    public abstract double vSphereMap(Tuple point);
+    public abstract double vMap(Tuple point);
 
     /**
      * Project a point on a shape in 3D space onto a 2D plane.
@@ -152,5 +152,5 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
      * @return
      *   The u coordinate of the point projected onto a flat surface.
      */
-    public abstract double uSphereMap(Tuple point);
+    public abstract double uMap(Tuple point);
 }
