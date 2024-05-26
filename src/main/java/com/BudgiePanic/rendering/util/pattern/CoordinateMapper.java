@@ -74,12 +74,44 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
          * The six cube faces
          */
         static enum Face {
-            Front,
-            Up,
-            Down,
-            Back,
-            Left,
-            Right
+            Front {
+                @Override
+                final double u(Tuple point) { return 0; }
+                @Override
+                final double v(Tuple point) { return 0; }
+            },
+            Up {
+                @Override
+                final double u(Tuple point) { return 0; }
+                @Override
+                final double v(Tuple point) { return 0; }
+            },
+            Down {
+                @Override
+                final double u(Tuple point) { return 0; }
+                @Override
+                final double v(Tuple point) { return 0; }
+            },
+            Back {
+                @Override
+                final double u(Tuple point) { return 0; }
+                @Override
+                final double v(Tuple point) { return 0; }
+            },
+            Left {
+                @Override
+                final double u(Tuple point) { return 0; }
+                @Override
+                final double v(Tuple point) { return 0; }
+            },
+            Right {
+                @Override
+                final double u(Tuple point) { return 0; }
+                @Override
+                final double v(Tuple point) { return 0; }
+            };
+            abstract double u(Tuple point);
+            abstract double v(Tuple point);
         }
 
 

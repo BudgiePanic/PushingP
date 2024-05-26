@@ -146,6 +146,67 @@ public class CoordinateMapperTest {
 
     @Test
     void testCubeUVFront() {
+        var face = CoordinateMapper.Cube.Face.Front;
+        var pointA = makePoint(-0.5, 0.5, 1);
+        assertEquals(0.25, face.u(pointA));
+        assertEquals(0.75, face.v(pointA));
+        var pointB = makePoint(0.5, -0.5, 1);
+        assertEquals(0.75, face.u(pointB));
+        assertEquals(0.25, face.v(pointB));
+    }
 
+    @Test
+    void testCubeUVBack() {
+        var face = CoordinateMapper.Cube.Face.Back;
+        var pointA = makePoint(0.5, 0.5, -1);
+        assertEquals(0.25, face.u(pointA));
+        assertEquals(0.75, face.v(pointA));
+        var pointB = makePoint(-0.5, -0.5, -1);
+        assertEquals(0.75, face.u(pointB));
+        assertEquals(0.25, face.v(pointB));
+    }
+
+    @Test
+    void testCubeUVLeft() {
+        var face = CoordinateMapper.Cube.Face.Left;
+        var pointA = makePoint(-1, 0.5, -0.5);
+        assertEquals(0.25, face.u(pointA));
+        assertEquals(0.75, face.v(pointA));
+        var pointB = makePoint(-1, -0.5, 0.5);
+        assertEquals(0.75, face.u(pointB));
+        assertEquals(0.25, face.v(pointB));
+    }
+
+    @Test
+    void testCubeUVRight() {
+        var face = CoordinateMapper.Cube.Face.Right;
+        var pointA = makePoint(1, 0.5, 0.5);
+        assertEquals(0.25, face.u(pointA));
+        assertEquals(0.75, face.v(pointA));
+        var pointB = makePoint(1, -0.5, -0.5);
+        assertEquals(0.75, face.u(pointB));
+        assertEquals(0.25, face.v(pointB));
+    }
+
+    @Test
+    void testCubeUVUp() {
+        var face = CoordinateMapper.Cube.Face.Up;
+        var pointA = makePoint(-0.5, 1, -0.5);
+        assertEquals(0.25, face.u(pointA));
+        assertEquals(0.75, face.v(pointA));
+        var pointB = makePoint(0.5, 1, 0.5);
+        assertEquals(0.75, face.u(pointB));
+        assertEquals(0.25, face.v(pointB));
+    }
+
+    @Test
+    void testCubeUVDown() {
+        var face = CoordinateMapper.Cube.Face.Down;
+        var pointA = makePoint(-0.5, -1, 0.5);
+        assertEquals(0.25, face.u(pointA));
+        assertEquals(0.75, face.v(pointA));
+        var pointB = makePoint(0.5, -1, -0.5);
+        assertEquals(0.75, face.u(pointB));
+        assertEquals(0.25, face.v(pointB));
     }
 }
