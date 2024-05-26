@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.util.pattern;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -123,6 +124,23 @@ public class CoordinateMapperTest {
             var expected = test.b();
             var actual = CoordinateMapper.cylindircal.vSphereMap(test.a());
             assertTrue(FloatHelp.compareFloat(expected, actual) == 0, "expected " + expected + " actual " + actual);
+        }
+    }
+
+    @Test
+    void testCubeFaceMapping() {
+        var tests = List.of(
+            new Pair<>(makePoint(-1, 0.5, -0.25), CoordinateMapper.Cube.Face.Left),
+            new Pair<>(makePoint(1.1, -0.75, 0.8), CoordinateMapper.Cube.Face.Right),
+            new Pair<>(makePoint(0.1, 0.6, 0.9), CoordinateMapper.Cube.Face.Front),
+            new Pair<>(makePoint(-0.7, 0.0, -2), CoordinateMapper.Cube.Face.Back),
+            new Pair<>(makePoint(0.5, 1, 0.9), CoordinateMapper.Cube.Face.Up),
+            new Pair<>(makePoint(-0.2, -1.3, 1.1), CoordinateMapper.Cube.Face.Down)
+        );
+        for (final var test : tests) {
+            var expected = test.b();
+            var actual = CoordinateMapper.Cube.getFace(test.a());
+            assertEquals(expected, actual);
         }
     }
 }
