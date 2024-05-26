@@ -18,7 +18,7 @@ public record TextureMap(Pattern2D pattern, CoordinateMapper mapper, Matrix4 tra
      * @param mapper
      *   The coordinate system transfer function.
      * @param transform
-     *   The pattern space transform.
+     *   The pattern space transform. Should be the identity matrix because CoordinateMappers work in local object space.
      */
     public TextureMap {}
 
