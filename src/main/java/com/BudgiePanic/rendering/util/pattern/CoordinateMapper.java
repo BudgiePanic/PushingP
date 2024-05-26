@@ -76,45 +76,47 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
         static enum Face {
             Front {
                 @Override
-                final double u(Tuple point) { return 0; }
+                final double u(Tuple point) { return plusOne(point.x); }
                 @Override
-                final double v(Tuple point) { return 0; }
+                final double v(Tuple point) { return plusOne(point.y); }
             },
             Up {
                 @Override
-                final double u(Tuple point) { return 0; }
+                final double u(Tuple point) { return plusOne(point.x); }
                 @Override
-                final double v(Tuple point) { return 0; }
+                final double v(Tuple point) { return oneMinus(point.z); }
             },
             Down {
                 @Override
-                final double u(Tuple point) { return 0; }
+                final double u(Tuple point) { return plusOne(point.x); }
                 @Override
-                final double v(Tuple point) { return 0; }
+                final double v(Tuple point) { return plusOne(point.z); }
             },
             Back {
                 @Override
-                final double u(Tuple point) { return 0; }
+                final double u(Tuple point) { return oneMinus(point.x); }
                 @Override
-                final double v(Tuple point) { return 0; }
+                final double v(Tuple point) { return plusOne(point.y); }
             },
             Left {
                 @Override
-                final double u(Tuple point) { return 0; }
+                final double u(Tuple point) { return plusOne(point.z); }
                 @Override
-                final double v(Tuple point) { return 0; }
+                final double v(Tuple point) { return plusOne(point.y); }
             },
             Right {
                 @Override
-                final double u(Tuple point) { return 0; }
+                final double u(Tuple point) { return oneMinus(point.z); }
                 @Override
-                final double v(Tuple point) { return 0; }
+                final double v(Tuple point) { return plusOne(point.y); }
             };
+            
+            private static final double oneMinus(final double value) { return ((1 - value) % 2.0) * 0.5; }
+            private static final double plusOne(final double value) { return ((value + 1) % 2.0) * 0.5; }
+
             abstract double u(Tuple point);
             abstract double v(Tuple point);
         }
-
-
 
         /**
          * Determine which face of the unit cube the point lies on.
@@ -136,14 +138,10 @@ public sealed abstract class CoordinateMapper permits CoordinateMapper.Sphere, C
         }
 
         @Override
-        public double vMap(Tuple point) {
-            return 0;
-        }
+        public double vMap(Tuple point) { return getFace(point).v(point); }
 
         @Override
-        public double uMap(Tuple point) {
-            return 0;
-        }
+        public double uMap(Tuple point) { return getFace(point).u(point); }
     }
 
     /**
