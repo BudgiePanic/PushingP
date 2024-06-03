@@ -3,13 +3,16 @@ package com.BudgiePanic.rendering.io;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.commons.io.FileUtils;
 
+import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Canvas;
+import com.BudgiePanic.rendering.util.Color;
 
 /**
  * Reads ppm image data and stores it in a canvas.
@@ -99,19 +102,69 @@ public class CanvasReader {
     protected static final class CanvasBuilder implements ParsingStage {
         DimensionParser dimension = null;
         ConfigParser config = null;
+        protected List<Color> colors;
+        protected Function<Integer, Double> mapper;
         CanvasBuilder() {}
         @Override
         public void initialize() {
             if (dimension == null || config == null) { throw new RuntimeException("Canvas builder was not configured"); }
+            colors = new ArrayList<>(dimension.width.get() * dimension.height.get());
+            mapper = config.mapper;
         }
+        /**
+         * Parser state variables
+         */
+        double red = 0.0, green = 0.0, blue = 0.0;
+        boolean r = false, g = false, b = false;
+
+        private void addColor() {
+            if (r && g && b) {
+                colors.add(new Color(red, green, blue));
+                r = false; g = false; b = false;
+            }
+        }
+
         @Override
         public ParsingStage consumeLine(String line) throws ParsingException {
+            addColor();
             String[] tokens = line.split(" ");
-            // every three tokens should be collected, mapped and converted to a Color
+            for (final String token : tokens) {
+                try {
+                    final int number = Integer.parseInt(token);
+                    final double value = mapper.apply(number);
+                    if (!r) {
+                        r = true;
+                        red = value;
+                        continue;
+                    }
+                    if (!g) {
+                        g = true;
+                        green = value;
+                        continue;
+                    }
+                    if (!b) {
+                        b = true;
+                        blue = value;
+                        continue;
+                    }
+                } catch (NumberFormatException e) {
+                    throw new ParsingException(e);
+                }
+                addColor();
+            }
+            addColor();
             return this;
         }
         public Canvas collect() {
-            return null;
+            final int width = dimension.width.get(), height = dimension.height.get();
+            var result = new ArrayCanvas(width, height);
+            for (int row = 0; row < height; row++) {
+                for (int col = 0; col < width; col++) {
+                    final int index = row * width + col; // Might need to be changed to (col * height + row)
+                    result.writePixel(col, row, colors.get(index));
+                }
+            }
+            return result;
         }
     }
 
