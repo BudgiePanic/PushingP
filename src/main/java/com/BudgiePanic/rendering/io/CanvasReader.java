@@ -130,6 +130,7 @@ public class CanvasReader {
             String[] tokens = line.split(" ");
             for (final String token : tokens) {
                 addColor(); // TODO try removing unnesecary addColor() statements
+                if (token.isEmpty()) { continue; }
                 try {
                     final int number = Integer.parseInt(token);
                     final double value = mapper.apply(number);
@@ -193,6 +194,7 @@ public class CanvasReader {
         for (final String line : lines) {
             if (line.startsWith("#")) {
                 System.out.println("INFO: skipping comment line " + line);
+                continue;
             }
             ParsingStage next = parser.consumeLine(line);
             if (next != parser) {
