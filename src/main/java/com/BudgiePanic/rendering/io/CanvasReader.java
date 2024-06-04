@@ -169,6 +169,12 @@ public class CanvasReader {
         }
     }
 
+    /**
+     * 
+     * @param fileName
+     * @return
+     * @throws ParsingException
+     */
     public static Canvas createCanvas(final String fileName) throws ParsingException {
         try {
             System.out.println("INFO: trying to read file [" + fileName + "]");
@@ -180,6 +186,12 @@ public class CanvasReader {
         }
     }
     
+    /**
+     * 
+     * @param lines
+     * @return
+     * @throws ParsingException
+     */
     protected static Canvas parseLines(final List<String> lines) throws ParsingException {
         System.out.println("INFO: trying to parse file contents into image");
         if (lines.isEmpty()) { throw new ParsingException("file is empty"); }
