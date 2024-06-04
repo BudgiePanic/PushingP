@@ -108,5 +108,17 @@ public class CanvasReaderTest {
             assertEquals(new Color(0.2, 0.6, 0.8), result.getPixel(0, 0));
         });
     }
+
+    @Test
+    void testAlternateRangeMapper() {
+        assertDoesNotThrow(() -> {
+            var result = CanvasReader.parseLines(List.of("P3", "2 2", "100",
+            "100 100 100 50 50 50",
+            "75 50 25  0 0 0"));
+            assertEquals(2, result.getWidth());
+            assertEquals(2, result.getHeight());
+             assertEquals(new Color(0.75, 0.5, 0.25), result.getPixel(0, 1));
+        });
+    }
 }
  
