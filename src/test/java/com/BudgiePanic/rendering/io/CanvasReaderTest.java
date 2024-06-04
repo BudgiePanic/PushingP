@@ -93,5 +93,20 @@ public class CanvasReaderTest {
             assertEquals(new Color(1, 0, 1), result.getPixel(1, 0));
         });
     }
+
+    @Test
+    void testMultiLineColors() {
+        assertDoesNotThrow(() -> {
+            var result = CanvasReader.parseLines(List.of("P3", "1 1", "255",
+            "51",
+            "153",
+            "",
+            "204"));
+            assertEquals(1, result.getWidth());
+            assertEquals(1, result.getHeight());
+
+            assertEquals(new Color(0.2, 0.6, 0.8), result.getPixel(0, 0));
+        });
+    }
 }
  
