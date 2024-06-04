@@ -188,6 +188,21 @@ public class CanvasReader {
     
     /**
      * 
+     * @param file
+     * @return
+     * @throws ParsingException
+     */
+    public static Canvas createCanvas(File file) throws ParsingException {
+        try {
+            List<String> lines =  FileUtils.readLines(file, Charset.defaultCharset());
+            return parseLines(lines);
+        } catch (IOException e) {
+            throw new ParsingException(e);
+        }
+    }
+
+    /**
+     * 
      * @param lines
      * @return
      * @throws ParsingException
