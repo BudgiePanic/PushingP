@@ -129,6 +129,7 @@ public class CanvasReader {
             addColor();
             String[] tokens = line.split(" ");
             for (final String token : tokens) {
+                addColor(); // TODO try removing unnesecary addColor() statements
                 try {
                     final int number = Integer.parseInt(token);
                     final double value = mapper.apply(number);
@@ -150,7 +151,6 @@ public class CanvasReader {
                 } catch (NumberFormatException e) {
                     throw new ParsingException(e);
                 }
-                addColor();
             }
             addColor();
             return this;
