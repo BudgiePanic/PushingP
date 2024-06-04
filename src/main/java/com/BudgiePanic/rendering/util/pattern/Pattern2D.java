@@ -1,6 +1,9 @@
 package com.BudgiePanic.rendering.util.pattern;
 
+import com.BudgiePanic.rendering.io.CanvasReader;
+import com.BudgiePanic.rendering.io.CanvasReader.ParsingException;
 import com.BudgiePanic.rendering.util.Color;
+import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.FloatHelp;
 
 /**
@@ -68,6 +71,25 @@ public interface Pattern2D {
             }
             return background;
         }; 
+    }
+
+    /**
+     * Load a new texture 2D pattern from the local directory.
+     * If multiple texture map patterns are sharing the same texture2D, consider aliasing the pattern2D across them to save space.
+     * @param fileName
+     *   The name of the texture file in the local directory
+     * @return
+     *   A texture2D pattern that samples the texture image.
+     */
+    public static Pattern2D texture2D (final String fileName) {
+        try {
+            return new Texture2D(CanvasReader.createCanvas(fileName));
+        } catch (ParsingException e) {
+            System.out.print("WARN: could not create texture from image " + fileName + "\":");
+            System.out.println(e.getLocalizedMessage());
+            System.out.println("WARN: falling back to checker pattern");
+            return checker(10, 10, solidColor(Colors.black), solidColor(Colors.red.add(Colors.blue)));
+        }
     }
 
     /**
