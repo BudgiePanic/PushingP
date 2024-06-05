@@ -48,10 +48,13 @@ public class TextureMapDemo extends BaseDemo {
 
         world.addLight(new PointLight(makePoint(0, 100, 0), Colors.white));
 
-        world.addShape(new Sphere(
-            Transforms.identity().scale(0.75).translate(0, 0, 5).assemble(), 
-            Material.defaultMaterial().setAmbient(0).setReflectivity(0.6).setShininess(20).setSpecular(0.6).setDiffuse(0.4))
-        );
+        var shape = new CompoundShape(
+            CompoundOperation.difference, 
+            new Sphere(Transforms.identity().rotateY(AngleHelp.toRadians(119)).assemble(), Material.pattern(new TextureMap(Pattern2D.texture2D("earthmap1k.ppm"), CoordinateMapper.sphere))),
+            new Sphere(Transforms.identity().translate(0.90, -0.45, -0.5).assemble(), Material.defaultMaterial().setAmbient(0).setReflectivity(0.6).setShininess(20).setSpecular(0.6).setDiffuse(0.4)),
+            Transforms.identity().scale(0.75).translate(0, 0, 5).assemble());
+
+        world.addShape(shape);
 
         world.addShape(new Cube(
             Transforms.identity().scale(1000).assemble(), 
