@@ -3,6 +3,7 @@ package com.BudgiePanic.rendering.toy;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.FocusCamera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.SuperSamplingCamera;
 import com.BudgiePanic.rendering.scene.World;
@@ -21,6 +22,7 @@ import com.BudgiePanic.rendering.util.pattern.TextureMap;
 import com.BudgiePanic.rendering.util.shape.Cube;
 import com.BudgiePanic.rendering.util.shape.Cylinder;
 import com.BudgiePanic.rendering.util.shape.Plane;
+import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
@@ -39,30 +41,36 @@ public class TextureMapDemo extends BaseDemo {
 
     @Override
     protected Camera getCamera() {
-        return new SuperSamplingCamera(new PinHoleCamera(800, 400, 0.8, View.makeViewMatrix(makePoint(1,2, -10), makePoint(0, 1.1, 0), Directions.up)),SuperSamplingCamera.defaultMode);
+        return new SuperSamplingCamera(new FocusCamera(800, 400, 
+            AngleHelp.toRadians(120),
+            0.09,
+            5, 
+        View.makeViewMatrix(makePoint(0,0, 0), makePoint(0, 0, 5), Directions.up)),SuperSamplingCamera.defaultMode);
+        // return new SuperSamplingCamera(new PinHoleCamera(800, 400, 0.8, View.makeViewMatrix(makePoint(0,0, 0), makePoint(0, 0, 5), Directions.up)),SuperSamplingCamera.defaultMode);
     }
 
     @Override
     protected World createWorld() {
         World world = new World();
 
-        world.addLight(new PointLight(makePoint(-100, 100, -100), Colors.white));
-
-        world.addShape(new Plane(
-            Transforms.identity().assemble(), 
-            Material.color(Colors.white).setDiffuse(0.1).setSpecular(0).setAmbient(0).setReflectivity(0.4))
-        );
-
-        world.addShape(new Cylinder(
-            Transforms.identity().assemble(), 
-            Material.color(Colors.white).setDiffuse(0.2).setSpecular(0).setAmbient(0).setReflectivity(0.1),
-            0.1, 0, true)
-        );
+        world.addLight(new PointLight(makePoint(0, 100, 0), Colors.white));
 
         world.addShape(new Sphere(
-            Transforms.identity().rotateY(1.9).translate(0, 1.1, 0).assemble(),
-            Material.pattern(new TextureMap(Pattern2D.texture2D("earthmap1k.ppm"), CoordinateMapper.sphere)).setSpecular(0.1).setShininess(10))
+            Transforms.identity().scale(0.75).translate(0, 0, 5).assemble(), 
+            Material.defaultMaterial().setAmbient(0).setReflectivity(0.6).setShininess(20).setSpecular(0.6).setDiffuse(0.4))
         );
+
+        world.addShape(new Cube(
+            Transforms.identity().scale(1000).assemble(), 
+            Material.pattern(new CubeTextureMap(
+                Pattern2D.texture2D("posz.ppm"), // front
+                Pattern2D.texture2D("negx.ppm"), // left
+                Pattern2D.texture2D("posx.ppm"), // right
+                Pattern2D.texture2D("posy.ppm"), // up
+                Pattern2D.texture2D("negy.ppm"), // down
+                Pattern2D.texture2D("negz.ppm"))). // back
+                setAmbient(1).setSpecular(0).setDiffuse(0)
+        ));
        
         return world;
     }
