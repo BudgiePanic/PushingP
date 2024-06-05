@@ -4,33 +4,30 @@ import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.FocusCamera;
-import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.SuperSamplingCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
-import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Directions;
 import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.light.PointLight;
-import com.BudgiePanic.rendering.util.pattern.BiOperation;
-import com.BudgiePanic.rendering.util.pattern.BiPattern;
 import com.BudgiePanic.rendering.util.pattern.CoordinateMapper;
 import com.BudgiePanic.rendering.util.pattern.CubeTextureMap;
 import com.BudgiePanic.rendering.util.pattern.Pattern2D;
 import com.BudgiePanic.rendering.util.pattern.TextureMap;
 import com.BudgiePanic.rendering.util.shape.Cube;
-import com.BudgiePanic.rendering.util.shape.Cylinder;
-import com.BudgiePanic.rendering.util.shape.Plane;
-import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.shape.Sphere;
+import com.BudgiePanic.rendering.util.shape.composite.CompoundOperation;
+import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
 /**
- * 
+ * Demonstration of cube mapping and texture mapping capabilities of PushingP.
+ *
  * earth image obtained from: https://planetpixelemporium.com/earth.html
- * earth image converted from jpg to ppm using GIMP export image functionality
+ * cube maps obtained from this website http://www.humus.name/
+ * images converted from jpg to ppm using GIMP export image functionality
  * 
  * @author BudgiePanic
  */
@@ -41,12 +38,8 @@ public class TextureMapDemo extends BaseDemo {
 
     @Override
     protected Camera getCamera() {
-        return new SuperSamplingCamera(new FocusCamera(800, 400, 
-            AngleHelp.toRadians(120),
-            0.09,
-            5, 
-        View.makeViewMatrix(makePoint(0,0, 0), makePoint(0, 0, 5), Directions.up)),SuperSamplingCamera.defaultMode);
-        // return new SuperSamplingCamera(new PinHoleCamera(800, 400, 0.8, View.makeViewMatrix(makePoint(0,0, 0), makePoint(0, 0, 5), Directions.up)),SuperSamplingCamera.defaultMode);
+        var camera = new FocusCamera(800, 400, AngleHelp.toRadians(120), 0.09, 4.6,  View.makeViewMatrix(makePoint(0,0, 0), makePoint(0, 0, 5), Directions.up));
+        return new SuperSamplingCamera(camera, SuperSamplingCamera.defaultMode);
     }
 
     @Override
