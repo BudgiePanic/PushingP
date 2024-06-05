@@ -4,6 +4,7 @@ import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
+import com.BudgiePanic.rendering.scene.SuperSamplingCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
@@ -24,6 +25,13 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
+/**
+ * 
+ * earth image obtained from: https://planetpixelemporium.com/earth.html
+ * earth image converted from jpg to ppm using GIMP export image functionality
+ * 
+ * @author BudgiePanic
+ */
 public class TextureMapDemo extends BaseDemo {
 
     @Override
@@ -31,50 +39,31 @@ public class TextureMapDemo extends BaseDemo {
 
     @Override
     protected Camera getCamera() {
-        return new PinHoleCamera(800, 400, 0.8, View.makeViewMatrix(makePoint(0,0, -20), makePoint(0, 0, 0), Directions.up));
+        return new SuperSamplingCamera(new PinHoleCamera(800, 400, 0.8, View.makeViewMatrix(makePoint(1,2, -10), makePoint(0, 1.1, 0), Directions.up)),SuperSamplingCamera.defaultMode);
     }
 
     @Override
     protected World createWorld() {
         World world = new World();
 
-        world.addLight(new PointLight(makePoint(0, 100, -100), Colors.white.multiply(0.25)));
-        world.addLight(new PointLight(makePoint(0, -100, -100), Colors.white.multiply(0.25)));
-        world.addLight(new PointLight(makePoint(-100, 0, -100), Colors.white.multiply(0.25)));
-        world.addLight(new PointLight(makePoint(100, 0, -100), Colors.white.multiply(0.25)));
-        
-        
-        final Color red = Colors.red, yellow = new Color(1, 1, 0), brown = new Color(1,0.5,0), 
-        green = Colors.green, cyan = new Color(0,1,1), blue = Colors.blue, purple = new Color(1, 0, 1),
-        white = Colors.white;
-        final var left = Pattern2D.mapCheck(yellow, cyan, red, blue, brown);
-        final var front = Pattern2D.mapCheck(cyan, red, yellow, brown, green);
-        final var right = Pattern2D.mapCheck(red, yellow, purple, green, white);
-        final var back = Pattern2D.mapCheck(green, purple, cyan, white, blue);
-        final var up = Pattern2D.mapCheck(brown, cyan, purple, red, yellow);
-        final var down = Pattern2D.mapCheck(purple, brown, green, blue, white);
-        final var cube = new CubeTextureMap(front, left, right, up, down, back);
+        world.addLight(new PointLight(makePoint(-100, 100, -100), Colors.white));
 
-        final Material material = new Material(
-            cube,
-            0.2, 0.8, 0, Material.defaultShininess, Material.defaultReflectivity, 
-            Material.defaultTransparency, Material.defaultRefractiveIndex, 
-            Material.defaultShadowCast, Material.defaultNormalBump
+        world.addShape(new Plane(
+            Transforms.identity().assemble(), 
+            Material.color(Colors.white).setDiffuse(0.1).setSpecular(0).setAmbient(0).setReflectivity(0.4))
         );
 
-        Cube[] cubes = new Cube[] {
-            new Cube(Transforms.identity().rotateY(0.7854).rotateX(0.7854).translate(-6, 2, 0).assemble(), material),
-            new Cube(Transforms.identity().rotateY(2.3562).rotateX(0.7854).translate(-2, 2, 0).assemble(), material),
-            new Cube(Transforms.identity().rotateY(3.927).rotateX(0.7854).translate(2, 2, 0).assemble(), material),
-            new Cube(Transforms.identity().rotateY(5.4978).rotateX(0.7854).translate(6, 2, 0).assemble(), material),
-            new Cube(Transforms.identity().rotateY(0.7854).rotateX(-0.7854).translate(-6, -2, 0).assemble(), material),
-            new Cube(Transforms.identity().rotateY(2.3562).rotateX(-0.7854).translate(-2, -2, 0).assemble(), material),
-            new Cube(Transforms.identity().rotateY(3.927).rotateX(-0.7854).translate(2, -2, 0).assemble(), material),
-            new Cube(Transforms.identity().rotateY(5.4978).rotateX(-0.7854).translate(6, -2, 0).assemble(), material)
-        };
-        for (Cube box : cubes) {
-            world.addShape(box);
-        }
+        world.addShape(new Cylinder(
+            Transforms.identity().assemble(), 
+            Material.color(Colors.white).setDiffuse(0.2).setSpecular(0).setAmbient(0).setReflectivity(0.1),
+            0.1, 0, true)
+        );
+
+        world.addShape(new Sphere(
+            Transforms.identity().rotateY(1.9).translate(0, 1.1, 0).assemble(),
+            Material.pattern(new TextureMap(Pattern2D.texture2D("earthmap1k.ppm"), CoordinateMapper.sphere)).setSpecular(0.1).setShininess(10))
+        );
+       
         return world;
     }
     
