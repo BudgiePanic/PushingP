@@ -5,7 +5,7 @@ import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 import com.BudgiePanic.rendering.util.Tuple;
 
 /**
- * Coordinate system remapping functions.
+ * Coordinate system remapping functions to go from 3D point on a shape to 2D point on a texture.
  * 
  * @author BudgiePanic
  */
