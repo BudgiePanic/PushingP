@@ -39,7 +39,8 @@ public class App
         entry("-bvh_test", ()-> new BoundingVolumeHierarchyTest()),
         entry("-dragon_demo", ()-> new LargeModelDemo()),
         entry("-big_scene_demo", ()-> new BigSceneDemo()),
-        entry("-normal_bump_demo", ()-> new NormalBumpDemo())
+        entry("-normal_bump_demo", ()-> new NormalBumpDemo()),
+        entry("-texture_demo", ()-> new TextureMapDemo())
     );
 
     public static void main( String[] args )
