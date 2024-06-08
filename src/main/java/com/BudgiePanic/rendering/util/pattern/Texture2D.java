@@ -4,6 +4,7 @@ import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 
 /**
+ * Image based 2D pattern. Supplied to TextureMap and CubeTextureMap patterns for sampling.
  * @author BudgiePanic
  */
 public final record Texture2D(Canvas texture) implements Pattern2D {
