@@ -22,6 +22,9 @@ import com.BudgiePanic.rendering.util.Color;
 public class CanvasReader {
     private CanvasReader () {}
 
+    /**
+     * PPM image header string
+     */
     protected static final String magic = "P3";
 
     /**
@@ -33,7 +36,10 @@ public class CanvasReader {
         ParsingException(Throwable cause) { super(cause); }
     }
 
-    protected static sealed interface ParsingStage permits MagicChecker, DimensionParser, ConfigParser, CanvasBuilder{
+    /**
+     * Line processors for different parts of the PPM file format
+     */
+    protected static sealed interface ParsingStage permits MagicChecker, DimensionParser, ConfigParser, CanvasBuilder {
         ParsingStage consumeLine(String line) throws ParsingException;
         default void initialize() {}
     }
@@ -170,10 +176,14 @@ public class CanvasReader {
     }
 
     /**
-     * 
+     * Create a canvas from a PPM file in the current working directory.
+     * Note that the Canvas will contain the uncompressed image data and mayy have a large memory footprint.
      * @param fileName
+     *   The name of the ppm file
      * @return
+     *   A canvas with the PPM image data
      * @throws ParsingException
+     *   Thrown if the PPM file could not be parsed.
      */
     public static Canvas createCanvas(final String fileName) throws ParsingException {
         try {
@@ -187,10 +197,14 @@ public class CanvasReader {
     }
     
     /**
-     * 
+     * Create a canvas from a PPM file.
+     * Note that the Canvas will contain the uncompressed image data and mayy have a large memory footprint.
      * @param file
+     *   The PPM file to load
      * @return
+     *   A canvas with the PPM image data
      * @throws ParsingException
+     *   Thrown if the PPM file could not be parsed
      */
     public static Canvas createCanvas(File file) throws ParsingException {
         try {
@@ -202,10 +216,13 @@ public class CanvasReader {
     }
 
     /**
-     * 
+     * Parse the lines of a PPM file into a canvas.
      * @param lines
+     *   The lines of text from the PPM file
      * @return
+     *   A canvas with the PPM image data
      * @throws ParsingException
+     *   Thrown if the PPM file could not be parsed
      */
     protected static Canvas parseLines(final List<String> lines) throws ParsingException {
         System.out.println("INFO: trying to parse file contents into image");
