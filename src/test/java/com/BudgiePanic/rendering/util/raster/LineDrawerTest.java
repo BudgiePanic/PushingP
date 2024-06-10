@@ -52,6 +52,16 @@ public class LineDrawerTest {
     }
 
     @Test
+    void testDrawLineBA() {
+        // A slightly upwards line backwards line
+        var canvas = horizontalCanvas();
+        LineDrawer.drawLine(5, 1, 0, 0, canvas, lineColor);
+        int[] expectedLine = new int[] {0,0, 1,0, 2,0, 3,1, 4,1, 5,1};
+        int[] expectedBlank = new int[] {0,1, 1,1, 2,1, 3,0, 4,0, 5,0};
+        testHarness(expectedLine, expectedBlank, canvas);
+    }
+
+    @Test
     void testDrawLineC() {
         // A slightly downwards line
         var canvas = horizontalCanvas();
