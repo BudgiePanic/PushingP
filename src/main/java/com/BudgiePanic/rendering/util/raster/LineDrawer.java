@@ -14,12 +14,10 @@ public class LineDrawer {
 
     protected static void drawLine(int x0, int y0, int x1, int y1, Canvas drawCanvas, Color lineColor) {
         final double gradient =  ((double)(y1 - y0)) / ((double)(x1 - x0));
-        final double offset = y0 - gradient * x0;
         // the initial point
-        final var firstY = (gradient * x0 + offset);
-        drawCanvas.writePixel(x0, (int) Math.floor(firstY), lineColor);
+        drawCanvas.writePixel(x0, y0, lineColor);
         // the rest of the points
-        double lastY = firstY;
+        double lastY = y0;
         for (int x = x0 + 1; x <= x1; x++) {
             double nextY = lastY + gradient;
             final int y = (int) Math.round(nextY);
