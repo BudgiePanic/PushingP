@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.scene;
 
+import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
 /**
@@ -72,4 +73,22 @@ public abstract class BasePerspectiveCamera implements Camera {
 
     @Override
     public int height() { return this.height; }
+
+    public final int[] project(Tuple worldPoint) {
+        // TODO: it kind of works? points on the left (-ve X) are coming out as max pixel value and (+ve X) is coming out as min pixel value
+        // sources: 
+        //     + https://gabrielgambetta.com/computer-graphics-from-scratch/01-common-concepts.html
+        //     + https://gabrielgambetta.com/computer-graphics-from-scratch/09-perspective-projection.html 
+        final Tuple localPoint = this.transform.multiply(worldPoint);
+        // projected points are in normalized screen space
+        final double projx = (localPoint.x * focalDistance) / localPoint.z;
+        final double projy = (localPoint.y * focalDistance) / localPoint.z;
+        final double screenx = (projx * width) / (2 * halfWidth);
+        final double screeny = (projy * height) / (2 * halfHeight);
+        // convert to pixel space
+        final int col = (width / 2) + (int) Math.round(screenx);
+        final int row = (height / 2) + (int) Math.round(screeny);
+        return new int[] {col, row};
+    }
 }
+
