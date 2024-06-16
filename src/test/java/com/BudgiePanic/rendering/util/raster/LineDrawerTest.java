@@ -84,10 +84,20 @@ public class LineDrawerTest {
     @Test
     void testDrawLineE() {
         // A vertical rightward line
+        var canvas = vericalCanvas();
+        LineDrawer.drawLine(0, 0, 1, 5, canvas, lineColor);
+        int[] expectedLine = new int[] {0,0, 0,1, 0,2, 1,3, 1,4, 1,5};
+        int[] expectedBlank = new int[] {1,0, 1,1, 1,2, 0,3, 0,4, 0,5};
+        testHarness(expectedLine, expectedBlank, canvas);
     }
 
     @Test
     void testDrawLineF() {
         // A vertical leftward line
+        var canvas = vericalCanvas();
+        LineDrawer.drawLine(1, 0, 0, 5, canvas, lineColor);
+        int[] expectedLine = new int[] {1,0, 1,1, 1,2, 0,3, 0,4, 0,5};
+        int[] expectedBlank = new int[] {0,0, 0,1, 0,2, 1,3, 1,4, 1,5};
+        testHarness(expectedLine, expectedBlank, canvas);
     }
 }
