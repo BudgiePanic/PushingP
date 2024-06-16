@@ -40,7 +40,8 @@ public class App
         entry("-dragon_demo", ()-> new LargeModelDemo()),
         entry("-big_scene_demo", ()-> new BigSceneDemo()),
         entry("-normal_bump_demo", ()-> new NormalBumpDemo()),
-        entry("-texture_demo", ()-> new TextureMapDemo())
+        entry("-texture_demo", ()-> new TextureMapDemo()),
+        entry("-line_demo", ()-> new LineDrawerDemo())
     );
 
     public static void main( String[] args )

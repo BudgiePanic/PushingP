@@ -4,7 +4,7 @@ import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 
 /**
- * Rasterizes straight lines onto the canvas.
+ * Rasterizes straight lines onto the canvas. Currently has O(n) runtime complexity and O(n) memory complexity.
  *
  * @author BudgiePanic
  */
