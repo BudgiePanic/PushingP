@@ -8,9 +8,9 @@ import com.BudgiePanic.rendering.util.Color;
  *
  * @author BudgiePanic
  */
-public final class LineDrawer {
+public final class CanvasLineDrawer {
     
-    private LineDrawer() {}
+    private CanvasLineDrawer() {}
 
     /**
      * Draw a straight line on a canvas

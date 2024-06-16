@@ -9,7 +9,7 @@ import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 
-public class LineDrawerTest {
+public class CanvasLineDrawerTest {
 
     static final Color lineColor = Colors.white;
     static final Color blankColor = Colors.black;
@@ -35,7 +35,7 @@ public class LineDrawerTest {
     void testDrawLineA() {
         // A flat horizontal line
         var canvas = horizontalCanvas();
-        LineDrawer.drawLine(0, 0, 5, 0, canvas, lineColor);
+        CanvasLineDrawer.drawLine(0, 0, 5, 0, canvas, lineColor);
         int[] expectedLine = new int[] {0,0, 1,0, 2,0, 3,0, 4,0, 5,0};
         int[] expectedBlank = new int[] {0,1, 1,1, 2,1, 3,1, 4,1, 5,1};
         testHarness(expectedLine, expectedBlank, canvas);
@@ -45,7 +45,7 @@ public class LineDrawerTest {
     void testDrawLineB() {
         // A slightly upwards line
         var canvas = horizontalCanvas();
-        LineDrawer.drawLine(0, 0, 5, 1, canvas, lineColor);
+        CanvasLineDrawer.drawLine(0, 0, 5, 1, canvas, lineColor);
         int[] expectedLine = new int[] {0,0, 1,0, 2,0, 3,1, 4,1, 5,1};
         int[] expectedBlank = new int[] {0,1, 1,1, 2,1, 3,0, 4,0, 5,0};
         testHarness(expectedLine, expectedBlank, canvas);
@@ -55,7 +55,7 @@ public class LineDrawerTest {
     void testDrawLineBA() {
         // A slightly upwards line backwards line
         var canvas = horizontalCanvas();
-        LineDrawer.drawLine(5, 1, 0, 0, canvas, lineColor);
+        CanvasLineDrawer.drawLine(5, 1, 0, 0, canvas, lineColor);
         int[] expectedLine = new int[] {0,0, 1,0, 2,0, 3,1, 4,1, 5,1};
         int[] expectedBlank = new int[] {0,1, 1,1, 2,1, 3,0, 4,0, 5,0};
         testHarness(expectedLine, expectedBlank, canvas);
@@ -65,7 +65,7 @@ public class LineDrawerTest {
     void testDrawLineC() {
         // A slightly downwards line
         var canvas = horizontalCanvas();
-        LineDrawer.drawLine(0, 1, 5, 0, canvas, lineColor);
+        CanvasLineDrawer.drawLine(0, 1, 5, 0, canvas, lineColor);
         int[] expectedLine = new int[] {0,1, 1,1, 2,1, 3,0, 4,0, 5,0};
         int[] expectedBlank = new int[] {0,0, 1,0, 2,0, 3,1, 4,1, 5,1};
         testHarness(expectedLine, expectedBlank, canvas);
@@ -75,7 +75,7 @@ public class LineDrawerTest {
     void testDrawLineD() {
         // A vertical line
         var canvas = vericalCanvas();
-        LineDrawer.drawLine(0, 0, 0, 5, canvas, lineColor);
+        CanvasLineDrawer.drawLine(0, 0, 0, 5, canvas, lineColor);
         int[] expectedLine = new int[] {0,0, 0,1, 0,2, 0,3, 0,4, 0,5};
         int[] expectedBlank = new int[] {1,0, 1,1, 1,2, 1,3, 1,4, 1,5};
         testHarness(expectedLine, expectedBlank, canvas);
@@ -85,7 +85,7 @@ public class LineDrawerTest {
     void testDrawLineE() {
         // A vertical rightward line
         var canvas = vericalCanvas();
-        LineDrawer.drawLine(0, 0, 1, 5, canvas, lineColor);
+        CanvasLineDrawer.drawLine(0, 0, 1, 5, canvas, lineColor);
         int[] expectedLine = new int[] {0,0, 0,1, 0,2, 1,3, 1,4, 1,5};
         int[] expectedBlank = new int[] {1,0, 1,1, 1,2, 0,3, 0,4, 0,5};
         testHarness(expectedLine, expectedBlank, canvas);
@@ -95,7 +95,7 @@ public class LineDrawerTest {
     void testDrawLineF() {
         // A vertical leftward line
         var canvas = vericalCanvas();
-        LineDrawer.drawLine(1, 0, 0, 5, canvas, lineColor);
+        CanvasLineDrawer.drawLine(1, 0, 0, 5, canvas, lineColor);
         int[] expectedLine = new int[] {1,0, 1,1, 1,2, 0,3, 0,4, 0,5};
         int[] expectedBlank = new int[] {0,0, 0,1, 0,2, 1,3, 1,4, 1,5};
         testHarness(expectedLine, expectedBlank, canvas);
