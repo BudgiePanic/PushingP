@@ -74,18 +74,26 @@ public abstract class BasePerspectiveCamera implements Camera {
     @Override
     public int height() { return this.height; }
 
+    /**
+     * project a 3D point in world space to a pixel on this camera
+     * @param worldPoint
+     *   The point in world space
+     * @return
+     *   An array of size two. The [column:x, row:y] of the pixel the point was projected onto. 
+     */
     public final int[] project(Tuple worldPoint) {
-        // TODO: it kind of works? points on the left (-ve X) are coming out as max pixel value and (+ve X) is coming out as min pixel value
         // sources: 
         //     + https://gabrielgambetta.com/computer-graphics-from-scratch/01-common-concepts.html
         //     + https://gabrielgambetta.com/computer-graphics-from-scratch/09-perspective-projection.html 
-        final Tuple localPoint = this.transform.multiply(worldPoint);
-        // projected points are in normalized screen space
-        final double projx = (localPoint.x * focalDistance) / localPoint.z;
-        final double projy = (localPoint.y * focalDistance) / localPoint.z;
+        final Tuple localPoint = this.transform.multiply(worldPoint); 
+        // "The Ray Tracer Challenge" camera looks in the -ve z direction in camera space
+        // but the rasterizer camera in "Computer Graphics From Scratch" faces the +ve z direction.
+        // To account for this fact, we need to negate the focal distance.
+        final double projx = (localPoint.x * -focalDistance) / localPoint.z;
+        final double projy = (localPoint.y * -focalDistance) / localPoint.z;
         final double screenx = (projx * width) / (2 * halfWidth);
         final double screeny = (projy * height) / (2 * halfHeight);
-        // convert to pixel space
+        // projected points are currently in normalized screen space. Convert them to pixel space.
         final int col = (width / 2) + (int) Math.round(screenx);
         final int row = (height / 2) + (int) Math.round(screeny);
         return new int[] {col, row};
