@@ -26,8 +26,11 @@ public class LineProjectorTest {
     void testProjectBehind() {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(0, 0, -1), makePoint(), Directions.up));
         var result = LineProjector.project(makePoint(-1, 0, 0), makePoint(1, 0, 0), camera);
-        var expected = new int[] {0,5,  10,5};
-        assertTrue(Arrays.equals(result, expected), expected.toString() + " " + result.toString());
+        // A quirk of our camera transform is that when the transform 'makes' the camera looks in the +ve z direction
+        // it effectively reflects transformed points about the 'x' and 'z' axis, the knock on effect is our screen coords will be flipped
+        // ultimately this doesn't matter because a line from A to B will look the exact same as a line from B to A
+        var expected = new int[] {10,5,  0,5}; 
+        assertTrue(Arrays.equals(result, expected), "expected:" + Arrays.toString(expected) + " actual:" + Arrays.toString(result));
     }
 
     @Test
@@ -42,6 +45,7 @@ public class LineProjectorTest {
     void testProjectB() {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,1), Directions.up));
         var result = LineProjector.project(makePoint(-1, 0, 1), makePoint(1, 0, 1), camera);
+        var expected = new int[] {10,5,  0,5};
         assertTrue(Arrays.equals(result, expected), "expected:" + Arrays.toString(expected) + " actual:" + Arrays.toString(result));
     }
 
