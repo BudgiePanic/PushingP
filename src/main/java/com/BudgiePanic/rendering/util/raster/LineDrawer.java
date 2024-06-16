@@ -72,7 +72,7 @@ public final class LineDrawer {
      * @return
      *   Returns the inputted result array.
      */
-    private static final int[] linearInterpolate(int i0, int d0, int i1, int d1, int[] result) {
+    protected static final int[] linearInterpolate(int i0, int d0, int i1, int d1, int[] result) {
         assert result != null && result.length == Math.abs((i0 - i1)) + 1;
         if (i0 == i1) { 
             result[0] = i0;
