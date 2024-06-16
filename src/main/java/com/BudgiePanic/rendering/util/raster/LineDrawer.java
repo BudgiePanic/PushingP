@@ -27,7 +27,7 @@ public final class LineDrawer {
      * @param lineColor
      *   The color of the line
      */
-    protected final static void drawLine(int x0, int y0, int x1, int y1, Canvas drawCanvas, Color lineColor) {
+    public final static void drawLine(int x0, int y0, int x1, int y1, Canvas drawCanvas, Color lineColor) {
         final int xStep = x1 - x0, yStep = y1 - y0;
         if (Math.abs(xStep) > Math.abs(yStep)) {
             // draw a horizontal line
