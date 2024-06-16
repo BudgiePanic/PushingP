@@ -50,4 +50,13 @@ public class ViewTest {
              0f, 0f, 0f, 1f), transform);
     }
 
+    @Test
+    void testViewMovedFromOriginNegative() {
+        var from = Tuple.makePoint(0,0,-8);
+        var to = Tuple.makePoint(0, 0, 0);
+        var up = Tuple.makeVector(0, 1, 0);
+        var transform = View.makeViewMatrix(from, to, up);
+        assertEquals(Transforms.identity().translate(0, 0, 8).scale(-1, 1, -1).assemble(), transform);
+    }
+
 }
