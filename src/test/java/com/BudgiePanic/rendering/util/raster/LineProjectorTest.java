@@ -1,7 +1,6 @@
 package com.BudgiePanic.rendering.util.raster;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -20,7 +19,7 @@ public class LineProjectorTest {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(0, 0, 1), makePoint(), Directions.up));
         var result = LineProjector.project(makePoint(-1, 0, 0), makePoint(1, 0, 0), camera);
         var expected = new int[] {0,5,  10,5};
-        assertEquals(expected, result);
+        assertTrue(Arrays.equals(result, expected), "expected:" + Arrays.toString(expected) + " actual:" + Arrays.toString(result));
     }
 
     @Test
@@ -36,15 +35,22 @@ public class LineProjectorTest {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
         var result = LineProjector.project(makePoint(-1, 0, -1), makePoint(1, 0, -1), camera);
         var expected = new int[] {0,5,  10,5};
-        assertEquals(expected, result);
+        assertTrue(Arrays.equals(result, expected), "expected:" + Arrays.toString(expected) + " actual:" + Arrays.toString(result));
     }
 
     @Test
     void testProjectB() {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,1), Directions.up));
         var result = LineProjector.project(makePoint(-1, 0, 1), makePoint(1, 0, 1), camera);
+        assertTrue(Arrays.equals(result, expected), "expected:" + Arrays.toString(expected) + " actual:" + Arrays.toString(result));
+    }
+
+    @Test
+    void testProjectC() {
+        var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var result = LineProjector.project(makePoint(-1, 0, -1.1), makePoint(1, 0, -1.1), camera);
         var expected = new int[] {0,5,  10,5};
-        assertEquals(expected, result);
+        assertTrue(Arrays.equals(result, expected), "expected:" + Arrays.toString(expected) + " actual:" + Arrays.toString(result));
     }
 
 }
