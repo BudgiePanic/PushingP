@@ -8,7 +8,7 @@ import com.BudgiePanic.rendering.util.Color;
  *
  * @author BudgiePanic
  */
-public class LineDrawer {
+public final class LineDrawer {
     
     private LineDrawer() {}
 
@@ -27,7 +27,7 @@ public class LineDrawer {
      * @param lineColor
      *   The color of the line
      */
-    protected static void drawLine(int x0, int y0, int x1, int y1, Canvas drawCanvas, Color lineColor) {
+    protected final static void drawLine(int x0, int y0, int x1, int y1, Canvas drawCanvas, Color lineColor) {
         final int xStep = x1 - x0, yStep = y1 - y0;
         if (Math.abs(xStep) > Math.abs(yStep)) {
             // draw a horizontal line
@@ -37,11 +37,9 @@ public class LineDrawer {
                 x0 = x1; y0 = y1;
                 x1 = x; y1 = y;
             }
-            final double gradient = ((double)yStep) / ((double)xStep);
-            double y = y0;
+            int[] yValues = linearInterpolate(x0, y0, x1, y1, new int[1 + (x1-x0)]);
             for (int x = x0; x <= x1; x++) {
-                drawCanvas.writePixel(x, (int) Math.round(y), lineColor);
-                y = y + gradient;
+                drawCanvas.writePixel(x, yValues[x - x0], lineColor);
             }
         } else {
             // draw a vertical line
@@ -51,12 +49,41 @@ public class LineDrawer {
                 x0 = x1; y0 = y1;
                 x1 = x; y1 = y;
             }
-            final double gradient = ((double)xStep) / ((double)yStep);
-            double x = x0;
+            int[] xValues = linearInterpolate(y0, x0, y1, x1, new int[1 + (y1-y0)]);
             for (int y = y0; y <= y1; y++) {
-                drawCanvas.writePixel((int) Math.round(x), y, lineColor);
-                x = x + gradient;
+                drawCanvas.writePixel(xValues[y - y0], y, lineColor);
             }
         }
+    }
+
+    /**
+     * Determine the interpolated values for a linear function ranging from i0 to i1, that outputs values ranging from d0 to d1.
+     *
+     * @param i0
+     *   The first input into the linear function
+     * @param d0
+     *   The first output of the linear function
+     * @param i1
+     *   The last input into the linear function
+     * @param d1
+     *   The last output of the linear function
+     * @param result
+     *   An array of length (i1 - i0) to write the interpolated function output values into.
+     * @return
+     *   Returns the inputted result array.
+     */
+    private static final int[] linearInterpolate(int i0, int d0, int i1, int d1, int[] result) {
+        assert result != null && result.length == Math.abs((i0 - i1)) + 1;
+        if (i0 == i1) { 
+            result[0] = i0;
+            return result;
+        }
+        final double gradient = ((double)(d1 - d0))/((double)(i1 - i0));
+        double dependent = d0;
+        for (int i = i0; i <= i1; i++) {
+            result[i - i0] = (int) Math.round(dependent);
+            dependent += gradient;
+        }
+        return result;
     }
 }
