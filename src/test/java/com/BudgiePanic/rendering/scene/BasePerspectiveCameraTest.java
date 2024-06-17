@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.scene;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 
@@ -11,6 +12,7 @@ import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Directions;
+import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.transform.View;
@@ -82,6 +84,53 @@ public class BasePerspectiveCameraTest {
         var expectedB = new int[] {10 ,5};
         assertTrue(Arrays.equals(resultA, expectedA), "expected:" + Arrays.toString(expectedA) + " actual:" + Arrays.toString(resultA));
         assertTrue(Arrays.equals(resultB, expectedB), "expected:" + Arrays.toString(expectedB) + " actual:" + Arrays.toString(resultB));
+    }
+
+    @Test
+    void testProjectD() {
+        // Make sure camera clipping is working (only part of the line segment can be seen by the camera)
+        fail("test not implemented yet");
+    }
+
+    @Test
+    void testProjectE() {
+        // verify the behvaiour when we try to draw a line the camera can't see
+        fail("test not implemented yet");
+    }
+
+    @Test
+    void testClippingPlaneDistance() {
+        // create various clipping planes and points, verify the point distance to plane makes sense
+        var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var plane = camera.new ClippingPlane(makePoint(), Directions.up);
+
+        var distance = plane.distanceTo(makePoint(0, 1, 0));
+        assertTrue(FloatHelp.compareFloat(1, distance) == 0);
+
+        distance = plane.distanceTo(makePoint(0, -1, 0));
+        assertTrue(FloatHelp.compareFloat(-1, distance) == 0);
+
+        distance = plane.distanceTo(makePoint(0, -3.5, 0));
+        assertTrue(FloatHelp.compareFloat(-3.5, distance) == 0);
+
+        distance = plane.distanceTo(makePoint(0, 3.5, 0));
+        assertTrue(FloatHelp.compareFloat(3.5, distance) == 0);
+    }
+
+    @Test
+    void testClippingPlaneDistanceA() {
+        // create various clipping planes and points, verify the point distance to plane makes sense
+        var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var plane = camera.new ClippingPlane(makePoint(), Directions.left);
+
+        var distance = plane.distanceTo(makePoint(0, 1, 0));
+        assertTrue(FloatHelp.compareFloat(0, distance) == 0);
+
+        distance = plane.distanceTo(makePoint(1, 0, 0));
+        assertTrue(FloatHelp.compareFloat(-1, distance) == 0);
+
+        distance = plane.distanceTo(makePoint(-1, 0, 0));
+        assertTrue(FloatHelp.compareFloat(1, distance) == 0);
     }
 
 }
