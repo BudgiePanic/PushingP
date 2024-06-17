@@ -125,7 +125,7 @@ public interface Shape {
      */
     default Tuple pointToWorldSpace(Tuple localPoint) {
         final var toParent = transform().multiply(localPoint);
-        return parent().map(parent -> parent.normalToWorldSpace(toParent)).orElse(toParent);
+        return parent().map(parent -> parent.pointToWorldSpace(toParent)).orElse(toParent);
     }
 
     /**
