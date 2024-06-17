@@ -25,6 +25,18 @@ import com.BudgiePanic.rendering.util.shape.Shape;
  */
 public class LineDrawer {
     
+    /**
+     * Calculates the line segments of an axis aligned bounding box and draws them.
+     *
+     * @param shape
+     *   The shape to draw.
+     * @param camera
+     *   The camera that is taking the image.
+     * @param canvas
+     *   The canvas to write to.
+     * @param boxColor
+     *   The color of the line segments
+     */
     public static void drawBoundingBox(Shape shape, BasePerspectiveCamera camera, Canvas canvas, Color boxColor) {
         final BoundingBox localBounds = shape.bounds();
         final List<Tuple> localPoints = localBounds.localPoints();
@@ -54,10 +66,27 @@ public class LineDrawer {
         for (int i = 0; i < lineSegmentsWorld.length - 1; i += 2) {
             final Tuple from = lineSegmentsWorld[i];
             final Tuple to = lineSegmentsWorld[i + 1];
-            final int[] fromPixel = camera.project(from);
-            final int[] toPixel = camera.project(to);
-            CanvasLineDrawer.drawLine(fromPixel[0], fromPixel[1], toPixel[0], toPixel[1], canvas, boxColor);
+            drawLine(from, to, camera, canvas, boxColor);
         }
+    }
+
+    /**
+     * 
+     * @param from
+     *   The starting point of the line segment
+     * @param to
+     *   The end point of the line segment
+     * @param camera
+     *   The camera taking the image
+     * @param canvas
+     *   The canvas to write to
+     * @param lineColor
+     *   The color of the line segment
+     */
+    public static void drawLine(Tuple from, Tuple to, BasePerspectiveCamera camera, Canvas canvas, Color lineColor) {
+        final int[] fromPixel = camera.project(from);
+        final int[] toPixel = camera.project(to);
+        CanvasLineDrawer.drawLine(fromPixel[0], fromPixel[1], toPixel[0], toPixel[1], canvas, lineColor);
     }
 
 }
