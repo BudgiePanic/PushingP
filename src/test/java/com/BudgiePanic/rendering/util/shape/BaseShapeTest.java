@@ -93,6 +93,27 @@ public class BaseShapeTest {
     }
 
     @Test
+    void testPointTransform() {
+        var shape = new TestShape(Transforms.identity().assemble());
+        var result = shape.pointToWorldSpace(Tuple.makePoint(1, 0, 0));
+        assertEquals(Tuple.makePoint(1, 0, 0), result);
+    }
+
+    @Test
+    void testPointTransformA() {
+        var shape = new TestShape(Transforms.identity().translate(1, 1, 0).assemble());
+        var result = shape.pointToWorldSpace(Tuple.makePoint(1, 0, 0));
+        assertEquals(Tuple.makePoint(2, 1, 0), result);
+    }
+
+    @Test
+    void testPointTransformB() {
+        var shape = new TestShape(Transforms.identity().scale(0.5).assemble());
+        var result = shape.pointToWorldSpace(Tuple.makePoint(1, 0, 0));
+        assertEquals(Tuple.makePoint(0.5, 0, 0), result);
+    }
+
+    @Test
     void testPointTransformC() {
         var group = new Group(Transforms.identity().scale(0.5).assemble());
         var shape = new TestShape(Transforms.identity().assemble());
