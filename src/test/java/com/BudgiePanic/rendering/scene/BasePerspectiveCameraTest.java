@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.scene;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
 
 import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
@@ -131,6 +133,22 @@ public class BasePerspectiveCameraTest {
 
         distance = plane.distanceTo(makePoint(-1, 0, 0));
         assertTrue(FloatHelp.compareFloat(1, distance) == 0);
+    }
+
+    @Test
+    void testClipPlaneGeneration() {
+        var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        // expected vectors are taken from the book (which also assumes FOV = 90) but are inverted because their camera faces +ve z and ours faces -ve z
+        var expectedLeft = makeVector(-1.0/Math.sqrt(2), 0, -1.0/Math.sqrt(2));
+        var expectedRight = makeVector(1.0/Math.sqrt(2.0), 0, -1/Math.sqrt(0));
+        var expectedTop = makeVector(0, -1.0/Math.sqrt(2.0), 1.0/Math.sqrt(2.0));
+        var expectedBottom = makeVector(0, 1.0/Math.sqrt(2.0), 1.0/Math.sqrt(2.0));
+        var expectedNear = makeVector(0, 0, -1);
+        assertEquals(expectedLeft, camera.left);
+        assertEquals(expectedRight, camera.right);
+        assertEquals(expectedTop, camera.top);
+        assertEquals(expectedBottom, camera.bottom);
+        assertEquals(expectedNear, camera.near);
     }
 
 }
