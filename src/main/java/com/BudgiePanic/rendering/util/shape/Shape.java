@@ -117,6 +117,18 @@ public interface Shape {
     }
 
     /**
+     * Convert a point in the object's local space to a point in world space.
+     * @param localPoint
+     *   The point in object local space.
+     * @return
+     *   A new point in world space.
+     */
+    default Tuple pointToWorldSpace(Tuple localPoint) {
+        final var toParent = transform().multiply(localPoint);
+        return parent().map(parent -> parent.normalToWorldSpace(toParent)).orElse(toParent);
+    }
+
+    /**
      * Get the local bounding box for the shape.
      * @return
      *   A bounding for the shape in local space.
