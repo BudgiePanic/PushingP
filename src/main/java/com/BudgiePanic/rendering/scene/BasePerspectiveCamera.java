@@ -1,7 +1,15 @@
 package com.BudgiePanic.rendering.scene;
 
+import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static com.BudgiePanic.rendering.util.Tuple.makeVector;
+
+import java.util.Optional;
+
+import com.BudgiePanic.rendering.util.Directions;
+import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.transform.Rotation;
 
 /**
  * Base perspective camera contains the fields used by perspective concrete cameras.
@@ -42,6 +50,12 @@ public abstract class BasePerspectiveCamera implements Camera {
      */
     protected final double focalDistance;
 
+    final ClippingPlane near;
+    final ClippingPlane left;
+    final ClippingPlane right;
+    final ClippingPlane top;
+    final ClippingPlane bottom;
+
     /**
      * Create a new Base perspective camera.
      * @param width
@@ -66,6 +80,13 @@ public abstract class BasePerspectiveCamera implements Camera {
         this.halfWidth = (aspect >= 1.0) ? halfView : halfView * aspect; 
         this.halfHeight = (aspect >= 1.0) ? halfView / aspect : halfView;
         this.pixelSize = (halfWidth * 2.0) / width;
+        final var zero = makePoint();
+        final var forward = Directions.backward;
+        this.near = new ClippingPlane(makePoint(0,0,-focalDistance), forward);
+        this.left = new ClippingPlane(zero, Rotation.buildYRotationMatrix(fov * 0.5).multiply(forward).normalize());
+        this.right = new ClippingPlane(zero, Rotation.buildYRotationMatrix(-fov * 0.5).multiply(forward).normalize());
+        this.top = new ClippingPlane(zero, Rotation.buildXRotationMatrix(-fov * 0.5).multiply(forward).normalize());
+        this.bottom = new ClippingPlane(zero, Rotation.buildXRotationMatrix(fov * 0.5).multiply(forward).normalize());
     }
 
     @Override
@@ -98,5 +119,22 @@ public abstract class BasePerspectiveCamera implements Camera {
         final int row = (height / 2) + (int) Math.round(screeny);
         return new int[] {col, row};
     }
+
+    protected final record ClippingPlane(Tuple point, Tuple normal) {
+        double distanceTo(Tuple point) {
+            final double a = normal.x, b = normal.y, c = normal.z;
+            final double x0 = this.point.x, y0 = this.point.y, z0 = this.point.z;
+            final double d = -(a * x0 + b * y0 + c * z0);
+            final double x1 = point.x, y1 = point.y, z1 = point.z;
+            final double numerator = a * x1 + b * y1 + c * z1 + d;
+            final double denominator = Math.sqrt(a*a + b*b + c*c);
+            return numerator / denominator;
+        }
+        boolean pointInside(Tuple localPoint) { 
+            return distanceTo(localPoint) > 0.0; 
+        }
+        Pair<Tuple, Tuple> clip(Tuple a, Tuple b) { return null; }
+    }
+
 }
 
