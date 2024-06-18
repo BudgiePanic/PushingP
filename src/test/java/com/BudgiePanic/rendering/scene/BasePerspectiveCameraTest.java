@@ -103,8 +103,7 @@ public class BasePerspectiveCameraTest {
     @Test
     void testClippingPlaneDistance() {
         // create various clipping planes and points, verify the point distance to plane makes sense
-        var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
-        var plane = camera.new ClippingPlane(makePoint(), Directions.up);
+        var plane = new BasePerspectiveCamera.ClippingPlane(makePoint(), Directions.up);
 
         var distance = plane.distanceTo(makePoint(0, 1, 0));
         assertTrue(FloatHelp.compareFloat(1, distance) == 0);
@@ -122,8 +121,7 @@ public class BasePerspectiveCameraTest {
     @Test
     void testClippingPlaneDistanceA() {
         // create various clipping planes and points, verify the point distance to plane makes sense
-        var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
-        var plane = camera.new ClippingPlane(makePoint(), Directions.left);
+        var plane = new BasePerspectiveCamera.ClippingPlane(makePoint(), Directions.left);
 
         var distance = plane.distanceTo(makePoint(0, 1, 0));
         assertTrue(FloatHelp.compareFloat(0, distance) == 0);
@@ -140,15 +138,15 @@ public class BasePerspectiveCameraTest {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
         // expected vectors are taken from the book (which also assumes FOV = 90) but are inverted because their camera faces +ve z and ours faces -ve z
         var expectedLeft = makeVector(-1.0/Math.sqrt(2), 0, -1.0/Math.sqrt(2));
-        var expectedRight = makeVector(1.0/Math.sqrt(2.0), 0, -1/Math.sqrt(0));
-        var expectedTop = makeVector(0, -1.0/Math.sqrt(2.0), 1.0/Math.sqrt(2.0));
-        var expectedBottom = makeVector(0, 1.0/Math.sqrt(2.0), 1.0/Math.sqrt(2.0));
+        var expectedRight = makeVector(1.0/Math.sqrt(2.0), 0, -1.0/Math.sqrt(2.0));
+        var expectedTop = makeVector(0, -1.0/Math.sqrt(2.0), -1.0/Math.sqrt(2.0));
+        var expectedBottom = makeVector(0, 1.0/Math.sqrt(2.0), -1.0/Math.sqrt(2.0));
         var expectedNear = makeVector(0, 0, -1);
-        assertEquals(expectedLeft, camera.left);
-        assertEquals(expectedRight, camera.right);
-        assertEquals(expectedTop, camera.top);
-        assertEquals(expectedBottom, camera.bottom);
-        assertEquals(expectedNear, camera.near);
+        assertEquals(expectedLeft, camera.left.normal());
+        assertEquals(expectedRight, camera.right.normal());
+        assertEquals(expectedTop, camera.top.normal());
+        assertEquals(expectedBottom, camera.bottom.normal());
+        assertEquals(expectedNear, camera.near.normal());
     }
 
 }
