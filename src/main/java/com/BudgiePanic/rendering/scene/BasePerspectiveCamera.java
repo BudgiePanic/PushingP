@@ -104,10 +104,10 @@ public abstract class BasePerspectiveCamera implements Camera {
         final var zero = makePoint();
         final var forward = Directions.backward;
         this.near = new ClippingPlane(makePoint(0,0,-focalDistance), forward);
-        this.left = new ClippingPlane(zero, Rotation.buildYRotationMatrix(fov * 0.5).multiply(forward).normalize());
-        this.right = new ClippingPlane(zero, Rotation.buildYRotationMatrix(-fov * 0.5).multiply(forward).normalize());
-        this.top = new ClippingPlane(zero, Rotation.buildXRotationMatrix(-fov * 0.5).multiply(forward).normalize());
-        this.bottom = new ClippingPlane(zero, Rotation.buildXRotationMatrix(fov * 0.5).multiply(forward).normalize());
+        this.left = new ClippingPlane(zero, Rotation.buildYRotationMatrix(-fov * 0.5).multiply(forward).normalize().cross(Directions.down));
+        this.right = new ClippingPlane(zero, Rotation.buildYRotationMatrix(fov * 0.5).multiply(forward).normalize().cross(Directions.up));
+        this.top = new ClippingPlane(zero, Rotation.buildXRotationMatrix(fov * 0.5).multiply(forward).normalize().cross(Directions.right));
+        this.bottom = new ClippingPlane(zero, Rotation.buildXRotationMatrix(-fov * 0.5).multiply(forward).normalize().cross(Directions.left));
         planes = new ClippingPlane[] {near, left, right, top, bottom};
     }
 
