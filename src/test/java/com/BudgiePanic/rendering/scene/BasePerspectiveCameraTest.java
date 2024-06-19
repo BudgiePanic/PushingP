@@ -1,10 +1,14 @@
 package com.BudgiePanic.rendering.scene;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +19,8 @@ import com.BudgiePanic.rendering.util.AngleHelp;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Directions;
 import com.BudgiePanic.rendering.util.FloatHelp;
+import com.BudgiePanic.rendering.util.Pair;
+import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.transform.View;
@@ -89,18 +95,6 @@ public class BasePerspectiveCameraTest {
     }
 
     @Test
-    void testProjectD() {
-        // Make sure camera clipping is working (only part of the line segment can be seen by the camera)
-        fail("test not implemented yet");
-    }
-
-    @Test
-    void testProjectE() {
-        // verify the behvaiour when we try to draw a line the camera can't see
-        fail("test not implemented yet");
-    }
-
-    @Test
     void testClippingPlaneDistance() {
         // create various clipping planes and points, verify the point distance to plane makes sense
         var plane = new BasePerspectiveCamera.ClippingPlane(makePoint(), Directions.up);
@@ -149,4 +143,76 @@ public class BasePerspectiveCameraTest {
         assertEquals(expectedNear, camera.near.normal());
     }
 
+    @Test
+    void testNearClip() {
+        var camera = new TestCamera(10, 10, AngleHelp.toRadians(90), 1.0, View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var line = new Tuple[] {makePoint(0, 0, -1.5), makePoint(0, 0, 1)};
+        var clippingPlane = camera.near;
+        assertTrue(clippingPlane.pointInside(line[0]));
+        assertFalse(clippingPlane.pointInside(line[1]));
+        var result = clippingPlane.clip(line[0], line[1]);
+        assertNotEquals(line[0], result);
+        assertEquals(makePoint(0,0,-1.0), result);
+    }
+
+    @Test
+    void testNearClipA() {
+        var camera = new TestCamera(10, 10, AngleHelp.toRadians(90), 1.0, View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var line = new Tuple[] {makePoint(0, 1, -1.5), makePoint(0, 1, 1)};
+        var clippingPlane = camera.near;
+        assertTrue(clippingPlane.pointInside(line[0]));
+        assertFalse(clippingPlane.pointInside(line[1]));
+        var result = clippingPlane.clip(line[0], line[1]);
+        assertNotEquals(line[0], result);
+        assertEquals(makePoint(0,1,-1.0), result);
+    }
+
+    @Test 
+    void testClipping() {
+        var camera = new TestCamera(10, 10, AngleHelp.toRadians(90), 1.0, View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        List<Pair<Pair<Tuple, Tuple>, Optional<Pair<Tuple, Tuple>>>> tests = List.of(
+            new Pair<>(new Pair<>(makePoint(-1, 0, 1), makePoint(1, 0, 1)), Optional.empty()), // outside near
+            new Pair<>(new Pair<>(makePoint(0, 0, -2), makePoint(-0.3, 0.5, -2.5)), Optional.of(new Pair<>(makePoint(0,0,-2), makePoint(-0.3, 0.5, -2.5)))), // all inside, no clip needed
+            new Pair<>(new Pair<>(makePoint(-10, 0, -2), makePoint(10, 0, -2)), Optional.of(new Pair<>(makePoint(-2,0,-2), makePoint(2,0,-2)))), // clipped A
+            new Pair<>(new Pair<>(makePoint(0, -10, -2), makePoint(0, 10, -2)), Optional.of(new Pair<>(makePoint(0,-2,-2), makePoint(0,2,-2))))  // clipped B
+        );
+        for (final var test : tests) {
+            var line = new Tuple[] {test.a().a(), test.a().b()};
+            var expected = test.b();
+            var result = camera.clip(line[0], line[1]);
+            assertEquals(expected, result);
+        }
+    }
+
+    @Test
+    void testLeftClip() {
+        var camera = new TestCamera(10, 10, AngleHelp.toRadians(90), 1.0, View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var line = new Pair<>(makePoint(0, 0, 1), makePoint(1, 0, 0));
+        assertFalse(camera.left.pointInside(line.a()));
+        assertFalse(camera.left.pointInside(line.b()));
+    }
+
+    @Test
+    void testRightClip() {
+        var camera = new TestCamera(10, 10, AngleHelp.toRadians(90), 1.0, View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var line = new Pair<>(makePoint(0, 0, 1), makePoint(-1, 0, 0));
+        assertFalse(camera.right.pointInside(line.a()));
+        assertFalse(camera.right.pointInside(line.b()));
+    }
+
+    @Test
+    void testTopClip() {
+        var camera = new TestCamera(10, 10, AngleHelp.toRadians(90), 1.0, View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var line = new Pair<>(makePoint(0, 0, 1), makePoint(0, 1, 0));
+        assertFalse(camera.top.pointInside(line.a()));
+        assertFalse(camera.top.pointInside(line.b()));
+    }
+
+    @Test
+    void testBottomClip() {
+        var camera = new TestCamera(10, 10, AngleHelp.toRadians(90), 1.0, View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var line = new Pair<>(makePoint(0, 0, 1), makePoint(0, -1, 0));
+        assertFalse(camera.bottom.pointInside(line.a()));
+        assertFalse(camera.bottom.pointInside(line.b()));
+    }
 }
