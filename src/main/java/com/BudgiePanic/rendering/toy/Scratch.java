@@ -4,6 +4,7 @@ import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
 import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.reporting.ProgressWrapper;
+import com.BudgiePanic.rendering.reporting.TimingWrapper;
 import com.BudgiePanic.rendering.scene.BasePerspectiveCamera;
 import com.BudgiePanic.rendering.scene.Camera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
@@ -58,14 +59,16 @@ public class Scratch implements Runnable {
             Material.pattern(new BiPattern(BiOperation.checker, Colors.white.multiply(0.4).add(0.05, 0.15, 0), Colors.white.multiply(0.7), Transforms.identity().scale(0.2).assemble()))));
         
         BasePerspectiveCamera camera = getCamera();
-        Camera cam = new SuperSamplingCamera(camera, SuperSamplingCamera.defaultMode);
-        var canvas = cam.takePicture(world, new ProgressWrapper(new ArrayCanvas(camera.width(), camera.height()), 20));
+        Camera cam = new TimingWrapper(new SuperSamplingCamera(camera, SuperSamplingCamera.defaultMode));
+        var canvas = cam.takePicture(world, new ProgressWrapper(new ArrayCanvas(camera.width(), camera.height()), 10));
 
-        LineDrawer.drawChildBoundingBoxes(LineDrawer.ALL_CHILDREN, shape, camera, canvas, new Color[]{Colors.red, Colors.white, Colors.red.add(Colors.green)}, true);
-        LineDrawer.drawLine(light.position(), makePoint(0, 0, 0), camera, canvas, Colors.green);
-        LineDrawer.drawLine(makePoint(0, 3, 0), makePoint(1, 3, 0), camera, canvas, Colors.red);  // x axis -> red
-        LineDrawer.drawLine(makePoint(0, 3, 0), makePoint(0, 4, 0), camera, canvas, Colors.green);// y axis -> green
-        LineDrawer.drawLine(makePoint(0, 3, 0), makePoint(0, 3, 1), camera, canvas, Colors.blue); // z axis -> blue
+        LineDrawer.drawChildBoundingBoxes(LineDrawer.ALL_CHILDREN, shape, camera, canvas, new Color[]{Colors.red, Colors.white, Colors.red.add(Colors.green)}, LineDrawer.ALL_SHAPES);
+
+        LineDrawer.drawLine(light.position(), makePoint(0, 0, 0), camera, canvas, Colors.black);
+        var set = makePoint(0, 4, 0);
+        LineDrawer.drawLine(set, set.add(1, 0, 0), camera, canvas, Colors.red);  // x axis -> red
+        LineDrawer.drawLine(set, set.add(0, 1, 0), camera, canvas, Colors.green);// y axis -> green
+        LineDrawer.drawLine(set, set.add(0, 0, 1), camera, canvas, Colors.blue); // z axis -> blue
 
         return canvas;
     }
