@@ -118,9 +118,9 @@ public abstract class BasePerspectiveCamera implements Camera {
     public int height() { return this.height; }
 
     /**
-     * project a 3D point in world space to a pixel on this camera
-     * @param worldPoint
-     *   The point in world space
+     * project a 3D point in local camera space to a pixel on the camera screen
+     * @param localPoint
+     *   The point in camera space
      * @return
      *   An array of size two. The [column:x, row:y] of the pixel the point was projected onto. 
      */
