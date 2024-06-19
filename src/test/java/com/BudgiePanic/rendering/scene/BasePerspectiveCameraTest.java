@@ -143,6 +143,22 @@ public class BasePerspectiveCameraTest {
     }
 
     @Test
+    void testClipPlaneGenerationA() {
+        // camera with FOV != 90 degrees
+        var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(60), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
+        var expectedLeft = makeVector(-Math.cos(AngleHelp.toRadians(30)), 0, -Math.sin(AngleHelp.toRadians(30)));
+        var expectedRight = makeVector(Math.cos(AngleHelp.toRadians(30)), 0, -Math.sin(AngleHelp.toRadians(30)));
+        var expectedTop = makeVector(0, -Math.cos(AngleHelp.toRadians(30)), -Math.sin(AngleHelp.toRadians(30)));
+        var expectedBottom = makeVector(0, Math.cos(AngleHelp.toRadians(30)), -Math.sin(AngleHelp.toRadians(30)));
+        var expectedNear = makeVector(0, 0, -1);
+        assertEquals(expectedLeft, camera.left.normal());
+        assertEquals(expectedRight, camera.right.normal());
+        assertEquals(expectedTop, camera.top.normal());
+        assertEquals(expectedBottom, camera.bottom.normal());
+        assertEquals(expectedNear, camera.near.normal());
+    }
+
+    @Test
     void testNearClip() {
         var camera = new TestCamera(10, 10, AngleHelp.toRadians(90), 1.0, View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
         var line = new Tuple[] {makePoint(0, 0, -1.5), makePoint(0, 0, 1)};
