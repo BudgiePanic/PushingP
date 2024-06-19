@@ -124,11 +124,10 @@ public abstract class BasePerspectiveCamera implements Camera {
      * @return
      *   An array of size two. The [column:x, row:y] of the pixel the point was projected onto. 
      */
-    public final int[] project(Tuple worldPoint) {
+    public final int[] project(Tuple localPoint) {
         // sources: 
         //     + https://gabrielgambetta.com/computer-graphics-from-scratch/01-common-concepts.html
         //     + https://gabrielgambetta.com/computer-graphics-from-scratch/09-perspective-projection.html 
-        final Tuple localPoint = this.transform.multiply(worldPoint); 
         // "The Ray Tracer Challenge" camera looks in the -ve z direction in camera space
         // but the rasterizer camera in "Computer Graphics From Scratch" faces the +ve z direction.
         // To account for this fact, we need to negate the focal distance.
@@ -141,6 +140,15 @@ public abstract class BasePerspectiveCamera implements Camera {
         final int row = (height / 2) + (int) Math.round(screeny);
         return new int[] {col, row};
     }
+
+    /**
+     * Converts a point in world space into camera local space.
+     * @param worldPoint
+     *   A point in world space.
+     * @return
+     *   The point transformed into local camera space.
+     */
+    public final Tuple transform(Tuple worldPoint) { return this.transform.multiply(worldPoint); }
 
     protected final record ClippingPlane(Tuple point, Tuple normal) {
         /**

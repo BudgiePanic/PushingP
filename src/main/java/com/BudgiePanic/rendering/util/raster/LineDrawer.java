@@ -84,8 +84,19 @@ public class LineDrawer {
      *   The color of the line segment
      */
     public static void drawLine(Tuple from, Tuple to, BasePerspectiveCamera camera, Canvas canvas, Color lineColor) {
-        final int[] fromPixel = camera.project(from);
-        final int[] toPixel = camera.project(to);
+        // drawing stages:
+        //   - transform the points defining the line segment from world space into camera space
+        //   - clip the line segment against the camera's view frustrum (this may: leave the points unchanges, change one of the points, remove the points(line can't be seen by camera))
+        //   - project the clipped line segment (if it wasn't filtered by the clipping process. Can early return here)
+        //   - get the pixel locations of the line segment start and end, pass them onto canvas line drawer
+        Tuple localFrom = camera.transform(from);
+        Tuple localTo = camera.transform(to);
+        var clipped = camera.clip(localFrom, localTo);
+        if (clipped.isEmpty()) { return; }
+        localFrom = clipped.get().a();
+        localTo = clipped.get().b();
+        final int[] fromPixel = camera.project(localFrom);
+        final int[] toPixel = camera.project(localTo);
         CanvasLineDrawer.drawLine(fromPixel[0], fromPixel[1], toPixel[0], toPixel[1], canvas, lineColor);
     }
 

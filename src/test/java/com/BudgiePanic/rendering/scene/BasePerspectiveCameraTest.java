@@ -38,8 +38,8 @@ public class BasePerspectiveCameraTest {
     @Test
     void testProject() {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(0, 0, 1), makePoint(), Directions.up));
-        var resultA = camera.project(makePoint(-1, 0, 0));
-        var resultB =  camera.project(makePoint(1, 0, 0));
+        var resultA = camera.project(camera.transform(makePoint(-1, 0, 0)));
+        var resultB =  camera.project(camera.transform(makePoint(1, 0, 0)));
         var expectedA = new int[] {0,5};
         var expectedB = new int[] {10 ,5};
         assertTrue(Arrays.equals(resultA, expectedA), "expected:" + Arrays.toString(expectedA) + " actual:" + Arrays.toString(resultA));
@@ -49,8 +49,8 @@ public class BasePerspectiveCameraTest {
     @Test
     void testProjectBehind() {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(0, 0, -1), makePoint(), Directions.up));
-        var resultA = camera.project(makePoint(-1, 0, 0));
-        var resultB =  camera.project(makePoint(1, 0, 0));
+        var resultA = camera.project(camera.transform(makePoint(-1, 0, 0)));
+        var resultB =  camera.project(camera.transform(makePoint(1, 0, 0)));
         // A quirk of our camera transform is that when the transform 'makes' the camera looks in the +ve z direction
         // it effectively reflects transformed points about the 'x' and 'z' axis, the knock on effect is our screen coords will be flipped
         // ultimately this doesn't matter because a line from A to B will look the exact same as a line from B to A
@@ -63,8 +63,8 @@ public class BasePerspectiveCameraTest {
     @Test
     void testProjectA() {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
-        var resultA = camera.project(makePoint(-1, 0, -1));
-        var resultB =  camera.project(makePoint(1, 0, -1));
+        var resultA = camera.project(camera.transform(makePoint(-1, 0, -1)));
+        var resultB =  camera.project(camera.transform(makePoint(1, 0, -1)));
         var expectedA = new int[] {0,5};
         var expectedB = new int[] {10 ,5};
         assertTrue(Arrays.equals(resultA, expectedA), "expected:" + Arrays.toString(expectedA) + " actual:" + Arrays.toString(resultA));
@@ -74,8 +74,8 @@ public class BasePerspectiveCameraTest {
     @Test
     void testProjectB() {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,1), Directions.up));
-        var resultA = camera.project(makePoint(-1, 0, 1));
-        var resultB =  camera.project(makePoint(1, 0, 1));
+        var resultA = camera.project(camera.transform(makePoint(-1, 0, 1)));
+        var resultB =  camera.project(camera.transform(makePoint(1, 0, 1)));
         var expectedA = new int[] {10 ,5};
         var expectedB = new int[] {0,5};
         assertTrue(Arrays.equals(resultA, expectedA), "expected:" + Arrays.toString(expectedA) + " actual:" + Arrays.toString(resultA));
@@ -85,8 +85,8 @@ public class BasePerspectiveCameraTest {
     @Test
     void testProjectC() {
         var camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0,0,-1), Directions.up));
-        var resultA = camera.project(makePoint(-1, 0, -1.1));
-        var resultB =  camera.project(makePoint(1, 0, -1.1));
+        var resultA = camera.project(camera.transform(makePoint(-1, 0, -1.1)));
+        var resultB =  camera.project(camera.transform(makePoint(1, 0, -1.1)));
         var expectedA = new int[] {0,5};
         var expectedB = new int[] {10 ,5};
         assertTrue(Arrays.equals(resultA, expectedA), "expected:" + Arrays.toString(expectedA) + " actual:" + Arrays.toString(resultA));
