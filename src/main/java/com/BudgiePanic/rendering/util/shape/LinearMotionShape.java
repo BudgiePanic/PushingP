@@ -1,6 +1,8 @@
 package com.BudgiePanic.rendering.util.shape;
 
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -202,4 +204,7 @@ public class LinearMotionShape extends BaseShape implements Parent {
         return this;
     }
     
+    @Override
+    public Collection<Shape> children() { return Collections.singleton(this.shape); }
+
 }
