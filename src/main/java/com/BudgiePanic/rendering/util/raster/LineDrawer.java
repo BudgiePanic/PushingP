@@ -97,6 +97,11 @@ public class LineDrawer {
         localTo = clipped.get().b();
         final int[] fromPixel = camera.project(localFrom);
         final int[] toPixel = camera.project(localTo);
+        // flip the pixel coordonates, our camera transform causes the pixels to be projected onto the wrong half of the screen
+        fromPixel[0] = camera.width - fromPixel[0];
+        toPixel[0] = camera.width - toPixel[0];
+        fromPixel[1] = camera.height - fromPixel[1];
+        toPixel[1] = camera.height - toPixel[1];
         CanvasLineDrawer.drawLine(fromPixel[0], fromPixel[1], toPixel[0], toPixel[1], canvas, lineColor);
     }
 
