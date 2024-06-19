@@ -121,6 +121,36 @@ public class LineDrawer {
         int getMaxDepth();
     }
 
+    public sealed interface DrawOption permits DrawOption.AllShapes, DrawOption.ConcreteOnly, DrawOption.ParentsOnly {
+        boolean shouldDraw(Shape shape);
+        final class AllShapes implements DrawOption {
+            @Override
+            public boolean shouldDraw(Shape shape) { return true; }
+        } 
+        final class ConcreteOnly implements DrawOption {
+            @Override
+            public boolean shouldDraw(Shape shape) { return !(shape instanceof Parent); }
+        } 
+        final class ParentsOnly implements DrawOption {
+            @Override
+            public boolean shouldDraw(Shape shape) { return shape instanceof Parent; }
+        } 
+    }
+
+    /**
+     * Draws all shapes' bounding boxes in the shape hierarchy.
+     */
+    public static DrawOption ALL_SHAPES = new DrawOption.AllShapes();
+    /**
+     * Only draws implementation shapes in the shape hierarchy.
+     */
+    public static DrawOption CONCRETE_SHAPES = new DrawOption.ConcreteOnly();
+    /**
+     * Only draws abstract shapes that contain other shapes within them.
+     */
+    public static DrawOption CONTAINER_SHAPES = new DrawOption.ParentsOnly();
+
+
     /**
      * Explore the entire parent hierarchy
      */
@@ -152,20 +182,20 @@ public class LineDrawer {
      *   If true, draw all bounding boxes in the hierarchy.
      *   If false, only concrete shape implementations will be drawn, intermediate nested composite shapes will not be drawn.
      */
-    public static void drawChildBoundingBoxes(Depth depthLimit, Parent shape, BasePerspectiveCamera camera, Canvas canvas, Color[] colors, boolean drawContainerShapes) {
+    public static void drawChildBoundingBoxes(Depth depthLimit, Parent shape, BasePerspectiveCamera camera, Canvas canvas, Color[] colors, DrawOption option) {
         // do a depth first exploration of the shape's hierarchy
         if (colors == null || colors.length == 0) {
             System.out.println("WARN: no colors supplied to line drawer. aborting draw.");
             return;
         }
-        recursiveDraw(depthLimit, shape, 0, 0, camera, canvas, colors, drawContainerShapes);
+        recursiveDraw(depthLimit, shape, 0, 0, camera, canvas, colors, option);
     }
 
-    protected static void recursiveDraw(final Depth limit, Shape shape, int depth, int color, final BasePerspectiveCamera camera, final Canvas canvas, final Color[] colors, final boolean drawContainerShapes) {
+    protected static void recursiveDraw(final Depth limit, Shape shape, int depth, int color, final BasePerspectiveCamera camera, final Canvas canvas, final Color[] colors, final DrawOption option) {
         if (limit.getMaxDepth() < depth) { return; }
         final boolean isParent = (shape instanceof Parent);
         // should we draw this shape?
-        if (!(isParent && !drawContainerShapes)) {
+        if (option.shouldDraw(shape)) {
             drawBoundingBox(shape, camera, canvas, colors[color]);
         }
         // does this shape have chilren we can try to draw?
@@ -174,7 +204,7 @@ public class LineDrawer {
             Parent parent = (Parent) shape;
             for (final Shape child : parent.children()) {
                 color = color < numbColors - 1 ? color + 1 : 0;
-                recursiveDraw(limit, child, depth + 1, color, camera, canvas, colors, drawContainerShapes);
+                recursiveDraw(limit, child, depth + 1, color, camera, canvas, colors, option);
             }
         }
     }
