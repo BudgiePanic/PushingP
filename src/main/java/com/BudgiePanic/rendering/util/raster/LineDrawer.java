@@ -16,6 +16,7 @@ import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.shape.BoundingBox;
+import com.BudgiePanic.rendering.util.shape.Parent;
 import com.BudgiePanic.rendering.util.shape.Shape;
 
 /**
@@ -104,5 +105,80 @@ public class LineDrawer {
         toPixel[1] = camera.height - toPixel[1];
         CanvasLineDrawer.drawLine(fromPixel[0], fromPixel[1], toPixel[0], toPixel[1], canvas, lineColor);
     }
+
+    public sealed interface Depth permits Depth.All, Depth.Limit {
+        final class All implements Depth {
+            private All() {}
+            @Override
+            public int getMaxDepth() { return Integer.MAX_VALUE; }
+        }
+        final class Limit implements Depth {
+            final int limit;
+            private Limit(int limit) {this.limit = limit;}
+            @Override
+            public int getMaxDepth() {return this.limit;}            
+        }
+        int getMaxDepth();
+    }
+
+    /**
+     * Explore the entire parent hierarchy
+     */
+    public static Depth ALL_CHILDREN = new Depth.All();
+
+    /**
+     * Create a new Depth limit.
+     * @param limit
+     *   The Parent shape hierarchy depth exploration limit.
+     * @return
+     *   A depth limit.
+     */
+    public static Depth depthLimit(int limit) { return new Depth.Limit(limit); }
+
+    /**
+     * Traverse a parent shape hierarchy, drawinng the bounding boxes of shapes in the hierarchy.
+     *
+     * @param depthLimit
+     *   The exploration limit of the parent shape's children hierarhy
+     * @param shape
+     *   The parent shape whose children's bounding boxes will be drawn.
+     * @param camera
+     *   The camera taking the image.
+     * @param canvas
+     *   The canvas to write the line segments to.
+     * @param colors
+     *   The colors to cycle between while drawing boxes
+     * @param drawContainerShapes
+     *   If true, draw all bounding boxes in the hierarchy.
+     *   If false, only concrete shape implementations will be drawn, intermediate nested composite shapes will not be drawn.
+     */
+    public static void drawChildBoundingBoxes(Depth depthLimit, Parent shape, BasePerspectiveCamera camera, Canvas canvas, Color[] colors, boolean drawContainerShapes) {
+        // do a depth first exploration of the shape's hierarchy
+        if (colors == null || colors.length == 0) {
+            System.out.println("WARN: no colors supplied to line drawer. aborting draw.");
+            return;
+        }
+        recursiveDraw(depthLimit, shape, 0, 0, camera, canvas, colors, drawContainerShapes);
+    }
+
+    protected static void recursiveDraw(final Depth limit, Shape shape, int depth, int color, final BasePerspectiveCamera camera, final Canvas canvas, final Color[] colors, final boolean drawContainerShapes) {
+        if (limit.getMaxDepth() < depth) { return; }
+        final boolean isParent = (shape instanceof Parent);
+        // should we draw this shape?
+        if (!(isParent && !drawContainerShapes)) {
+            drawBoundingBox(shape, camera, canvas, colors[color]);
+        }
+        // does this shape have chilren we can try to draw?
+        if (isParent) {
+            final int numbColors = colors.length;
+            Parent parent = (Parent) shape;
+            for (final Shape child : parent.children()) {
+                color = color < numbColors - 1 ? color + 1 : 0;
+                recursiveDraw(limit, child, depth + 1, color, camera, canvas, colors, drawContainerShapes);
+            }
+        }
+    }
+
+    // TODO line draw overload with depth buffer
 
 }
