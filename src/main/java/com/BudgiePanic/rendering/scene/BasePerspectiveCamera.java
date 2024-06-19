@@ -174,9 +174,9 @@ public abstract class BasePerspectiveCamera implements Camera {
          * (both points inside = line segment is completely within the camera's FOV, both points outside = camera can't see the line segment)
          *
          * @param inside
-         *   A point that is inside the clipping plane.
+         *   A point that is inside the clipping plane in local camera space.
          * @param outside
-         *   A point that is outside the clipping plane.
+         *   A point that is outside the clipping plane in local camera space.
          * @return
          *   A new point that is the intersection point between the line segment and the clipping plane.
          */
