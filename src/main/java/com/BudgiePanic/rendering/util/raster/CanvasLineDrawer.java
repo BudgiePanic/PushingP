@@ -68,7 +68,7 @@ public final class CanvasLineDrawer {
            (x1 < 0 || x1 >= width) ||
            (y0 < 0 || y0 >= height) ||
            (y1 < 0 || y1 >= height)) {
-            System.out.println("WARN: line " + Arrays.toString(input) + " is out of bounds for canvas " + canvas.toString() + ". Clamping out of bounds values!");
+            System.out.print("WARN: line " + Arrays.toString(input) + " is out of bounds for canvas " + canvas.toString() + ". Clamping out of bounds values! ");
             x0 = x0 < 0 ? 0 : x0 >= width ? width - 1 : x0;
             y0 = y0 < 0 ? 0 : y0 >= height ? height - 1 : y0;
             x1 = x1 < 0 ? 0 : x1 >= width ? width - 1 : x1;
@@ -78,7 +78,7 @@ public final class CanvasLineDrawer {
             for (int i = 0; i < diff.length; i++) {
                 diff[i] = diff[i] - input[i];
             }
-            System.out.println("WARN: line parameter diff after clamping: " + Arrays.toString(diff));
+            System.out.println("line parameter diff after clamping: " + Arrays.toString(diff));
             return clamped;
         }
         return input;
