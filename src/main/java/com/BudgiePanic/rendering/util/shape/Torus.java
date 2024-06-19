@@ -47,7 +47,7 @@ public class Torus extends BaseShape {
      * @param material
      *   Material the torus is made from.
      * @param radius
-     *   The radius of the torus of the circle that passes through the center of the torus.
+     *   The radius of the circle that passes through the center of the torus.
      * @param thickness
      *   The distance from the torus inner circle to the torus surface.
      */
@@ -57,9 +57,10 @@ public class Torus extends BaseShape {
             System.out.println("WARN: torus has thickness is larger than its radius, it won't have a hole");
         }
         final var toEdge = radius + thickness;
+        // The torus lies on the xy plane
         this.aabb = new BoundingBox(
-            makePoint(-toEdge, -thickness, -toEdge),
-            makePoint(toEdge, thickness, toEdge)
+            makePoint(-toEdge, -toEdge, -thickness),
+            makePoint(toEdge, toEdge, thickness)
         );
     }
 

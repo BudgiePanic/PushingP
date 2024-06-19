@@ -71,4 +71,12 @@ public class TorusTest {
         var result = shape.divide(0);
         assertEquals(shape, result);
     }
+
+    @Test
+    void testTorusAABB() {
+        var shape = new Torus(Matrix4.identity(), Material.defaultMaterial(), 1, 0.25);
+        var result = shape.bounds();
+        var expected = new BoundingBox(makePoint(-1.25, -1.25, -0.25), makePoint(1.25, 1.25, 0.25));
+        assertEquals(expected, result);
+    }
 }
