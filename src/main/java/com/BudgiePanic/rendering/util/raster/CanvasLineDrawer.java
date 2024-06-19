@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.util.raster;
 
+import java.util.Arrays;
+
 import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 
@@ -28,6 +30,8 @@ public final class CanvasLineDrawer {
      *   The color of the line
      */
     public final static void drawLine(int x0, int y0, int x1, int y1, Canvas drawCanvas, Color lineColor) {
+        int[] clamped = boundsCheck(x0, y0, x1, y1, drawCanvas);
+        x0 = clamped[0]; y0 = clamped[1]; x1 = clamped[2]; y1 = clamped[3];
         final int xStep = x1 - x0, yStep = y1 - y0;
         if (Math.abs(xStep) > Math.abs(yStep)) {
             // draw a horizontal line
@@ -54,6 +58,30 @@ public final class CanvasLineDrawer {
                 drawCanvas.writePixel(xValues[y - y0], y, lineColor);
             }
         }
+    }
+
+    private static int[] boundsCheck(int x0, int y0, int x1, int y1, Canvas canvas) {
+        final var input = new int[] {x0,y0,x1,y1};
+        final int width = canvas.getWidth();
+        final int height = canvas.getHeight();
+        if((x0 < 0 || x0 >= width) || 
+           (x1 < 0 || x1 >= width) ||
+           (y0 < 0 || y0 >= height) ||
+           (y1 < 0 || y1 >= height)) {
+            System.out.println("WARN: line " + Arrays.toString(input) + " is out of bounds for canvas " + canvas.toString() + ". Clamping out of bounds values!");
+            x0 = x0 < 0 ? 0 : x0 >= width ? width - 1 : x0;
+            y0 = y0 < 0 ? 0 : y0 >= height ? height - 1 : y0;
+            x1 = x1 < 0 ? 0 : x1 >= width ? width - 1 : x1;
+            y1 = y1 < 0 ? 0 : y1 >= height ? height - 1 : y1;
+            final var clamped = new int[] {x0,y0,x1,y1};
+            final var diff = Arrays.copyOf(clamped, 4);
+            for (int i = 0; i < diff.length; i++) {
+                diff[i] = diff[i] - input[i];
+            }
+            System.out.println("WARN: line parameter diff after clamping: " + Arrays.toString(diff));
+            return clamped;
+        }
+        return input;
     }
 
     /**
