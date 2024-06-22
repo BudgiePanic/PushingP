@@ -37,7 +37,7 @@ public abstract class CompositeShape extends BaseShape implements Parent {
      * @return
      *   The shapes that composit this shape.
      */
-    protected abstract Collection<Shape> children();
+    public abstract Collection<Shape> children();
 
     /**
      * Perform local intersection test against the composite shape's children.

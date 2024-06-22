@@ -90,7 +90,7 @@ public class CompoundShape extends CompositeShape {
     public boolean childrenContains(Shape shape) { return left.contains(shape) || right.contains(shape); }
 
     @Override
-    protected Collection<Shape> children() { return children; }
+    public Collection<Shape> children() { return children; }
 
     @Override
     public Shape divide(int threshold) {

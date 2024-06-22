@@ -152,6 +152,36 @@ public record BoundingBox(Tuple minimum, Tuple maximum) {
         return result;
     }
 
+    public static final int index000 = 0;
+    public static final int index001 = 1;
+    public static final int index010 = 2;
+    public static final int index011 = 3;
+    public static final int index100 = 4;
+    public static final int index101 = 5;
+    public static final int index110 = 6;
+    public static final int index111 = 7;
+
+    /**
+     * Generate the vertex corners of the AABB in local space.
+     * @return
+     *   A list of points representing the corners of the AABB in local space.
+     */
+    public List<Tuple> localPoints() {
+        Tuple _000 = minimum;                             
+        Tuple _010 = new Tuple(minimum.x, maximum.y, minimum.z); 
+
+        Tuple _101 = new Tuple(maximum.x, minimum.y, maximum.z); 
+        Tuple _111 = maximum;                             
+
+        Tuple _001 = new Tuple(minimum.x, minimum.y, maximum.z); 
+        Tuple _011 = new Tuple(minimum.x, maximum.y, maximum.z); 
+        
+        Tuple _100 = new Tuple(maximum.x, minimum.y, minimum.z);  
+        Tuple _110 = new Tuple(maximum.x, maximum.y, minimum.z); 
+
+        return List.of(_000, _001, _010, _011, _100, _101, _110, _111);
+    }
+
     /**
      * Create two smaller bounding boxes that divide the volume of this bounding box into two halves along the box's longest dimension.
      *

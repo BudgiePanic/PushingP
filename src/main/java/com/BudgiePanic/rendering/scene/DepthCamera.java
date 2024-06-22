@@ -1,5 +1,7 @@
 package com.BudgiePanic.rendering.scene;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import com.BudgiePanic.rendering.util.Canvas;
@@ -74,7 +76,64 @@ public class DepthCamera implements Camera {
         final double clampedDistance = isInfinity ? maxDistance : (distance) / (maxDistance);
         return new Color(clampedDistance, clampedDistance, clampedDistance);
     };
-    
+
+    /**
+     * Determines which strategy the depth camera uses to calculate the distance values it writes to the depth buffer.
+     */
+    protected sealed interface DistanceMode permits DepthCamera.RayDistance, DepthCamera.PointDistance {
+        /**
+         * Determine the distance for a single pixel.
+         * @param ray
+         *   The ray that was cast into the scene by the camera to get a distance value for the pixel.
+         * @param intersections
+         *   The ray-shape intersections for the given pixel
+         * @return
+         *   The distance value to write into the depth buffer for this pixel.
+         */
+        double distance(Ray ray, Optional<List<Intersection>> intersections);
+    }
+
+    /**
+     * Distance values are the distance you must travel along a ray to reach the
+     * ray-shape intersection.
+     */
+    private final static class RayDistance implements DistanceMode {
+        @Override
+        public double distance(Ray ray, Optional<List<Intersection>> intersections) {
+            return intersections.flatMap(Intersection::Hit).map(Intersection::a).orElse(Double.POSITIVE_INFINITY);
+        }
+    }
+
+    /**
+     * Distance values are the distance from the camera origin to the point of
+     * ray-shape intersection in local camera space.
+     */
+    private final class PointDistance implements DistanceMode {
+        /**
+         * The z coordinate of the camera in local camera space.
+         */
+        private static final double cameraLocalOrigin = 0.0;
+        @Override
+        public double distance(Ray ray, Optional<List<Intersection>> intersections) {
+            return intersections.flatMap(Intersection::Hit).map(i -> ray.origin().add(ray.direction().multiply(i.a()))).
+            map(cameraMonitoring::transform).map(p -> cameraLocalOrigin - p.z).orElse(Double.POSITIVE_INFINITY);
+        }
+    }
+
+    /**
+     * Ray distance mode singleton.
+     */
+    protected static final DistanceMode rayDistanceInstance = new RayDistance();
+    /**
+     * Creates a depth mode that uses the ray-shape intersection distance.
+     */
+    public static final Function<DepthCamera, DistanceMode> rayDistance = (camera) -> { return rayDistanceInstance; };
+    /**
+     * Createss a depth modt that uses the position of the ray-shape intersection to determine the intersection distance.
+     */
+    public static final Function<DepthCamera, DistanceMode> pointDistance = (camera) -> { return camera.new PointDistance(); };
+
+
     /**
      * The camera that is being monitored. 
      */
@@ -83,15 +142,20 @@ public class DepthCamera implements Camera {
      * How the depth values should be processed before being written to the depth buffer.
      */
     protected final DepthMode mode;
+    /**
+     * How the depth values should be calculated from ray-shape intersections.
+     */
+    protected final DistanceMode distanceCalculator;
 
     /**
      * Convience constructor.
-     * uses the 'campedDepthValues' depth mode, which most closely matches the behaviour most users expect from a depth buffer.
+     * Uses the 'campedDepthValues' depth mode, which most closely matches the behaviour most users expect from a depth buffer.
+     * Uses ray-shape intersection distance to determine distance value.
      * @param camera
      *   The camera to monitor.
      */
     public DepthCamera(BasePerspectiveCamera camera) {
-        this(camera, clampedDepthValues);
+        this(camera, clampedDepthValues, rayDistance);
     }
 
     /**
@@ -100,10 +164,13 @@ public class DepthCamera implements Camera {
      *   The camera to monitor
      * @param mode
      *   The depth write mode
+     * @param modeSupplier
+     *   A function that generates a distance mode for this depth camera
      */
-    public DepthCamera(BasePerspectiveCamera camera, DepthMode mode) {
+    public DepthCamera(BasePerspectiveCamera camera, DepthMode mode, Function<DepthCamera,DistanceMode> modeSupplier) {
         this.cameraMonitoring = camera;
         this.mode = mode;
+        this.distanceCalculator = modeSupplier.apply(this);
     }
 
     @Override
@@ -168,7 +235,7 @@ public class DepthCamera implements Camera {
     public Color pixelAt(World world, double pixelColumn, double pixelRow, double time) {
         final var ray = createRay(pixelColumn, pixelRow, time);
         final var intersections = world.intersect(ray);
-        final var distance = intersections.flatMap(Intersection::Hit).map(Intersection::a).orElse(Double.POSITIVE_INFINITY);
+        final double distance = this.distanceCalculator.distance(ray, intersections);
         return new Color(distance, distance, distance);
     }
 }

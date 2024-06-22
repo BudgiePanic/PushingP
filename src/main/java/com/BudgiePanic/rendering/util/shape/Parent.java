@@ -1,5 +1,6 @@
 package com.BudgiePanic.rendering.util.shape;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -34,5 +35,12 @@ public interface Parent extends Shape {
      *   A list of distances to intersection points along the ray, from the ray origin. May be empty.
      */
     Optional<List<Intersection>> intersect(Ray ray, Predicate<Shape> inclusionCondition);
+
+    /**
+     * Get the children shapes contained within this Parent shape.
+     * @return
+     *   The subshapes of this parent shape.
+     */
+    Collection<Shape> children();
 
 }

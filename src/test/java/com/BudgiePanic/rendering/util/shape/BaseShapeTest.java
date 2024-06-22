@@ -13,6 +13,7 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
+import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
 public class BaseShapeTest {
@@ -84,12 +85,41 @@ public class BaseShapeTest {
         var result = shape.normal(Tuple.makePoint(0, sqrtTwoOverTwo, -sqrtTwoOverTwo));
         assertEquals(Tuple.makeVector(0, 0.97014f, -0.24254f), result);
     }
-
    
     @Test
     void testParentAttribute() {
         var shape = new TestShape(Transforms.identity().assemble());
         assertTrue(shape.parent().isEmpty());
+    }
+
+    @Test
+    void testPointTransform() {
+        var shape = new TestShape(Transforms.identity().assemble());
+        var result = shape.pointToWorldSpace(Tuple.makePoint(1, 0, 0));
+        assertEquals(Tuple.makePoint(1, 0, 0), result);
+    }
+
+    @Test
+    void testPointTransformA() {
+        var shape = new TestShape(Transforms.identity().translate(1, 1, 0).assemble());
+        var result = shape.pointToWorldSpace(Tuple.makePoint(1, 0, 0));
+        assertEquals(Tuple.makePoint(2, 1, 0), result);
+    }
+
+    @Test
+    void testPointTransformB() {
+        var shape = new TestShape(Transforms.identity().scale(0.5).assemble());
+        var result = shape.pointToWorldSpace(Tuple.makePoint(1, 0, 0));
+        assertEquals(Tuple.makePoint(0.5, 0, 0), result);
+    }
+
+    @Test
+    void testPointTransformC() {
+        var group = new Group(Transforms.identity().scale(0.5).assemble());
+        var shape = new TestShape(Transforms.identity().assemble());
+        group.addShape(shape);
+        var result = shape.pointToWorldSpace(Tuple.makePoint(1, 0, 0));
+        assertEquals(Tuple.makePoint(0.5, 0, 0), result);
     }
 
 }
