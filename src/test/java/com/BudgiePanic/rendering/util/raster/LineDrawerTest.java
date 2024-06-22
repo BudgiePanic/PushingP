@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.util.raster;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.Optional;
 
@@ -11,11 +12,13 @@ import com.BudgiePanic.rendering.scene.DepthCamera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.World;
 import com.BudgiePanic.rendering.util.AngleHelp;
+import com.BudgiePanic.rendering.util.ArrayCanvas;
 import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Directions;
 import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.light.Light;
+import com.BudgiePanic.rendering.util.shape.Cone;
 import com.BudgiePanic.rendering.util.shape.Cube;
 import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
@@ -78,4 +81,23 @@ public class LineDrawerTest {
         LineDrawer.drawLine(makePoint(0, -3, -3), makePoint(0, 3, -3), camera, dummy, Colors.green, Optional.of(depthBuffer));
     }
 
+    @Test
+    void testDrawLineEdge() {
+        // test draw line method edge conditions, infinite bounding box
+        assertDoesNotThrow(() -> {
+            BasePerspectiveCamera camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0, 0, -1), Directions.up));
+            Shape shape = new Cone(Transforms.identity().translate(0, 0, -5).assemble());
+            Canvas canvas = new ArrayCanvas(camera.width(), camera.height());
+            LineDrawer.drawBoundingBox(shape, camera, canvas, Colors.white, Optional.empty());
+        });
+    }
+
+    @Test
+    void testDrawLineEdgeA() {
+        assertDoesNotThrow(()->{
+            BasePerspectiveCamera camera = new PinHoleCamera(10, 10, AngleHelp.toRadians(90), View.makeViewMatrix(makePoint(), makePoint(0, 0, -1), Directions.up));
+            Canvas canvas = new ArrayCanvas(camera.width(), camera.height());
+            LineDrawer.drawLine(makePoint(0, Double.POSITIVE_INFINITY, -2), makePoint(0, Double.NEGATIVE_INFINITY, -2), camera, canvas, Colors.white, Optional.empty());
+        });
+    }
 }
