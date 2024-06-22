@@ -60,6 +60,29 @@ public final class CanvasLineDrawer {
         }
     }
 
+    /**
+     * Draw a straight line on the canvas. Don't draw the line segment if it is behind an object according to the depth buffer.
+     *
+     * @param x0
+     *   The column of the start pixel of the line
+     * @param y0
+     *   The row of the start pixel of the line
+     * @param z0
+     *   The depth of the start pixel in local camera space
+     * @param x1
+     *   The column of the end pixel of the line
+     * @param y1
+     *   The row of the end pixel of the line
+     * @param z1
+     *   The depth of the end pixel in local camera space
+     * @param drawCanvas
+     *   The canvas the line will be drawn onto
+     * @param depthBuffer
+     *   The depth buffer. 
+     *   If using DepthCamera to generate a depth buffer, use rawUnclamped depth mode and PointDistance distance mode for normal results.
+     * @param lineColor
+     *   The color of the line
+     */
     public final static synchronized void drawLineDepth(int x0, int y0, double z0, int x1, int y1, double z1, Canvas drawCanvas, Canvas depthBuffer, Color lineColor) {
         int[] clamped = boundsCheck(x0, y0, x1, y1, drawCanvas);
         x0 = clamped[0]; y0 = clamped[1]; x1 = clamped[2]; y1 = clamped[3];

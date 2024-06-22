@@ -38,6 +38,10 @@ public class LineDrawer {
      *   The canvas to write to.
      * @param boxColor
      *   The color of the line segments
+     * @param depthBuffer
+     *   The depth buffer. 
+     *   If no depth buffer is provided the line drawer will draw over the image.
+     *   If using DepthCamera to generate a depth buffer, use rawUnclamped depth mode and PointDistance distance mode for normal results.
      */
     public static void drawBoundingBox(Shape shape, BasePerspectiveCamera camera, Canvas canvas, Color boxColor, Optional<Canvas> depthBuffer) {
         final BoundingBox localBounds = shape.bounds();
@@ -73,17 +77,22 @@ public class LineDrawer {
     }
 
     /**
-     * 
+     * Draw a line between two points in 3D space.
+     *
      * @param from
-     *   The starting point of the line segment
+     *   The starting point of the line segment in world space
      * @param to
-     *   The end point of the line segment
+     *   The end point of the line segment in world space
      * @param camera
      *   The camera taking the image
      * @param canvas
      *   The canvas to write to
      * @param lineColor
      *   The color of the line segment
+     * @param depthBuffer
+     *   The depth buffer.
+     *   If no depth buffer is provided the line drawer will draw over the image.
+     *   If using DepthCamera to generate a depth buffer, use rawUnclamped depth mode and PointDistance distance mode for normal results.
      */
     public static void drawLine(Tuple from, Tuple to, BasePerspectiveCamera camera, Canvas canvas, Color lineColor, Optional<Canvas> depthBuffer) {
         // drawing stages:
@@ -114,6 +123,9 @@ public class LineDrawer {
         }
     }
 
+    /**
+     * The recursion depth limiter object for traversing Shape hierarchies.
+     */
     public sealed interface Depth permits Depth.All, Depth.Limit {
         final class All implements Depth {
             private All() {}
@@ -128,7 +140,9 @@ public class LineDrawer {
         }
         int getMaxDepth();
     }
-
+    /**
+     * The filtering option object for deciding which object bounding boxes to draw when traversing a Shape hierarchy.
+     */
     public sealed interface DrawOption permits DrawOption.AllShapes, DrawOption.ConcreteOnly, DrawOption.ParentsOnly {
         boolean shouldDraw(Shape shape);
         final class AllShapes implements DrawOption {
@@ -185,9 +199,12 @@ public class LineDrawer {
      *   The canvas to write the line segments to.
      * @param colors
      *   The colors to cycle between while drawing boxes
-     * @param drawContainerShapes
-     *   If true, draw all bounding boxes in the hierarchy.
-     *   If false, only concrete shape implementations will be drawn, intermediate nested composite shapes will not be drawn.
+     * @param depthBuffer
+     *   The depth buffer.
+     *   If no depth buffer is provided the line drawer will draw over the image.
+     *   If using DepthCamera to generate a depth buffer, use rawUnclamped depth mode and PointDistance distance mode for normal results.
+     * @param option
+     *   An object which determines which shape's should have their AABB drawn.
      */
     public static void drawChildBoundingBoxes(Depth depthLimit, Parent shape, BasePerspectiveCamera camera, Canvas canvas, Color[] colors, Optional<Canvas> depthBuffer, DrawOption option) {
         // do a depth first exploration of the shape's hierarchy
