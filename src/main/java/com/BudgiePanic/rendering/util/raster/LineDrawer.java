@@ -1,6 +1,7 @@
 package com.BudgiePanic.rendering.util.raster;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.BudgiePanic.rendering.util.shape.BoundingBox.index000;
 import static com.BudgiePanic.rendering.util.shape.BoundingBox.index001;
@@ -38,7 +39,7 @@ public class LineDrawer {
      * @param boxColor
      *   The color of the line segments
      */
-    public static void drawBoundingBox(Shape shape, BasePerspectiveCamera camera, Canvas canvas, Color boxColor) {
+    public static void drawBoundingBox(Shape shape, BasePerspectiveCamera camera, Canvas canvas, Color boxColor, Optional<Canvas> depthBuffer) {
         final BoundingBox localBounds = shape.bounds();
         final List<Tuple> localPoints = localBounds.localPoints();
         final Tuple[] globalPoints = new Tuple[localPoints.size()];
@@ -67,7 +68,7 @@ public class LineDrawer {
         for (int i = 0; i < lineSegmentsWorld.length - 1; i += 2) {
             final Tuple from = lineSegmentsWorld[i];
             final Tuple to = lineSegmentsWorld[i + 1];
-            drawLine(from, to, camera, canvas, boxColor);
+            drawLine(from, to, camera, canvas, boxColor, depthBuffer);
         }
     }
 
@@ -84,7 +85,7 @@ public class LineDrawer {
      * @param lineColor
      *   The color of the line segment
      */
-    public static void drawLine(Tuple from, Tuple to, BasePerspectiveCamera camera, Canvas canvas, Color lineColor) {
+    public static void drawLine(Tuple from, Tuple to, BasePerspectiveCamera camera, Canvas canvas, Color lineColor, Optional<Canvas> depthBuffer) {
         // drawing stages:
         //   - transform the points defining the line segment from world space into camera space
         //   - clip the line segment against the camera's view frustrum (this may: leave the points unchanges, change one of the points, remove the points(line can't be seen by camera))
@@ -103,7 +104,14 @@ public class LineDrawer {
         toPixel[0] = camera.width - toPixel[0];
         fromPixel[1] = camera.height - fromPixel[1];
         toPixel[1] = camera.height - toPixel[1];
-        CanvasLineDrawer.drawLine(fromPixel[0], fromPixel[1], toPixel[0], toPixel[1], canvas, lineColor);
+        if (depthBuffer.isPresent()) {
+            final double cameraOrigin = 0.0;
+            final double z0 = cameraOrigin - localFrom.z;
+            final double z1 = cameraOrigin - localTo.z;
+            CanvasLineDrawer.drawLineDepth(fromPixel[0], fromPixel[1], z0, toPixel[0], toPixel[1], z1, canvas, depthBuffer.get(), lineColor);
+        } else {
+            CanvasLineDrawer.drawLine(fromPixel[0], fromPixel[1], toPixel[0], toPixel[1], canvas, lineColor);
+        }
     }
 
     public sealed interface Depth permits Depth.All, Depth.Limit {
@@ -150,7 +158,6 @@ public class LineDrawer {
      */
     public static DrawOption CONTAINER_SHAPES = new DrawOption.ParentsOnly();
 
-
     /**
      * Explore the entire parent hierarchy
      */
@@ -182,21 +189,21 @@ public class LineDrawer {
      *   If true, draw all bounding boxes in the hierarchy.
      *   If false, only concrete shape implementations will be drawn, intermediate nested composite shapes will not be drawn.
      */
-    public static void drawChildBoundingBoxes(Depth depthLimit, Parent shape, BasePerspectiveCamera camera, Canvas canvas, Color[] colors, DrawOption option) {
+    public static void drawChildBoundingBoxes(Depth depthLimit, Parent shape, BasePerspectiveCamera camera, Canvas canvas, Color[] colors, Optional<Canvas> depthBuffer, DrawOption option) {
         // do a depth first exploration of the shape's hierarchy
         if (colors == null || colors.length == 0) {
             System.out.println("WARN: no colors supplied to line drawer. aborting draw.");
             return;
         }
-        recursiveDraw(depthLimit, shape, 0, 0, camera, canvas, colors, option);
+        recursiveDraw(depthLimit, shape, 0, 0, camera, canvas, colors, depthBuffer, option);
     }
 
-    protected static void recursiveDraw(final Depth limit, Shape shape, int depth, int color, final BasePerspectiveCamera camera, final Canvas canvas, final Color[] colors, final DrawOption option) {
+    protected static void recursiveDraw(final Depth limit, Shape shape, int depth, int color, final BasePerspectiveCamera camera, final Canvas canvas, final Color[] colors, final Optional<Canvas> depthBuffer, final DrawOption option) {
         if (limit.getMaxDepth() < depth) { return; }
         final boolean isParent = (shape instanceof Parent);
         // should we draw this shape?
         if (option.shouldDraw(shape)) {
-            drawBoundingBox(shape, camera, canvas, colors[color]);
+            drawBoundingBox(shape, camera, canvas, colors[color], depthBuffer);
         }
         // does this shape have chilren we can try to draw?
         if (isParent) {
@@ -204,11 +211,9 @@ public class LineDrawer {
             Parent parent = (Parent) shape;
             for (final Shape child : parent.children()) {
                 color = color < numbColors - 1 ? color + 1 : 0;
-                recursiveDraw(limit, child, depth + 1, color, camera, canvas, colors, option);
+                recursiveDraw(limit, child, depth + 1, color, camera, canvas, colors, depthBuffer, option);
             }
         }
     }
-
-    // TODO line draw overload with depth buffer
 
 }
