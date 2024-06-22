@@ -2,11 +2,14 @@ package com.BudgiePanic.rendering.toy;
 
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 
+import java.util.Optional;
+
 import com.BudgiePanic.rendering.io.CanvasWriter;
 import com.BudgiePanic.rendering.reporting.ProgressWrapper;
 import com.BudgiePanic.rendering.reporting.TimingWrapper;
 import com.BudgiePanic.rendering.scene.BasePerspectiveCamera;
 import com.BudgiePanic.rendering.scene.Camera;
+import com.BudgiePanic.rendering.scene.DepthCamera;
 import com.BudgiePanic.rendering.scene.PinHoleCamera;
 import com.BudgiePanic.rendering.scene.SuperSamplingCamera;
 import com.BudgiePanic.rendering.scene.World;
@@ -55,21 +58,25 @@ public class Scratch implements Runnable {
         var shape = new CompoundShape(CompoundOperation.difference, s, t, Transforms.identity().assemble());
         world.addShape(shape);
         world.addShape(new Cube(
-            Transforms.identity().scale(10).translate(0, 9, 0).assemble(), 
+            Transforms.identity().scale(10).translate(0, 8.5, 0).assemble(), 
             Material.pattern(new BiPattern(BiOperation.checker, Colors.white.multiply(0.4).add(0.05, 0.15, 0), Colors.white.multiply(0.7), Transforms.identity().scale(0.2).assemble()))));
         
         BasePerspectiveCamera camera = getCamera();
         Camera cam = new TimingWrapper(new SuperSamplingCamera(camera, SuperSamplingCamera.defaultMode));
-        var canvas = cam.takePicture(world, new ProgressWrapper(new ArrayCanvas(camera.width(), camera.height()), 10));
+        var canvas = cam.takePicture(world, new ProgressWrapper(new ArrayCanvas(camera.width(), camera.height()), 20));
+        var depthBuffer = Optional.of(
+            new DepthCamera(camera, DepthCamera.rawUnclampedDepthValues, DepthCamera.pointDistance).takePicture(
+                world, new ProgressWrapper(new ArrayCanvas(camera.width(), camera.height()), 25)
+            )
+        );
 
-        LineDrawer.drawChildBoundingBoxes(LineDrawer.ALL_CHILDREN, shape, camera, canvas, new Color[]{Colors.red, Colors.white, Colors.red.add(Colors.green)}, LineDrawer.ALL_SHAPES);
+        LineDrawer.drawChildBoundingBoxes(LineDrawer.ALL_CHILDREN, shape, camera, canvas, new Color[]{Colors.red, Colors.white, Colors.red.add(Colors.green)}, depthBuffer, LineDrawer.ALL_SHAPES);
 
-        LineDrawer.drawLine(light.position(), makePoint(0, 0, 0), camera, canvas, Colors.black);
+        LineDrawer.drawLine(light.position(), makePoint(0, 0, 0), camera, canvas, Colors.black, depthBuffer);
         var set = makePoint(0, 4, 0);
-        LineDrawer.drawLine(set, set.add(1, 0, 0), camera, canvas, Colors.red);  // x axis -> red
-        LineDrawer.drawLine(set, set.add(0, 1, 0), camera, canvas, Colors.green);// y axis -> green
-        LineDrawer.drawLine(set, set.add(0, 0, 1), camera, canvas, Colors.blue); // z axis -> blue
-
+        LineDrawer.drawLine(set, set.add(1, 0, 0), camera, canvas, Colors.red, Optional.empty());  // x axis -> red
+        LineDrawer.drawLine(set, set.add(0, 1, 0), camera, canvas, Colors.green, Optional.empty());// y axis -> green
+        LineDrawer.drawLine(set, set.add(0, 0, 1), camera, canvas, Colors.blue, Optional.empty()); // z axis -> blue
         return canvas;
     }
 
