@@ -4,7 +4,8 @@ package com.BudgiePanic.rendering.util.noise;
  * Java implementation of Ken Perlin's 'improved noise' algorithm 
  * 
  * @see "Simplex noise, demystified. Includes explanation of Perlin noise."
- *          https://muugumuugu.github.io/bOOkshelF/generative%20art/simplexnoise.pdf
+ *          https://github.com/stegu/perlin-noise/blob/master/simplexnoise.pdf 
+ *          https://github.com/stegu/perlin-noise 
  * @see "The original SIGGRAPH paper about Perlin noise"
  *          https://dl.acm.org/doi/pdf/10.1145/325165.325247
  * @see "A reference implementation of Perlin noise written in C#"
