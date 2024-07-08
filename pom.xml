@@ -20,6 +20,7 @@
     <license>
       <name>Apache 2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
       <comments>An Open Source Software license</comments>
     </license>
   </licenses>
