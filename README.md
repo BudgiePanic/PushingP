@@ -87,6 +87,10 @@ public class MyFile extends BaseDemo {
 }
 ```
 
+### Examples
+
+The `toy` package contains code examples of how to use PushingP.
+
 ### Viewing images
 
 PushingP currently exports images in the `ppm` format.
