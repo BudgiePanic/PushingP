@@ -1,6 +1,8 @@
 # PushingP
 PushingP is an offline [Whitted ray tracing](https://en.wikipedia.org/wiki/Ray_tracing_(graphics)#Recursive_ray_tracing_algorithm) renderer written in Java.
 
+PushingP was created out of an enthusiasm for computer graphics and a desire to learn about ray tracing algorithms and data structures.
+
 # Project Name
 
 PushingP is short for PushingP(ixels), a refence to the application's job of filling the pixels of the screen with color.
