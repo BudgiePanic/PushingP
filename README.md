@@ -147,3 +147,6 @@ PushingP has the following features:
   - Render time measurement
   - Single threaded camera
 
+# License
+
+PushingP is released under the Apache 2.0 open source license 
