@@ -27,6 +27,9 @@ import org.junit.jupiter.api.Test;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Pair;
 
+/**
+ * Tests for verifying the functionality of the *.ppm file importer
+ */
 public class CanvasReaderTest {
     @Test
     void testCheckMagic() {

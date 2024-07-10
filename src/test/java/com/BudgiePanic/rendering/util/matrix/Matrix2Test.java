@@ -21,6 +21,9 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Matrix 2 by 2 tests
+ */
 public class Matrix2Test {
     @Test
     void testCreateMatrix2() {

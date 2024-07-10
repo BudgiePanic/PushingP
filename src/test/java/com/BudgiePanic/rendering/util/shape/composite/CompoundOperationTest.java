@@ -26,6 +26,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Constructive solid geometry intersection filtering tests
+ */
 public class CompoundOperationTest {
 
     static final List<List<Boolean>> inputOptions = List.of(

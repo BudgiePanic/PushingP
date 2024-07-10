@@ -27,6 +27,9 @@ import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Pair;
 
+/**
+ * Test that UV mapping implementation is correct for cube shape
+ */
 public class CubeTextureMapTest {
 
     @Test 

@@ -33,6 +33,10 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.shape.Triangle;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Test whether intersection distance from ray to shape is calculated correctly. 
+ * Tests for correctness of intersection UV calculation, under and over point calculation, and reflection, refraction calculations.
+ */
 public class IntersectTest {
     
     @Test

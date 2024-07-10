@@ -32,6 +32,9 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Tests for common shape functionality. Shape coordinate space transform tests.
+ */
 public class BaseShapeTest {
     
     public static class TestShape extends BaseShape {

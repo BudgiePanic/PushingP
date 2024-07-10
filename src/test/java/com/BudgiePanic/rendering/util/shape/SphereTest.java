@@ -29,6 +29,9 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.Translation;
 
+/**
+ * Tests for sphere shape.
+ */
 public class SphereTest {
     
     @Test

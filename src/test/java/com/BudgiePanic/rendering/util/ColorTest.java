@@ -21,6 +21,9 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for color type
+ */
 public class ColorTest {
     
     @Test

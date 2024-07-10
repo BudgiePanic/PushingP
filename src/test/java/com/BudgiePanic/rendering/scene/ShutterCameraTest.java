@@ -38,6 +38,9 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
+/**
+ * Tests for verifying that motion blur artifacts are produced my motion shapes and the shutter camera.
+ */
 public class ShutterCameraTest {
 
     @Test

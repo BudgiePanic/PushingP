@@ -20,6 +20,11 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 import java.util.Arrays;
 
+/**
+ * A two by two matrix. Row, column.
+ * 
+ * @author BudgiePanic
+ */
 public final class Matrix2 extends Matrix {
 
     private static final int dimension = 2;

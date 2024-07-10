@@ -30,6 +30,9 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.pattern.BiOperation;
 import com.BudgiePanic.rendering.util.pattern.BiPattern;
 
+/**
+ * Tests for verifying correctness of phong lighting model
+ */
 public class PhongTest {
     
     static Material material;

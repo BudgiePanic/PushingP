@@ -26,6 +26,9 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Tests for pattern coordinate space transformations.
+ */
 public class PatternTest {
 
     public static class TestPattern implements Pattern {

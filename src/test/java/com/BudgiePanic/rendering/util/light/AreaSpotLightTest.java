@@ -32,6 +32,9 @@ import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Tests for spotlight with surface area.
+ */
 public class AreaSpotLightTest {
     @Test
     void testLocalPosition() {

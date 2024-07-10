@@ -21,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for the normal processing modes of the normal debugging camera
+ */
 public class NormalCameraTest {
     @Test
     void testScaledNormalRemapping() {

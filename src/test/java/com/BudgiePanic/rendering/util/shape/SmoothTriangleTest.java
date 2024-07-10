@@ -25,6 +25,9 @@ import org.junit.jupiter.api.Test;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.intersect.Intersection;
 
+/**
+ * Tests for smooth triangles with interpolated normals and UV calculation of intersections
+ */
 public class SmoothTriangleTest {
 
     static final SmoothTriangle testTriangle = new SmoothTriangle(

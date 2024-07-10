@@ -24,6 +24,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Unit tests for quartic equation solver 
+ */
 public class QuarticHelpTest {
     @Test
     void testSolveQuartic() {

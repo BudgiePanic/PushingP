@@ -32,6 +32,9 @@ import com.BudgiePanic.rendering.util.Pair;
 import static com.BudgiePanic.rendering.util.Tuple.makePoint;
 import static com.BudgiePanic.rendering.util.AngleHelp.toRadians;
 
+/**
+ * Tests for spot light.
+ */
 public class PointSpotLightTest {
 
     @Test

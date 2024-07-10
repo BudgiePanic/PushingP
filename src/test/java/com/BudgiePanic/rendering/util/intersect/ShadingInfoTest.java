@@ -29,6 +29,9 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.shape.SmoothTriangle;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 
+/**
+ * Tests if ray-shape intersection meta data is calculated correctly
+ */
 public class ShadingInfoTest {
     
     @Test

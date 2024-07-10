@@ -31,6 +31,9 @@ import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
+/**
+ * Tests for torus donut shape
+ */
 public class TorusTest {
     @Test
     void testLocalIntersect() {

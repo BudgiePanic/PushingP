@@ -27,6 +27,9 @@ import org.junit.jupiter.api.Test;
 import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Pair;
 
+/**
+ * Tests for converting 3D points on shape to 2D points on shape surface.
+ */
 public class CoordinateMapperTest {
 
     @Test

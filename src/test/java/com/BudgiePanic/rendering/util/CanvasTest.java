@@ -21,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for array canvas implementation
+ */
 public class CanvasTest {
 
     @Test

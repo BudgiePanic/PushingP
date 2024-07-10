@@ -25,6 +25,9 @@ import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
 
+/**
+ * Tests for perlin noise implementation.
+ */
 public class PerlinTest {
     
     // because we are using the same permutation table as Perlin's reference implementation,

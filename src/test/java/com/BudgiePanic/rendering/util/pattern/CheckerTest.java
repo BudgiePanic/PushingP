@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Test;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Tuple;
 
+/**
+ * Tests for the checkerbox pattern. Tests work in the local pattern coordinate space.
+ */
 public class CheckerTest {
  
     @Test

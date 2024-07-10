@@ -34,6 +34,9 @@ import com.BudgiePanic.rendering.util.light.PointLight;
 import com.BudgiePanic.rendering.util.shape.Triangle;
 import com.BudgiePanic.rendering.util.transform.View;
 
+/**
+ * Tests for the super sampling antu aliasing camera
+ */
 public class SuperSamplingCameraTest {
     @Test
     void gridOutput() {

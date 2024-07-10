@@ -34,6 +34,10 @@ import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Tests for intersections against groups of shapes and group coordinate space transformations.
+ * Tests for bounding volume hierarchy functionality.
+ */
 public class GroupTest {
 
     static Matrix4 identity = Matrix4.identity();

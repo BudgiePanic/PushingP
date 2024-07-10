@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Test;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Tuple;
 
+/**
+ * Tests for the ring material pattern
+ */
 public class RingTest {
     
     @Test

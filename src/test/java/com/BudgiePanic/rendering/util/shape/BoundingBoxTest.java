@@ -35,6 +35,9 @@ import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
 import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Tests for axis aligned bounding boxes
+ */
 public class BoundingBoxTest {
 
     /**

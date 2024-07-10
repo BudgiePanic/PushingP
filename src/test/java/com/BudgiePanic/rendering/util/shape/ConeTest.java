@@ -32,6 +32,9 @@ import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.Tuple;
 
+/**
+ * Tests for cone shape
+ */
 public class ConeTest {
     @Test
     void testLocalIntersect() {

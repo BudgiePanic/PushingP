@@ -35,6 +35,9 @@ import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.shape.composite.Group;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Tests for moving shapes
+ */
 public class LinearMotionShapeTest {
     @Test
     void testBounds() {
