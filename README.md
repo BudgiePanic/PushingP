@@ -89,3 +89,61 @@ public class MyFile extends BaseDemo {
 
 PushingP currently exports images in the `ppm` format.
 <br>`ppm` images can be viewed using an image viewing program, such as [GNU's GIMP application](https://www.gimp.org/).
+
+# Features
+
+PushingP has the following features:
+- Ray-Shape intersection testing for:
+  - Sphere
+  - Cube
+  - Plane
+  - Triangle
+  - Smooth Triangle (interpolated normals)
+  - Torus
+  - Cylinder
+  - Cone
+- Composite Shapes
+  - Shape groups
+  - Constructive solid geometry shapes
+  - Motion shapes (adds motion blur)
+  - Bounded Volume Hierarchy acceleration
+- Lights
+  - Point light
+  - Point spot light
+  - Area light
+  - Area spot light
+- Cameras
+  - Pinhole camera
+  - Focal camera
+  - Shutter camera
+- Postprocessing
+  - Supersample anti-aliasing
+- Noise
+  - Value noise
+  - Voronoi noise
+  - Perlin noise
+- Materials
+  - Phong lighting model
+  - Texture mapping supported for:
+    - Spheres
+    - Cubes
+    - Cylinders
+  - Patterns
+    - stripes
+    - rings 
+    - gradient
+    - checker
+    - radial gradient
+    - solid color
+- IO
+  - `*.ppm` image writer
+  - `*.ppm` texture importer
+  - `*.obj` object importer    
+- debugging
+  - 3D line segment rasterizer
+  - Scene normals camera
+  - Scene depth camera
+  - Scene velocity camera
+  - Render time measurement
+  - Single threaded camera
+
