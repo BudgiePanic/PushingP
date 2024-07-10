@@ -1,0 +1,14 @@
+Apache Commons IO 
+Copyright 2002-2023 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (https://www.apache.org/).
+
+
+Efficient Java Math Library 
+Copyright 2009-2023 Peter Abeles
+
+Apache 2.0
+
+This product includes software developed by
+Peter Abeles (https://ejml.org) (https://github.com/lessthanoptimal/ejml)

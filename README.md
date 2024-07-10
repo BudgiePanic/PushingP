@@ -1,6 +1,8 @@
 # PushingP
 PushingP is an offline [Whitted ray tracing](https://en.wikipedia.org/wiki/Ray_tracing_(graphics)#Recursive_ray_tracing_algorithm) renderer written in Java.
 
+PushingP was created out of an enthusiasm for computer graphics and a desire to learn about ray tracing algorithms and data structures.
+
 # Project Name
 
 PushingP is short for PushingP(ixels), a refence to the application's job of filling the pixels of the screen with color.
@@ -85,7 +87,72 @@ public class MyFile extends BaseDemo {
 }
 ```
 
+### Examples
+
+The `toy` package contains code examples of how to use PushingP.
+
 ### Viewing images
 
 PushingP currently exports images in the `ppm` format.
 <br>`ppm` images can be viewed using an image viewing program, such as [GNU's GIMP application](https://www.gimp.org/).
+
+# Features
+
+PushingP has the following features:
+- Ray-Shape intersection testing for:
+  - Sphere
+  - Cube
+  - Plane
+  - Triangle
+  - Smooth Triangle (interpolated normals)
+  - Torus
+  - Cylinder
+  - Cone
+- Composite Shapes
+  - Shape groups
+  - Constructive solid geometry shapes
+  - Motion shapes (adds motion blur)
+  - Bounded Volume Hierarchy acceleration
+- Lights
+  - Point light
+  - Point spot light
+  - Area light
+  - Area spot light
+- Cameras
+  - Pinhole camera
+  - Focal camera
+  - Shutter camera
+- Postprocessing
+  - Supersample anti-aliasing
+- Noise
+  - Value noise
+  - Voronoi noise
+  - Perlin noise
+- Materials
+  - Phong lighting model
+  - Texture mapping supported for:
+    - Spheres
+    - Cubes
+    - Cylinders
+  - Patterns
+    - stripes
+    - rings 
+    - gradient
+    - checker
+    - radial gradient
+    - solid color
+- IO
+  - `*.ppm` image writer
+  - `*.ppm` texture importer
+  - `*.obj` object importer    
+- debugging
+  - 3D line segment rasterizer
+  - Scene normals camera
+  - Scene depth camera
+  - Scene velocity camera
+  - Render time measurement
+  - Single threaded camera
+
+# License
+
+PushingP is released under the Apache 2.0 open source license 

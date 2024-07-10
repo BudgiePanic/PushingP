@@ -6,16 +6,30 @@
 
   <groupId>com.BudgiePanic.rendering</groupId>
   <artifactId>PushingP</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.2.0</version>
   <packaging>jar</packaging>
 
   <name>PushingP</name>
   <url>https://github.com/BudgiePanic/PushingP</url>
 
+  <description>
+    PushingP is a recursive ray tracing library.
+  </description>
+
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>An Open Source Software license</comments>
+    </license>
+  </licenses>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
+    <license.licenseName>apache_v2</license.licenseName>
   </properties>
 
   <dependencies>
