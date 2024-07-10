@@ -36,6 +36,9 @@ import com.BudgiePanic.rendering.util.Pair;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Tests for area lights with surface area.
+ */
 public class AreaLightTest {
 
     @Test 

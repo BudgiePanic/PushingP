@@ -26,6 +26,9 @@ import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Pair;
 
+/**
+ * UV sampling tests for 2D pattern samplers
+ */
 public class Pattern2DTest {
     
     @Test

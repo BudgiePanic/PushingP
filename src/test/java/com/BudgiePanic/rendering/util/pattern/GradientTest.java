@@ -25,6 +25,9 @@ import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 import com.BudgiePanic.rendering.util.Tuple;
 
+/**
+ * Tests for the gradient pattern. Tests work in the local pattern coordinate space.
+ */
 public class GradientTest {
     
     @Test

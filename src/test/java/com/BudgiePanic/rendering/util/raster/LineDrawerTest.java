@@ -40,6 +40,9 @@ import com.BudgiePanic.rendering.util.shape.Shape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
+/**
+ * Manual tests for end to end 3D line segment to 2D line rasterization onto canvas.
+ */
 public class LineDrawerTest {
     @Test
     void testDrawLine() {

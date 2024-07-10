@@ -27,6 +27,9 @@ import com.BudgiePanic.rendering.util.Material;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Tests for the stripe material pattern
+ */
 public class StripeTest {
     
     @Test

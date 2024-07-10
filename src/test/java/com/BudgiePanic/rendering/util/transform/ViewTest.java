@@ -23,6 +23,9 @@ import org.junit.jupiter.api.Test;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
+/**
+ * Tests for camera view matrix generation and coordinate space transforms
+ */
 public class ViewTest {
     
     @Test

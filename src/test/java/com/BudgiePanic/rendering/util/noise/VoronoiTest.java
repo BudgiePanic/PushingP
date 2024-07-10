@@ -25,6 +25,9 @@ import org.junit.jupiter.api.Test;
 
 import com.BudgiePanic.rendering.util.FloatHelp;
 
+/**
+ * Worley noise tests.
+ */
 public class VoronoiTest {
     @Test
     void testGetPointsInCell() {

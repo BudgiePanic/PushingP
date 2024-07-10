@@ -41,6 +41,9 @@ import com.BudgiePanic.rendering.util.shape.Cylinder;
 import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 
+/**
+ * Constructive solid geometry tests
+ */
 public class CompoundShapeTest {
 
     @Test

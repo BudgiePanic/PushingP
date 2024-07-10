@@ -33,6 +33,9 @@ import com.BudgiePanic.rendering.util.shape.Sphere;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
+/**
+ * Tests for the pinhole camera
+ */
 public class PinHoleCameraTest {
     
     @Test

@@ -40,6 +40,9 @@ import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 import com.BudgiePanic.rendering.util.transform.View;
 
+/**
+ * Tests for camera point projection and view frustrum-line segment clipping.
+ */
 public class BasePerspectiveCameraTest {
 
     protected static final class TestCamera extends BasePerspectiveCamera {

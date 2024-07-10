@@ -33,6 +33,9 @@ import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
+/**
+ * Tests for cylinder shape
+ */
 public class CylinderTest {
     @Test
     void testLocalIntersectA() {

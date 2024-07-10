@@ -28,6 +28,9 @@ import com.BudgiePanic.rendering.util.Pair;
 
 public class TextureMapTest {
 
+    /*
+     * Check if the checker pattern is correctly UV mapped to a sphere
+     */
     @Test
     void testColorAt() {
         var pattern = new TextureMap(

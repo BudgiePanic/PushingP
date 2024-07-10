@@ -29,6 +29,9 @@ import com.BudgiePanic.rendering.util.FloatHelp;
 import com.BudgiePanic.rendering.util.Tuple;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 
+/**
+ * Tests for triangle shape
+ */
 public class TriangleTest {
 
     @Test

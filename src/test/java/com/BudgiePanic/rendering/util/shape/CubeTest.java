@@ -30,6 +30,9 @@ import com.BudgiePanic.rendering.util.intersect.Intersection;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
+/**
+ * Tests for cube shape
+ */
 public class CubeTest {
     
     @Test

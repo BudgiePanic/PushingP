@@ -63,6 +63,9 @@ import com.BudgiePanic.rendering.util.shape.composite.CompoundShape;
 import com.BudgiePanic.rendering.util.transform.Transforms;
 import com.BudgiePanic.rendering.util.transform.View;
 
+/**
+ * End to end tests for the entire ray tracing system.
+ */
 public class WorldTest {
     
     /**

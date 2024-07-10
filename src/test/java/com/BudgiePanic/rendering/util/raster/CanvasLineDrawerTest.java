@@ -25,6 +25,9 @@ import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Colors;
 
+/**
+ * Tests for 2D line rasterization.
+ */
 public class CanvasLineDrawerTest {
 
     static final Color lineColor = Colors.white;

@@ -29,6 +29,9 @@ import org.junit.jupiter.api.Test;
 import com.BudgiePanic.rendering.util.shape.SmoothTriangle;
 import com.BudgiePanic.rendering.util.shape.Triangle;
 
+/**
+ * Tests for verifying the functionality of the object file importer.
+ */
 public class WavefrontObjectLoaderTest {
 
     @Test

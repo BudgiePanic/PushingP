@@ -29,6 +29,9 @@ import java.util.List;
 import com.BudgiePanic.rendering.util.intersect.Ray;
 import com.BudgiePanic.rendering.util.matrix.Matrix4;
 
+/**
+ * Tests for flat plane shape
+ */
 public class PlaneTest {
     
     @Test

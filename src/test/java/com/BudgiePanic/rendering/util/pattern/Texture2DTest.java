@@ -30,6 +30,9 @@ import com.BudgiePanic.rendering.util.Canvas;
 import com.BudgiePanic.rendering.util.Color;
 import com.BudgiePanic.rendering.util.Pair;
 
+/**
+ * Tests for texture file importer
+ */
 public class Texture2DTest {
     @Test
     void testSample() {
