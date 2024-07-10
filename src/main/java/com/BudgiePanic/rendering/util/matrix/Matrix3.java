@@ -20,6 +20,11 @@ import static com.BudgiePanic.rendering.util.FloatHelp.compareFloat;
 
 import java.util.Arrays;
 
+/**
+ * A three by three matrix. Row, column layout.
+ * 
+ * @author BudgiePanic
+ */
 public final class Matrix3 extends Matrix {
 
     private static final int dimension = 3;
